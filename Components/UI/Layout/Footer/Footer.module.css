@@ -1,0 +1,13 @@
+.footer {
+    color: #494b7a;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+}
+
+a.site {
+    color: #6d4aff;
+    text-decoration: none;
+}

@@ -1,0 +1,94 @@
+/* General */
+
+.stepBarContainer {
+    text-transform: uppercase;
+    color: #494b7a;
+    font-size: 1em;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.stepBarContainer li {
+    display: inline-block;
+    position: relative;
+    margin: 0px 30px;
+    width: 180px;
+    cursor: pointer;
+}
+
+.stepBarContainer ul {
+    padding-top: 10px;
+    margin: 0;
+    padding-inline-start: 0px;
+}
+
+/* Transition Active / Inactive */
+
+.number {
+    display: inline-block;
+    position: relative;
+    color: #494b7a4d;
+    background: #fff;
+    border: 1px solid #494b7a4d;
+    border-radius: 50%;
+    width: 37px;
+    padding: 8px 5px;
+    margin-bottom: 4px;
+    font-weight: 700;
+    z-index: 1;
+}
+
+.active.number {
+    box-shadow: 0 0 15px 5px rgba(110, 74, 255, 0.405);
+    color: #fff;
+    background: #6d4aff;
+    transition: all 1000ms cubic-bezier(0.25, 0.25, 0.75, 0.75);
+    transition-delay: 500ms;
+}
+
+.text {
+    padding: 8px 0 0 0;
+    color: #494b7a4d;
+}
+
+.active.text {
+    transition: all 1000ms cubic-bezier(0.25, 0.25, 0.75, 0.75);
+    transition-delay: 500ms;
+    color: #494b7a;
+}
+
+.line {
+    background: #6d4aff;
+    width: 0;
+    height: 2px;
+    position: absolute;
+    top: 17px;
+    left: 108px;
+    z-index: 0;
+    transition: all 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75);
+}
+
+.active .line {
+    background: #6d4aff;
+    width: 204px;
+    height: 2px;
+    position: absolute;
+    top: 17px;
+    left: 108px;
+    z-index: 0;
+}
+
+.activeChevron {
+    cursor: pointer;
+}
+
+.activeChevron:hover {
+    color: #6d4aff;
+}
+
+.inactiveChevron {
+    color: #494b7a4d;
+}

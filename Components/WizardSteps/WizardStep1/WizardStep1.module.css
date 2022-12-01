@@ -1,0 +1,121 @@
+.container {
+    margin: 40px 20px 20px 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-radius: 5px;
+    text-align: left;
+    padding: 30px 70px;
+    animation: animStep ease-in 0.3s 1 normal none;
+}
+
+@keyframes animStep {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.container h1 {
+    text-align: center;
+    font-size: 1.7em;
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.container a {
+    color: #6d4aff;
+}
+
+.separator {
+    height: 15px;
+}
+
+.container {
+    line-height: 1.8em;
+    font-size: 1.05em;
+}
+
+h1 .icon {
+    color: #6d4aff;
+    margin-right: 5px;
+}
+
+.container img {
+    max-width: 650px;
+}
+
+.code {
+    background-color: #111827;
+    color: #f8f8f2;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        liberation mono, courier new, monospace;
+    padding: 5px 15px;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 5px 0px 10px 0px;
+    font-size: 0.8em;
+    white-space: pre;
+    line-height: 1em;
+}
+
+.verifyOrange {
+    background-color: #ff7a1b;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.verifyRed {
+    background-color: #ea1313;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.verifyOrange li,
+.container li {
+    list-style: disc;
+    margin-top: 1px;
+    margin-left: 30px;
+}
+
+.verifyOrange li .sshPublicKey {
+    background-color: #282a36;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        liberation mono, courier new, monospace;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.verifyRed .alert,
+.verifyOrange .alert {
+    text-align: center;
+    font-size: 1.1em;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.iconAlert {
+    margin-right: 5px;
+}
+
+.note {
+    font-style: italic;
+    color: #494b7a4d;
+    font-size: 0.8em;
+}
+
+.note a {
+    color: #6d4aff73;
+}

@@ -1,0 +1,246 @@
+.modaleWrapper {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    margin: 50px 0px 0px 70px;
+}
+
+.modale {
+    position: fixed;
+    top: 10%;
+    width: 1000px;
+    height: auto;
+    max-width: 75%;
+    max-height: 85%;
+    background: #fff;
+    padding: 20px 20px 20px;
+    overflow: auto;
+    border-radius: 10px;
+    box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.4);
+    margin: 0 auto;
+    animation: append-animate 0.3s linear;
+}
+
+@keyframes append-animate {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.close {
+    cursor: pointer;
+    margin-left: 95%;
+    color: #494b7a;
+}
+
+.close :hover {
+    color: #aa60ff;
+}
+
+.repoManageForm {
+    margin: auto;
+    width: 80%;
+    padding: 15px 30px 30px 30px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.formWrapper {
+    text-align: center;
+    margin: auto;
+    width: 100%;
+    height: auto;
+    color: #494b7a;
+}
+
+.repoManageForm label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: center;
+    margin-top: 20px;
+    color: #494b7a;
+}
+
+.repoManageForm input,
+.repoManageForm textarea,
+.repoManageForm select {
+    border: 1px solid #6d4aff21;
+    font-size: 16px;
+    height: auto;
+    margin: 0;
+    margin-bottom: 0px;
+    outline: 0;
+    padding: 15px;
+    width: 100%;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    /* color: #1b1340; */
+    color: #494b7a;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+}
+
+.repoManageForm textarea {
+    resize: vertical;
+}
+
+.repoManageForm textarea:focus,
+.repoManageForm input:focus,
+.repoManageForm select:focus {
+    outline: 1px solid #6d4aff;
+    box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
+}
+
+.repoManageForm .invalid {
+    background: #f3c7c7;
+    border: 1px solid #e45454;
+    outline: 1px solid #ff4a4a;
+}
+
+.repoManageForm .invalid:focus {
+    background: #f3c7c7;
+    border: 1px solid #e45454;
+    outline: 1px solid #ff4a4a;
+    box-shadow: 0 0 10px 3px rgba(255, 74, 74, 0.605);
+}
+
+.repoManageForm button {
+    display: block;
+    margin: 15px auto;
+}
+.repoManageForm button:hover {
+    display: block;
+    margin: 15px auto;
+}
+
+.errorMessage {
+    color: red;
+    display: block;
+    margin-top: 3px;
+}
+
+/* DELETE DIALOG */
+
+.deleteDialogWrapper {
+    text-align: center;
+    margin: auto;
+    width: 80%;
+    height: 100%;
+    max-height: 590px;
+    color: #111827;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.deleteDialogMessage {
+    background-color: #ea1313;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.cancelButton {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #c1c1c1;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.cancelButton:hover {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #9a9a9a;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.cancelButton:active {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #9a9a9a;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transform: scale(0.9);
+}
+
+.deleteButton {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #ff0000;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.deleteButton:hover {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #ff4b4b;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.deleteButton:active {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #ff4b4b;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transform: scale(0.9);
+}
+
+.littleDeleteButton {
+    border: none;
+    font-weight: 300;
+    color: red;
+    text-decoration: underline;
+    background: none;
+    cursor: pointer;
+}
+
+.selectAlert {
+    margin: auto auto 35px auto;
+    max-width: 160px;
+}

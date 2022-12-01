@@ -1,0 +1,50 @@
+.Nav {
+    list-style-type: none;
+    margin: 0px 15px 0px 0px;
+    padding: 0;
+    display: flex;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+}
+
+.account {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #494b7a;
+}
+
+.account a {
+    color: #494b7a;
+    text-decoration: none;
+}
+
+.account :focus,
+.account .active,
+.account :hover {
+    color: #6d4aff;
+    text-shadow: #6d4aff 0px 0px 18px;
+}
+
+.logout {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #494b7a;
+}
+
+.logout :focus,
+.logout .active,
+.logout :hover {
+    color: #6d4aff;
+    text-shadow: #6d4aff 0px 0px 18px;
+}
+
+@media all and (max-width: 1000px) {
+    .account {
+        display: none;
+    }
+}

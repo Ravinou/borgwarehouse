@@ -1,0 +1,179 @@
+* {
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/font/Inter/Inter-VariableFont_slnt,wght.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    font-family: Inter, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #fafafa;
+}
+
+/* Disable scrollbar for chrome */
+::-webkit-scrollbar {
+    display: none;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+}
+
+.defaultButton {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #6d4aff;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.defaultButton:hover {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #4f31ce;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.defaultButton:active {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #4f31ce;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transform: scale(0.9);
+}
+
+.defaultButton:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* signIn */
+
+.signInContainer {
+    display: 'flex';
+    flex-direction: 'column';
+    justify-content: 'center';
+    align-items: 'center';
+    height: calc(100vh - 100px);
+    animation: signInAnim 1s ease 0s 1 normal forwards;
+}
+
+@keyframes signInAnim {
+    0% {
+        opacity: 0;
+        transform: translateY(-250px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.signInInput {
+    background: #262e49;
+    background-color: #262e49;
+    border: 1px solid #6d4aff21;
+    font-size: 16px;
+    height: auto;
+    margin: 0;
+    margin-bottom: 0px;
+    outline: 0;
+    padding: 15px;
+    width: 100%;
+    border-radius: 5px;
+    color: #d6d6d6;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+}
+
+.signInInput:focus {
+    outline: 1px solid #6d4aff;
+    box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
+}
+
+.signInInput.invalid {
+    background: #f3c7c7;
+    border: 1px solid #e45454;
+    outline: 1px solid #ff4a4a;
+}
+
+.signInInput.invalid:focus {
+    background: #f3c7c7;
+    border: 1px solid #e45454;
+    outline: 1px solid #ff4a4a;
+    box-shadow: 0 0 10px 3px rgba(255, 74, 74, 0.605);
+}
+
+.signInButton {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #6d4aff;
+    color: #dfdeee;
+    margin: 5px;
+    border-radius: 100px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.signInButton:hover {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #4f31ce;
+    color: #dfdeee;
+    margin: 5px;
+    border-radius: 100px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.signInButton:active {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #4f31ce;
+    color: #dfdeee;
+    margin: 5px;
+    border-radius: 100px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+    transform: scale(0.9);
+}
+
+.signInButton:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.heart {
+    color: #6d4aff;
+}
+.heart::before {
+    content: '\f004';
+}

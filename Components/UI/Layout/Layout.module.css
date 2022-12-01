@@ -1,0 +1,23 @@
+.mainWrapper {
+    margin: auto;
+    max-width: 1400px;
+    height: calc(100vh - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+    /* to prevent main content under navside on little screen */
+    padding-left: 90px;
+    /* Disable scrollbar */
+    scrollbar-width: none;
+}
+
+.login {
+    background-color: #111827;
+}
+
+@media all and (max-width: 1000px) {
+    .mainWrapper {
+        padding-left: 0px;
+    }
+}

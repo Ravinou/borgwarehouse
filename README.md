@@ -19,11 +19,29 @@
   </a>
 </div>
 
-### Get started
+## What is BorgWarehouse ?
+
+**BorgWarehouse is a graphical interface to manage a central [BorgBackup](https://borgbackup.readthedocs.io/en/stable/#what-is-borgbackup) repository server.**
+
+Today, if you want to have a large server on which you centralize backups of BorgBackup clients you have to do everything manually from the command line. It works, but in everyday life it can be complicated and adding, modifying, deleting repositories is always a bit long and tedious. If you want to do things right, you have to create a user on your server, associate him a public SSH key, give him a quota... in short **it's a bit of work**.
+
+With BorgWarehouse, you have an interface that allows you to do all this simply and quickly :
+
+- **add** repositories
+- **edit** existing repositories
+- **delete** repositories
+- be **alerted** if there are no recent backups
+- **monitor** the volume of data
+- **flexibly manage quotas** for each repository
+- ...
+
+The whole system part is automatically managed by BorgWarehouse and **you don't have to touch your terminal anymore** while enjoying a visual feedback on the status of your repositories.
+
+## Get started
 
 You can find the documentation here : <a href="https://borgwarehouse.com/docs/prologue/introduction/">https://borgwarehouse.com/</a>
 
-### :key: Environment Variables
+## :key: Environment Variables
 
 To run this project, you will need to add the following environment variables to your `.env.local` file.
 

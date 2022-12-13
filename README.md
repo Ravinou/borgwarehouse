@@ -27,13 +27,13 @@ Today, if you want to have a large server on which you centralize backups of Bor
 
 With BorgWarehouse, you have an interface that allows you to do all this simply and quickly :
 
-- **add** repositories
-- **edit** existing repositories
-- **delete** repositories
-- be **alerted** if there are no recent backups
-- **monitor** the volume of data
-- **flexibly manage quotas** for each repository
-- ...
+-   **add** repositories
+-   **edit** existing repositories
+-   **delete** repositories
+-   be **alerted** if there are no recent backups
+-   **monitor** the volume of data
+-   **flexibly manage quotas** for each repository
+-   ...
 
 The whole system part is automatically managed by BorgWarehouse and **you don't have to touch your terminal anymore** while enjoying a visual feedback on the status of your repositories.
 
@@ -47,14 +47,14 @@ To run this project, you will need to add the following environment variables to
 
 Variables to create (all required) :
 
-- `NEXTAUTH_URL` : The url of your application as **https://borgwarehouse.com**.
-- `NEXTAUTH_SECRET` : A secret random key.
-- `CRONJOB_KEY` : A secret API key for cronjob.
-- `NEXT_PUBLIC_HOSTNAME` : FQDN as **borgwarehouse.com**
-- `NEXT_PUBLIC_SSH_SERVER_PORT` : SSH port of your server as **22**.
-- `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA` : Your server SSH fingerprint for RSA.
-- `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519` : Your server SSH fingerprint for ED25519.
-- `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA` : Your server SSH fingerprint for ECDSA.
+-   `NEXTAUTH_URL` : The url of your application as **https://borgwarehouse.com**.
+-   `NEXTAUTH_SECRET` : A secret random key.
+-   `CRONJOB_KEY` : A secret API key for cronjob.
+-   `NEXT_PUBLIC_HOSTNAME` : FQDN as **borgwarehouse.com**
+-   `NEXT_PUBLIC_SSH_SERVER_PORT` : SSH port of your server as **22**.
+-   `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA` : Your server SSH fingerprint for RSA.
+-   `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519` : Your server SSH fingerprint for ED25519.
+-   `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA` : Your server SSH fingerprint for ECDSA.
 
 Example for a valid `.env.local` file :
 
@@ -69,12 +69,12 @@ NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519=SHA256:tYQuzrZZMqaw0Bzvn/sMoDs1CVEitZ
 NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA=SHA256:nTpxui1oEmH9konPau17qBVIzBQVOsD1BIbBFU5IL04
 ```
 
-You can find more details about generating your secrets or retrieving your SSH fingerprint <a href="You can find more details about generating your secrets or retrieving your SSH fingerprint in the documentation.">in the documentation</a>.
-
+You can find more details about generating your secrets or retrieving your SSH fingerprint. You can find more details about generating your secrets or retrieving your SSH fingerprint <a href="https://borgwarehouse.com/docs/admin-manual/debian-installation/#configure-application-environment-variables">in the documentation</a>.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
+
+[next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[next-url]: https://nextjs.org/
+[react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[react-url]: https://reactjs.org/

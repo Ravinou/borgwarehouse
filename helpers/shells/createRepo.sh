@@ -34,7 +34,7 @@ then
 fi
 
 # Check if borgbackup is installed
-if ! [ -x "$(command -v borgbackup)" ]; then
+if ! [ -x "$(command -v borg)" ]; then
   echo "You must install borgbackup package."
   exit 3
 fi
@@ -82,7 +82,7 @@ sudo chmod 600 ${authorized_keys}
 sudo chown -R ${user}:borgwarehouse ${home}
 
 ## Add ssh public key in authorized_keys with borg restriction for only 1 repository (:$1) and storage quota
-restricted_authkeys="command=\"cd ${pool};borg serve --restrict-to-repository ${pool}/$1 --storage-quota $3G\",restrict $2"
+restricted_authkeys="command=\"cd ${pool};borg serve --umask 0027 --restrict-to-repository ${pool}/$1 --storage-quota $3G\",restrict $2"
 echo "$restricted_authkeys" | sudo tee ${authorized_keys} >/dev/null
 
 ## Return the unix user

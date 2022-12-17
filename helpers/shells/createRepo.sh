@@ -77,6 +77,7 @@ fi
 
 ## Change permissions
 sudo chmod -R 750 ${home}
+sudo chmod -R g+s ${home}
 sudo chmod 600 ${authorized_keys}
 sudo chown -R ${user}:borgwarehouse ${home}
 

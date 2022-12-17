@@ -105,6 +105,4 @@ dist
 
 
 # local env files
- .env*.local
- config/repo.json
- config/users.json
+.env*.local

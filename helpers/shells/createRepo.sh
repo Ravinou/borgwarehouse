@@ -28,7 +28,7 @@ fi
 # This pattern validates SSH public keys for : rsa, ed25519, ed25519-sk
 pattern='(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?'
 if [[ ! "$2" =~ $pattern ]]
-then	
+then
     echo "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
     exit 2
 fi
@@ -65,9 +65,6 @@ sudo mkdir -p ${home}/.ssh
 ## Create autorized_keys file
 sudo touch ${home}/.ssh/authorized_keys
 
-## Create ${pool}
-sudo mkdir -p ${pool}
-
 ## Create the repo
 sudo mkdir -p "${pool}/$1"
 
@@ -79,12 +76,13 @@ if [ ! -f "${authorized_keys}" ];then
 fi
 
 ## Change permissions
-sudo chmod -R 700 ${home}
+sudo chmod -R 750 ${home}
 sudo chmod 600 ${authorized_keys}
-sudo chown -R ${user}:${user} ${home}
+sudo chown -R ${user}:borgwarehouse ${home}
 
 ## Add ssh public key in authorized_keys with borg restriction for only 1 repository (:$1) and storage quota
-sudo -u ${user} bash -c "echo 'command=\"cd ${pool};borg serve --restrict-to-repository ${pool}/$1 --storage-quota $3G\",restrict $2' >> ${authorized_keys}"
+restricted_authkeys="command=\"cd ${pool};borg serve --restrict-to-repository ${pool}/$1 --storage-quota $3G\",restrict $2"
+echo "$restricted_authkeys" | sudo tee ${authorized_keys} >/dev/null
 
 ## Return the unix user
 echo ${user}

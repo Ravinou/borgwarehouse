@@ -22,4 +22,4 @@
 # Exit when any command fails
 set -e
 
-sudo bash -c 'stat -c {\"user\":\"%U\",\"lastSave\":%Y\} /var/borgwarehouse/*/repos/*/integrity* | jq -s'
+stat -c {\"user\":\"%U\",\"lastSave\":%Y\} /var/borgwarehouse/*/repos/*/integrity* | jq -s

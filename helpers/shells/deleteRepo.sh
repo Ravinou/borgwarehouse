@@ -8,7 +8,7 @@
 set -e
 
 # Check arg
-if [ "$1" == "" ];then
+if [[ $# -ne 1 || $1 = "" ]]; then
     echo "You must provide a username in argument."
     exit 1
 fi
@@ -23,8 +23,7 @@ then
 fi
 
 # Delete the user if it exists
-if sudo grep -q $1 /etc/passwd
-then
+if id "$1" &>/dev/null; then
     sudo userdel -rf $1
     echo "The user $1 and all his data have been deleted"
 else

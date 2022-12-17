@@ -20,7 +20,7 @@ home="/var/borgwarehouse/$1"
 # This pattern validates SSH public keys for : rsa, ed25519, ed25519-sk
 pattern='(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?'
 if [[ ! "$2" =~ $pattern ]]
-then	
+then
     echo "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
     exit 2
 fi
@@ -35,8 +35,7 @@ then
 fi
 
 # Check if the user exists
-if ! sudo grep -q $1 /etc/passwd
-then
+if ! id "$1" &>/dev/null; then
     echo "The user $1 does not exist"
     exit 4
 fi

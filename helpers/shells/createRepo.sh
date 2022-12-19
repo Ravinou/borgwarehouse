@@ -34,7 +34,7 @@ then
 fi
 
 # Check if borgbackup is installed
-if ! [ -x "$(command -v borgbackup)" ]; then
+if ! [ -x "$(command -v borg)" ]; then
   echo "You must install borgbackup package."
   exit 3
 fi

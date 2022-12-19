@@ -58,7 +58,7 @@ pool="${home}/repos"
 authorized_keys="${home}/.ssh/authorized_keys"
 
 ## add user and create homedirectory ${user} - [shell=/bin/bash home=${home} group=${group}]
-sudo useradd -d ${home} -s "/bin/bash" -m ${user}
+sudo useradd -d ${home} -s "/bin/bash" -m --badname ${user}
 
 ## Create directory ${home}/.ssh
 sudo mkdir -p ${home}/.ssh

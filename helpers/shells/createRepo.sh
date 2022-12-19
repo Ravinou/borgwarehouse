@@ -55,6 +55,7 @@ done
 group="${user}"
 home="/var/borgwarehouse/${user}"
 pool="${home}/repos"
+authorized_keys="${home}/.ssh/authorized_keys"
 
 ## add user and create homedirectory ${user} - [shell=/bin/bash home=${home} group=${group}]
 sudo useradd -d ${home} -s "/bin/bash" -m ${user}
@@ -68,17 +69,16 @@ sudo touch ${home}/.ssh/authorized_keys
 ## Create the repo
 sudo mkdir -p "${pool}/$1"
 
-## Check if authorized_keys exists
-authorized_keys="${home}/.ssh/authorized_keys"
-if [ ! -f "${authorized_keys}" ];then
-    echo "${authorized_keys} must be present"
-    exit 4
-fi
-
 ## Change permissions
 sudo chmod -R 750 ${home}
 sudo chmod 600 ${authorized_keys}
 sudo chown -R ${user}:borgwarehouse ${home}
+
+## Check if authorized_keys exists
+if [ ! -f "${authorized_keys}" ];then
+    echo "${authorized_keys} must be present"
+    exit 4
+fi
 
 ## Add ssh public key in authorized_keys with borg restriction for only 1 repository (:$1) and storage quota
 restricted_authkeys="command=\"cd ${pool};borg serve --restrict-to-repository ${pool}/$1 --storage-quota $3G\",restrict $2"

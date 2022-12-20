@@ -16,4 +16,4 @@ set -e
 
 # Use jc to output a JSON format with du command
 cd /var/borgwarehouse
-jc du -s *
+sudo jc du -s *

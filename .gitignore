@@ -103,6 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
-
 # local env files
 .env*.local
+
+# config file for BorgWarehouse
+config/repo.json

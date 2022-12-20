@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import fs from 'fs';
 import path from 'path';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth/next';
@@ -17,8 +17,15 @@ export default async function handler(req, res) {
             //console.log('API call (GET)');
             //Find the absolute path of the json directory
             const jsonDirectory = path.join(process.cwd(), '/config');
-            //Read the json data file data.json
-            let repoList = await fs.readFile(
+            //Check if the repo.json file exists and initialize it if not.
+            if (!fs.existsSync(jsonDirectory + '/repo.json')) {
+                fs.writeFileSync(
+                    jsonDirectory + '/repo.json',
+                    JSON.stringify([])
+                );
+            }
+            //Read the file repo.json
+            let repoList = await fs.promises.readFile(
                 jsonDirectory + '/repo.json',
                 'utf8'
             );

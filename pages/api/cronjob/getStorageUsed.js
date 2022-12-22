@@ -21,6 +21,22 @@ export default async function handler(req, res) {
 
     try {
         if (req.method == 'POST' && ACTION_KEY === CRONJOB_KEY) {
+            //Check the repoList
+            const jsonDirectory = path.join(process.cwd(), '/config');
+            let repoList = await fs.readFile(
+                jsonDirectory + '/repo.json',
+                'utf8'
+            );
+            //Parse the repoList
+            repoList = JSON.parse(repoList);
+            //If repoList is empty we stop here.
+            if (repoList.length === 0) {
+                res.status(200).json({
+                    success: 'No repositories to analyse yet.',
+                });
+                return;
+            }
+
             ////Call the shell : getStorageUsed.sh
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
@@ -38,15 +54,6 @@ export default async function handler(req, res) {
             }
             //Parse the JSON output of getStorageUsed.sh to use it
             const storageUsed = JSON.parse(stdout);
-
-            //Find the absolute path of the json directory
-            const jsonDirectory = path.join(process.cwd(), '/config');
-            let repoList = await fs.readFile(
-                jsonDirectory + '/repo.json',
-                'utf8'
-            );
-            //Parse the repoList
-            repoList = JSON.parse(repoList);
 
             //Rebuild a newRepoList with the storageUsed value updated
             let newRepoList = repoList;

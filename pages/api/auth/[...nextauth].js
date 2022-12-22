@@ -2,7 +2,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '../../../helpers/functions/auth';
-import { promises as fs } from 'fs';
+import fs from 'fs';
 import path from 'path';
 
 ////Use if need getServerSideProps and therefore unstable_getServerSession
@@ -14,7 +14,23 @@ export const authOptions = {
                 //Read the users file
                 //Find the absolute path of the json directory
                 const jsonDirectory = path.join(process.cwd(), '/config');
-                let usersList = await fs.readFile(
+                //Check if the users.json file exists and initialize it if not with admin/admin.
+                if (!fs.existsSync(jsonDirectory + '/users.json')) {
+                    fs.writeFileSync(
+                        jsonDirectory + '/users.json',
+                        JSON.stringify([
+                            {
+                                id: 0,
+                                email: 'admin@demo',
+                                username: 'admin',
+                                password:
+                                    '$2a$12$20yqRnuaDBH6AE0EvIUcEOzqkuBtn1wDzJdw2Beg8w9S.vEqdso0a',
+                                roles: ['admin'],
+                            },
+                        ])
+                    );
+                }
+                let usersList = await fs.promises.readFile(
                     jsonDirectory + '/users.json',
                     'utf8'
                 );

@@ -108,3 +108,4 @@ dist
 
 # config file for BorgWarehouse
 config/repo.json
+config/users.json

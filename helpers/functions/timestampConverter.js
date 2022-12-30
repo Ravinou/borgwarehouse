@@ -2,7 +2,7 @@
 export default function timestampConverter(UNIX_timestamp) {
     const a = new Date(UNIX_timestamp * 1000);
     const year = a.getFullYear();
-    const month = a.getMonth();
+    const month = a.getMonth() + 1;
     const date = a.getDate();
     const hour = a.getHours();
     const min = (a.getMinutes() < 10 ? '0' : '') + a.getMinutes();

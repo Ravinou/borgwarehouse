@@ -11,6 +11,7 @@ import { unstable_getServerSession } from 'next-auth/next';
 
 //Components
 import Error from '../../Components/UI/Error/Error';
+import UserSettings from '../../Containers/UserSettings/UserSettings';
 
 export default function Account() {
     ////Var
@@ -68,6 +69,7 @@ export default function Account() {
             <Head>
                 <title>Account - BorgWarehouse</title>
             </Head>
+            <UserSettings />
             <div
                 style={{
                     display: 'flex',

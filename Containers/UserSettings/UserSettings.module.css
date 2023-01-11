@@ -1,0 +1,126 @@
+.containerSettings {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 10px;
+}
+
+.containerSetting {
+    display: flex;
+    flex-flow: row wrap;
+    width: calc(100% + 24px);
+    margin: 40px 20px 20px 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-radius: 5px;
+    text-align: left;
+    padding: 32px 24px;
+    animation: entrance ease-in 0.3s 1 normal none;
+}
+
+@keyframes entrance {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.settingCategory {
+    max-width: 33.3333%;
+    width: 100%;
+}
+.settingCategory h2 {
+    color: #494b7a;
+    margin: 0;
+}
+
+.setting {
+    max-width: 66.6666%;
+    width: 100%;
+}
+
+/* Forms */
+
+.bwForm {
+    width: 80%;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.bwFormWrapper {
+    text-align: center;
+    margin: auto;
+    width: 100%;
+    height: auto;
+    color: #494b7a;
+}
+
+.bwForm label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: center;
+    margin-top: 20px;
+    color: #494b7a;
+}
+
+.bwForm input,
+.bwForm textarea,
+.bwForm select {
+    border: 1px solid #6d4aff21;
+    font-size: 16px;
+    height: auto;
+    margin: 0;
+    margin-bottom: 0px;
+    outline: 0;
+    padding: 15px;
+    width: 100%;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    /* color: #1b1340; */
+    color: #494b7a;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+}
+
+.bwForm textarea {
+    resize: vertical;
+}
+
+.bwForm textarea:focus,
+.bwForm input:focus,
+.bwForm select:focus {
+    outline: 1px solid #6d4aff;
+    box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
+}
+
+.bwForm .invalid {
+    background: #f3c7c7;
+    border: 1px solid #e45454;
+    outline: 1px solid #ff4a4a;
+}
+
+.bwForm .invalid:focus {
+    background: #f3c7c7;
+    border: 1px solid #e45454;
+    outline: 1px solid #ff4a4a;
+    box-shadow: 0 0 10px 3px rgba(255, 74, 74, 0.605);
+}
+
+.bwForm button {
+    display: block;
+}
+.bwForm button:hover {
+    display: block;
+}
+
+.errorMessage {
+    color: red;
+    display: block;
+    margin-top: 3px;
+}

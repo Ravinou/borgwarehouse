@@ -8,6 +8,7 @@ import { SpinnerDotted } from 'spinners-react';
 
 //Components
 import Error from '../../../Components/UI/Error/Error';
+import Info from '../../../Components/UI/Info/Info';
 
 export default function UsernameSettings(props) {
     //Var
@@ -25,12 +26,14 @@ export default function UsernameSettings(props) {
         register,
         handleSubmit,
         control,
+        reset,
         formState: { errors, isSubmitting, isValid },
     } = useForm({ mode: 'onChange' });
 
     ////State
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [info, setInfo] = useState(false);
 
     ////Functions
     //Form submit Handler for ADD a repo
@@ -57,7 +60,8 @@ export default function UsernameSettings(props) {
         } else {
             reset();
             setIsLoading(false);
-            toast.success('Email edited !', {
+            setInfo(true);
+            toast.success('Username edited !', {
                 position: 'top-right',
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -77,42 +81,62 @@ export default function UsernameSettings(props) {
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
-                        <form
-                            onSubmit={handleSubmit(formSubmitHandler)}
-                            className={classes.bwForm}
-                        >
-                            <p>
-                                {error && <Error message={error} />}
-                                <input
-                                    type='email'
-                                    placeholder={props.username}
-                                    {...register('email', {
-                                        required: true,
-                                    })}
-                                />
-                                {errors.email &&
-                                    errors.email.type === 'required' && (
+                        {info ? (
+                            //For local JWTs (cookie) without an OAuth provider, Next-Auth does not allow
+                            //at the time this code is written to refresh client-side session information
+                            //without triggering a logout.
+                            //I chose to inform the user to reconnect rather than force logout.
+                            <Info message='Please, logout to update your session.' />
+                        ) : (
+                            <form
+                                onSubmit={handleSubmit(formSubmitHandler)}
+                                className={classes.bwForm}
+                            >
+                                <p>
+                                    {error && <Error message={error} />}
+                                    <input
+                                        type='text'
+                                        placeholder={props.username}
+                                        {...register('username', {
+                                            required: 'A username is required.',
+                                            pattern: {
+                                                value: /^[a-z]{5,15}$/,
+                                                message:
+                                                    'Only a-z characters are allowed.',
+                                            },
+                                            maxLength: {
+                                                value: 10,
+                                                message: '15 characters max.',
+                                            },
+                                            minLength: {
+                                                value: 5,
+                                                message: '5 characters min.',
+                                            },
+                                        })}
+                                    />
+                                    {errors.username && errors.username && (
                                         <small className={classes.errorMessage}>
-                                            This field is required.
+                                            {errors.username.message}
                                         </small>
                                     )}
-                            </p>
-                            <button
-                                className='defaultButton'
-                                disabled={!isValid || isSubmitting}
-                            >
-                                {isLoading ? (
-                                    <SpinnerDotted
-                                        size={20}
-                                        thickness={150}
-                                        speed={100}
-                                        color='#fff'
-                                    />
-                                ) : (
-                                    'Update your username'
-                                )}
-                            </button>
-                        </form>
+                                </p>
+                                <button
+                                    className='defaultButton'
+                                    disabled={!isValid || isSubmitting}
+                                >
+                                    {isLoading ? (
+                                        <SpinnerDotted
+                                            size={20}
+                                            thickness={150}
+                                            speed={100}
+                                            color='#fff'
+                                        />
+                                    ) : (
+                                        'Update your username'
+                                    )}
+                                </button>
+                            </form>
+                        )}
                     </div>
                 </div>
             </div>

@@ -12,6 +12,10 @@ export default function Account() {
     ////Var
     const { status, data } = useSession();
 
+    //Function
+    if (status == 'unauthenticated' || status == 'loading') {
+        return <p>Loading...</p>;
+    }
     return (
         <>
             <Head>

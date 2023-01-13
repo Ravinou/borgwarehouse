@@ -33,7 +33,16 @@ export default async function handler(req, res) {
             return;
         }
 
-        //2 : Verify that the user of the session exists
+        //2 : control the data
+        const usernameRegex = new RegExp('/^[a-z]{5,15}$/');
+        if (!usernameRegex.test(username)) {
+            res.status(400).json({
+                message: 'Only a-z characters are allowed (5 to 15 char.)',
+            });
+            return;
+        }
+
+        //3 : Verify that the user of the session exists
         const userIndex = usersList
             .map((user) => user.username)
             .indexOf(session.user.name);
@@ -45,7 +54,7 @@ export default async function handler(req, res) {
             return;
         }
 
-        //3 : Change the username
+        //4 : Change the username
         try {
             //Modify the username for the user
             let newUsersList = usersList.map((user) =>

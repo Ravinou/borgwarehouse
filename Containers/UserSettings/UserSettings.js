@@ -19,8 +19,8 @@ export default function UserSettings(props) {
             </div>
 
             <PasswordSettings username={props.data.user.name} />
-            <UsernameSettings username={props.data.user.name} />
             <EmailSettings email={props.data.user.email} />
+            <UsernameSettings username={props.data.user.name} />
         </div>
     );
 }

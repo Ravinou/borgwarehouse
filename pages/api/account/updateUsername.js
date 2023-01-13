@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
         //3 : Change the username
         try {
-            //Modify the password for the user
+            //Modify the username for the user
             let newUsersList = usersList.map((user) =>
                 user.username == session.user.name
                     ? { ...user, username: username }

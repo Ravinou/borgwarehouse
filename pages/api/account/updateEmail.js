@@ -33,7 +33,16 @@ export default async function handler(req, res) {
             return;
         }
 
-        //2 : Verify that the user of the session exists
+        //2 : control the data
+        const emailRegex = new RegExp(
+            '/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/'
+        );
+        if (!emailRegex.test(email)) {
+            res.status(400).json({ message: 'Your email is not valid' });
+            return;
+        }
+
+        //3 : Verify that the user of the session exists
         const userIndex = usersList
             .map((user) => user.username)
             .indexOf(session.user.name);
@@ -45,7 +54,7 @@ export default async function handler(req, res) {
             return;
         }
 
-        //3 : Change the email
+        //4 : Change the email
         try {
             //Modify the email for the user
             let newUsersList = usersList.map((user) =>

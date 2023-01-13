@@ -38,7 +38,10 @@ export default async function handler(req, res) {
             .map((user) => user.username)
             .indexOf(session.user.name);
         if (userIndex === -1) {
-            res.status(400).json({ message: 'User is incorrect.' });
+            res.status(400).json({
+                message:
+                    'User is incorrect. Please, logout to update your session.',
+            });
             return;
         }
 

@@ -90,7 +90,11 @@ export default function UsernameSettings(props) {
                         ) : (
                             <form
                                 onSubmit={handleSubmit(formSubmitHandler)}
-                                className={classes.bwForm}
+                                className={
+                                    classes.bwForm +
+                                    ' ' +
+                                    classes.currentSetting
+                                }
                             >
                                 <p>
                                     {error && <Error message={error} />}

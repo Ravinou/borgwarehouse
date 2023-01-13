@@ -89,7 +89,11 @@ export default function EmailSettings(props) {
                         ) : (
                             <form
                                 onSubmit={handleSubmit(formSubmitHandler)}
-                                className={classes.bwForm}
+                                className={
+                                    classes.bwForm +
+                                    ' ' +
+                                    classes.currentSetting
+                                }
                             >
                                 <p>
                                     {error && <Error message={error} />}
@@ -101,7 +105,7 @@ export default function EmailSettings(props) {
                                             pattern: {
                                                 value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                                                 message:
-                                                    'Your email is not valid',
+                                                    'Your email is not valid.',
                                             },
                                         })}
                                     />

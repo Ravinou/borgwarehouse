@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         }
 
         //2 : control the data
-        const usernameRegex = new RegExp('/^[a-z]{5,15}$/');
+        const usernameRegex = new RegExp(/^[a-z]{5,15}$/);
         if (!usernameRegex.test(username)) {
             res.status(400).json({
                 message: 'Only a-z characters are allowed (5 to 15 char.)',

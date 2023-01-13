@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
         //2 : control the data
         const emailRegex = new RegExp(
-            '/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/'
+            /^([a-z0-9_\.-]+)@([\da-z\.-_]+)\.([a-z\.]{2,6})$/g
         );
         if (!emailRegex.test(email)) {
             res.status(400).json({ message: 'Your email is not valid' });

@@ -114,7 +114,7 @@ export default function UsernameSettings(props) {
                                             },
                                         })}
                                     />
-                                    {errors.username && errors.username && (
+                                    {errors.username && (
                                         <small className={classes.errorMessage}>
                                             {errors.username.message}
                                         </small>

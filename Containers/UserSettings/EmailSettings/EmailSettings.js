@@ -8,6 +8,7 @@ import { SpinnerDotted } from 'spinners-react';
 
 //Components
 import Error from '../../../Components/UI/Error/Error';
+import Info from '../../../Components/UI/Info/Info';
 
 export default function EmailSettings(props) {
     //Var
@@ -25,12 +26,14 @@ export default function EmailSettings(props) {
         register,
         handleSubmit,
         control,
+        reset,
         formState: { errors, isSubmitting, isValid },
     } = useForm({ mode: 'onChange' });
 
     ////State
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [info, setInfo] = useState(false);
 
     ////Functions
     //Form submit Handler for ADD a repo
@@ -57,6 +60,7 @@ export default function EmailSettings(props) {
         } else {
             reset();
             setIsLoading(false);
+            setInfo(true);
             toast.success('Email edited !', {
                 position: 'top-right',
                 autoClose: 5000,
@@ -77,42 +81,53 @@ export default function EmailSettings(props) {
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
-                        <form
-                            onSubmit={handleSubmit(formSubmitHandler)}
-                            className={classes.bwForm}
-                        >
-                            <p>
-                                {error && <Error message={error} />}
-                                <input
-                                    type='email'
-                                    placeholder={props.email}
-                                    {...register('email', {
-                                        required: true,
-                                    })}
-                                />
-                                {errors.email &&
-                                    errors.email.type === 'required' && (
+                        {info ? ( //For local JWTs (cookie) without an OAuth provider, Next-Auth does not allow
+                            //at the time this code is written to refresh client-side session information
+                            //without triggering a logout.
+                            //I chose to inform the user to reconnect rather than force logout.
+                            <Info message='Please, logout to update your session.' />
+                        ) : (
+                            <form
+                                onSubmit={handleSubmit(formSubmitHandler)}
+                                className={classes.bwForm}
+                            >
+                                <p>
+                                    {error && <Error message={error} />}
+                                    <input
+                                        type='email'
+                                        placeholder={props.email}
+                                        {...register('email', {
+                                            required: true,
+                                            pattern: {
+                                                value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                                message:
+                                                    'Your email is not valid',
+                                            },
+                                        })}
+                                    />
+                                    {errors.email && (
                                         <small className={classes.errorMessage}>
-                                            This field is required.
+                                            {errors.email.message}
                                         </small>
                                     )}
-                            </p>
-                            <button
-                                className='defaultButton'
-                                disabled={!isValid || isSubmitting}
-                            >
-                                {isLoading ? (
-                                    <SpinnerDotted
-                                        size={20}
-                                        thickness={150}
-                                        speed={100}
-                                        color='#fff'
-                                    />
-                                ) : (
-                                    'Update your email'
-                                )}
-                            </button>
-                        </form>
+                                </p>
+                                <button
+                                    className='defaultButton'
+                                    disabled={!isValid || isSubmitting}
+                                >
+                                    {isLoading ? (
+                                        <SpinnerDotted
+                                            size={20}
+                                            thickness={150}
+                                            speed={100}
+                                            color='#fff'
+                                        />
+                                    ) : (
+                                        'Update your email'
+                                    )}
+                                </button>
+                            </form>
+                        )}
                     </div>
                 </div>
             </div>

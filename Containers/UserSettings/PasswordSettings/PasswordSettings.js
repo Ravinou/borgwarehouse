@@ -85,19 +85,21 @@ export default function PasswordSettings(props) {
                             className={classes.bwForm}
                         >
                             {error && <Error message={error} />}
-                            <input
-                                type='password'
-                                placeholder='Actual password'
-                                {...register('oldPassword', {
-                                    required: true,
-                                })}
-                            />
-                            {errors.oldPassword &&
-                                errors.oldPassword.type === 'required' && (
-                                    <small className={classes.errorMessage}>
-                                        This field is required.
-                                    </small>
-                                )}
+                            <p>
+                                <input
+                                    type='password'
+                                    placeholder='Actual password'
+                                    {...register('oldPassword', {
+                                        required: true,
+                                    })}
+                                />
+                                {errors.oldPassword &&
+                                    errors.oldPassword.type === 'required' && (
+                                        <small className={classes.errorMessage}>
+                                            This field is required.
+                                        </small>
+                                    )}
+                            </p>
                             <p>
                                 <input
                                     type='password'

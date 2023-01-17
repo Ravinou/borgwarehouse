@@ -9,13 +9,12 @@
 .containerSetting {
     display: flex;
     flex-flow: row wrap;
-    width: calc(100% + 24px);
+    width: 100%;
     margin: 40px 20px 0px 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    border-radius: 5px;
     text-align: left;
     padding: 32px 24px;
     animation: entrance ease-in 0.3s 1 normal none;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 @keyframes entrance {

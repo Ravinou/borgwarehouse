@@ -8,6 +8,7 @@ export default function Switch(props) {
                 <div className={classes.switch}>
                     <label className={classes.pureMaterialSwitch}>
                         <input
+                            checked={props.checked}
                             disabled={props.disabled}
                             type='checkbox'
                             onChange={(e) => props.onChange(e.target.checked)}

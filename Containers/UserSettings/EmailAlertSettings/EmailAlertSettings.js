@@ -1,9 +1,10 @@
 //Lib
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
-import { SpinnerDotted } from 'spinners-react';
+import { SpinnerCircularFixed } from 'spinners-react';
 
 //Components
 import Error from '../../../Components/UI/Error/Error';
@@ -24,9 +25,30 @@ export default function EmailAlertSettings(props) {
     };
 
     ////State
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState();
     const [disabled, setDisabled] = useState(false);
+    const [checked, setChecked] = useState();
+
+    ////LifeCycle
+    //Component did mount
+    useEffect(() => {
+        const dataFetch = async () => {
+            try {
+                const response = await fetch('/api/account/getEmailAlert', {
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                });
+                setChecked((await response.json()).emailAlert);
+                setIsLoading(false);
+            } catch (error) {
+                console.log('Fetching email alert setting failed.');
+            }
+        };
+        dataFetch();
+    }, []);
 
     ////Functions
     const onChangeSwitchHandler = async (data) => {
@@ -52,10 +74,10 @@ export default function EmailAlertSettings(props) {
             }, 4000);
         } else {
             if (data.emailAlert) {
-                //setIsLoading(false);
+                setChecked(!checked);
                 toast.success('Email notification enabled !', toastOptions);
             } else {
-                //setIsLoading(false);
+                setChecked(!checked);
                 toast.success('Email notification disabled !', toastOptions);
             }
         }
@@ -69,14 +91,26 @@ export default function EmailAlertSettings(props) {
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
-                        <Switch
-                            disabled={disabled}
-                            switchName='Email'
-                            switchDescription='You will receive an alert every 24H if you have a down status.'
-                            onChange={(e) =>
-                                onChangeSwitchHandler({ emailAlert: e })
-                            }
-                        />
+                        {isLoading ? (
+                            <SpinnerCircularFixed
+                                size={30}
+                                thickness={150}
+                                speed={150}
+                                color='#704dff'
+                                secondaryColor='#c3b6fa'
+                            />
+                        ) : (
+                            <Switch
+                                checked={checked}
+                                disabled={disabled}
+                                switchName='Email'
+                                switchDescription='You will receive an alert every 24H if you have a down status.'
+                                onChange={(e) =>
+                                    onChangeSwitchHandler({ emailAlert: e })
+                                }
+                            />
+                        )}
+
                         {error && <Error message={error} />}
                     </div>
                 </div>

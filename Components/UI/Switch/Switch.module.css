@@ -124,7 +124,11 @@
 }
 
 /* Disabled */
-.pureMaterialSwitch > input:disabled {
+.pureMaterialSwitch > input:disabled + span {
+    cursor: wait;
+}
+
+/* .pureMaterialSwitch > input:disabled {
     opacity: 0;
 }
 
@@ -140,4 +144,4 @@
 
 .pureMaterialSwitch > input:checked:disabled + span::before {
     background-color: rgba(var(--pure-material-primary-rgb, 109, 74, 255), 0.6);
-}
+} */

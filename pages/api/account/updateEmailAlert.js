@@ -1,7 +1,7 @@
 //Lib
 import { promises as fs } from 'fs';
 import path from 'path';
-import { authOptions } from '../../../pages/api/auth/[...nextauth]';
+import { authOptions } from '../auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth/next';
 
 export default async function handler(req, res) {

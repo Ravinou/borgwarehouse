@@ -1,5 +1,5 @@
 //Lib
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
@@ -25,7 +25,6 @@ export default function UsernameSettings(props) {
     const {
         register,
         handleSubmit,
-        control,
         reset,
         formState: { errors, isSubmitting, isValid },
     } = useForm({ mode: 'onChange' });
@@ -61,15 +60,7 @@ export default function UsernameSettings(props) {
             reset();
             setIsLoading(false);
             setInfo(true);
-            toast.success('Username edited !', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toast.success('Username edited !', toastOptions);
         }
     };
     return (

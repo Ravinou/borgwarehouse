@@ -1,5 +1,5 @@
 //Lib
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
@@ -13,59 +13,52 @@ export default function EmailAlertSettings(props) {
     //Var
     const toastOptions = {
         position: 'top-right',
-        autoClose: 8000,
+        autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
+        //Callback > re-enabled button after notification.
+        onClose: () => setDisabled(false),
     };
 
     ////State
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [disabled, setDisabled] = useState(false);
 
     ////Functions
-    //Form submit Handler for ADD a repo
-    // const formSubmitHandler = async (data) => {
-    //     console.log(data);
-    //     //Remove old error
-    //     setError();
-    //     //Loading button on submit to avoid multiple send.
-    //     setIsLoading(true);
-    //     //POST API to send the new and old password
-    //     const response = await fetch('/api/account/updateEmail', {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-type': 'application/json',
-    //         },
-    //         body: JSON.stringify(data),
-    //     });
-    //     const result = await response.json();
+    const onChangeSwitchHandler = async (data) => {
+        //Remove old error
+        setError();
+        //Disabled button
+        setDisabled(true);
+        const response = await fetch('/api/account/updateEmailAlert', {
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
 
-    //     if (!response.ok) {
-    //         setIsLoading(false);
-    //         reset();
-    //         setError(result.message);
-    //         setTimeout(() => setError(), 4000);
-    //     } else {
-    //         reset();
-    //         setIsLoading(false);
-    //         setInfo(true);
-    //         toast.success('Email edited !', {
-    //             position: 'top-right',
-    //             autoClose: 5000,
-    //             hideProgressBar: false,
-    //             closeOnClick: true,
-    //             pauseOnHover: true,
-    //             draggable: true,
-    //             progress: undefined,
-    //         });
-    //     }
-    // };
-
-    const onChangeSwitchHandler = (e) => {
-        console.log(e);
+        if (!response.ok) {
+            //setIsLoading(false);
+            setError(result.message);
+            setTimeout(() => {
+                setError();
+                setDisabled(false);
+            }, 4000);
+        } else {
+            if (data.emailAlert) {
+                //setIsLoading(false);
+                toast.success('Email notification enabled !', toastOptions);
+            } else {
+                //setIsLoading(false);
+                toast.success('Email notification disabled !', toastOptions);
+            }
+        }
     };
     return (
         <>
@@ -77,12 +70,14 @@ export default function EmailAlertSettings(props) {
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
                         <Switch
+                            disabled={disabled}
                             switchName='Email'
                             switchDescription='You will receive an alert every 24H if you have a down status.'
                             onChange={(e) =>
                                 onChangeSwitchHandler({ emailAlert: e })
                             }
                         />
+                        {error && <Error message={error} />}
                     </div>
                 </div>
             </div>

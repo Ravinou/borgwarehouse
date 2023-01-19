@@ -26,9 +26,11 @@ export default function EmailAlertSettings(props) {
 
     ////State
     const [isLoading, setIsLoading] = useState(true);
+    const [testIsLoading, setTestIsLoading] = useState(false);
     const [error, setError] = useState();
     const [disabled, setDisabled] = useState(false);
     const [checked, setChecked] = useState();
+    const [info, setInfo] = useState(false);
 
     ////LifeCycle
     //Component did mount
@@ -66,7 +68,6 @@ export default function EmailAlertSettings(props) {
         const result = await response.json();
 
         if (!response.ok) {
-            //setIsLoading(false);
             setError(result.message);
             setTimeout(() => {
                 setError();
@@ -82,6 +83,29 @@ export default function EmailAlertSettings(props) {
             }
         }
     };
+
+    const onSendTestMailHandler = async () => {
+        //Loading
+        setTestIsLoading(true);
+        //Remove old error
+        setError();
+        const response = await fetch('/api/account/sendEmail', {
+            method: 'POST',
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+            setTestIsLoading(false);
+            setError(result.message);
+        } else {
+            setTestIsLoading(false);
+            setInfo(true);
+            setTimeout(() => {
+                setInfo(false);
+            }, 4000);
+        }
+    };
+
     return (
         <>
             {/* EMAIL ALERT */}
@@ -110,7 +134,29 @@ export default function EmailAlertSettings(props) {
                                 }
                             />
                         )}
-
+                        {testIsLoading ? (
+                            <SpinnerCircularFixed
+                                size={30}
+                                thickness={150}
+                                speed={150}
+                                color='#704dff'
+                                secondaryColor='#c3b6fa'
+                            />
+                        ) : (
+                            <button
+                                className='defaultButton'
+                                onClick={onSendTestMailHandler}
+                            >
+                                Send a test mail
+                            </button>
+                        )}
+                        {info && (
+                            <span
+                                style={{ marginLeft: '10px', color: '#119300' }}
+                            >
+                                Mail successfully sent.
+                            </span>
+                        )}
                         {error && <Error message={error} />}
                     </div>
                 </div>

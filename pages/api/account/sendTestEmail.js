@@ -20,7 +20,7 @@ export default async function handler(req, res) {
                 user: process.env.MAIL_SMTP_LOGIN,
                 pass: process.env.MAIL_SMTP_PWD,
             },
-            secure: true,
+            secure: process.env.MAIL_SMTP_SECURE,
         });
         //Mail options
         const mailData = {

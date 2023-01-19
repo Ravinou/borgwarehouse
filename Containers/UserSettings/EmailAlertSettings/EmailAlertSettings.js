@@ -89,7 +89,7 @@ export default function EmailAlertSettings(props) {
         setTestIsLoading(true);
         //Remove old error
         setError();
-        const response = await fetch('/api/account/sendEmail', {
+        const response = await fetch('/api/account/sendTestEmail', {
             method: 'POST',
         });
         const result = await response.json();

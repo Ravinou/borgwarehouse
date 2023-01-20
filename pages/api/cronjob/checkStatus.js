@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
     try {
         if (req.method == 'POST' && ACTION_KEY === CRONJOB_KEY) {
-            ////Call the shell : getStorageUsed.sh
+            ////Call the shell : getLastSave.sh
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
@@ -50,6 +50,7 @@ export default async function handler(req, res) {
             repoList = JSON.parse(repoList);
 
             //Rebuild a newRepoList with the lasSave timestamp updated
+            let repoToSendAlert = [];
             const date = Math.round(Date.now() / 1000);
             let newRepoList = repoList;
             for (let index in newRepoList) {
@@ -71,8 +72,28 @@ export default async function handler(req, res) {
                     ) {
                         newRepoList[index].status = true;
                     }
+
+                    //// TESTING START ////
+
+                    //Trigger lastStatusAlertSend
+                    //Here, a mail is sent every 24H (90000) if a repo has down status
+                    if (
+                        !newRepoList[index].status &&
+                        (!newRepoList[index].lastStatusAlertSend ||
+                            date - newRepoList[index].lastStatusAlertSend >
+                                90000)
+                    ) {
+                        repoToSendAlert.push(newRepoList[index].alias);
+                        newRepoList[index].lastStatusAlertSend = date;
+                    }
                 }
             }
+            //Send email alert
+            console.log(repoToSendAlert);
+            if (repoToSendAlert.length > 0) {
+                console.log('ENVOI EMAIL');
+            }
+            //// TESTING END ////
 
             //Stringify the repoList to write it into the json file.
             newRepoList = JSON.stringify(newRepoList);

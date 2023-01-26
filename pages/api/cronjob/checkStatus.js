@@ -126,11 +126,9 @@ export default async function handler(req, res) {
             });
             return;
         }
-        console.log(repoListToSendAlert);
         //PART 4 : Send the mail alert
         if (repoListToSendAlert.length > 0) {
             // Read user informations
-            console.log(repoListToSendAlert);
             try {
                 //Read the email of the user
                 usersList = await fs.readFile(
@@ -139,8 +137,6 @@ export default async function handler(req, res) {
                 );
                 //Parse the usersList
                 usersList = JSON.parse(usersList);
-
-                console.log('test');
             } catch (err) {
                 res.status(500).json({
                     status: 500,
@@ -148,27 +144,30 @@ export default async function handler(req, res) {
                 });
                 return;
             }
-
-            //Send mail
-            //Create the SMTP Transporter
-            const transporter = nodemailerSMTP();
-            //Mail options
-            const mailData = emailTest(
-                usersList[0].email,
-                usersList[0].username
-            );
-            transporter.sendMail(mailData, function (err, info) {
-                if (err) {
-                    console.log(err);
-                    res.status(400).json({
-                        message:
-                            'An error occured while sending the email : ' + err,
-                    });
-                    return;
-                } else {
-                    console.log(info);
-                }
-            });
+            // If the user has enabled email alerts
+            if (usersList[0].emailAlert) {
+                //Send mail
+                //Create the SMTP Transporter
+                const transporter = nodemailerSMTP();
+                //Mail options
+                const mailData = emailTest(
+                    usersList[0].email,
+                    usersList[0].username
+                );
+                transporter.sendMail(mailData, function (err, info) {
+                    if (err) {
+                        console.log(err);
+                        res.status(400).json({
+                            message:
+                                'An error occured while sending the email : ' +
+                                err,
+                        });
+                        return;
+                    } else {
+                        console.log(info);
+                    }
+                });
+            }
         }
 
         //PART 5 : Sucess

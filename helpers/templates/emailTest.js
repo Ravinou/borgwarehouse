@@ -3,7 +3,7 @@ export default function emailTest(mailTo, username) {
         from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
         to: mailTo,
         subject: 'Testing email settings',
-        text: 'If you received this email then the email address configuration seems to be correct.',
+        text: 'If you received this email then the mail configuration seems to be correct.',
         html:
             `
             <div
@@ -69,7 +69,7 @@ export default function emailTest(mailTo, username) {
             
                         <div style="font-family: Inter, sans-serif; color: #494b7a;
                         font-size: 1.1em;
-                        text-align: center; margin-bottom: 50px;"><p>If you received this email then the email address configuration seems to be correct.</p></div>
+                        text-align: center; margin-bottom: 50px;"><p>If you received this mail then the configuration seems to be correct.</p></div>
             
                         
                     </div>

@@ -7,7 +7,7 @@ import path from 'path';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 import nodemailerSMTP from '../../../helpers/functions/nodemailerSMTP';
-import emailTest from '../../../helpers/templates/emailTest';
+import emailAlertStatus from '../../../helpers/templates/emailAlertStatus';
 
 export default async function handler(req, res) {
     if (req.headers.authorization == null) {
@@ -150,9 +150,10 @@ export default async function handler(req, res) {
                 //Create the SMTP Transporter
                 const transporter = nodemailerSMTP();
                 //Mail options
-                const mailData = emailTest(
+                const mailData = emailAlertStatus(
                     usersList[0].email,
-                    usersList[0].username
+                    usersList[0].username,
+                    repoListToSendAlert
                 );
                 transporter.sendMail(mailData, function (err, info) {
                     if (err) {

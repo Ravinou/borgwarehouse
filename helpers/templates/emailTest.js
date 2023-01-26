@@ -3,7 +3,7 @@ export default function emailTest(mailTo, username) {
         from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
         to: mailTo,
         subject: 'Testing email settings',
-        text: 'Corps de test',
+        text: 'If you received this email then the email address configuration seems to be correct.',
         html:
             `
             <div

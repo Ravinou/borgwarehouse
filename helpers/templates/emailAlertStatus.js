@@ -11,7 +11,7 @@ export default function emailTest(mailTo, username, aliasList) {
         from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
         to: mailTo,
         subject: 'Down status alert !',
-        text: 'Corps de test',
+        text: 'Some repositories need attention ! Please, check your BorgWarehouse interface.',
         html:
             `
             <div
@@ -96,7 +96,7 @@ export default function emailTest(mailTo, username, aliasList) {
             "
         >
             <p>
-                List of repositories in down status :
+                List of repositories with down status :
             </p>
           <ul>` +
             aliasTemplate(aliasList) +

@@ -71,7 +71,7 @@ NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA=SHA256:nTpxui1oEmH9konPau17qBVIzBQVOsD1
 
 You can find more details about generating your secrets or retrieving your SSH fingerprint. You can find more details about generating your secrets or retrieving your SSH fingerprint <a href="https://borgwarehouse.com/docs/admin-manual/debian-installation/#configure-application-environment-variables">in the documentation</a>.
 
-## How to update ?
+## How to update ?
 
 Check the online documentation [just here](https://borgwarehouse.com/docs/admin-manual/how-to-update/) !
 

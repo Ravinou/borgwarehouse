@@ -6,6 +6,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
+import nodemailerSMTP from '../../../helpers/functions/nodemailerSMTP';
+import emailAlertStatus from '../../../helpers/templates/emailAlertStatus';
 
 export default async function handler(req, res) {
     if (req.headers.authorization == null) {
@@ -19,9 +21,17 @@ export default async function handler(req, res) {
     const CRONJOB_KEY = process.env.CRONJOB_KEY;
     const ACTION_KEY = req.headers.authorization.split(' ')[1];
 
-    try {
-        if (req.method == 'POST' && ACTION_KEY === CRONJOB_KEY) {
-            ////Call the shell : getStorageUsed.sh
+    if (req.method == 'POST' && ACTION_KEY === CRONJOB_KEY) {
+        //Var
+        let newRepoList;
+        let repoListToSendAlert = [];
+        let usersList;
+        const date = Math.round(Date.now() / 1000);
+        const jsonDirectory = path.join(process.cwd(), '/config');
+
+        ////PART 1 : Status
+        try {
+            //Call the shell : getLastSave.sh
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
@@ -41,7 +51,6 @@ export default async function handler(req, res) {
             const lastSave = JSON.parse(stdout);
 
             //Find the absolute path of the json directory
-            const jsonDirectory = path.join(process.cwd(), '/config');
             let repoList = await fs.readFile(
                 jsonDirectory + '/repo.json',
                 'utf8'
@@ -49,9 +58,8 @@ export default async function handler(req, res) {
             //Parse the repoList
             repoList = JSON.parse(repoList);
 
-            //Rebuild a newRepoList with the lasSave timestamp updated
-            const date = Math.round(Date.now() / 1000);
-            let newRepoList = repoList;
+            //Rebuild a newRepoList with the lastSave timestamp updated and the status updated.
+            newRepoList = repoList;
             for (let index in newRepoList) {
                 const repoFiltered = lastSave.filter(
                     (x) => x.user === newRepoList[index].unixUser
@@ -73,28 +81,106 @@ export default async function handler(req, res) {
                     }
                 }
             }
+        } catch (err) {
+            res.status(500).json({
+                status: 500,
+                message: "API error : can't update the status.",
+            });
+            return;
+        }
 
+        //// PART 2 : check if there is a repo that need an email alert
+        try {
+            //Here, a mail is sent every 24H (90000) if a repo has down status
+            for (let index in newRepoList) {
+                if (
+                    !newRepoList[index].status &&
+                    (!newRepoList[index].lastStatusAlertSend ||
+                        date - newRepoList[index].lastStatusAlertSend > 90000)
+                ) {
+                    repoListToSendAlert.push(newRepoList[index].alias);
+                    newRepoList[index].lastStatusAlertSend = date;
+                }
+            }
+        } catch (err) {
+            res.status(500).json({
+                status: 500,
+                message:
+                    "API error : can't check if a repo needs an email alert.",
+            });
+            return;
+        }
+
+        //PART 3 : Save the new repoList
+        try {
             //Stringify the repoList to write it into the json file.
             newRepoList = JSON.stringify(newRepoList);
             //Write the new json
             fs.writeFile(jsonDirectory + '/repo.json', newRepoList, (err) => {
                 if (err) console.log(err);
             });
-
-            res.status(200).json({
-                success: 'Status cron has been executed.',
+        } catch (err) {
+            res.status(500).json({
+                status: 500,
+                message: "API error : can't write the new repoList.",
             });
-        } else {
-            res.status(401).json({
-                status: 401,
-                message: 'Unauthorized',
-            });
+            return;
         }
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            status: 500,
-            message: 'API error, contact the administrator.',
+        //PART 4 : Send the mail alert
+        if (repoListToSendAlert.length > 0) {
+            // Read user informations
+            try {
+                //Read the email of the user
+                usersList = await fs.readFile(
+                    jsonDirectory + '/users.json',
+                    'utf8'
+                );
+                //Parse the usersList
+                usersList = JSON.parse(usersList);
+            } catch (err) {
+                res.status(500).json({
+                    status: 500,
+                    message: "API error : can't read user information.",
+                });
+                return;
+            }
+            // If the user has enabled email alerts
+            if (usersList[0].emailAlert) {
+                //Send mail
+                //Create the SMTP Transporter
+                const transporter = nodemailerSMTP();
+                //Mail options
+                const mailData = emailAlertStatus(
+                    usersList[0].email,
+                    usersList[0].username,
+                    repoListToSendAlert
+                );
+                transporter.sendMail(mailData, function (err, info) {
+                    if (err) {
+                        console.log(err);
+                        res.status(400).json({
+                            message:
+                                'An error occured while sending the email : ' +
+                                err,
+                        });
+                        return;
+                    } else {
+                        console.log(info);
+                    }
+                });
+            }
+        }
+
+        //PART 5 : Sucess
+        res.status(200).json({
+            success: 'Status cron has been executed.',
         });
+        return;
+    } else {
+        res.status(401).json({
+            status: 401,
+            message: 'Unauthorized',
+        });
+        return;
     }
 }

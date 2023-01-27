@@ -1,5 +1,4 @@
 //Lib
-import { hashPassword, verifyPassword } from '../../../helpers/functions/auth';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../auth/[...nextauth]';
@@ -15,7 +14,7 @@ export default async function handler(req, res) {
         }
 
         //The data we expect to receive
-        let { oldPassword, newPassword } = req.body;
+        let { emailAlert } = req.body;
 
         //Read the users file
         //Find the absolute path of the json directory
@@ -27,38 +26,30 @@ export default async function handler(req, res) {
         //Parse the usersList
         usersList = JSON.parse(usersList);
 
-        //1 : We check that we receive data for each variable.
-        if (!oldPassword || !newPassword) {
-            //If a variable is empty.
-            res.status(400).json({ message: 'A field is missing.' });
+        //1 : control the data
+        if (typeof emailAlert != 'boolean') {
+            res.status(422).json({ message: 'Unexpected data' });
             return;
         }
-        //Hash the new password
-        newPassword = await hashPassword(newPassword);
 
         //2 : Verify that the user of the session exists
         const userIndex = usersList
             .map((user) => user.username)
             .indexOf(session.user.name);
         if (userIndex === -1) {
-            res.status(400).json({ message: 'User is incorrect.' });
-            return;
-        }
-        const user = usersList[userIndex];
-
-        //3 : Check that the old password is correct
-        const isValid = await verifyPassword(oldPassword, user.password);
-        if (!isValid) {
-            res.status(400).json({ message: 'Old password is incorrect.' });
+            res.status(400).json({
+                message:
+                    'User is incorrect. Please, logout to update your session.',
+            });
             return;
         }
 
-        //4 : Change the password
+        //3 : Change the emailAlert settings
         try {
-            //Modify the password for the user
+            //Modify the email for the user
             let newUsersList = usersList.map((user) =>
                 user.username == session.user.name
-                    ? { ...user, password: newPassword }
+                    ? { ...user, emailAlert: emailAlert }
                     : user
             );
             //Stringify the new users list

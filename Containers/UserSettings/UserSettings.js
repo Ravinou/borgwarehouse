@@ -6,6 +6,7 @@ import classes from './UserSettings.module.css';
 import EmailSettings from './EmailSettings/EmailSettings';
 import PasswordSettings from './PasswordSettings/PasswordSettings';
 import UsernameSettings from './UsernameSettings/UsernameSettings';
+import EmailAlertSettings from './EmailAlertSettings/EmailAlertSettings';
 
 export default function UserSettings(props) {
     return (
@@ -21,6 +22,7 @@ export default function UserSettings(props) {
             <PasswordSettings username={props.data.user.name} />
             <EmailSettings email={props.data.user.email} />
             <UsernameSettings username={props.data.user.name} />
+            <EmailAlertSettings />
         </div>
     );
 }

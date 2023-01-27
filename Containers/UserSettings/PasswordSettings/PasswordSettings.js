@@ -1,5 +1,5 @@
 //Lib
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
@@ -13,7 +13,7 @@ export default function PasswordSettings(props) {
     //Var
     const toastOptions = {
         position: 'top-right',
-        autoClose: 8000,
+        autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -24,7 +24,6 @@ export default function PasswordSettings(props) {
     const {
         register,
         handleSubmit,
-        control,
         reset,
         formState: { errors, isSubmitting, isValid },
     } = useForm({ mode: 'onChange' });
@@ -60,15 +59,7 @@ export default function PasswordSettings(props) {
         } else {
             reset();
             setIsLoading(false);
-            toast.success('🔑 Password edited !', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toast.success('🔑 Password edited !', toastOptions);
         }
     };
     return (
@@ -85,19 +76,21 @@ export default function PasswordSettings(props) {
                             className={classes.bwForm}
                         >
                             {error && <Error message={error} />}
-                            <input
-                                type='password'
-                                placeholder='Actual password'
-                                {...register('oldPassword', {
-                                    required: true,
-                                })}
-                            />
-                            {errors.oldPassword &&
-                                errors.oldPassword.type === 'required' && (
-                                    <small className={classes.errorMessage}>
-                                        This field is required.
-                                    </small>
-                                )}
+                            <p>
+                                <input
+                                    type='password'
+                                    placeholder='Actual password'
+                                    {...register('oldPassword', {
+                                        required: true,
+                                    })}
+                                />
+                                {errors.oldPassword &&
+                                    errors.oldPassword.type === 'required' && (
+                                        <small className={classes.errorMessage}>
+                                            This field is required.
+                                        </small>
+                                    )}
+                            </p>
                             <p>
                                 <input
                                     type='password'

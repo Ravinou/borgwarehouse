@@ -333,11 +333,6 @@ export default function RepoManage(props) {
                                 }
                                 {...register('size', {
                                     required: 'A size is required.',
-                                    maxLength: {
-                                        value: 3,
-                                        message:
-                                            '999(Go) is the maximum value.',
-                                    },
                                 })}
                             />
                             {errors.size && (

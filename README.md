@@ -45,7 +45,7 @@ You can find the documentation here : <a href="https://borgwarehouse.com/docs/pr
 
 To run this project, you will need to add the following environment variables to your `.env.local` file.
 
-Variables to create (all required) :
+Required variables :
 
 -   `NEXTAUTH_URL` : The url of your application as **https://borgwarehouse.com**.
 -   `NEXTAUTH_SECRET` : A secret random key.
@@ -59,14 +59,26 @@ Variables to create (all required) :
 Example for a valid `.env.local` file :
 
 ```bash
+# Private variable (Any change need a rebuild of app)
 NEXTAUTH_URL=https://yourbwdomain.com
 NEXTAUTH_SECRET=YOURFIRSTSECRET
 CRONJOB_KEY=YOURSECONDSECRET
+MAIL_SMTP_FROM=
+MAIL_SMTP_HOST=
+MAIL_SMTP_PORT=
+MAIL_SMTP_LOGIN=
+MAIL_SMTP_PWD=
+MAIL_REJECT_SELFSIGNED_TLS=true
+
+# Public variable
 NEXT_PUBLIC_HOSTNAME=yourbwdomain.com
 NEXT_PUBLIC_SSH_SERVER_PORT=22
 NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA=SHA256:36mfYNRrm1aconVt6cBpi8LhAoPP4kB8QsVW4n8eGHQ
 NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519=SHA256:tYQuzrZZMqaw0Bzvn/sMoDs1CVEitZ9IrRyUg02yTPA
 NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA=SHA256:nTpxui1oEmH9konPau17qBVIzBQVOsD1BIbBFU5IL04
+
+# Disable NextJS telemetry
+NEXT_TELEMETRY_DISABLED=1
 ```
 
 You can find more details about generating your secrets or retrieving your SSH fingerprint. You can find more details about generating your secrets or retrieving your SSH fingerprint <a href="https://borgwarehouse.com/docs/admin-manual/debian-installation/#configure-application-environment-variables">in the documentation</a>.

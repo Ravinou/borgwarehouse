@@ -102,28 +102,30 @@ export default function Login() {
                                     required: true,
                                 })}
                             />
-                            {errors.email && errors.email.type === 'required' && (
-                                <small
-                                    style={{
-                                        color: 'red',
-                                        display: 'block',
-                                        marginTop: '3px',
-                                    }}
-                                >
-                                    This field is required.
-                                </small>
-                            )}
-                            {errors.email && errors.email.type === 'pattern' && (
-                                <small
-                                    style={{
-                                        color: 'red',
-                                        display: 'block',
-                                        marginTop: '3px',
-                                    }}
-                                >
-                                    Incorrect email address format.
-                                </small>
-                            )}
+                            {errors.email &&
+                                errors.email.type === 'required' && (
+                                    <small
+                                        style={{
+                                            color: 'red',
+                                            display: 'block',
+                                            marginTop: '3px',
+                                        }}
+                                    >
+                                        This field is required.
+                                    </small>
+                                )}
+                            {errors.email &&
+                                errors.email.type === 'pattern' && (
+                                    <small
+                                        style={{
+                                            color: 'red',
+                                            display: 'block',
+                                            marginTop: '3px',
+                                        }}
+                                    >
+                                        Incorrect email address format.
+                                    </small>
+                                )}
                         </p>
                         <p>
                             <input
@@ -171,15 +173,6 @@ export default function Login() {
                     </form>
                 </main>
             </section>
-            <p style={{ color: '#78797d', textAlign: 'center' }}>
-                Made with <span>❤️</span> by{' '}
-                <a
-                    style={{ textDecoration: 'none', color: '#5c7fda' }}
-                    href='https://r4ven.fr'
-                >
-                    Raven
-                </a>
-            </p>
         </div>
     );
 }

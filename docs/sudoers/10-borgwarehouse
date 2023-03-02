@@ -1,0 +1,9 @@
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/userdel -rf [[\:xdigit\:]]*
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/useradd -d /var/borgwarehouse/[[\:xdigit\:]]* -s /bin/bash -m --badname [[\:xdigit\:]]*
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/mkdir -p /var/borgwarehouse/[[\:xdigit\:]]*/repos/repo[[\:digit\:]]*, /usr/bin/mkdir -p /var/borgwarehouse/[[\:xdigit\:]]*/.ssh
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/touch /var/borgwarehouse/[[\:xdigit\:]]*/.ssh/authorized_keys
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/chmod -R 750 /var/borgwarehouse/[[\:xdigit\:]]*, /usr/bin/chmod 600 /var/borgwarehouse/[[\:xdigit\:]]*/.ssh/authorized_keys
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/chown -R [[\:xdigit\:]]*\:borgwarehouse /var/borgwarehouse/[[\:xdigit\:]]*
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/tee /var/borgwarehouse/[[\:xdigit\:]]*/.ssh/authorized_keys
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/sed -ri s|*|g /var/borgwarehouse/[[\:xdigit\:]]*/.ssh/authorized_keys
+borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/jc du -s [[\:xdigit\:]]*

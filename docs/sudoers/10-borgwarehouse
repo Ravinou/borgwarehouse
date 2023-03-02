@@ -7,3 +7,4 @@ borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/chown -R [[\:xdigit\:]]*\:borgwarehou
 borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/tee /var/borgwarehouse/[[\:xdigit\:]]*/.ssh/authorized_keys
 borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/sed -ri s|*|g /var/borgwarehouse/[[\:xdigit\:]]*/.ssh/authorized_keys
 borgwarehouse ALL=(ALL) NOPASSWD: /usr/bin/du -s [[\:xdigit\:]]*
+

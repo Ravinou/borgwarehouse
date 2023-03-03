@@ -59,6 +59,14 @@
     width: 100%;
     height: auto;
     color: #494b7a;
+    font-family: var(
+        --pure-material-font,
+        'Roboto',
+        'Segoe UI',
+        BlinkMacSystemFont,
+        system-ui,
+        -apple-system
+    );
 }
 
 .bwFormWrapper p {

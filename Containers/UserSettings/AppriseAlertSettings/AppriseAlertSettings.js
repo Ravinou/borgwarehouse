@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
+import { useForm } from 'react-hook-form';
 
 //Components
 import Error from '../../../Components/UI/Error/Error';
@@ -23,10 +24,19 @@ export default function AppriseAlertSettings() {
         //Callback > re-enabled button after notification.
         onClose: () => setDisabled(false),
     };
+    let appriseURLs;
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting, isValid },
+    } = useForm({ mode: 'onBlur' });
 
     ////State
-    const [isLoading, setIsLoading] = useState(true);
+    const [checkIsLoading, setCheckIsLoading] = useState(true);
     const [testIsLoading, setTestIsLoading] = useState(false);
+    const [formIsLoading, setFormIsLoading] = useState(false);
+    const [formIsSaved, setFormIsSaved] = useState(false);
     const [error, setError] = useState();
     const [disabled, setDisabled] = useState(false);
     const [checked, setChecked] = useState();
@@ -44,7 +54,7 @@ export default function AppriseAlertSettings() {
                     },
                 });
                 setChecked((await response.json()).appriseAlert);
-                setIsLoading(false);
+                setCheckIsLoading(false);
             } catch (error) {
                 console.log('Fetching Apprise alert setting failed.');
             }
@@ -53,6 +63,7 @@ export default function AppriseAlertSettings() {
     }, []);
 
     ////Functions
+    //Switch to enable/disable Apprise notifications
     const onChangeSwitchHandler = async (data) => {
         //Remove old error
         setError();
@@ -84,6 +95,38 @@ export default function AppriseAlertSettings() {
         }
     };
 
+    //Form submit handler to modify Apprise services
+    const formSubmitHandler = async (data) => {
+        console.log(data);
+        // //Remove old error
+        // setError();
+        // //Loading button on submit to avoid multiple send.
+        // setFormIsLoading(true);
+        // //POST API to update Apprise Services
+        // const response = await fetch('/api/account/updateAppriseServices', {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Content-type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data),
+        // });
+        // const result = await response.json();
+
+        // if (!response.ok) {
+        //     setFormIsLoading(false);
+        //     setError(result.message);
+        //     setTimeout(() => setError(), 4000);
+        // } else {
+        //     setFormIsLoading(false);
+        //     setInfo(true);
+        //     toast.success('Email edited !', toastOptions);
+        // }
+
+        //TEST
+        setFormIsSaved(true);
+        setTimeout(() => setFormIsSaved(false), 3000);
+    };
+
     return (
         <>
             {/* APPRISE ALERT */}
@@ -93,7 +136,7 @@ export default function AppriseAlertSettings() {
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
-                        {isLoading ? (
+                        {checkIsLoading ? (
                             <SpinnerCircularFixed
                                 size={30}
                                 thickness={150}
@@ -112,22 +155,49 @@ export default function AppriseAlertSettings() {
                                 }
                             />
                         )}
-
+                        <div className={classes.headerFormAppriseUrls}>
+                            <div style={{ marginRight: '10px' }}>
+                                Apprise URLs
+                            </div>
+                            <div>
+                                {formIsLoading && (
+                                    <SpinnerCircularFixed
+                                        size={18}
+                                        thickness={150}
+                                        speed={150}
+                                        color='#704dff'
+                                        secondaryColor='#c3b6fa'
+                                    />
+                                )}
+                                {formIsSaved && (
+                                    <div className={classes.formIsSavedMessage}>
+                                        ✅ Apprise configuration has been saved.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                         <form
+                            onBlur={handleSubmit(formSubmitHandler)}
                             className={
                                 classes.bwForm + ' ' + classes.currentSetting
                             }
                         >
-                            <div
-                                style={{
-                                    fontWeight: '500',
-                                    color: '#494b7a',
-                                    margin: '40px 0px 10px 0px',
-                                }}
-                            >
-                                Apprise URLs
-                            </div>
-                            <textarea style={{ height: '100px' }}></textarea>
+                            <textarea
+                                style={{ height: '100px' }}
+                                type='text'
+                                //defaultValue={appriseURLs}
+                                {...register('appriseURLs', {
+                                    pattern: {
+                                        value: /.*:\/\/.*/,
+                                        message: 'Invalid URLs format.',
+                                    },
+                                })}
+                            />
+                            {errors.appriseURLs && (
+                                <small className={classes.errorMessage}>
+                                    {errors.appriseURLs.message}
+                                </small>
+                            )}
                         </form>
                         <div
                             style={{

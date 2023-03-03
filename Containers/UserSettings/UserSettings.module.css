@@ -147,3 +147,17 @@
 .currentSetting input::placeholder {
     opacity: 1;
 }
+
+.headerFormAppriseUrls {
+    font-weight: 500;
+    color: #494b7a;
+    margin: 40px 0px 10px 0px;
+    display: flex;
+    padding-right: 5px;
+}
+
+.formIsSavedMessage {
+    color: rgb(0, 164, 0);
+    animation: entrance 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    font-weight: 300;
+}

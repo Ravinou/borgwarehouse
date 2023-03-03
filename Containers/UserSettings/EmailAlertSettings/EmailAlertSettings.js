@@ -10,7 +10,7 @@ import { SpinnerCircularFixed } from 'spinners-react';
 import Error from '../../../Components/UI/Error/Error';
 import Switch from '../../../Components/UI/Switch/Switch';
 
-export default function EmailAlertSettings(props) {
+export default function EmailAlertSettings() {
     //Var
     const toastOptions = {
         position: 'top-right',
@@ -111,7 +111,7 @@ export default function EmailAlertSettings(props) {
             {/* EMAIL ALERT */}
             <div className={classes.containerSetting}>
                 <div className={classes.settingCategory}>
-                    <h2>Alerting</h2>
+                    <h2>Email alert</h2>
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
@@ -127,7 +127,7 @@ export default function EmailAlertSettings(props) {
                             <Switch
                                 checked={checked}
                                 disabled={disabled}
-                                switchName='Email'
+                                switchName='Alert me by email'
                                 switchDescription='You will receive an alert every 24H if you have a down status.'
                                 onChange={(e) =>
                                     onChangeSwitchHandler({ emailAlert: e })

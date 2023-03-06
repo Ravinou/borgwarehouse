@@ -161,3 +161,88 @@
     animation: entrance 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
     font-weight: 300;
 }
+
+.tabList {
+    display: flex;
+}
+
+.tabListButton {
+    color: #494b7a;
+    padding: 12px 0px;
+    min-height: 48px;
+    overflow: hidden;
+    text-align: center;
+    flex-direction: column;
+    font-size: 1em;
+    font-weight: 500;
+    line-height: 1.71;
+    text-transform: none;
+    align-items: center;
+    cursor: pointer;
+    vertical-align: middle;
+    text-decoration: none;
+    border: 0;
+    background-color: transparent;
+    margin-left: 30px;
+    border-bottom: 2px solid transparent;
+}
+
+.tabListButton:hover {
+    color: #6d4aff;
+    border-bottom: 2px solid #6d4aff;
+}
+
+.tabListButtonActive {
+    color: #6d4aff;
+    border: 0;
+    border-bottom: 2px solid #6d4aff;
+    padding: 12px 0px;
+    min-height: 48px;
+    overflow: hidden;
+    text-align: center;
+    flex-direction: column;
+    font-size: 1em;
+    font-weight: 500;
+    line-height: 1.71;
+    text-transform: none;
+    align-items: center;
+    cursor: pointer;
+    vertical-align: middle;
+    text-decoration: none;
+    background-color: transparent;
+    margin-left: 30px;
+}
+
+.AccountSettingsButton {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #6d4aff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.AccountSettingsButton:hover {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #4f31ce;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.AccountSettingsButton:active {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #4f31ce;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+    transform: scale(0.95);
+}

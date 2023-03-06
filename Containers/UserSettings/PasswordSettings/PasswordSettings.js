@@ -106,7 +106,7 @@ export default function PasswordSettings(props) {
                                 )}
                             </p>
                             <button
-                                className='defaultButton'
+                                className={classes.AccountSettingsButton}
                                 disabled={!isValid || isSubmitting}
                             >
                                 {isLoading ? (

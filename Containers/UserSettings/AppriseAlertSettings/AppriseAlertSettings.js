@@ -41,11 +41,13 @@ export default function AppriseAlertSettings() {
     const [disabled, setDisabled] = useState(false);
     const [checked, setChecked] = useState();
     const [info, setInfo] = useState(false);
+    const [appriseServicesList, setAppriseServicesList] = useState();
 
     ////LifeCycle
     //Component did mount
     useEffect(() => {
-        const dataFetch = async () => {
+        //Initial fetch to get the status of Apprise Alert
+        const getAppriseAlert = async () => {
             try {
                 const response = await fetch('/api/account/getAppriseAlert', {
                     method: 'GET',
@@ -59,7 +61,34 @@ export default function AppriseAlertSettings() {
                 console.log('Fetching Apprise alert setting failed.');
             }
         };
-        dataFetch();
+        getAppriseAlert();
+
+        //Initial fetch to build the list of Apprise Services enabled
+        const getAppriseServices = async () => {
+            try {
+                const response = await fetch(
+                    '/api/account/getAppriseServices',
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-type': 'application/json',
+                        },
+                    }
+                );
+                let servicesArray = (await response.json()).appriseServices;
+                const AppriseServicesListToText = () => {
+                    let list = '';
+                    for (let service of servicesArray) {
+                        list += service + '\n';
+                    }
+                    return list;
+                };
+                setAppriseServicesList(AppriseServicesListToText());
+            } catch (error) {
+                console.log('Fetching Apprise services list failed.');
+            }
+        };
+        getAppriseServices();
     }, []);
 
     ////Functions
@@ -185,7 +214,10 @@ export default function AppriseAlertSettings() {
                             <textarea
                                 style={{ height: '100px' }}
                                 type='text'
-                                //defaultValue={appriseURLs}
+                                placeholder={
+                                    'matrixs://{user}:{password}@{matrixhost}\ndiscord://{WebhookID}/{WebhookToken}\nmmosts://user@hostname/authkey'
+                                }
+                                defaultValue={appriseServicesList}
                                 {...register('appriseURLs', {
                                     pattern: {
                                         value: /^.+:\/\/.+$/gm,
@@ -216,7 +248,8 @@ export default function AppriseAlertSettings() {
                             >
                                 Apprise URLs
                             </a>{' '}
-                            to send a notification to any service.
+                            to send a notification to any service. Only one URL
+                            per line.
                         </div>
                         <button
                             className='defaultButton'

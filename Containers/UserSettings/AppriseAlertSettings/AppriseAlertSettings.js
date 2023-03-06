@@ -188,7 +188,7 @@ export default function AppriseAlertSettings() {
                                 //defaultValue={appriseURLs}
                                 {...register('appriseURLs', {
                                     pattern: {
-                                        value: /.*:\/\/.*/,
+                                        value: /^.+:\/\/.+$/gm,
                                         message: 'Invalid URLs format.',
                                     },
                                 })}

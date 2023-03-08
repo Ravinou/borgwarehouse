@@ -10,6 +10,8 @@ import { useForm } from 'react-hook-form';
 //Components
 import Error from '../../../Components/UI/Error/Error';
 import Switch from '../../../Components/UI/Switch/Switch';
+import AppriseURLs from './AppriseURLs/AppriseURLs';
+import AppriseMode from './AppriseMode/AppriseMode';
 
 export default function AppriseAlertSettings() {
     //Var
@@ -29,19 +31,27 @@ export default function AppriseAlertSettings() {
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting, isValid },
+        formState: { errors },
+    } = useForm({ mode: 'onBlur' });
+
+    const {
+        register: register2,
+        handleSubmit: handleSubmit2,
+        formState: { errors: errors2 },
     } = useForm({ mode: 'onBlur' });
 
     ////State
     const [checkIsLoading, setCheckIsLoading] = useState(true);
     const [testIsLoading, setTestIsLoading] = useState(false);
     const [formIsLoading, setFormIsLoading] = useState(false);
-    const [formIsSaved, setFormIsSaved] = useState(false);
+    const [urlsFormIsSaved, setUrlsFormIsSaved] = useState(false);
+    const [modeFormIsSaved, setModeFormIsSaved] = useState(false);
     const [error, setError] = useState();
     const [disabled, setDisabled] = useState(false);
     const [checked, setChecked] = useState();
     const [info, setInfo] = useState(false);
     const [appriseServicesList, setAppriseServicesList] = useState();
+    const [displayStatelessURL, setDisplayStatelessURL] = useState(false);
 
     ////LifeCycle
     //Component did mount
@@ -62,33 +72,6 @@ export default function AppriseAlertSettings() {
             }
         };
         getAppriseAlert();
-
-        //Initial fetch to build the list of Apprise Services enabled
-        const getAppriseServices = async () => {
-            try {
-                const response = await fetch(
-                    '/api/account/getAppriseServices',
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                    }
-                );
-                let servicesArray = (await response.json()).appriseServices;
-                const AppriseServicesListToText = () => {
-                    let list = '';
-                    for (let service of servicesArray) {
-                        list += service + '\n';
-                    }
-                    return list;
-                };
-                setAppriseServicesList(AppriseServicesListToText());
-            } catch (error) {
-                console.log('Fetching Apprise services list failed.');
-            }
-        };
-        getAppriseServices();
     }, []);
 
     ////Functions
@@ -124,38 +107,6 @@ export default function AppriseAlertSettings() {
         }
     };
 
-    //Form submit handler to modify Apprise services
-    const formSubmitHandler = async (data) => {
-        console.log(data);
-        // //Remove old error
-        // setError();
-        // //Loading button on submit to avoid multiple send.
-        // setFormIsLoading(true);
-        // //POST API to update Apprise Services
-        // const response = await fetch('/api/account/updateAppriseServices', {
-        //     method: 'PUT',
-        //     headers: {
-        //         'Content-type': 'application/json',
-        //     },
-        //     body: JSON.stringify(data),
-        // });
-        // const result = await response.json();
-
-        // if (!response.ok) {
-        //     setFormIsLoading(false);
-        //     setError(result.message);
-        //     setTimeout(() => setError(), 4000);
-        // } else {
-        //     setFormIsLoading(false);
-        //     setInfo(true);
-        //     toast.success('Email edited !', toastOptions);
-        // }
-
-        //TEST
-        setFormIsSaved(true);
-        setTimeout(() => setFormIsSaved(false), 3000);
-    };
-
     return (
         <>
             {/* APPRISE ALERT */}
@@ -165,6 +116,7 @@ export default function AppriseAlertSettings() {
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
+                        {/* NOTIFY SWITCH */}
                         {checkIsLoading ? (
                             <SpinnerCircularFixed
                                 size={30}
@@ -184,74 +136,13 @@ export default function AppriseAlertSettings() {
                                 }
                             />
                         )}
-                        <div className={classes.headerFormAppriseUrls}>
-                            <div style={{ marginRight: '10px' }}>
-                                Apprise URLs
-                            </div>
-                            <div>
-                                {formIsLoading && (
-                                    <SpinnerCircularFixed
-                                        size={18}
-                                        thickness={150}
-                                        speed={150}
-                                        color='#704dff'
-                                        secondaryColor='#c3b6fa'
-                                    />
-                                )}
-                                {formIsSaved && (
-                                    <div className={classes.formIsSavedMessage}>
-                                        ✅ Apprise configuration has been saved.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <form
-                            onBlur={handleSubmit(formSubmitHandler)}
-                            className={
-                                classes.bwForm + ' ' + classes.currentSetting
-                            }
-                        >
-                            <textarea
-                                style={{ height: '100px' }}
-                                type='text'
-                                placeholder={
-                                    'matrixs://{user}:{password}@{matrixhost}\ndiscord://{WebhookID}/{WebhookToken}\nmmosts://user@hostname/authkey'
-                                }
-                                defaultValue={appriseServicesList}
-                                {...register('appriseURLs', {
-                                    pattern: {
-                                        value: /^.+:\/\/.+$/gm,
-                                        message: 'Invalid URLs format.',
-                                    },
-                                })}
-                            />
-                            {errors.appriseURLs && (
-                                <small className={classes.errorMessage}>
-                                    {errors.appriseURLs.message}
-                                </small>
-                            )}
-                        </form>
-                        <div
-                            style={{
-                                color: '#6c737f',
-                                fontSize: '0.875rem',
-                                marginBottom: '20px',
-                            }}
-                        >
-                            Use{' '}
-                            <a
-                                style={{
-                                    color: '#6d4aff',
-                                    textDecoration: 'none',
-                                }}
-                                href='https://github.com/caronc/apprise#supported-notifications'
-                            >
-                                Apprise URLs
-                            </a>{' '}
-                            to send a notification to any service. Only one URL
-                            per line.
-                        </div>
+                        {/* APPRISE SERVICES URLS */}
+                        <AppriseURLs />
+                        {/* APPRISE MODE SELECTION */}
+                        <AppriseMode />
+                        {/* APPRISE TEST BUTTON */}
                         <button
+                            style={{ marginTop: '20px' }}
                             className='defaultButton'
                             //onClick={onSendTestMailHandler}
                         >

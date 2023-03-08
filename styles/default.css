@@ -174,3 +174,39 @@ code {
 .heart::before {
     content: '\f004';
 }
+
+/* Radio group and radio button */
+.radio-group {
+    display: flex;
+}
+
+.radio-group input[type='radio']:checked + span::before {
+    background-color: #6d4aff;
+    box-shadow: inset white 0 0 0 2px;
+}
+.radio-group span::before {
+    border: 2px solid #6d4aff;
+    content: '';
+    display: flex;
+    height: 16px;
+    width: 16px;
+    margin: 0 5px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    transition: all ease 0.2s;
+    box-shadow: inset white 0 0 0 10px;
+}
+
+.radio-group label {
+    margin: 0 8px 0 0;
+    cursor: pointer;
+}
+
+.radio-group input[type='radio'] {
+    opacity: 0;
+}
+
+.radio-group span {
+    display: flex;
+    align-items: center;
+}

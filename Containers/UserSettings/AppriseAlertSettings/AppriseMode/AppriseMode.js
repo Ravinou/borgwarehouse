@@ -1,7 +1,5 @@
 //Lib
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import classes from '../../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';

@@ -204,6 +204,7 @@ code {
 
 .radio-group input[type='radio'] {
     opacity: 0;
+    width: 0;
 }
 
 .radio-group span {

@@ -109,6 +109,8 @@
 
 .bwForm textarea {
     resize: vertical;
+    overflow: auto;
+    white-space: pre;
 }
 
 .bwForm textarea:focus,

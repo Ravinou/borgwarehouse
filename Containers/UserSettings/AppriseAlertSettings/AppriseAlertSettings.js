@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { useForm } from 'react-hook-form';
 
 //Components
 import Error from '../../../Components/UI/Error/Error';
@@ -26,32 +25,14 @@ export default function AppriseAlertSettings() {
         //Callback > re-enabled button after notification.
         onClose: () => setDisabled(false),
     };
-    let appriseURLs;
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({ mode: 'onBlur' });
-
-    const {
-        register: register2,
-        handleSubmit: handleSubmit2,
-        formState: { errors: errors2 },
-    } = useForm({ mode: 'onBlur' });
 
     ////State
     const [checkIsLoading, setCheckIsLoading] = useState(true);
-    const [testIsLoading, setTestIsLoading] = useState(false);
-    const [formIsLoading, setFormIsLoading] = useState(false);
-    const [urlsFormIsSaved, setUrlsFormIsSaved] = useState(false);
-    const [modeFormIsSaved, setModeFormIsSaved] = useState(false);
     const [error, setError] = useState();
     const [disabled, setDisabled] = useState(false);
     const [checked, setChecked] = useState();
+    const [testIsLoading, setTestIsLoading] = useState(false);
     const [info, setInfo] = useState(false);
-    const [appriseServicesList, setAppriseServicesList] = useState();
-    const [displayStatelessURL, setDisplayStatelessURL] = useState(false);
 
     ////LifeCycle
     //Component did mount
@@ -107,6 +88,33 @@ export default function AppriseAlertSettings() {
         }
     };
 
+    //Send Apprise test notification to services
+    const onSendTestAppriseHandler = async () => {
+        //Loading
+        setTestIsLoading(true);
+        //Remove old error
+        setError();
+        const response = await fetch('/api/account/sendTestApprise', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify({ sendTestApprise: true }),
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+            setTestIsLoading(false);
+            setError(result.message);
+        } else {
+            setTestIsLoading(false);
+            setInfo(true);
+            setTimeout(() => {
+                setInfo(false);
+            }, 4000);
+        }
+    };
+
     return (
         <>
             {/* APPRISE ALERT */}
@@ -141,13 +149,31 @@ export default function AppriseAlertSettings() {
                         {/* APPRISE MODE SELECTION */}
                         <AppriseMode />
                         {/* APPRISE TEST BUTTON */}
-                        <button
-                            style={{ marginTop: '20px' }}
-                            className='defaultButton'
-                            //onClick={onSendTestMailHandler}
-                        >
-                            Send a test notification
-                        </button>
+                        {testIsLoading ? (
+                            <SpinnerCircularFixed
+                                style={{ marginTop: '20px' }}
+                                size={30}
+                                thickness={150}
+                                speed={150}
+                                color='#704dff'
+                                secondaryColor='#c3b6fa'
+                            />
+                        ) : (
+                            <button
+                                style={{ marginTop: '20px' }}
+                                className='defaultButton'
+                                onClick={() => onSendTestAppriseHandler()}
+                            >
+                                Send a test notification
+                            </button>
+                        )}
+                        {info && (
+                            <span
+                                style={{ marginLeft: '10px', color: '#119300' }}
+                            >
+                                Notification successfully sent.
+                            </span>
+                        )}
                         {error && <Error message={error} />}
                     </div>
                 </div>

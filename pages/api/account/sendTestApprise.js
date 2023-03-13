@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         }
 
         //2 : control the data
-        if (!sendTestApprise) {
+        if (sendTestApprise !== true) {
             res.status(422).json({ message: 'Unexpected data' });
             return;
         }

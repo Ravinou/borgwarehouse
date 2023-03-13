@@ -61,23 +61,33 @@ export default function AppriseURLs() {
         //Loading button on submit to avoid multiple send.
         setFormIsLoading(true);
         //POST API to update Apprise Services
-        const response = await fetch('/api/account/updateAppriseServices', {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        const result = await response.json();
+        try {
+            const response = await fetch('/api/account/updateAppriseServices', {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
 
-        if (!response.ok) {
+            if (!response.ok) {
+                setFormIsLoading(false);
+                setError(result.message);
+                setTimeout(() => setError(), 4000);
+            } else {
+                setFormIsLoading(false);
+                setUrlsFormIsSaved(true);
+                setTimeout(() => setUrlsFormIsSaved(false), 3000);
+            }
+        } catch (error) {
             setFormIsLoading(false);
-            setError(result.message);
-            setTimeout(() => setError(), 4000);
-        } else {
-            setFormIsLoading(false);
-            setUrlsFormIsSaved(true);
-            setTimeout(() => setUrlsFormIsSaved(false), 3000);
+            setError(
+                'Failed to update your services. Contact your administrator.'
+            );
+            setTimeout(() => {
+                setError();
+            }, 4000);
         }
     };
 

@@ -46,64 +46,96 @@ export default function EmailAlertSettings() {
                 setChecked((await response.json()).emailAlert);
                 setIsLoading(false);
             } catch (error) {
+                setError(
+                    'Fetching email alert setting failed. Contact your administrator.'
+                );
                 console.log('Fetching email alert setting failed.');
+                setIsLoading(false);
             }
         };
         dataFetch();
     }, []);
 
     ////Functions
+    //Switch to enable/disable Email notifications
     const onChangeSwitchHandler = async (data) => {
         //Remove old error
         setError();
         //Disabled button
         setDisabled(true);
-        const response = await fetch('/api/account/updateEmailAlert', {
+        await fetch('/api/account/updateEmailAlert', {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
             },
             body: JSON.stringify(data),
-        });
-        const result = await response.json();
-
-        if (!response.ok) {
-            setError(result.message);
-            setTimeout(() => {
-                setError();
-                setDisabled(false);
-            }, 4000);
-        } else {
-            if (data.emailAlert) {
-                setChecked(!checked);
-                toast.success('Email notification enabled !', toastOptions);
-            } else {
-                setChecked(!checked);
-                toast.success('Email notification disabled !', toastOptions);
-            }
-        }
+        })
+            .then((response) => {
+                console.log(response);
+                if (response.ok) {
+                    if (data.emailAlert) {
+                        setChecked(!checked);
+                        toast.success(
+                            'Email notification enabled !',
+                            toastOptions
+                        );
+                    } else {
+                        setChecked(!checked);
+                        toast.success(
+                            'Email notification disabled !',
+                            toastOptions
+                        );
+                    }
+                } else {
+                    setError('Update email alert setting failed.');
+                    setTimeout(() => {
+                        setError();
+                        setDisabled(false);
+                    }, 4000);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                setError('Update failed. Contact your administrator.');
+                setTimeout(() => {
+                    setError();
+                    setDisabled(false);
+                }, 4000);
+            });
     };
 
+    //Send a test notification by email
     const onSendTestMailHandler = async () => {
         //Loading
         setTestIsLoading(true);
         //Remove old error
         setError();
-        const response = await fetch('/api/account/sendTestEmail', {
+        await fetch('/api/account/sendTestEmail', {
             method: 'POST',
-        });
-        const result = await response.json();
-
-        if (!response.ok) {
-            setTestIsLoading(false);
-            setError(result.message);
-        } else {
-            setTestIsLoading(false);
-            setInfo(true);
-            setTimeout(() => {
-                setInfo(false);
-            }, 4000);
-        }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    setTestIsLoading(false);
+                    setError('Failed to send the notification.');
+                    setTimeout(() => {
+                        setError();
+                    }, 4000);
+                } else {
+                    setTestIsLoading(false);
+                    setInfo(true);
+                    setTimeout(() => {
+                        setInfo(false);
+                    }, 4000);
+                }
+            })
+            .catch((error) => {
+                setTestIsLoading(false);
+                console.log(error);
+                setError('Send email failed. Contact your administrator.');
+                setTimeout(() => {
+                    setError();
+                }, 4000);
+            });
     };
 
     return (

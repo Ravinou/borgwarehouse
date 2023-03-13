@@ -58,23 +58,31 @@ export default function AppriseMode() {
         //Loading button on submit to avoid multiple send.
         setFormIsLoading(true);
         //POST API to update Apprise Mode
-        const response = await fetch('/api/account/updateAppriseMode', {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        const result = await response.json();
+        try {
+            const response = await fetch('/api/account/updateAppriseMode', {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
 
-        if (!response.ok) {
+            if (!response.ok) {
+                setFormIsLoading(false);
+                setError(result.message);
+                setTimeout(() => setError(), 4000);
+            } else {
+                setFormIsLoading(false);
+                setModeFormIsSaved(true);
+                setTimeout(() => setModeFormIsSaved(false), 3000);
+            }
+        } catch (error) {
             setFormIsLoading(false);
-            setError(result.message);
-            setTimeout(() => setError(), 4000);
-        } else {
-            setFormIsLoading(false);
-            setModeFormIsSaved(true);
-            setTimeout(() => setModeFormIsSaved(false), 3000);
+            setError('Change mode failed. Contact your administrator.');
+            setTimeout(() => {
+                setError();
+            }, 4000);
         }
     };
 

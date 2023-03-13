@@ -49,7 +49,11 @@ export default function AppriseAlertSettings() {
                 setChecked((await response.json()).appriseAlert);
                 setCheckIsLoading(false);
             } catch (error) {
-                console.log('Fetching Apprise alert setting failed.');
+                setError(
+                    'Fetching apprise alert setting failed. Contact your administrator.'
+                );
+                console.log('Fetching apprise alert setting failed.');
+                setCheckIsLoading(false);
             }
         };
         getAppriseAlert();
@@ -62,30 +66,45 @@ export default function AppriseAlertSettings() {
         setError();
         //Disabled button
         setDisabled(true);
-        const response = await fetch('/api/account/updateAppriseAlert', {
+        await fetch('/api/account/updateAppriseAlert', {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
             },
             body: JSON.stringify(data),
-        });
-        const result = await response.json();
-
-        if (!response.ok) {
-            setError(result.message);
-            setTimeout(() => {
-                setError();
-                setDisabled(false);
-            }, 4000);
-        } else {
-            if (data.appriseAlert) {
-                setChecked(!checked);
-                toast.success('Apprise notifications enabled.', toastOptions);
-            } else {
-                setChecked(!checked);
-                toast.success('Apprise notifications disabled.', toastOptions);
-            }
-        }
+        })
+            .then((response) => {
+                console.log(response);
+                if (response.ok) {
+                    if (data.appriseAlert) {
+                        setChecked(!checked);
+                        toast.success(
+                            'Apprise notifications enabled.',
+                            toastOptions
+                        );
+                    } else {
+                        setChecked(!checked);
+                        toast.success(
+                            'Apprise notifications disabled.',
+                            toastOptions
+                        );
+                    }
+                } else {
+                    setError('Update apprise alert setting failed.');
+                    setTimeout(() => {
+                        setError();
+                        setDisabled(false);
+                    }, 4000);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                setError('Update Apprise failed. Contact your administrator.');
+                setTimeout(() => {
+                    setError();
+                    setDisabled(false);
+                }, 4000);
+            });
     };
 
     //Send Apprise test notification to services
@@ -94,23 +113,31 @@ export default function AppriseAlertSettings() {
         setTestIsLoading(true);
         //Remove old error
         setError();
-        const response = await fetch('/api/account/sendTestApprise', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({ sendTestApprise: true }),
-        });
-        const result = await response.json();
-
-        if (!response.ok) {
+        try {
+            const response = await fetch('/api/account/sendTestApprise', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({ sendTestApprise: true }),
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                setTestIsLoading(false);
+                setError(result.message);
+            } else {
+                setTestIsLoading(false);
+                setInfo(true);
+                setTimeout(() => {
+                    setInfo(false);
+                }, 4000);
+            }
+        } catch (error) {
             setTestIsLoading(false);
-            setError(result.message);
-        } else {
-            setTestIsLoading(false);
-            setInfo(true);
+            console.log(error);
+            setError('Send notification failed. Contact your administrator.');
             setTimeout(() => {
-                setInfo(false);
+                setError();
             }, 4000);
         }
     };

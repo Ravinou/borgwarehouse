@@ -45,7 +45,19 @@ export default async function handler(req, res) {
             return;
         }
 
-        ////3 : Send the notification to services
+        //3 : if there is no service URLs, throw error
+        if (
+            !usersList[userIndex].appriseServices ||
+            usersList[userIndex].appriseServices.length === 0
+        ) {
+            res.status(422).json({
+                message:
+                    'You must provide at least one Apprise URL to send a test.',
+            });
+            return;
+        }
+
+        ////4 : Send the notification to services
         //Build the URLs service list as a single string
         let appriseServicesURLs = '';
         for (let service of usersList[userIndex].appriseServices) {

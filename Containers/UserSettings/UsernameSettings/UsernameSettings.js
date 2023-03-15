@@ -41,26 +41,33 @@ export default function UsernameSettings(props) {
         setError();
         //Loading button on submit to avoid multiple send.
         setIsLoading(true);
-        //POST API to send the new and old password
-        const response = await fetch('/api/account/updateUsername', {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        const result = await response.json();
+        //POST API to update the username
+        try {
+            const response = await fetch('/api/account/updateUsername', {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
 
-        if (!response.ok) {
-            setIsLoading(false);
+            if (!response.ok) {
+                setIsLoading(false);
+                reset();
+                setError(result.message);
+                setTimeout(() => setError(), 4000);
+            } else {
+                reset();
+                setIsLoading(false);
+                setInfo(true);
+                toast.success('Username edited !', toastOptions);
+            }
+        } catch (error) {
             reset();
-            setError(result.message);
+            setIsLoading(false);
+            setError("Can't update your username. Contact your administrator.");
             setTimeout(() => setError(), 4000);
-        } else {
-            reset();
-            setIsLoading(false);
-            setInfo(true);
-            toast.success('Username edited !', toastOptions);
         }
     };
     return (
@@ -116,7 +123,7 @@ export default function UsernameSettings(props) {
                                     )}
                                 </p>
                                 <button
-                                    className='defaultButton'
+                                    className={classes.AccountSettingsButton}
                                     disabled={!isValid || isSubmitting}
                                 >
                                     {isLoading ? (

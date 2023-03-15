@@ -9,8 +9,10 @@ import { SpinnerCircularFixed } from 'spinners-react';
 //Components
 import Error from '../../../Components/UI/Error/Error';
 import Switch from '../../../Components/UI/Switch/Switch';
+import AppriseURLs from './AppriseURLs/AppriseURLs';
+import AppriseMode from './AppriseMode/AppriseMode';
 
-export default function EmailAlertSettings() {
+export default function AppriseAlertSettings() {
     //Var
     const toastOptions = {
         position: 'top-right',
@@ -25,45 +27,46 @@ export default function EmailAlertSettings() {
     };
 
     ////State
-    const [isLoading, setIsLoading] = useState(true);
-    const [testIsLoading, setTestIsLoading] = useState(false);
+    const [checkIsLoading, setCheckIsLoading] = useState(true);
     const [error, setError] = useState();
     const [disabled, setDisabled] = useState(false);
     const [checked, setChecked] = useState();
+    const [testIsLoading, setTestIsLoading] = useState(false);
     const [info, setInfo] = useState(false);
 
     ////LifeCycle
     //Component did mount
     useEffect(() => {
-        const dataFetch = async () => {
+        //Initial fetch to get the status of Apprise Alert
+        const getAppriseAlert = async () => {
             try {
-                const response = await fetch('/api/account/getEmailAlert', {
+                const response = await fetch('/api/account/getAppriseAlert', {
                     method: 'GET',
                     headers: {
                         'Content-type': 'application/json',
                     },
                 });
-                setChecked((await response.json()).emailAlert);
-                setIsLoading(false);
+                setChecked((await response.json()).appriseAlert);
+                setCheckIsLoading(false);
             } catch (error) {
                 setError(
-                    'Fetching email alert setting failed. Contact your administrator.'
+                    'Fetching apprise alert setting failed. Contact your administrator.'
                 );
-                console.log('Fetching email alert setting failed.');
-                setIsLoading(false);
+                console.log('Fetching apprise alert setting failed.');
+                setCheckIsLoading(false);
             }
         };
-        dataFetch();
+        getAppriseAlert();
     }, []);
 
     ////Functions
-    //Switch to enable/disable Email notifications
+    //Switch to enable/disable Apprise notifications
     const onChangeSwitchHandler = async (data) => {
         //Remove old error
         setError();
         //Disabled button
         setDisabled(true);
-        await fetch('/api/account/updateEmailAlert', {
+        await fetch('/api/account/updateAppriseAlert', {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
@@ -73,21 +76,21 @@ export default function EmailAlertSettings() {
             .then((response) => {
                 console.log(response);
                 if (response.ok) {
-                    if (data.emailAlert) {
+                    if (data.appriseAlert) {
                         setChecked(!checked);
                         toast.success(
-                            'Email notification enabled !',
+                            'Apprise notifications enabled.',
                             toastOptions
                         );
                     } else {
                         setChecked(!checked);
                         toast.success(
-                            'Email notification disabled !',
+                            'Apprise notifications disabled.',
                             toastOptions
                         );
                     }
                 } else {
-                    setError('Update email alert setting failed.');
+                    setError('Update apprise alert setting failed.');
                     setTimeout(() => {
                         setError();
                         setDisabled(false);
@@ -96,7 +99,7 @@ export default function EmailAlertSettings() {
             })
             .catch((error) => {
                 console.log(error);
-                setError('Update failed. Contact your administrator.');
+                setError('Update Apprise failed. Contact your administrator.');
                 setTimeout(() => {
                     setError();
                     setDisabled(false);
@@ -104,50 +107,52 @@ export default function EmailAlertSettings() {
             });
     };
 
-    //Send a test notification by email
-    const onSendTestMailHandler = async () => {
+    //Send Apprise test notification to services
+    const onSendTestAppriseHandler = async () => {
         //Loading
         setTestIsLoading(true);
         //Remove old error
         setError();
-        await fetch('/api/account/sendTestEmail', {
-            method: 'POST',
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    setTestIsLoading(false);
-                    setError('Failed to send the notification.');
-                    setTimeout(() => {
-                        setError();
-                    }, 4000);
-                } else {
-                    setTestIsLoading(false);
-                    setInfo(true);
-                    setTimeout(() => {
-                        setInfo(false);
-                    }, 4000);
-                }
-            })
-            .catch((error) => {
-                setTestIsLoading(false);
-                console.log(error);
-                setError('Send email failed. Contact your administrator.');
-                setTimeout(() => {
-                    setError();
-                }, 4000);
+        try {
+            const response = await fetch('/api/account/sendTestApprise', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({ sendTestApprise: true }),
             });
+            const result = await response.json();
+            if (!response.ok) {
+                setTestIsLoading(false);
+                setError(result.message);
+            } else {
+                setTestIsLoading(false);
+                setInfo(true);
+                setTimeout(() => {
+                    setInfo(false);
+                }, 4000);
+            }
+        } catch (error) {
+            setTestIsLoading(false);
+            console.log(error);
+            setError('Send notification failed. Contact your administrator.');
+            setTimeout(() => {
+                setError();
+            }, 4000);
+        }
     };
 
     return (
         <>
-            {/* EMAIL ALERT */}
+            {/* APPRISE ALERT */}
             <div className={classes.containerSetting}>
                 <div className={classes.settingCategory}>
-                    <h2>Email alert</h2>
+                    <h2>Apprise alert</h2>
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>
-                        {isLoading ? (
+                        {/* NOTIFY SWITCH */}
+                        {checkIsLoading ? (
                             <SpinnerCircularFixed
                                 size={30}
                                 thickness={150}
@@ -159,15 +164,21 @@ export default function EmailAlertSettings() {
                             <Switch
                                 checked={checked}
                                 disabled={disabled}
-                                switchName='Alert me by email'
-                                switchDescription='You will receive an alert every 24H if you have a down status.'
+                                switchName='Notify my Apprise services'
+                                switchDescription='You will receive an alert on all your services every 24H if you have a down status.'
                                 onChange={(e) =>
-                                    onChangeSwitchHandler({ emailAlert: e })
+                                    onChangeSwitchHandler({ appriseAlert: e })
                                 }
                             />
                         )}
+                        {/* APPRISE SERVICES URLS */}
+                        <AppriseURLs />
+                        {/* APPRISE MODE SELECTION */}
+                        <AppriseMode />
+                        {/* APPRISE TEST BUTTON */}
                         {testIsLoading ? (
                             <SpinnerCircularFixed
+                                style={{ marginTop: '20px' }}
                                 size={30}
                                 thickness={150}
                                 speed={150}
@@ -176,17 +187,18 @@ export default function EmailAlertSettings() {
                             />
                         ) : (
                             <button
+                                style={{ marginTop: '20px' }}
                                 className='defaultButton'
-                                onClick={onSendTestMailHandler}
+                                onClick={() => onSendTestAppriseHandler()}
                             >
-                                Send a test mail
+                                Send a test notification
                             </button>
                         )}
                         {info && (
                             <span
                                 style={{ marginLeft: '10px', color: '#119300' }}
                             >
-                                Mail successfully sent.
+                                Notification successfully sent.
                             </span>
                         )}
                         {error && <Error message={error} />}

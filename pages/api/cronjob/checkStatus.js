@@ -89,7 +89,7 @@ export default async function handler(req, res) {
             return;
         }
 
-        //// PART 2 : check if there is a repo that need an email alert
+        //// PART 2 : check if there is a repo that need an alert
         try {
             //Here, a mail is sent every 24H (90000) if a repo has down status
             for (let index in newRepoList) {
@@ -126,7 +126,7 @@ export default async function handler(req, res) {
             });
             return;
         }
-        //PART 4 : Send the mail alert
+        //PART 4 : Send the alerts
         if (repoListToSendAlert.length > 0) {
             // Read user informations
             try {
@@ -144,6 +144,7 @@ export default async function handler(req, res) {
                 });
                 return;
             }
+            ////EMAIL
             // If the user has enabled email alerts
             if (usersList[0].emailAlert) {
                 //Send mail
@@ -168,6 +169,61 @@ export default async function handler(req, res) {
                         console.log(info);
                     }
                 });
+            }
+            ////APPRISE
+            // If the user has enabled Apprise alerts
+            if (usersList[0].appriseAlert) {
+                let appriseServicesURLs = '';
+                for (let service of usersList[0].appriseServices) {
+                    appriseServicesURLs = appriseServicesURLs + service + ' ';
+                }
+                //Mode : package
+                if (usersList[0].appriseMode === 'package') {
+                    try {
+                        //Send notification via local package.
+                        await exec(
+                            `apprise -v -b '🔴 Some repositories on BorgWarehouse need attention !\nList of down repositories :\n ${repoListToSendAlert}' ${appriseServicesURLs}`
+                        );
+                    } catch (err) {
+                        console.log(err.stderr);
+                        res.status(500).json({
+                            message: 'Error : ' + err.stderr,
+                        });
+                        return;
+                    }
+
+                    //Mode : stateless
+                } else if (usersList[0].appriseMode === 'stateless') {
+                    try {
+                        await fetch(
+                            usersList[0].appriseStatelessURL + '/notify',
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    urls: appriseServicesURLs,
+                                    body:
+                                        '🔴 Some repositories on BorgWarehouse need attention !\nList of down repositories :\n' +
+                                        repoListToSendAlert,
+                                }),
+                            }
+                        );
+                    } catch (err) {
+                        console.log(err);
+                        res.status(500).json({
+                            message: 'Error : ' + err.message,
+                        });
+                        return;
+                    }
+
+                    //Mode : unknown
+                } else {
+                    res.status(422).json({
+                        message: 'No Apprise Mode selected or supported.',
+                    });
+                }
             }
         }
 

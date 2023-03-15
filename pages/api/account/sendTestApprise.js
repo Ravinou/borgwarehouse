@@ -131,7 +131,6 @@ export default async function handler(req, res) {
                         }),
                     }
                 ).then((response) => {
-                    console.log(response);
                     if (response.ok) {
                         res.status(200).json({
                             message: 'Notifications successfully sent.',

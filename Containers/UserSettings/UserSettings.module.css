@@ -34,6 +34,7 @@
 .settingCategory {
     max-width: 33.3333%;
     width: 100%;
+    display: flex;
 }
 .settingCategory h2 {
     color: #494b7a;

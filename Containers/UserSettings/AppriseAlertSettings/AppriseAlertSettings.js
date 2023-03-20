@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
+import { IconExternalLink } from '@tabler/icons';
+import Link from 'next/link';
 
 //Components
 import Error from '../../../Components/UI/Error/Error';
@@ -147,7 +149,15 @@ export default function AppriseAlertSettings() {
             {/* APPRISE ALERT */}
             <div className={classes.containerSetting}>
                 <div className={classes.settingCategory}>
-                    <h2>Apprise alert</h2>
+                    <h2 style={{ alignSelf: 'baseline' }}>Apprise alert</h2>
+                    <Link
+                        style={{ alignSelf: 'baseline', marginLeft: '5px' }}
+                        href='https://borgwarehouse.com/docs/user-manual/account/#apprise'
+                        rel='noopener noreferrer'
+                        target='_blank'
+                    >
+                        <IconExternalLink size={16} color='#6c737f' />
+                    </Link>
                 </div>
                 <div className={classes.setting}>
                     <div className={classes.bwFormWrapper}>

@@ -153,7 +153,7 @@ export default function AppriseAlertSettings() {
                     <Link
                         style={{ alignSelf: 'baseline', marginLeft: '5px' }}
                         href='https://borgwarehouse.com/docs/user-manual/account/#apprise'
-                        rel='noopener noreferrer'
+                        rel='noreferrer'
                         target='_blank'
                     >
                         <IconExternalLink size={16} color='#6c737f' />

@@ -149,7 +149,7 @@ export default function EmailAlertSettings() {
                     <Link
                         style={{ alignSelf: 'baseline', marginLeft: '5px' }}
                         href='https://borgwarehouse.com/docs/user-manual/account/#alerting'
-                        rel='noopener noreferrer'
+                        rel='noreferrer'
                         target='_blank'
                     >
                         <IconExternalLink size={16} color='#6c737f' />

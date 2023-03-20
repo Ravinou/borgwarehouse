@@ -146,7 +146,7 @@ function WizardStep3(props) {
                 archives, please refer to{' '}
                 <a
                     href='https://borgbackup.readthedocs.io/en/stable/usage/check.html'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                     target='_blank'
                 >
                     this documentation
@@ -158,7 +158,7 @@ function WizardStep3(props) {
                 If you are using Borgmatic, please refer to{' '}
                 <a
                     href='https://torsion.org/borgmatic/docs/how-to/deal-with-very-large-backups/#consistency-check-configuration'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                     target='_blank'
                 >
                     this documentation
@@ -170,7 +170,7 @@ function WizardStep3(props) {
                 If you are using the Vorta graphical client, please refer to{' '}
                 <a
                     href='https://vorta.borgbase.com/usage/'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                     target='_blank'
                 >
                     this documentation

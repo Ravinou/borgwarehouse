@@ -18,7 +18,7 @@ function WizardStep1() {
                 <a
                     href='https://borgbackup.readthedocs.io/en/stable/installation.html'
                     target='_blank'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                 >
                     found here
                 </a>
@@ -27,7 +27,7 @@ function WizardStep1() {
                 <a
                     href='https://torsion.org/borgmatic/'
                     target='_blank'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                 >
                     Borgmatic
                 </a>{' '}
@@ -35,7 +35,7 @@ function WizardStep1() {
                 <a
                     href='https://packages.debian.org/buster/borgmatic'
                     target='_blank'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                 >
                     Debian package
                 </a>
@@ -55,7 +55,7 @@ function WizardStep1() {
                 <a
                     href='https://vorta.borgbase.com/'
                     target='_blank'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                 >
                     just here
                 </a>

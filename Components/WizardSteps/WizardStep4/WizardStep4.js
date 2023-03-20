@@ -55,7 +55,7 @@ consistency:
                 documentation&nbsp;
                 <a
                     href='https://borgbackup.readthedocs.io/en/stable/quickstart.html#automating-backups'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                     target='_blank'
                 >
                     right here
@@ -70,7 +70,7 @@ consistency:
                 to&nbsp;
                 <a
                     href='https://vorta.borgbase.com/usage/#scheduling-automatic-backups'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                     target='_blank'
                 >
                     this documentation
@@ -83,7 +83,7 @@ consistency:
                 If you are using Borgmatic, you can check&nbsp;
                 <a
                     href='https://torsion.org/borgmatic/docs/how-to/set-up-backups/#autopilot'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                     target='_blank'
                 >
                     this documentation&nbsp;

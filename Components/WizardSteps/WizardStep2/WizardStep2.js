@@ -37,7 +37,7 @@ function WizardStep2(props) {
                     For more information,{' '}
                     <a
                         href='https://borgbackup.readthedocs.io/en/stable/usage/init.html?highlight=init#more-encryption-modes'
-                        rel='noopener noreferrer'
+                        rel='noreferrer'
                         target='_blank'
                     >
                         click here
@@ -93,7 +93,7 @@ function WizardStep2(props) {
                 refer to{' '}
                 <a
                     href='https://vorta.borgbase.com/usage/remote/'
-                    rel='noopener noreferrer'
+                    rel='noreferrer'
                     target='_blank'
                 >
                     this documentation

@@ -73,7 +73,7 @@ export default function emailTest(mailTo, username) {
             
                         
                     </div>
-                    <div style="font-size: 0.8em;color: #C8C8C8;font-family: Inter, sans-serif; text-align: center;"><p>About <a style="color:#cfc4fb; text-decoration: none;" target="_blank" href="https://borgwarehouse.com/">BorgWarehouse</a></p></div>
+                    <div style="font-size: 0.8em;color: #C8C8C8;font-family: Inter, sans-serif; text-align: center;"><p>About <a style="color:#cfc4fb; text-decoration: none;" target="_blank" href="https://borgwarehouse.com/" rel='noreferrer'>BorgWarehouse</a></p></div>
                 </div>
             </div>
             `,

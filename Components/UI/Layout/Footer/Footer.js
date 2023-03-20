@@ -10,6 +10,7 @@ function Footer() {
                     className={classes.site}
                     target='_blank'
                     href='https://borgwarehouse.com/'
+                    rel='noreferrer'
                 >
                     BorgWarehouse
                 </a>

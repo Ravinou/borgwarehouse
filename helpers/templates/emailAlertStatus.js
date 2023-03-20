@@ -134,6 +134,7 @@ export default function emailTest(mailTo, username, aliasList) {
                 <a
                     style="text-decoration: none; color: #6d4aff"
                     href="https://borgwarehouse.com/docs/user-manual/setupwizard/#step-3--launch--verify"
+                    rel="noreferrer"
                     >check the integrity of your backups regularly</a
                 >.
             </div>
@@ -153,6 +154,7 @@ export default function emailTest(mailTo, username, aliasList) {
                 style="color: #cfc4fb; text-decoration: none"
                 target="_blank"
                 href="https://borgwarehouse.com/"
+                rel="noreferrer"
                 >BorgWarehouse</a
             >
         </p>

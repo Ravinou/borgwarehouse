@@ -152,6 +152,7 @@ export default function AppriseURLs() {
                         textDecoration: 'none',
                     }}
                     href='https://github.com/caronc/apprise#supported-notifications'
+                    rel='noreferrer'
                 >
                     Apprise URLs
                 </a>{' '}

@@ -59,7 +59,7 @@ Required variables :
 Example for a valid `.env.local` file :
 
 ```bash
-# Private variable (Any change need a rebuild of app)
+# Private variable 
 NEXTAUTH_URL=https://yourbwdomain.com
 NEXTAUTH_SECRET=YOURFIRSTSECRET
 CRONJOB_KEY=YOURSECONDSECRET
@@ -70,7 +70,7 @@ MAIL_SMTP_LOGIN=
 MAIL_SMTP_PWD=
 MAIL_REJECT_SELFSIGNED_TLS=true
 
-# Public variable
+# Public variable (Any change need a rebuild of app)
 NEXT_PUBLIC_HOSTNAME=yourbwdomain.com
 NEXT_PUBLIC_SSH_SERVER_PORT=22
 NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA=SHA256:36mfYNRrm1aconVt6cBpi8LhAoPP4kB8QsVW4n8eGHQ

@@ -3,7 +3,7 @@ import SetupWizard from '../../Containers/SetupWizard/SetupWizard';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { authOptions } from '../../pages/api/auth/[...nextauth]';
-import { unstable_getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth/next';
 
 export default function SetupWizardStep() {
     ////Var
@@ -22,7 +22,7 @@ export default function SetupWizardStep() {
 
 export async function getServerSideProps(context) {
     //Var
-    const session = await unstable_getServerSession(
+    const session = await getServerSession(
         context.req,
         context.res,
         authOptions

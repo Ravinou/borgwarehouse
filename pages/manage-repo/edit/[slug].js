@@ -1,6 +1,6 @@
 import RepoList from '../../../Containers/RepoList/RepoList';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
-import { unstable_getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth/next';
 
 export default function Add() {
     return <RepoList />;
@@ -8,7 +8,7 @@ export default function Add() {
 
 export async function getServerSideProps(context) {
     //Var
-    const session = await unstable_getServerSession(
+    const session = await getServerSession(
         context.req,
         context.res,
         authOptions

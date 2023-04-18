@@ -1,6 +1,6 @@
 //Lib
 import { authOptions } from '../pages/api/auth/[...nextauth]';
-import { unstable_getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth/next';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 
@@ -32,7 +32,7 @@ export default function Index() {
 
 export async function getServerSideProps(context) {
     //Var
-    const session = await unstable_getServerSession(
+    const session = await getServerSession(
         context.req,
         context.res,
         authOptions

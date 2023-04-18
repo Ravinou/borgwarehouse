@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { SpinnerDotted } from 'spinners-react';
 import { useRouter } from 'next/router';
 import { authOptions } from './api/auth/[...nextauth]';
-import { unstable_getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth/next';
 
 //Components
 import Error from '../Components/UI/Error/Error';
@@ -179,7 +179,7 @@ export default function Login() {
 
 export async function getServerSideProps(context) {
     //Var
-    const session = await unstable_getServerSession(
+    const session = await getServerSession(
         context.req,
         context.res,
         authOptions

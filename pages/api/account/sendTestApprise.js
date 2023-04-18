@@ -1,6 +1,6 @@
 //Lib
 import { authOptions } from '../auth/[...nextauth]';
-import { unstable_getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth/next';
 import { promises as fs } from 'fs';
 import path from 'path';
 const { exec } = require('child_process');
@@ -8,7 +8,7 @@ const { exec } = require('child_process');
 export default async function handler(req, res) {
     if (req.method == 'POST') {
         //Verify that the user is logged in.
-        const session = await unstable_getServerSession(req, res, authOptions);
+        const session = await getServerSession(req, res, authOptions);
         if (!session) {
             res.status(401).json({ message: 'You must be logged in.' });
             return;

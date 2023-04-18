@@ -5,7 +5,7 @@ import { verifyPassword } from '../../../helpers/functions/auth';
 import fs from 'fs';
 import path from 'path';
 
-////Use if need getServerSideProps and therefore unstable_getServerSession
+////Use if need getServerSideProps and therefore getServerSession
 export const authOptions = {
     providers: [
         CredentialsProvider({

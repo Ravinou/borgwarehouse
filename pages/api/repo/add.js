@@ -17,8 +17,8 @@ export default async function handler(req, res) {
 		//The data we expect to receive
 		const { alias, sshPublicKey, size, comment, alert, lanCommand } =
 			req.body;
-		//We check that we receive data for each variable. Only "comment" is optional in the form.
-		if (!alias || !sshPublicKey || !size || !alert || !lanCommand) {
+		//We check that we receive data for each variable. Only "comment" and "lanCommand" are optional in the form.
+		if (!alias || !sshPublicKey || !size || !alert) {
 			//If a variable is empty.
 			res.status(422).json({
 				message: 'Unexpected data',

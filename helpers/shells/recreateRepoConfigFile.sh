@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ##############################################################################################################
-# What is this script ? 
-# If you lose the repo.json file, this script will help you rebuild a new one. 
+# What is this script ?
+# If you lose the repo.json file, this script will help you rebuild a new one.
 # To do this, I've written this shell that reads the BorgWarehouse repository tree and generates a corresponding object.
 # This script is only intended to be used in emergencies (data corruption, update problems...) and as a last resort to rebuild your repo.json file.
 
-# Of course, certain parameters cannot be recovered, such as comments, repository size or aliases. 
+# Of course, certain parameters cannot be recovered, such as comments, repository size or aliases.
 # You'll have to re-configure this from the web interface, but most of the work is done.
 
 # This script should be used with the root user, as it is necessary to read authorized_keys files.
@@ -24,7 +24,7 @@ i=0
 # Loop on each directory in bw-data
 for directory in $directoriesList ; do
     unixUser=$directory
-    repository=$(ls $bwDataDir/$directory/repos/)
+    repository=$(ls "$bwDataDir/$directory/repos/")
     id=$i
     alias="Repo to rename $i"
     lastSave=0
@@ -34,7 +34,7 @@ for directory in $directoriesList ; do
     comment=""
     displayDetails=true
     status=false
-    sshPublicKey=$(grep -oP '(?<=restrict ).*' $bwDataDir/$directory/.ssh/authorized_keys )
+    sshPublicKey=$(grep -oP '(?<=restrict ).*' "$bwDataDir/$directory/.ssh/authorized_keys" )
 
     # Create a valid JSON object with jq for each repo
     objRepoJSON=$(jq -n --argjson id $id \
@@ -58,4 +58,4 @@ for directory in $directoriesList ; do
 done
 
 #Display finalObject on screen to copy/paste it in repo.json file
-echo $finalObject
+echo "$finalObject"

@@ -34,7 +34,9 @@ for directory in $directoriesList ; do
     comment=""
     displayDetails=true
     status=false
-    sshPublicKey=$(grep -oP '(?<=restrict ).*' "$bwDataDir/$directory/.ssh/authorized_keys" )
+    sshPublicKey=$(grep --only-matching --perl-regexp \
+      '(?<=restrict ).*' \
+      "$bwDataDir/$directory/.ssh/authorized_keys")
 
     # Create a valid JSON object with jq for each repo
     objRepoJSON=$(jq -n --argjson id $id \
@@ -49,10 +51,25 @@ for directory in $directoriesList ; do
                         --arg comment "$comment" \
                         --argjson displayDetails $displayDetails \
                         --arg unixUser "$unixUser" \
-                        '{id: $id, alias: $alias, repository: $repository, status: $status, lastSave: $lastSave, alert: $alert, storageSize: $storageSize, storageUsed: $storageUsed, sshPublicKey: $sshPublicKey, comment: $comment, displayDetails: $displayDetails, unixUser: $unixUser}')
+                        "{ \
+                          id:             \$id,             \
+                          alias:          \$alias,          \
+                          repository:     \$repository,     \
+                          status:         \$status,         \
+                          lastSave:       \$lastSave,       \
+                          alert:          \$alert,          \
+                          storageSize:    \$storageSize,    \
+                          storageUsed:    \$storageUsed,    \
+                          sshPublicKey:   \$sshPublicKey,   \
+                          comment:        \$comment,        \
+                          displayDetails: \$displayDetails, \
+                          unixUser:       \$unixUser        \
+                        }")
 
     # Insert objRepoJSON in finalObject with jq
-    finalObject=$(jq --argjson objRepoJSON "$objRepoJSON" '. += [$objRepoJSON]' <<< "$finalObject")
+    finalObject=$(jq --argjson objRepoJSON  \
+      "$objRepoJSON" '. += [$objRepoJSON]' \
+      <<< "$finalObject")
 
     i=$((i+1))
 done

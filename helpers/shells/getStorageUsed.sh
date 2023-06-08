@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
 # Get the size of all repositories in a JSON output.

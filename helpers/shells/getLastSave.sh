@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
 # Get the timestamp of the last modification of the file integrity.* for of all repositories in a JSON output.

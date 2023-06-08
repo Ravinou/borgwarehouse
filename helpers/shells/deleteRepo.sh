@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
 # This shell takes 1 arg : [user] with 8 char. length only.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
 # This shell takes 3 arguments : [reponame] X [SSH pub key] X [quota]

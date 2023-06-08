@@ -46,33 +46,32 @@ randUsername () {
 user=$(randUsername)
 
 # Check if the random is already a username.
-while grep -q $user /etc/passwd
+while grep -q "$user" /etc/passwd
 do
     user=$(randUsername)
 done
 
 # Some variables
-group="${user}"
 home="/var/borgwarehouse/${user}"
 pool="${home}/repos"
 authorized_keys="${home}/.ssh/authorized_keys"
 
 ## add user and create homedirectory ${user} - [shell=/bin/bash home=${home} group=${group}]
-sudo useradd -d ${home} -s "/bin/bash" -m --badname ${user}
+sudo useradd -d "${home}" -s "/bin/bash" -m --badname "${user}"
 
 ## Create directory ${home}/.ssh
-sudo mkdir -p ${home}/.ssh
+sudo mkdir -p "${home}/.ssh"
 
 ## Create autorized_keys file
-sudo touch ${home}/.ssh/authorized_keys
+sudo touch "${home}/.ssh/authorized_keys"
 
 ## Create the repo
 sudo mkdir -p "${pool}/$1"
 
 ## Change permissions
-sudo chmod -R 750 ${home}
-sudo chmod 600 ${authorized_keys}
-sudo chown -R ${user}:borgwarehouse ${home}
+sudo chmod -R 750 "${home}"
+sudo chmod 600 "${authorized_keys}"
+sudo chown -R "${user}:borgwarehouse" "${home}"
 
 ## Check if authorized_keys exists
 if [ ! -f "${authorized_keys}" ];then
@@ -82,7 +81,7 @@ fi
 
 ## Add ssh public key in authorized_keys with borg restriction for only 1 repository (:$1) and storage quota
 restricted_authkeys="command=\"cd ${pool};borg serve --restrict-to-repository ${pool}/$1 --storage-quota $3G\",restrict $2"
-echo "$restricted_authkeys" | sudo tee ${authorized_keys} >/dev/null
+echo "$restricted_authkeys" | sudo tee "${authorized_keys}" >/dev/null
 
 ## Return the unix user
-echo ${user}
+echo "${user}"

@@ -2,7 +2,7 @@
 
 # Shell created by Raven for BorgWarehouse.
 # Get the size of all repositories in a JSON output.
-# stdout will be an array like : 
+# stdout will be an array like :
 # [
 #     { size: 32, name: '10e73223' },
 #     { size: 1155672, name: '83bd4ef1' },
@@ -16,4 +16,4 @@ set -e
 
 # Use jc to output a JSON format with du command
 cd /var/borgwarehouse
-sudo /usr/bin/du -s * | jc --du
+sudo /usr/bin/du -s ./* | sed 's/\.\///' | jc --du

@@ -5,6 +5,22 @@ import { IconTool, IconAlertCircle } from '@tabler/icons';
 import CopyButton from '../../UI/CopyButton/CopyButton';
 
 function WizardStep2(props) {
+    ////Vars
+    //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
+    let HOSTNAME;
+    let SSH_SERVER_PORT;
+    if (
+        props.selectedOption.lanCommand &&
+        process.env.NEXT_PUBLIC_HOSTNAME_LAN &&
+        process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN
+    ) {
+        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME_LAN;
+        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN;
+    } else {
+        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
+        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT;
+    }
+
     return (
         <div className={classes.container}>
             <h1>
@@ -23,13 +39,12 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         borg init -e repokey-blake2 ssh://
-                        {props.selectedOption.unixUser}@
-                        {process.env.NEXT_PUBLIC_HOSTNAME}:
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_PORT}/./
+                        {props.selectedOption.unixUser}@{HOSTNAME}:
+                        {SSH_SERVER_PORT}/./
                         {props.selectedOption.repository}
                     </div>
                     <CopyButton
-                        dataToCopy={`borg init -e repokey-blake2 ssh://${props.selectedOption.unixUser}@${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
+                        dataToCopy={`borg init -e repokey-blake2 ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
                     />
                 </div>
                 <div className={classes.note}>
@@ -80,13 +95,12 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         ssh://
-                        {props.selectedOption.unixUser}@
-                        {process.env.NEXT_PUBLIC_HOSTNAME}:
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_PORT}/./
+                        {props.selectedOption.unixUser}@{HOSTNAME}:
+                        {SSH_SERVER_PORT}/./
                         {props.selectedOption.repository}
                     </div>
                     <CopyButton
-                        dataToCopy={`ssh://${props.selectedOption.unixUser}@${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
+                        dataToCopy={`ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
                     />
                 </div>
                 For more information about the Vorta graphical client, please

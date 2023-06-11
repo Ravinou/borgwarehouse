@@ -61,6 +61,7 @@ function SetupWizard(props) {
         id: repo.id,
         repository: repo.repository,
         unixUser: repo.unixUser,
+        lanCommand: repo.lanCommand,
     }));
 
     //Step button (free selection of user)

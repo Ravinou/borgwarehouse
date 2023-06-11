@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useForm, Controller } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 import Select from 'react-select';
+import Link from 'next/link';
+import { IconExternalLink } from '@tabler/icons';
 
 export default function RepoManage(props) {
     ////Var
@@ -118,6 +120,7 @@ export default function RepoManage(props) {
                 sshPublicKey: dataForm.sshkey,
                 comment: dataForm.comment,
                 alert: dataForm.alert.value,
+                lanCommand: dataForm.lanCommand,
             };
             //POST API to send new repo
             await fetch('/api/repo/add', {
@@ -153,6 +156,7 @@ export default function RepoManage(props) {
                 sshPublicKey: dataForm.sshkey,
                 comment: dataForm.comment,
                 alert: dataForm.alert.value,
+                lanCommand: dataForm.lanCommand,
             };
             await fetch('/api/repo/id/' + router.query.slug + '/edit', {
                 method: 'PUT',
@@ -363,6 +367,36 @@ export default function RepoManage(props) {
                                     {errors.comment.message}
                                 </span>
                             )}
+                            {/* LAN COMMAND GENERATION */}
+                            <div className={classes.lanCommandWrapper}>
+                                <input
+                                    type='checkbox'
+                                    name='lanCommand'
+                                    defaultChecked={
+                                        props.mode == 'edit'
+                                            ? targetRepo.lanCommand
+                                            : false
+                                    }
+                                    {...register('lanCommand')}
+                                />
+                                <label htmlFor='lanCommand'>
+                                    Generates commands for use over LAN.
+                                </label>
+                                <Link
+                                    style={{
+                                        alignSelf: 'baseline',
+                                        marginLeft: '5px',
+                                    }}
+                                    href='https://borgwarehouse.com/docs/user-manual/repositories/#generates-commands-for-use-over-lan'
+                                    rel='noreferrer'
+                                    target='_blank'
+                                >
+                                    <IconExternalLink
+                                        size={16}
+                                        color='#6c737f'
+                                    />
+                                </Link>
+                            </div>
                             {/* ALERT */}
                             <label
                                 style={{ margin: '25px auto 10px auto' }}

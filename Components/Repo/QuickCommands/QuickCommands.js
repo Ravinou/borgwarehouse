@@ -9,7 +9,6 @@ export default function QuickCommands(props) {
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
     let HOSTNAME;
     let SSH_SERVER_PORT;
-    console.log(props.lanCommand);
     if (
         props.lanCommand &&
         process.env.NEXT_PUBLIC_HOSTNAME_LAN &&

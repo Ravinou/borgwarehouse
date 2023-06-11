@@ -34,6 +34,7 @@ export default function Repo(props) {
                             <QuickCommands
                                 unixUser={props.unixUser}
                                 repository={props.repository}
+                                lanCommand={props.lanCommand}
                             />
                         </div>
 

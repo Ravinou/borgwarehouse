@@ -136,6 +136,7 @@ export default function RepoList() {
                     displayDetails={repo.displayDetails}
                     unixUser={repo.unixUser}
                     comment={repo.comment}
+                    lanCommand={repo.lanCommand}
                     repoManageEditHandler={() => repoManageEditHandler(repo.id)}
                 ></Repo>
                 {repo.displayDetails ? (

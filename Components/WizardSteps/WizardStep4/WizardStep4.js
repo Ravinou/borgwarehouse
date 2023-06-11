@@ -5,6 +5,22 @@ import { IconWand } from '@tabler/icons';
 import CopyButton from '../../UI/CopyButton/CopyButton';
 
 function WizardStep4(props) {
+    ////Vars
+    //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
+    let HOSTNAME;
+    let SSH_SERVER_PORT;
+    if (
+        props.selectedOption.lanCommand &&
+        process.env.NEXT_PUBLIC_HOSTNAME_LAN &&
+        process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN
+    ) {
+        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME_LAN;
+        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN;
+    } else {
+        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
+        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT;
+    }
+
     const configBorgmatic = `location:
     # List of source directories to backup.
     source_directories:
@@ -13,10 +29,10 @@ function WizardStep4(props) {
 
 repositories:
     # Paths of local or remote repositories to backup to.
-    - ssh://${props.selectedOption.unixUser}@${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_SSH_SERVER_PORT}/./${props.selectedOption.repository}
+    - ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}
 
 storage:
-    archive_name_format: '{NEXT_PUBLIC_HOSTNAME}-documents-{now}'
+    archive_name_format: '{HOSTNAME}-documents-{now}'
     encryption_passphrase: "YOUR PASSPHRASE"
 
 retention:

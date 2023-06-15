@@ -17,7 +17,47 @@
 
 bwDataDir="/var/borgwarehouse"
 directoriesList=$(ls -A $bwDataDir)
+_AUTOSIZE=0
 
+POSITIONAL_ARGS=()
+
+# shellcheck disable=SC2221,SC2222
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -a|--auto-size)
+      _AUTOSIZE=1; shift ;;
+    -*|--*)
+      echo "Unknown option $1"; exit 1 ;;
+    *)
+      POSITIONAL_ARGS+=("$1") ; shift ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+function __repoSize() {
+  if [ $_AUTOSIZE -eq 1 ]; then
+    _repoSizeBytes=$(du --summarize --bytes "${1}" |
+      grep --perl-regexp --only-matching '^\d+')
+    if [ "$_repoSizeBytes" -le 2147483648 ]; then
+      # Under 2G
+      echo 2
+    else
+      # More than 2G, the next power of two is determined.
+      _factor=2
+      while true; do
+        _repoSize=$((2**i))
+        if [ 123 -lt $_repoSize ]; then
+          echo $_repoSize
+          break
+        fi
+        ((i++))
+      done
+    fi
+  else
+    echo "2"
+  fi
+}
 
 finalObject="[]"
 i=0
@@ -29,7 +69,7 @@ for directory in $directoriesList ; do
     alias="Repo to rename $i"
     lastSave=0
     alert=90000
-    storageSize=2
+    storageSize=$(__repoSize "$bwDataDir/$directory/repos/$repository")
     storageUsed=0
     comment=""
     displayDetails=true
@@ -45,7 +85,7 @@ for directory in $directoriesList ; do
                         --argjson status $status \
                         --argjson lastSave $lastSave \
                         --argjson alert $alert \
-                        --argjson storageSize $storageSize \
+                        --argjson storageSize "$storageSize" \
                         --argjson storageUsed $storageUsed \
                         --arg sshPublicKey "$sshPublicKey" \
                         --arg comment "$comment" \

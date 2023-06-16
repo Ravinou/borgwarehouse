@@ -24,4 +24,4 @@ set -e
 
 stat --format='{"user":"%U","lastSave":%Y}' \
   /var/borgwarehouse/*/repos/*/integrity* |
-  jq --sort-key
+  jq --slurp

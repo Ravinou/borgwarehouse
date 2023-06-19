@@ -1,19 +1,37 @@
 #!/usr/bin/env bash
 
-##############################################################################################################
+################################################################################
 # What is this script ?
 # If you lose the repo.json file, this script will help you rebuild a new one.
-# To do this, I've written this shell that reads the BorgWarehouse repository tree and generates a corresponding object.
-# This script is only intended to be used in emergencies (data corruption, update problems...) and as a last resort to rebuild your repo.json file.
+# To do this, I've written this shell that reads the BorgWarehouse repository
+# tree and generates a corresponding object.
+# This script is only intended to be used in emergencies (data corruption,
+# update problems...) and as a last resort to rebuild your repo.json file.
 
-# Of course, certain parameters cannot be recovered, such as comments, repository size or aliases.
-# You'll have to re-configure this from the web interface, but most of the work is done.
+# Of course, certain parameters cannot be recovered, such as comments,
+# repository size or aliases.
+# You'll have to re-configure this from the web interface, but most of the work
+# is done.
 
-# This script should be used with the root user, as it is necessary to read authorized_keys files.
+# This script should be used with the root user, as it is necessary to read
+# authorized_keys files.
 
-# This script simply displays a valid JSON object on your screen. Copy its entire content into the config/repo.json file.
+# This script simply displays a valid JSON object on your screen. Copy its
+# entire content into the config/repo.json file.
 # There's no need to restart BorgWarehouse, as this can be done on the fly.
-##############################################################################################################
+
+# With the option `-a` or `--auto-size` the script calculates the current size
+# of the repo and calculates the next largest two potency.
+# By default the size is otherwise 2G.
+# Examples for the calculation:
+#
+# | Size | Calc. |
+# |-----:|------:|
+# | <=2G |    2G |
+# |   5G |    8G |
+# |   9G |   16G |
+# |  43G |   64G |
+################################################################################
 
 bwDataDir="/var/borgwarehouse"
 directoriesList=$(ls -A $bwDataDir)

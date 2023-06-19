@@ -1,5 +1,5 @@
 <div align="center">
-  
+
   [![Next][Next.js]][Next-url]
   [![React][React.js]][React-url]
 
@@ -59,7 +59,7 @@ Required variables :
 Example for a valid `.env.local` file :
 
 ```bash
-# Private variable 
+# Private variable
 NEXTAUTH_URL=https://yourbwdomain.com
 NEXTAUTH_SECRET=YOURFIRSTSECRET
 CRONJOB_KEY=YOURSECONDSECRET

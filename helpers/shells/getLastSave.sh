@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
 # Get the timestamp of the last modification of the file integrity.* for of all repositories in a JSON output.
-# stdout will be an array like : 
+# stdout will be an array like :
 # [
 #   {
 #     "user": "09d8240f",
@@ -22,4 +22,6 @@
 # Exit when any command fails
 set -e
 
-stat -c {\"user\":\"%U\",\"lastSave\":%Y\} /var/borgwarehouse/*/repos/*/integrity* | jq -s
+stat --format='{"user":"%U","lastSave":%Y}' \
+  /var/borgwarehouse/*/repos/*/integrity* |
+  jq --slurp

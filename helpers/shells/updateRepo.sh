@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
 # This shell takes 2 args : [user] [new SSH pub key] [quota]
@@ -25,7 +25,7 @@ then
     exit 2
 fi
 
-# Check if username length is 8 char. With createRepo.sh our randoms have a length of 8 characters. 
+# Check if username length is 8 char. With createRepo.sh our randoms have a length of 8 characters.
 # If we receive another length there is necessarily a problem.
 username=$1
 if [ ${#username} != 8 ]

@@ -95,8 +95,6 @@ export default function RepoList() {
 
     //BUTTON : Display RepoManage component box for ADD
     const manageRepoAddHandler = () => {
-        setDisplayRepoAdd(!displayRepoAdd);
-        //Redirect url to HOME when cross is clicked.
         router.replace('/manage-repo/add');
     };
 

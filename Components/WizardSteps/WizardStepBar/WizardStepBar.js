@@ -1,7 +1,7 @@
 //Lib
 import React from 'react';
 import classes from './WizardStepBar.module.css';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 function WizardStepBar(props) {
     ////Functions

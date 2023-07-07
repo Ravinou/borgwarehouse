@@ -1,7 +1,7 @@
 //Lib
 import classes from './CopyButton.module.css';
 import { useState } from 'react';
-import { IconCopy } from '@tabler/icons';
+import { IconCopy } from '@tabler/icons-react';
 
 export default function CopyButton(props) {
     //State

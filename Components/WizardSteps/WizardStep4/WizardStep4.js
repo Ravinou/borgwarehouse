@@ -1,7 +1,7 @@
 //Lib
 import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
-import { IconWand } from '@tabler/icons';
+import { IconWand } from '@tabler/icons-react';
 import CopyButton from '../../UI/CopyButton/CopyButton';
 
 function WizardStep4(props) {

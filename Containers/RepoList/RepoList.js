@@ -1,7 +1,7 @@
 //Lib
 import classes from './RepoList.module.css';
 import { useState, useEffect, useRef } from 'react';
-import { IconPlus, IconChevronDown, IconChevronUp } from '@tabler/icons';
+import { IconPlus, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import useSWR, { useSWRConfig } from 'swr';

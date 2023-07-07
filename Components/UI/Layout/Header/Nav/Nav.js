@@ -1,6 +1,6 @@
 //Lib
 import classes from './Nav.module.css';
-import { IconUser, IconLogout } from '@tabler/icons';
+import { IconUser, IconLogout } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/react';

@@ -1,6 +1,6 @@
 //Lib
 import classes from './RepoManage.module.css';
-import { IconAlertCircle, IconX } from '@tabler/icons';
+import { IconAlertCircle, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
@@ -9,7 +9,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 import Select from 'react-select';
 import Link from 'next/link';
-import { IconExternalLink } from '@tabler/icons';
+import { IconExternalLink } from '@tabler/icons-react';
 
 export default function RepoManage(props) {
     ////Var

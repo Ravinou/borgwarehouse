@@ -1,7 +1,7 @@
 //Lib
 import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
-import { IconTool, IconAlertCircle } from '@tabler/icons';
+import { IconTool, IconAlertCircle } from '@tabler/icons-react';
 import CopyButton from '../../UI/CopyButton/CopyButton';
 
 function WizardStep2(props) {

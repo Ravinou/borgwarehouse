@@ -19,7 +19,6 @@
         "react-chartjs-2": "^5.2.0",
         "react-dom": "^18.2.0",
         "react-hook-form": "^7.36.1",
-        "react-modal": "^3.15.1",
         "react-select": "^5.6.0",
         "react-toastify": "^9.0.8",
         "spinners-react": "^1.0.7",

@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState } from 'react';
 import classes from './QuickCommands.module.css';
-import { IconSettingsAutomation, IconCopy } from '@tabler/icons';
+import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
 
 export default function QuickCommands(props) {
     ////Vars

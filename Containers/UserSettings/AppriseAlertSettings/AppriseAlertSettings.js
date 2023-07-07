@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
-import { IconExternalLink } from '@tabler/icons';
+import { IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
 
 //Components

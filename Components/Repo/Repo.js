@@ -1,7 +1,7 @@
 //Lib
 import React from 'react';
 import classes from './Repo.module.css';
-import { IconSettings, IconInfoCircle } from '@tabler/icons';
+import { IconSettings, IconInfoCircle } from '@tabler/icons-react';
 import timestampConverter from '../../helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';

@@ -69,9 +69,13 @@ export default async function handler(req, res) {
             //Stringify the repoList to write it into the json file.
             newRepoList = JSON.stringify(newRepoList);
             //Write the new json
-            fs.writeFile(jsonDirectory + '/repo.json', newRepoList, (err) => {
-                if (err) console.log(err);
-            });
+            await fs.writeFile(
+                jsonDirectory + '/repo.json',
+                newRepoList,
+                (err) => {
+                    if (err) console.log(err);
+                }
+            );
 
             res.status(200).json({
                 success: 'Storage cron has been executed.',

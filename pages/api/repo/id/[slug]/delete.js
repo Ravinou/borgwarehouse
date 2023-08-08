@@ -74,9 +74,13 @@ export default async function handler(req, res) {
             //Stringify the repoList to write it into the json file.
             repoList = JSON.stringify(repoList);
             //Write the new json
-            fs.writeFile(jsonDirectory + '/repo.json', repoList, (err) => {
-                if (err) console.log(err);
-            });
+            await fs.writeFile(
+                jsonDirectory + '/repo.json',
+                repoList,
+                (err) => {
+                    if (err) console.log(err);
+                }
+            );
             res.status(200).json({ message: 'Envoi API réussi' });
         } catch (error) {
             //Log for backend

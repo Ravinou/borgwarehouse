@@ -65,9 +65,13 @@ export default async function handler(req, res) {
             //Stringify the new users list
             newUsersList = JSON.stringify(newUsersList);
             //Write the new JSON
-            fs.writeFile(jsonDirectory + '/users.json', newUsersList, (err) => {
-                if (err) console.log(err);
-            });
+            await fs.writeFile(
+                jsonDirectory + '/users.json',
+                newUsersList,
+                (err) => {
+                    if (err) console.log(err);
+                }
+            );
             res.status(200).json({ message: 'Successful API send' });
         } catch (error) {
             //Log for backend

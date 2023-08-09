@@ -3,11 +3,17 @@
     text-align: center;
     position: absolute;
     bottom: 0;
-    width: 100%;
+    width: calc(100% + 70px);
     height: 50px;
 }
 
 a.site {
     color: #6d4aff;
     text-decoration: none;
+}
+
+@media all and (max-width: 1000px) {
+    .footer {
+        width: 100%;
+    }
 }

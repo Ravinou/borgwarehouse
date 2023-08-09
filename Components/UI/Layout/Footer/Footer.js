@@ -1,5 +1,6 @@
 //Lib
 import classes from './Footer.module.css';
+import packageInfo from '../../../../package.json';
 
 function Footer() {
     return (
@@ -13,7 +14,8 @@ function Footer() {
                     rel='noreferrer'
                 >
                     BorgWarehouse
-                </a>
+                </a>{' '}
+                - v{packageInfo.version}
             </p>
         </div>
     );

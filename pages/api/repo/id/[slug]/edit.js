@@ -67,7 +67,7 @@ export default async function handler(req, res) {
                           ...repo,
                           alias: alias,
                           sshPublicKey: sshPublicKey,
-                          storageSize: size,
+                          storageSize: Number(size),
                           comment: comment,
                           alert: alert,
                           lanCommand: lanCommand,

@@ -35,7 +35,7 @@
     margin: 20px 0px 0px 0px;
     padding: 15px;
     border-radius: 5px;
-    transition: max-height 0.2s linear;
+    transition: max-height 0.1s linear;
     overflow: visible;
     /* Need to display comment on hover (which is position : absolute) */
     position: relative;
@@ -191,6 +191,17 @@
 .comment:active .toolTip {
     visibility: visible;
     opacity: 1;
+}
+
+.chevron {
+    margin: auto;
+}
+
+.chevron :focus,
+.chevron :hover {
+    cursor: pointer;
+    filter: invert(27%) sepia(82%) saturate(2209%) hue-rotate(240deg)
+        brightness(99%) contrast(105%);
 }
 
 /* MOBILE */

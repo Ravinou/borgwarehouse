@@ -330,6 +330,7 @@ export default function RepoManage(props) {
                             <label htmlFor='size'>Storage Size (Go)</label>
                             <input
                                 type='number'
+                                min='1'
                                 defaultValue={
                                     props.mode == 'edit'
                                         ? targetRepo.storageSize

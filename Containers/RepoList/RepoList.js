@@ -1,7 +1,7 @@
 //Lib
 import classes from './RepoList.module.css';
-import { useState, useEffect, useRef } from 'react';
-import { IconPlus, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { useState, useEffect } from 'react';
+import { IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import useSWR, { useSWRConfig } from 'swr';
@@ -48,7 +48,6 @@ export default function RepoList() {
     ////States
     const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
     const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     ////Functions
 
@@ -66,32 +65,6 @@ export default function RepoList() {
         toast.error('API Error !', toastOptions);
         return <ToastContainer />;
     }
-
-    //BUTTON : Display or not repo details for ONE repo
-    const displayDetailsForOneHandler = async (id, boolean) => {
-        setIsLoading(true);
-        await fetch('/api/repo/id/' + id + '/displayDetails', {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({ displayDetails: boolean }),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    mutate('/api/repo');
-                    setIsLoading(false);
-                } else {
-                    setIsLoading(false);
-                    toast.error('API error', toastOptions);
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                setIsLoading(false);
-                toast.error('API error', toastOptions);
-            });
-    };
 
     //BUTTON : Display RepoManage component box for ADD
     const manageRepoAddHandler = () => {
@@ -131,45 +104,11 @@ export default function RepoList() {
                     storageSize={repo.storageSize}
                     storageUsed={repo.storageUsed}
                     sshPublicKey={repo.sshPublicKey}
-                    displayDetails={repo.displayDetails}
                     unixUser={repo.unixUser}
                     comment={repo.comment}
                     lanCommand={repo.lanCommand}
                     repoManageEditHandler={() => repoManageEditHandler(repo.id)}
                 ></Repo>
-                {repo.displayDetails ? (
-                    <div className={classes.chevron}>
-                        {isLoading ? (
-                            <IconChevronUp color='#494b7a' size={28} />
-                        ) : (
-                            <IconChevronUp
-                                color='#494b7a'
-                                size={28}
-                                onClick={() => {
-                                    displayDetailsForOneHandler(repo.id, false);
-                                    // tell all SWRs with this key to revalidate
-                                    mutate('/api/repo');
-                                }}
-                            />
-                        )}
-                    </div>
-                ) : (
-                    <div className={classes.chevron}>
-                        {isLoading ? (
-                            <IconChevronDown color='#494b7a' size={28} />
-                        ) : (
-                            <IconChevronDown
-                                color='#494b7a'
-                                size={28}
-                                onClick={() => {
-                                    displayDetailsForOneHandler(repo.id, true);
-                                    // tell all SWRs with this key to revalidate
-                                    mutate('/api/repo');
-                                }}
-                            />
-                        )}
-                    </div>
-                )}
             </>
         );
     });

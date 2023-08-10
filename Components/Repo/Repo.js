@@ -1,15 +1,61 @@
 //Lib
-import React from 'react';
+import { useState } from 'react';
 import classes from './Repo.module.css';
-import { IconSettings, IconInfoCircle } from '@tabler/icons-react';
+import {
+    IconSettings,
+    IconInfoCircle,
+    IconChevronDown,
+    IconChevronUp,
+} from '@tabler/icons-react';
 import timestampConverter from '../../helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
 
 export default function Repo(props) {
+    //Load displayDetails from LocalStorage
+    const displayDetailsFromLS = () => {
+        try {
+            if (
+                localStorage.getItem('displayDetailsRepo' + props.id) === null
+            ) {
+                localStorage.setItem(
+                    'displayDetailsRepo' + props.id,
+                    JSON.stringify(true)
+                );
+                return true;
+            } else {
+                return JSON.parse(
+                    localStorage.getItem('displayDetailsRepo' + props.id)
+                );
+            }
+        } catch (error) {
+            console.log(
+                'LocalStorage error, key',
+                'displayDetailsRepo' + props.id,
+                'will be removed. Try again.',
+                'Error message on this key : ',
+                error
+            );
+            localStorage.removeItem('displayDetailsRepo' + props.id);
+        }
+    };
+
+    //States
+    const [displayDetails, setDisplayDetails] = useState(displayDetailsFromLS);
+
+    //BUTTON : Display or not repo details for ONE repo
+    const displayDetailsForOneHandler = (boolean) => {
+        //Update localStorage
+        localStorage.setItem(
+            'displayDetailsRepo' + props.id,
+            JSON.stringify(boolean)
+        );
+        setDisplayDetails(boolean);
+    };
+
     return (
         <>
-            {props.displayDetails ? (
+            {displayDetails ? (
                 <>
                     <div className={classes.RepoOpen}>
                         <div className={classes.openFlex}>
@@ -126,6 +172,27 @@ export default function Repo(props) {
                         </div>
                     </div>
                 </>
+            )}
+            {displayDetails ? (
+                <div className={classes.chevron}>
+                    <IconChevronUp
+                        color='#494b7a'
+                        size={28}
+                        onClick={() => {
+                            displayDetailsForOneHandler(false);
+                        }}
+                    />
+                </div>
+            ) : (
+                <div className={classes.chevron}>
+                    <IconChevronDown
+                        color='#494b7a'
+                        size={28}
+                        onClick={() => {
+                            displayDetailsForOneHandler(true);
+                        }}
+                    />
+                </div>
             )}
         </>
     );

@@ -112,17 +112,6 @@
     transform: scale(0.96);
 }
 
-.chevron {
-    margin: auto;
-}
-
-.chevron :focus,
-.chevron :hover {
-    cursor: pointer;
-    filter: invert(27%) sepia(82%) saturate(2209%) hue-rotate(240deg)
-        brightness(99%) contrast(105%);
-}
-
 @media all and (max-width: 1000px) {
     .newRepoButton {
         display: none;

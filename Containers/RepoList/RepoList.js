@@ -100,7 +100,7 @@ export default function RepoList() {
                     alias={repo.alias}
                     status={repo.status}
                     lastSave={repo.lastSave}
-                    repository={repo.repository}
+                    repositoryName={repo.repositoryName}
                     storageSize={repo.storageSize}
                     storageUsed={repo.storageUsed}
                     sshPublicKey={repo.sshPublicKey}

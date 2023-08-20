@@ -49,7 +49,7 @@ export default async function handler(req, res) {
             const newRepo = {
                 id: newID,
                 alias: alias,
-                repository: 'repo' + newID,
+                repositoryName: '',
                 status: false,
                 lastSave: 0,
                 alert: alert,
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
             const { stdout, stderr } = await exec(
-                `${shellsDirectory}/shells/createRepo.sh ${newRepo.repository} "${newRepo.sshPublicKey}" ${newRepo.storageSize}`
+                `${shellsDirectory}/shells/createRepo.sh "${newRepo.sshPublicKey}" ${newRepo.storageSize}`
             );
             if (stderr) {
                 console.log('stderr:', stderr);
@@ -77,7 +77,7 @@ export default async function handler(req, res) {
                 });
                 return;
             }
-            newRepo.unixUser = stdout.trim();
+            newRepo.repositoryName = stdout.trim();
 
             //Create the new repoList with the new repo
             let newRepoList = [newRepo, ...repoList];

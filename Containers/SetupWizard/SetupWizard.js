@@ -59,7 +59,7 @@ function SetupWizard(props) {
         label: `${repo.alias} - #${repo.id}`,
         value: `${repo.alias} - #${repo.id}`,
         id: repo.id,
-        repository: repo.repository,
+        repositoryName: repo.repositoryName,
         unixUser: repo.unixUser,
         lanCommand: repo.lanCommand,
     }));

@@ -41,10 +41,10 @@ function WizardStep2(props) {
                         borg init -e repokey-blake2 ssh://
                         {props.selectedOption.unixUser}@{HOSTNAME}:
                         {SSH_SERVER_PORT}/./
-                        {props.selectedOption.repository}
+                        {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`borg init -e repokey-blake2 ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
+                        dataToCopy={`borg init -e repokey-blake2 ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 <div className={classes.note}>
@@ -97,10 +97,10 @@ function WizardStep2(props) {
                         ssh://
                         {props.selectedOption.unixUser}@{HOSTNAME}:
                         {SSH_SERVER_PORT}/./
-                        {props.selectedOption.repository}
+                        {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
+                        dataToCopy={`ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 For more information about the Vorta graphical client, please

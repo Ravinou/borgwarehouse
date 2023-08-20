@@ -58,7 +58,6 @@ export default async function handler(req, res) {
                 sshPublicKey: sshPublicKey,
                 comment: comment,
                 displayDetails: true,
-                unixUser: '',
                 lanCommand: lanCommand,
             };
 

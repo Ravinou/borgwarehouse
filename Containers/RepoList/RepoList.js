@@ -104,7 +104,6 @@ export default function RepoList() {
                     storageSize={repo.storageSize}
                     storageUsed={repo.storageUsed}
                     sshPublicKey={repo.sshPublicKey}
-                    unixUser={repo.unixUser}
                     comment={repo.comment}
                     lanCommand={repo.lanCommand}
                     repoManageEditHandler={() => repoManageEditHandler(repo.id)}

@@ -23,7 +23,6 @@ function SetupWizard(props) {
     const [selectedOption, setSelectedOption] = useState({
         id: '#id',
         repository: 'repo',
-        unixUser: 'user',
     });
 
     ////LifeCycle
@@ -60,7 +59,6 @@ function SetupWizard(props) {
         value: `${repo.alias} - #${repo.id}`,
         id: repo.id,
         repositoryName: repo.repositoryName,
-        unixUser: repo.unixUser,
         lanCommand: repo.lanCommand,
     }));
 

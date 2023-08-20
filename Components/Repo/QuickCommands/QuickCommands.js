@@ -29,7 +29,7 @@ export default function QuickCommands(props) {
         // Asynchronously call copy to clipboard
         navigator.clipboard
             .writeText(
-                `borg init -e repokey-blake2 ssh://${props.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.repository}`
+                `borg init -e repokey-blake2 ssh://${props.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.repositoryName}`
             )
             .then(() => {
                 // If successful, update the isCopied state value
@@ -51,7 +51,7 @@ export default function QuickCommands(props) {
                 <div className={classes.tooltip}>
                     borg init -e repokey-blake2 ssh://{props.unixUser}@
                     {HOSTNAME}:{SSH_SERVER_PORT}/./
-                    {props.repository}
+                    {props.repositoryName}
                 </div>
             )}
             <div className={classes.icons}>

@@ -79,7 +79,7 @@ export default function Repo(props) {
                             )}
                             <QuickCommands
                                 unixUser={props.unixUser}
-                                repository={props.repository}
+                                repositoryName={props.repositoryName}
                                 lanCommand={props.lanCommand}
                             />
                         </div>
@@ -103,7 +103,7 @@ export default function Repo(props) {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>{props.repository}</th>
+                                    <th>{props.repositoryName}</th>
                                     <th>{props.storageSize}Go</th>
                                     <th style={{ padding: '0 4% 0 4%' }}>
                                         <StorageBar

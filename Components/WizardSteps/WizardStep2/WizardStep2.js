@@ -9,6 +9,7 @@ function WizardStep2(props) {
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
     let HOSTNAME;
     let SSH_SERVER_PORT;
+    let UNIX_USER = process.env.NEXT_PUBLIC_UNIX_USER;
     if (
         props.selectedOption.lanCommand &&
         process.env.NEXT_PUBLIC_HOSTNAME_LAN &&
@@ -39,12 +40,11 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         borg init -e repokey-blake2 ssh://
-                        {props.selectedOption.unixUser}@{HOSTNAME}:
-                        {SSH_SERVER_PORT}/./
+                        {UNIX_USER}@{HOSTNAME}:{SSH_SERVER_PORT}/./
                         {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`borg init -e repokey-blake2 ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+                        dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 <div className={classes.note}>
@@ -95,12 +95,11 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         ssh://
-                        {props.selectedOption.unixUser}@{HOSTNAME}:
-                        {SSH_SERVER_PORT}/./
+                        {UNIX_USER}@{HOSTNAME}:{SSH_SERVER_PORT}/./
                         {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+                        dataToCopy={`ssh://${UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 For more information about the Vorta graphical client, please

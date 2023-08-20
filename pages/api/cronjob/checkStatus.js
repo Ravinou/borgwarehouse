@@ -62,7 +62,8 @@ export default async function handler(req, res) {
             newRepoList = repoList;
             for (let index in newRepoList) {
                 const repoFiltered = lastSave.filter(
-                    (x) => x.user === newRepoList[index].unixUser
+                    (x) =>
+                        x.repositoryName === newRepoList[index].repositoryName
                 );
                 if (repoFiltered.length === 1) {
                     //Write the timestamp of the last save

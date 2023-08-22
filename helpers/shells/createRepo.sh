@@ -5,6 +5,7 @@
 # Main steps are :
 # - check if args are present
 # - check the ssh pub key format
+# - check if the ssh pub key is already present in authorized_keys
 # - check if borgbackup package is install
 # - generate a random repositoryName
 # - add the SSH public key in the authorized_keys with borg restriction for repository and storage quota.
@@ -12,7 +13,7 @@
 # He can only use the borg command. Moreover, he will not be able to leave his repository or create a new one.
 # It is similar to a jail and that is the goal.
 
-# WAITING resolve of this for quota... : https://github.com/borgbackup/borg/issues/7757
+# Limitation : all SSH pubkey are unique : https://github.com/borgbackup/borg/issues/7757
 
 # Exit when any command fails
 set -e
@@ -44,10 +45,16 @@ then
     exit 2
 fi
 
+# Check if SSH pub key is already present in authorized_keys
+if grep -q "$1" "$authorized_keys"; then
+    echo "SSH pub key already present in authorized_keys"
+    exit 3
+fi
+
 # Check if borgbackup is installed
 if ! [ -x "$(command -v borg)" ]; then
   echo "You must install borgbackup package."
-  exit 3
+  exit 4
 fi
 
 # Generation of a random for repositoryName
@@ -59,12 +66,12 @@ repositoryName=$(randRepositoryName)
 ## Check if authorized_keys exists
 if [ ! -f "${authorized_keys}" ];then
     echo "${authorized_keys} must be present"
-    exit 4
+    exit 5
 fi
 
-## Add ssh public key in authorized_keys with borg restriction for only 1 repository (:$1) and storage quota
+## Add ssh public key in authorized_keys with borg restriction for only 1 repository and storage quota
 restricted_authkeys="command=\"cd ${pool};borg serve --restrict-to-path ${pool}/${repositoryName} --storage-quota $2G\",restrict $1"
 echo "$restricted_authkeys" | tee -a "${authorized_keys}" >/dev/null
 
-## Return the unix user
+## Return the repositoryName
 echo "${repositoryName}"

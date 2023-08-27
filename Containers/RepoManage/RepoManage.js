@@ -108,10 +108,58 @@ export default function RepoManage(props) {
             });
     };
 
+    //Verify that the SSH key is unique
+    const isSSHKeyUnique = async (sshPublicKey) => {
+        let isUnique = true;
+
+        // Extract the first two columns of the SSH key in the form
+        const publicKeyPrefix = sshPublicKey.split(' ').slice(0, 2).join(' ');
+
+        await fetch('/api/repo', { method: 'GET' })
+            .then((response) => response.json())
+            .then((data) => {
+                for (let element in data.repoList) {
+                    // Extract the first two columns of the SSH key in the repoList
+                    const repoPublicKeyPrefix = data.repoList[
+                        element
+                    ].sshPublicKey
+                        .split(' ')
+                        .slice(0, 2)
+                        .join(' ');
+
+                    if (
+                        repoPublicKeyPrefix === publicKeyPrefix && // Compare the first two columns of the SSH key
+                        (!targetRepo ||
+                            data.repoList[element].id != targetRepo.id)
+                    ) {
+                        toast.error(
+                            'The SSH key is already used in repository #' +
+                                data.repoList[element].id +
+                                '. Please use another key or delete the key from the other repository.',
+                            toastOptions
+                        );
+                        isUnique = false;
+                        break;
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error('An error has occurred', toastOptions);
+                isUnique = false;
+            });
+        return isUnique;
+    };
+
     //Form submit Handler for ADD or EDIT a repo
     const formSubmitHandler = async (dataForm) => {
         //Loading button on submit to avoid multiple send.
         setIsLoading(true);
+        //Verify that the SSH key is unique
+        if (!(await isSSHKeyUnique(dataForm.sshkey))) {
+            setIsLoading(false);
+            return;
+        }
         //ADD a repo
         if (props.mode == 'add') {
             const newRepo = {

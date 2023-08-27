@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
-# This shell takes 2 args : [user] [new SSH pub key] [quota]
-# This shell updates the ssh key for a repository.
+# This shell takes 3 args: [repositoryName] [new SSH pub key] [quota]
+# This shell updates the SSH key and the quota for a repository.
 
 # Exit when any command fails
 set -e
 
-# Check args
-if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ];then
-    echo "This shell takes 3 args : [user] [new SSH pub key] [quota]"
-    exit 1
+# Load .env if exists
+if [[ -f .env ]]; then
+    source .env
 fi
 
-# Some variables
-home="/var/borgwarehouse/$1"
+# Default value if .env not exists
+: "${home:=/home/borgwarehouse}"
+
+# Check args
+if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ]; then
+    echo "This shell takes 3 args: [repositoryName] [new SSH pub key] [quota]"
+    exit 1
+fi
 
 # Check if the SSH public key is a valid format
 # This pattern validates SSH public keys for : rsa, ed25519, ed25519-sk
@@ -25,23 +30,43 @@ then
     exit 2
 fi
 
-# Check if username length is 8 char. With createRepo.sh our randoms have a length of 8 characters.
-# If we receive another length there is necessarily a problem.
-username=$1
-if [ ${#username} != 8 ]
-then
-    echo "Error with the length of the username."
+# Check if repositoryName length is 8 char. With createRepo.sh our randoms have a length of 8 characters.
+# If we receive another length, there is necessarily a problem.
+repositoryName=$1
+if [ ${#repositoryName} != 8 ]; then
+    echo "Error with the length of the repositoryName."
     exit 3
 fi
 
-# Check if the user exists
-if ! id "$1" &>/dev/null; then
-    echo "The user $1 does not exist"
+# Check if a line in authorized_keys contains repository_name
+if ! grep -q "command=\".*${repositoryName}.*\",restrict" "$home/.ssh/authorized_keys"; then
+    echo "No line containing $repositoryName found in authorized_keys"
     exit 4
 fi
 
-# Modify authorized_keys for the user : only the ssh key is modify with this regex
-sudo sed -ri "s|(command=\".*\",restrict ).*|\1$2|g" "$home/.ssh/authorized_keys"
+# Check if the new SSH pub key is already present on a line OTHER than the one corresponding to repositoryName
+found=false
+regex="command=\".*${repositoryName}.*\",restrict"
+while IFS= read -r line; do
+    if [[ $line =~ $pattern ]]; then
+        # Get the SSH pub key of the line (ignore the comment)
+        key1=$(echo ${BASH_REMATCH[0]} | awk '{print $1 " " $2}')
+        # Get the SSH pub key of the new SSH pub key (ignore the comment)
+        key2=$(echo "$2" | awk '{print $1 " " $2}')
+        
+        if [ "$key1" == "$key2" ]; then
+            # If the SSH pub key is already present on a line other than the one corresponding to repositoryName
+            if [[ ! $line =~ $regex ]]; then
+                found=true
+                break
+            fi
+        fi
+    fi
+done < "$home/.ssh/authorized_keys"
+if [ "$found" = true ]; then
+    echo "The new SSH pub key $2 is already present in authorized_keys on a different line."
+    exit 5
+fi
 
-# Modify authorized_keys for the user : only the quota is modify with this regex
-sudo sed -ri "s|--storage-quota.*\"|--storage-quota $3G\"|g" "$home/.ssh/authorized_keys"
+# Modify authorized_keys for the repositoryName: update the line with the quota and the SSH pub key
+sed -ri "s|(command=\".*${repositoryName}.*--storage-quota ).*G\",restrict .*|\\1$3G\",restrict $2|g" "$home/.ssh/authorized_keys"

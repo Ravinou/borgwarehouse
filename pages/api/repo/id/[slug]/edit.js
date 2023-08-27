@@ -49,7 +49,7 @@ export default async function handler(req, res) {
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             // //Exec the shell
             const { stderr } = await exec(
-                `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].unixUser} "${sshPublicKey}" ${size}`
+                `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].repositoryName} "${sshPublicKey}" ${size}`
             );
             if (stderr) {
                 console.log('stderr:', stderr);

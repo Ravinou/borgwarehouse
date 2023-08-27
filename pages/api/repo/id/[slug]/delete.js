@@ -47,10 +47,9 @@ export default async function handler(req, res) {
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
             const { stderr } = await exec(
-                `${shellsDirectory}/shells/deleteRepo.sh ${repoList[indexToDelete].unixUser}`
+                `${shellsDirectory}/shells/deleteRepo.sh ${repoList[indexToDelete].repositoryName}`
             );
-            //Ignore this normal error with the command userdel in the shell : "userdel: USERXXX mail spool (/var/mail/USERXXX) not found".
-            if (stderr && !stderr.includes('mail spool')) {
+            if (stderr) {
                 console.log('stderr:', stderr);
                 res.status(500).json({
                     status: 500,

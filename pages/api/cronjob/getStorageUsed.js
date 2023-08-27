@@ -59,7 +59,7 @@ export default async function handler(req, res) {
             let newRepoList = repoList;
             for (let index in newRepoList) {
                 const repoFiltered = storageUsed.filter(
-                    (x) => x.name === newRepoList[index].unixUser
+                    (x) => x.name === newRepoList[index].repositoryName
                 );
                 if (repoFiltered.length === 1) {
                     newRepoList[index].storageUsed = repoFiltered[0].size;

@@ -69,4 +69,4 @@ if [ "$found" = true ]; then
 fi
 
 # Modify authorized_keys for the repositoryName: update the line with the quota and the SSH pub key
-sudo sed -ri "s|(command=\".*${repositoryName}.*--storage-quota ).*G\",restrict .*|\\1$3G\",restrict $2|g" "$home/.ssh/authorized_keys"
+sed -ri "s|(command=\".*${repositoryName}.*--storage-quota ).*G\",restrict .*|\\1$3G\",restrict $2|g" "$home/.ssh/authorized_keys"

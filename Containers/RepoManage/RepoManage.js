@@ -178,7 +178,7 @@ export default function RepoManage(props) {
                 },
                 body: JSON.stringify(newRepo),
             })
-                .then((response) => {
+                .then(async (response) => {
                     if (response.ok) {
                         toast.success(
                             'New repository added ! 🥳',
@@ -186,9 +186,13 @@ export default function RepoManage(props) {
                         );
                         router.replace('/');
                     } else {
-                        toast.error('An error has occurred', toastOptions);
+                        const errorMessage = await response.json();
+                        toast.error(
+                            `An error has occurred : ${errorMessage.message}`,
+                            toastOptions
+                        );
                         router.replace('/');
-                        console.log('Fail to post');
+                        console.log(`Fail to ${props.mode}`);
                     }
                 })
                 .catch((error) => {
@@ -213,7 +217,7 @@ export default function RepoManage(props) {
                 },
                 body: JSON.stringify(dataEdited),
             })
-                .then((response) => {
+                .then(async (response) => {
                     if (response.ok) {
                         toast.success(
                             'The repository #' +
@@ -223,9 +227,13 @@ export default function RepoManage(props) {
                         );
                         router.replace('/');
                     } else {
-                        toast.error('An error has occurred', toastOptions);
+                        const errorMessage = await response.json();
+                        toast.error(
+                            `An error has occurred : ${errorMessage.message}`,
+                            toastOptions
+                        );
                         router.replace('/');
-                        console.log('Fail to PUT');
+                        console.log(`Fail to ${props.mode}`);
                     }
                 })
                 .catch((error) => {

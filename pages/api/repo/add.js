@@ -65,17 +65,10 @@ export default async function handler(req, res) {
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
-            const { stdout, stderr } = await exec(
+            const { stdout } = await exec(
                 `${shellsDirectory}/shells/createRepo.sh "${newRepo.sshPublicKey}" ${newRepo.storageSize}`
             );
-            if (stderr) {
-                console.log('stderr:', stderr);
-                res.status(500).json({
-                    status: 500,
-                    message: 'Error on creation, contact the administrator.',
-                });
-                return;
-            }
+
             newRepo.repositoryName = stdout.trim();
 
             //Create the new repoList with the new repo
@@ -105,7 +98,7 @@ export default async function handler(req, res) {
             } else {
                 res.status(500).json({
                     status: 500,
-                    message: 'API error, contact the administrator',
+                    message: error.stdout,
                 });
             }
             return;

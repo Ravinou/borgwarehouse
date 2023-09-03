@@ -28,7 +28,6 @@ export default async function handler(req, res) {
         }
 
         try {
-            //console.log('API call (PUT)');
             //Find the absolute path of the json directory
             const jsonDirectory = path.join(process.cwd(), '/config');
             let repoList = await fs.readFile(
@@ -48,17 +47,9 @@ export default async function handler(req, res) {
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             // //Exec the shell
-            const { stderr } = await exec(
+            await exec(
                 `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].repositoryName} "${sshPublicKey}" ${size}`
             );
-            if (stderr) {
-                console.log('stderr:', stderr);
-                res.status(500).json({
-                    status: 500,
-                    message: 'Error on update, contact the administrator.',
-                });
-                return;
-            }
 
             //Find the ID in the data and change the values transmitted by the form
             let newRepoList = repoList.map((repo) =>
@@ -97,7 +88,7 @@ export default async function handler(req, res) {
             } else {
                 res.status(500).json({
                     status: 500,
-                    message: 'API error, contact the administrator',
+                    message: error.stdout,
                 });
             }
             return;

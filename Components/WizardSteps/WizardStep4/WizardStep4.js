@@ -47,7 +47,7 @@ consistency:
     checks:
         - name: repository
         - name: archives
-        - frequency: 2 weeks
+          frequency: 2 weeks
 
 #hooks:
     # Custom preparation scripts to run.

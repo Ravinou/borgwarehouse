@@ -21,7 +21,7 @@ authorized_keys="${home}/.ssh/authorized_keys"
 
 # Check arg
 if [[ $# -ne 1 || $1 = "" ]]; then
-    echo "You must provide a repositoryName in argument."
+    echo -n "You must provide a repositoryName in argument."
     exit 1
 fi
 
@@ -29,7 +29,7 @@ fi
 # If we receive another length there is necessarily a problem.
 repositoryName=$1
 if [ ${#repositoryName} != 8 ]; then
-    echo "Error with the length of the repositoryName."
+    echo -n "Error with the length of the repositoryName."
     exit 2
 fi
 
@@ -39,11 +39,11 @@ if [ -d "$1" ]; then
         rm -rf "${pool}/${repositoryName}"
         # Delete the line in the authorized_keys file
         sed -i "/${repositoryName}/d" "${authorized_keys}"
-        echo "The folder "${pool}/${repositoryName}" and all its data have been deleted. The line associated in the authorized_keys file has been deleted."
+        echo -n "The folder "${pool}/${repositoryName}" and all its data have been deleted. The line associated in the authorized_keys file has been deleted."
         exit 3
 else
         # Delete the line in the authorized_keys file
         sed -i "/${repositoryName}/d" "${authorized_keys}"
-        echo "The folder "${pool}/${repositoryName}" did not exist (repository never initialized or used). The line associated in the authorized_keys file has been deleted."
+        echo -n "The folder "${pool}/${repositoryName}" did not exist (repository never initialized or used). The line associated in the authorized_keys file has been deleted."
         exit 3
 fi

@@ -17,7 +17,7 @@ fi
 
 # Check args
 if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ]; then
-    echo "This shell takes 3 args: [repositoryName] [new SSH pub key] [quota]"
+    echo -n "This shell takes 3 args: [repositoryName] [new SSH pub key] [quota]"
     exit 1
 fi
 
@@ -26,7 +26,7 @@ fi
 pattern='(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?'
 if [[ ! "$2" =~ $pattern ]]
 then
-    echo "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
+    echo -n "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
     exit 2
 fi
 
@@ -34,13 +34,13 @@ fi
 # If we receive another length, there is necessarily a problem.
 repositoryName=$1
 if [ ${#repositoryName} != 8 ]; then
-    echo "Error with the length of the repositoryName."
+    echo -n "Error with the length of the repositoryName."
     exit 3
 fi
 
 # Check if a line in authorized_keys contains repository_name
 if ! grep -q "command=\".*${repositoryName}.*\",restrict" "$home/.ssh/authorized_keys"; then
-    echo "No line containing $repositoryName found in authorized_keys"
+    echo -n "No line containing $repositoryName found in authorized_keys"
     exit 4
 fi
 
@@ -64,7 +64,7 @@ while IFS= read -r line; do
     fi
 done < "$home/.ssh/authorized_keys"
 if [ "$found" = true ]; then
-    echo "The new SSH pub key $2 is already present in authorized_keys on a different line."
+    echo -n "The new SSH pub key $2 is already present in authorized_keys on a different line."
     exit 5
 fi
 

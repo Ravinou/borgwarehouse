@@ -32,7 +32,7 @@ authorized_keys="${home}/.ssh/authorized_keys"
 
 # Check args
 if [ "$1" == "" ] || [ "$2" == "" ];then
-    echo "This shell takes 2 arguments : SSH Public Key, Quota in Go [e.g. : 10] "
+    echo -n "This shell takes 2 arguments : SSH Public Key, Quota in Go [e.g. : 10] "
     exit 1
 fi
 
@@ -41,19 +41,19 @@ fi
 pattern='(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?'
 if [[ ! "$1" =~ $pattern ]]
 then
-    echo "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
+    echo -n "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
     exit 2
 fi
 
 # Check if SSH pub key is already present in authorized_keys
 if grep -q "$1" "$authorized_keys"; then
-    echo "SSH pub key already present in authorized_keys"
+    echo -n "SSH pub key already present in authorized_keys"
     exit 3
 fi
 
 # Check if borgbackup is installed
 if ! [ -x "$(command -v borg)" ]; then
-  echo "You must install borgbackup package."
+  echo -n "You must install borgbackup package."
   exit 4
 fi
 
@@ -65,7 +65,7 @@ repositoryName=$(randRepositoryName)
 
 ## Check if authorized_keys exists
 if [ ! -f "${authorized_keys}" ];then
-    echo "${authorized_keys} must be present"
+    echo -n "${authorized_keys} must be present"
     exit 5
 fi
 

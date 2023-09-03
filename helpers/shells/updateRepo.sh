@@ -64,7 +64,7 @@ while IFS= read -r line; do
     fi
 done < "$home/.ssh/authorized_keys"
 if [ "$found" = true ]; then
-    echo -n "The new SSH pub key $2 is already present in authorized_keys on a different line."
+    echo -n "This SSH pub key is already present in authorized_keys on a different line."
     exit 5
 fi
 

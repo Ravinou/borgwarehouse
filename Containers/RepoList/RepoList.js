@@ -43,11 +43,27 @@ export default function RepoList() {
         if (router.pathname.startsWith('/manage-repo/edit')) {
             setDisplayRepoEdit(!displayRepoEdit);
         }
+        //Fetch wizardEnv to hydrate Repo components
+        const fetchWizardEnv = async () => {
+            try {
+                const response = await fetch('/api/account/getWizardEnv', {
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                });
+                setWizardEnv((await response.json()).wizardEnv);
+            } catch (error) {
+                console.log('Fetching datas error');
+            }
+        };
+        fetchWizardEnv();
     }, []);
 
     ////States
     const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
     const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
+    const [wizardEnv, setWizardEnv] = useState({});
 
     ////Functions
 
@@ -107,6 +123,7 @@ export default function RepoList() {
                     comment={repo.comment}
                     lanCommand={repo.lanCommand}
                     repoManageEditHandler={() => repoManageEditHandler(repo.id)}
+                    wizardEnv={wizardEnv}
                 ></Repo>
             </>
         );

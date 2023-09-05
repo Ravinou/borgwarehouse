@@ -3,24 +3,17 @@ import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconTool, IconAlertCircle } from '@tabler/icons-react';
 import CopyButton from '../../UI/CopyButton/CopyButton';
+import lanCommandOption from '../../../helpers/functions/lanCommandOption';
 
 function WizardStep2(props) {
     ////Vars
+    const wizardEnv = props.wizardEnv;
+    const UNIX_USER = wizardEnv.UNIX_USER;
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-    let HOSTNAME;
-    let SSH_SERVER_PORT;
-    let UNIX_USER = process.env.NEXT_PUBLIC_UNIX_USER;
-    if (
-        props.selectedOption.lanCommand &&
-        process.env.NEXT_PUBLIC_HOSTNAME_LAN &&
-        process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN
-    ) {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME_LAN;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN;
-    } else {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT;
-    }
+    const { HOSTNAME, SSH_SERVER_PORT } = lanCommandOption(
+        wizardEnv,
+        props.selectedOption.lanCommand
+    );
 
     return (
         <div className={classes.container}>
@@ -125,20 +118,17 @@ function WizardStep2(props) {
                 connect :
                 <li>
                     <span className={classes.sshPublicKey}>
-                        ECDSA :{' '}
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA}
+                        ECDSA : {wizardEnv.SSH_SERVER_FINGERPRINT_ECDSA}
                     </span>
                 </li>
                 <li>
                     <span className={classes.sshPublicKey}>
-                        ED25519 :{' '}
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519}
+                        ED25519 : {wizardEnv.SSH_SERVER_FINGERPRINT_ED25519}
                     </span>
                 </li>
                 <li>
                     <span className={classes.sshPublicKey}>
-                        RSA :{' '}
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA}
+                        RSA : {wizardEnv.SSH_SERVER_FINGERPRINT_RSA}
                     </span>
                 </li>
             </div>

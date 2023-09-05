@@ -6,20 +6,21 @@ import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
 
 export default function QuickCommands(props) {
     ////Vars
+    const wizardEnv = props.wizardEnv;
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
     let HOSTNAME;
     let SSH_SERVER_PORT;
-    let UNIX_USER = process.env.NEXT_PUBLIC_UNIX_USER;
+    let UNIX_USER;
     if (
         props.lanCommand &&
-        process.env.NEXT_PUBLIC_HOSTNAME_LAN &&
-        process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN
+        wizardEnv.HOSTNAME_LAN &&
+        wizardEnv.SSH_SERVER_PORT_LAN
     ) {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME_LAN;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN;
+        HOSTNAME = wizardEnv.HOSTNAME_LAN;
+        SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT_LAN;
     } else {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT;
+        HOSTNAME = wizardEnv.HOSTNAME;
+        SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT;
     }
 
     //State

@@ -80,6 +80,7 @@ export default function Repo(props) {
                             <QuickCommands
                                 repositoryName={props.repositoryName}
                                 lanCommand={props.lanCommand}
+                                wizardEnv={props.wizardEnv}
                             />
                         </div>
 

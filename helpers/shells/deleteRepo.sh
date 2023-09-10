@@ -40,10 +40,8 @@ if [ -d "$1" ]; then
         # Delete the line in the authorized_keys file
         sed -i "/${repositoryName}/d" "${authorized_keys}"
         echo -n "The folder "${pool}/${repositoryName}" and all its data have been deleted. The line associated in the authorized_keys file has been deleted."
-        exit 3
 else
         # Delete the line in the authorized_keys file
         sed -i "/${repositoryName}/d" "${authorized_keys}"
         echo -n "The folder "${pool}/${repositoryName}" did not exist (repository never initialized or used). The line associated in the authorized_keys file has been deleted."
-        exit 3
 fi

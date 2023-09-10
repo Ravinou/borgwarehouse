@@ -1,6 +1,8 @@
 .container {
     margin: 40px 20px 20px 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 1px 2px rgba(0, 0, 0, 0.24);
     border-radius: 5px;
     text-align: left;
     padding: 30px 70px;
@@ -54,8 +56,15 @@ h1 .icon {
 .code {
     background-color: #111827;
     color: #f8f8f2;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-        liberation mono, courier new, monospace;
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        liberation mono,
+        courier new,
+        monospace;
     padding: 5px 15px;
     border-radius: 5px;
     display: inline-block;
@@ -91,8 +100,15 @@ h1 .icon {
 
 .verifyOrange li .sshPublicKey {
     background-color: #282a36;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-        liberation mono, courier new, monospace;
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        liberation mono,
+        courier new,
+        monospace;
     border-radius: 5px;
     padding: 5px;
 }

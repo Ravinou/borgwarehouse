@@ -11,7 +11,7 @@ RUN useradd -m -g borgwarehouse  borgwarehouse
 
 WORKDIR /home/borgwarehouse/app
 
-RUN git clone -b v2.0 https://github.com/Ravinou/borgwarehouse.git .
+COPY . .
 
 RUN chown -R borgwarehouse:borgwarehouse * .*
 

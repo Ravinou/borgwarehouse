@@ -37,7 +37,7 @@ function WizardStep3(props) {
                         ::archive1 /your/pathToBackup
                     </div>
                     <CopyButton
-                        dataToCopy={`borg create ssh://${UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}::archive1 /your/pathToBackup`}
+                        dataToCopy={`borg create ssh://${UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}::archive1 /your/pathToBackup`}
                     />
                 </div>
             </div>

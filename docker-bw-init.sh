@@ -6,6 +6,14 @@ SSH_DIR="/home/borgwarehouse/.ssh"
 AUTHORIZED_KEYS_FILE="$SSH_DIR/authorized_keys"
 REPOS_DIR="/home/borgwarehouse/repos"
 
+init_ssh_server() {
+  if [ -z "$(ls -A /etc/ssh)" ]; then
+    echo "/etc/ssh is empty, generating SSH host keys..."
+    ssh-keygen -A
+    cp /home/borgwarehouse/sshd_config /home/borgwarehouse/moduli /etc/ssh/
+  fi
+}
+
 create_ssh_directory() {
   if [ ! -d "$SSH_DIR" ]; then
     echo "The .ssh directory does not exist, creating..."
@@ -29,6 +37,7 @@ create_repos_directory() {
   fi
 }
 
+init_ssh_server
 create_ssh_directory
 create_authorized_keys_file
 create_repos_directory

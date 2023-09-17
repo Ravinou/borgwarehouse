@@ -1,4 +1,4 @@
-FROM node:18-buster-slim
+FROM node:18-bookworm-slim
 
 RUN apt-get update && \
     apt-get install -y curl git jq borgbackup openssh-server && \
@@ -8,6 +8,8 @@ RUN apt-get update && \
 RUN groupadd borgwarehouse
 
 RUN useradd -m -g borgwarehouse  borgwarehouse
+
+RUN cp /etc/ssh/sshd_config /etc/ssh/moduli /home/borgwarehouse/
 
 WORKDIR /home/borgwarehouse/app
 
@@ -21,7 +23,7 @@ RUN npm ci --only=production
 
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 3000 22
 
 ENTRYPOINT ["./docker-bw-init.sh"]
 

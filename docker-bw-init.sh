@@ -18,8 +18,7 @@ check_ssh_directory() {
   if [ ! -d "$SSH_DIR" ]; then
     echo "The .ssh directory does not exist, you need to mount it as docker volume."
     exit 1
-  else
-    chown borgwarehouse:borgwarehouse "$SSH_DIR"
+  else 
     chmod 700 "$SSH_DIR"
   fi
 }
@@ -36,14 +35,16 @@ check_repos_directory() {
   if [ ! -d "$REPOS_DIR" ]; then
     echo "The repos directory does not exist, you need to mount it as docker volume."
     exit 2
-  fi
-    chown borgwarehouse:borgwarehouse "$REPOS_DIR"
+  else 
     chmod 700 "$REPOS_DIR"
+  fi
 }
 
 init_ssh_server
 check_ssh_directory
 create_authorized_keys_file
 check_repos_directory
+
+sudo service ssh restart
 
 exec "$@"

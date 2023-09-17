@@ -1,13 +1,15 @@
 FROM node:18-bookworm-slim
 
 RUN apt-get update && \
-    apt-get install -y curl git jq borgbackup openssh-server && \
+    apt-get install -y curl git jq borgbackup openssh-server sudo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN echo "borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/service ssh restart" >> /etc/sudoers
+
 RUN groupadd borgwarehouse
 
-RUN useradd -m -g borgwarehouse  borgwarehouse
+RUN useradd -m -g borgwarehouse borgwarehouse
 
 RUN cp /etc/ssh/sshd_config /etc/ssh/moduli /home/borgwarehouse/
 

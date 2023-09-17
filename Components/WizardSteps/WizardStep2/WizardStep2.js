@@ -114,8 +114,8 @@ function WizardStep2(props) {
                     <b>Check the fingerprint of server</b>
                 </div>
                 To check that you are talking to the right server, please make
-                sure to validate the following sshPublicKeys when you first
-                connect :
+                sure to validate one of the following key's fingerprint when you
+                first connect :
                 <li>
                     <span className={classes.sshPublicKey}>
                         ECDSA : {wizardEnv.SSH_SERVER_FINGERPRINT_ECDSA}

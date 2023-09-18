@@ -1,0 +1,2 @@
+* * * * * root curl --request POST --url 'http://service:3000/api/cronjob/checkStatus' --header "Authorization: Bearer ${CRONJOB_KEY}"
+* * * * * root curl --request POST --url 'http://service:3000/api/cronjob/getStorageUsed' --header "Authorization: Bearer ${CRONJOB_KEY}"

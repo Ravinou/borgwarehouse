@@ -1,0 +1,30 @@
+version: '3'
+services:
+  service:
+    build: .
+    env_file: .env.local
+    restart: always
+    volumes:
+      - repositories_and_keys:/var/borgwarehouse
+
+  nginx:
+    image: nginx:latest
+    env_file: .env.local
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - service
+
+  cron:
+    image: renskiy/cron
+    env_file: .env.local
+    restart: always
+    volumes:
+      - ./cronjobs:/etc/cron.d/cronjobs
+
+
+volumes:
+  repositories_and_keys:

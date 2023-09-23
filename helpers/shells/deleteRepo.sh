@@ -34,7 +34,7 @@ if [ ${#repositoryName} != 8 ]; then
 fi
 
 # Delete the repository and the line associated in the authorized_keys file
-if [ -d "$1" ]; then
+if [ -d "${pool}/${repositoryName}" ]; then
         # Delete the repository
         rm -rf "${pool}/${repositoryName}"
         # Delete the line in the authorized_keys file

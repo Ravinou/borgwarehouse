@@ -40,11 +40,18 @@ check_repos_directory() {
   fi
 }
 
+add_cron_job() {
+  local CRON_JOB="* * * * * curl --request POST --url 'http://localhost:3000/api/cronjob/checkStatus' --header 'Authorization: Bearer $CRONJOB_KEY'; curl --request POST --url 'http://localhost:3000/api/cronjob/getStorageUsed' --header 'Authorization: Bearer $CRONJOB_KEY'"
+  echo "$CRON_JOB" | crontab -u borgwarehouse -
+}
+
 init_ssh_server
 check_ssh_directory
 create_authorized_keys_file
 check_repos_directory
+add_cron_job
 
 sudo service ssh restart
+sudo service cron restart
 
 exec "$@"

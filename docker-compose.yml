@@ -1,0 +1,27 @@
+version: '3'
+services:
+    borgwarehouse:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: borgwarehouse
+        ports:
+            - '3000:3000'
+            - '2222:22'
+        environment:
+            # UID and GID are the user and group id of the user running the container
+            - UID=1001
+            - GID=1001
+            - NEXTAUTH_URL=https://your.domain.com
+            - NEXTAUTH_SECRET=your-secret
+            - CRONJOB_KEY=your-other-secret
+            # The SSH_SERVER_PORT must match the port exposed above
+            - SSH_SERVER_PORT=2222
+            - FQDN=your.domain.com
+        volumes:
+            # The host folders must be owned by the user with UID and GID specified above
+            - <host-folder>/config:/home/borgwarehouse/app/config
+            - <host-folder>/ssh:/home/borgwarehouse/.ssh
+            - <host-folder>/ssh_host:/etc/ssh
+            - <host-folder>/repos:/home/borgwarehouse/repos
+        container_name: borgwarehouse

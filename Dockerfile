@@ -9,9 +9,12 @@ RUN echo "borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/service ssh restart" >> /e
 
 RUN echo "borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/service cron restart" >> /etc/sudoers
 
-RUN groupadd borgwarehouse
+ARG UID=1001
+ARG GID=1001
 
-RUN useradd -m -g borgwarehouse borgwarehouse
+RUN groupadd -g ${GID} borgwarehouse
+
+RUN useradd -m -u ${UID} -g ${GID} borgwarehouse
 
 RUN cp /etc/ssh/sshd_config /etc/ssh/moduli /home/borgwarehouse/
 

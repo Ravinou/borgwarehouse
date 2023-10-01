@@ -21,12 +21,11 @@ export const authOptions = {
                         JSON.stringify([
                             {
                                 id: 0,
-                                email: 'admin@demo',
+                                email: '',
                                 username: 'admin',
                                 password:
                                     '$2a$12$20yqRnuaDBH6AE0EvIUcEOzqkuBtn1wDzJdw2Beg8w9S.vEqdso0a',
                                 roles: ['admin'],
-                                emailAlert: 'false',
                             },
                         ])
                     );

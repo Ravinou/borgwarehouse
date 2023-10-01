@@ -10,7 +10,7 @@ function WizardStep2(props) {
     const wizardEnv = props.wizardEnv;
     const UNIX_USER = wizardEnv.UNIX_USER;
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-    const { HOSTNAME, SSH_SERVER_PORT } = lanCommandOption(
+    const { FQDN, SSH_SERVER_PORT } = lanCommandOption(
         wizardEnv,
         props.selectedOption.lanCommand
     );
@@ -33,11 +33,11 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         borg init -e repokey-blake2 ssh://
-                        {UNIX_USER}@{HOSTNAME}:{SSH_SERVER_PORT}/./
+                        {UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
                         {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+                        dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 <div className={classes.note}>
@@ -88,11 +88,11 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         ssh://
-                        {UNIX_USER}@{HOSTNAME}:{SSH_SERVER_PORT}/./
+                        {UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
                         {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`ssh://${UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+                        dataToCopy={`ssh://${UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 For more information about the Vorta graphical client, please

@@ -8,17 +8,17 @@ export default function QuickCommands(props) {
     ////Vars
     const wizardEnv = props.wizardEnv;
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-    let HOSTNAME;
+    let FQDN;
     let SSH_SERVER_PORT;
     if (
         props.lanCommand &&
-        wizardEnv.HOSTNAME_LAN &&
+        wizardEnv.FQDN_LAN &&
         wizardEnv.SSH_SERVER_PORT_LAN
     ) {
-        HOSTNAME = wizardEnv.HOSTNAME_LAN;
+        FQDN = wizardEnv.FQDN_LAN;
         SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT_LAN;
     } else {
-        HOSTNAME = wizardEnv.HOSTNAME;
+        FQDN = wizardEnv.FQDN;
         SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT;
     }
 
@@ -30,7 +30,7 @@ export default function QuickCommands(props) {
         // Asynchronously call copy to clipboard
         navigator.clipboard
             .writeText(
-                `borg init -e repokey-blake2 ssh://${wizardEnv.UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.repositoryName}`
+                `borg init -e repokey-blake2 ssh://${wizardEnv.UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.repositoryName}`
             )
             .then(() => {
                 // If successful, update the isCopied state value
@@ -51,7 +51,7 @@ export default function QuickCommands(props) {
             ) : (
                 <div className={classes.tooltip}>
                     borg init -e repokey-blake2 ssh://{wizardEnv.UNIX_USER}@
-                    {HOSTNAME}:{SSH_SERVER_PORT}/./
+                    {FQDN}:{SSH_SERVER_PORT}/./
                     {props.repositoryName}
                 </div>
             )}

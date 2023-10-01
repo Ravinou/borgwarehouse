@@ -51,7 +51,7 @@ Required variables :
 -   `NEXTAUTH_SECRET` : A secret random key.
 -   `CRONJOB_KEY` : A secret API key for cronjob.
 -   `UNIX_USER` : The unix user that run BorgWarehouse app.
--   `HOSTNAME` : FQDN as **borgwarehouse.com**
+-   `FQDN` : FQDN as **borgwarehouse.com**
 -   `SSH_SERVER_PORT` : SSH port of your server as **22**.
 -   `SSH_SERVER_FINGERPRINT_RSA` : Your server SSH fingerprint for RSA.
 -   `SSH_SERVER_FINGERPRINT_ED25519` : Your server SSH fingerprint for ED25519.
@@ -66,7 +66,7 @@ NEXTAUTH_SECRET=YOURFIRSTSECRET
 CRONJOB_KEY=YOURSECONDSECRET
 # Wizard's variables
 UNIX_USER=borgwarehouse
-HOSTNAME=yourbwdomain.com
+FQDN=yourbwdomain.com
 SSH_SERVER_PORT=22
 SSH_SERVER_FINGERPRINT_RSA=SHA256:36mfYNRrm1aconVt6cBpi8LhAoPP4kB8QsVW4n8eGHQ
 SSH_SERVER_FINGERPRINT_ED25519=SHA256:tYQuzrZZMqaw0Bzvn/sMoDs1CVEitZ9IrRyUg02yTPA

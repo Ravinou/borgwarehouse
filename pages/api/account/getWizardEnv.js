@@ -17,9 +17,9 @@ export default async function handler(req, res) {
 
             const wizardEnv = {
                 UNIX_USER: getEnvVariable('UNIX_USER', 'borgwarehouse'),
-                HOSTNAME: getEnvVariable('HOSTNAME', 'localhost'),
+                FQDN: getEnvVariable('FQDN', 'localhost'),
                 SSH_SERVER_PORT: getEnvVariable('SSH_SERVER_PORT', '22'),
-                HOSTNAME_LAN: getEnvVariable('HOSTNAME_LAN'),
+                FQDN_LAN: getEnvVariable('FQDN_LAN'),
                 SSH_SERVER_PORT_LAN: getEnvVariable('SSH_SERVER_PORT_LAN'),
                 SSH_SERVER_FINGERPRINT_RSA: getEnvVariable(
                     'SSH_SERVER_FINGERPRINT_RSA'

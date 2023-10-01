@@ -10,7 +10,7 @@ function WizardStep4(props) {
     const wizardEnv = props.wizardEnv;
     const UNIX_USER = wizardEnv.UNIX_USER;
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-    const { HOSTNAME, SSH_SERVER_PORT } = lanCommandOption(
+    const { FQDN, SSH_SERVER_PORT } = lanCommandOption(
         wizardEnv,
         props.selectedOption.lanCommand
     );
@@ -23,10 +23,10 @@ function WizardStep4(props) {
 
 repositories:
     # Paths of local or remote repositories to backup to.
-    - ssh://${UNIX_USER}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}
+    - ssh://${UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}
 
 storage:
-    archive_name_format: '{HOSTNAME}-documents-{now}'
+    archive_name_format: '{FQDN}-documents-{now}'
     encryption_passphrase: "YOUR PASSPHRASE"
 
 retention:

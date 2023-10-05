@@ -1,6 +1,8 @@
 version: '3'
 services:
     borgwarehouse:
+        # UID:GID must match the user and group ID of the host folders and must be >= 1001
+        user: '1001:1001'
         build:
             context: .
             dockerfile: Dockerfile
@@ -9,9 +11,6 @@ services:
             - '3000:3000'
             - '2222:22'
         environment:
-            # UID and GID are the user and group id of the user running the container
-            - UID=1001
-            - GID=1001
             - NEXTAUTH_URL=https://your.domain.com
             - NEXTAUTH_SECRET=your-secret
             - CRONJOB_KEY=your-other-secret

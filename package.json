@@ -12,8 +12,8 @@
         "@tabler/icons-react": "^2.24.0",
         "bcryptjs": "^2.4.3",
         "chart.js": "^4.3.0",
-        "next": "^13.4.9",
-        "next-auth": "^4.22.1",
+        "next": "^13.5.4",
+        "next-auth": "^4.23.2",
         "nodemailer": "^6.9.3",
         "react": "^18.2.0",
         "react-chartjs-2": "^5.2.0",
@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "eslint": "8.23.1",
-        "eslint-config-next": "^13.4.9",
+        "eslint-config-next": "^13.5.4",
         "prettier": "^3.0.3"
     }
 }

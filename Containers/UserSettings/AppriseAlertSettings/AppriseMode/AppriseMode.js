@@ -21,7 +21,7 @@ export default function AppriseMode() {
     const [modeFormIsSaved, setModeFormIsSaved] = useState(false);
     const [error, setError] = useState(false);
     const [displayStatelessURL, setDisplayStatelessURL] = useState(false);
-    const [appriseMode, setAppriseMode] = useState('');
+    const [appriseMode, setAppriseMode] = useState('stateless');
     const [appriseStatelessURL, setAppriseStatelessURL] = useState();
 
     ////LifeCycle

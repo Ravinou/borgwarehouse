@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import repoHistory from '../../../helpers/functions/repoHistory';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
@@ -73,6 +74,9 @@ export default async function handler(req, res) {
 
             //Create the new repoList with the new repo
             let newRepoList = [newRepo, ...repoList];
+
+            //History the new repoList
+            await repoHistory(newRepoList);
 
             //Stringify the newRepoList to write it into the json file.
             newRepoList = JSON.stringify(newRepoList);

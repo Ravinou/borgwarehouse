@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import repoHistory from '../../../../../helpers/functions/repoHistory';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
@@ -69,7 +70,8 @@ export default async function handler(req, res) {
                 });
                 return;
             }
-
+            //History the repoList
+            await repoHistory(repoList);
             //Stringify the repoList to write it into the json file.
             repoList = JSON.stringify(repoList);
             //Write the new json
@@ -80,6 +82,7 @@ export default async function handler(req, res) {
                     if (err) console.log(err);
                 }
             );
+
             res.status(200).json({ message: 'Envoi API réussi' });
         } catch (error) {
             //Log for backend

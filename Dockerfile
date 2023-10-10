@@ -1,9 +1,9 @@
 FROM node:18-bookworm-slim
 
-RUN apt-get update && \
-    apt-get install -y curl git jq jc borgbackup openssh-server sudo cron && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    curl git jq jc borgbackup openssh-server sudo cron && \
+    apt-get upgrade -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/service ssh restart" >> /etc/sudoers
 

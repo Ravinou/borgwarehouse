@@ -30,7 +30,7 @@ export default function QuickCommands(props) {
         // Asynchronously call copy to clipboard
         navigator.clipboard
             .writeText(
-                `borg init -e repokey-blake2 ssh://${wizardEnv.UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.repositoryName}`
+                `ssh://${wizardEnv.UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.repositoryName}`
             )
             .then(() => {
                 // If successful, update the isCopied state value
@@ -50,7 +50,7 @@ export default function QuickCommands(props) {
                 <div className={classes.copyValid}>Copied !</div>
             ) : (
                 <div className={classes.tooltip}>
-                    borg init -e repokey-blake2 ssh://{wizardEnv.UNIX_USER}@
+                    ssh://{wizardEnv.UNIX_USER}@
                     {FQDN}:{SSH_SERVER_PORT}/./
                     {props.repositoryName}
                 </div>

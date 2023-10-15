@@ -109,3 +109,6 @@ dist
 # config file for BorgWarehouse
 config/repo.json
 config/users.json
+
+# docker files
+docker-compose.yml

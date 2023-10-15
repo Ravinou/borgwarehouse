@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import repoHistory from '../../../../../helpers/functions/repoHistory';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
@@ -28,7 +29,6 @@ export default async function handler(req, res) {
         }
 
         try {
-            //console.log('API call (PUT)');
             //Find the absolute path of the json directory
             const jsonDirectory = path.join(process.cwd(), '/config');
             let repoList = await fs.readFile(
@@ -48,17 +48,9 @@ export default async function handler(req, res) {
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             // //Exec the shell
-            const { stderr } = await exec(
-                `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].unixUser} "${sshPublicKey}" ${size}`
+            await exec(
+                `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].repositoryName} "${sshPublicKey}" ${size}`
             );
-            if (stderr) {
-                console.log('stderr:', stderr);
-                res.status(500).json({
-                    status: 500,
-                    message: 'Error on update, contact the administrator.',
-                });
-                return;
-            }
 
             //Find the ID in the data and change the values transmitted by the form
             let newRepoList = repoList.map((repo) =>
@@ -74,6 +66,8 @@ export default async function handler(req, res) {
                       }
                     : repo
             );
+            //History the new repoList
+            await repoHistory(newRepoList);
             //Stringify the newRepoList to write it into the json file.
             newRepoList = JSON.stringify(newRepoList);
             //Write the new json
@@ -84,6 +78,7 @@ export default async function handler(req, res) {
                     if (err) console.log(err);
                 }
             );
+
             res.status(200).json({ message: 'Envoi API réussi' });
         } catch (error) {
             //Log for backend
@@ -97,7 +92,7 @@ export default async function handler(req, res) {
             } else {
                 res.status(500).json({
                     status: 500,
-                    message: 'API error, contact the administrator',
+                    message: error.stdout,
                 });
             }
             return;

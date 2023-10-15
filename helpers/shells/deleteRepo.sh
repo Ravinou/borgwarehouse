@@ -1,32 +1,47 @@
 #!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
-# This shell takes 1 arg : [user] with 8 char. length only.
-# This shell **delete the user** in arg and **all his data**.
+# This shell takes 1 arg : [repositoryName] with 8 char. length only.
+# This shell **delete the repository** in arg and **all his data** and the line associated in the authorized_keys file.
 
 # Exit when any command fails
 set -e
 
+# Load .env if exists
+if [[ -f .env ]]; then
+    source .env
+fi
+
+# Default value if .env not exists
+: "${home:=/home/borgwarehouse}"
+
+# Some variables
+pool="${home}/repos"
+authorized_keys="${home}/.ssh/authorized_keys"
+
 # Check arg
 if [[ $# -ne 1 || $1 = "" ]]; then
-    echo "You must provide a username in argument."
+    echo -n "You must provide a repositoryName in argument."
     exit 1
 fi
 
-# Check if username length is 8 char. With createRepo.sh our randoms have a length of 8 characters.
+# Check if the repositoryName length is 8 char. With createRepo.sh our randoms have a length of 8 characters.
 # If we receive another length there is necessarily a problem.
-username=$1
-if [ ${#username} != 8 ]
-then
-    echo "Error with the length of the username."
+repositoryName=$1
+if [ ${#repositoryName} != 8 ]; then
+    echo -n "Error with the length of the repositoryName."
     exit 2
 fi
 
-# Delete the user if it exists
-if id "$1" &>/dev/null; then
-    sudo userdel -rf "$1"
-    echo "The user $1 and all his data have been deleted"
+# Delete the repository and the line associated in the authorized_keys file
+if [ -d "${pool}/${repositoryName}" ]; then
+        # Delete the repository
+        rm -rf "${pool}/${repositoryName}"
+        # Delete the line in the authorized_keys file
+        sed -i "/${repositoryName}/d" "${authorized_keys}"
+        echo -n "The folder "${pool}/${repositoryName}" and all its data have been deleted. The line associated in the authorized_keys file has been deleted."
 else
-    echo "The user $1 does not exist"
-    exit 3
+        # Delete the line in the authorized_keys file
+        sed -i "/${repositoryName}/d" "${authorized_keys}"
+        echo -n "The folder "${pool}/${repositoryName}" did not exist (repository never initialized or used). The line associated in the authorized_keys file has been deleted."
 fi

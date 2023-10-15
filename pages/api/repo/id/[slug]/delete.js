@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import repoHistory from '../../../../../helpers/functions/repoHistory';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
@@ -46,11 +47,10 @@ export default async function handler(req, res) {
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
-            const { stderr } = await exec(
-                `${shellsDirectory}/shells/deleteRepo.sh ${repoList[indexToDelete].unixUser}`
+            const { stdout, stderr } = await exec(
+                `${shellsDirectory}/shells/deleteRepo.sh ${repoList[indexToDelete].repositoryName}`
             );
-            //Ignore this normal error with the command userdel in the shell : "userdel: USERXXX mail spool (/var/mail/USERXXX) not found".
-            if (stderr && !stderr.includes('mail spool')) {
+            if (stderr) {
                 console.log('stderr:', stderr);
                 res.status(500).json({
                     status: 500,
@@ -70,7 +70,8 @@ export default async function handler(req, res) {
                 });
                 return;
             }
-
+            //History the repoList
+            await repoHistory(repoList);
             //Stringify the repoList to write it into the json file.
             repoList = JSON.stringify(repoList);
             //Write the new json
@@ -81,6 +82,7 @@ export default async function handler(req, res) {
                     if (err) console.log(err);
                 }
             );
+
             res.status(200).json({ message: 'Envoi API réussi' });
         } catch (error) {
             //Log for backend

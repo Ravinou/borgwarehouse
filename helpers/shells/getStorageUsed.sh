@@ -14,6 +14,14 @@
 # Exit when any command fails
 set -e
 
+# Load .env if exists
+if [[ -f .env ]]; then
+    source .env
+fi
+
+# Default value if .env not exists
+: "${home:=/home/borgwarehouse}"
+
 # Use jc to output a JSON format with du command
-cd /var/borgwarehouse
-sudo /usr/bin/du -s -- * | jc --du
+cd ${home}/repos
+du -s -- * | jc --du

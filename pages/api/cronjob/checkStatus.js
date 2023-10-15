@@ -31,6 +31,20 @@ export default async function handler(req, res) {
 
         ////PART 1 : Status
         try {
+            //Check if there are some repositories
+            let repoList = await fs.readFile(
+                jsonDirectory + '/repo.json',
+                'utf8'
+            );
+            repoList = JSON.parse(repoList);
+            if (repoList.length === 0) {
+                res.status(200).json({
+                    success:
+                        'Status cron has been executed. No repository to check.',
+                });
+                return;
+            }
+
             //Call the shell : getLastSave.sh
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
@@ -50,19 +64,12 @@ export default async function handler(req, res) {
             //Parse the JSON output of getLastSave.sh to use it
             const lastSave = JSON.parse(stdout);
 
-            //Find the absolute path of the json directory
-            let repoList = await fs.readFile(
-                jsonDirectory + '/repo.json',
-                'utf8'
-            );
-            //Parse the repoList
-            repoList = JSON.parse(repoList);
-
             //Rebuild a newRepoList with the lastSave timestamp updated and the status updated.
             newRepoList = repoList;
             for (let index in newRepoList) {
                 const repoFiltered = lastSave.filter(
-                    (x) => x.user === newRepoList[index].unixUser
+                    (x) =>
+                        x.repositoryName === newRepoList[index].repositoryName
                 );
                 if (repoFiltered.length === 1) {
                     //Write the timestamp of the last save
@@ -163,12 +170,6 @@ export default async function handler(req, res) {
                 transporter.sendMail(mailData, function (err, info) {
                     if (err) {
                         console.log(err);
-                        res.status(400).json({
-                            message:
-                                'An error occured while sending the email : ' +
-                                err,
-                        });
-                        return;
                     } else {
                         console.log(info);
                     }

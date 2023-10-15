@@ -20,10 +20,10 @@ function SetupWizard(props) {
     const [list, setList] = useState([]);
     const [listIsLoading, setListIsLoading] = useState(true);
     const [step, setStep] = useState();
+    const [wizardEnv, setWizardEnv] = useState({});
     const [selectedOption, setSelectedOption] = useState({
         id: '#id',
         repository: 'repo',
-        unixUser: 'user',
     });
 
     ////LifeCycle
@@ -45,6 +45,21 @@ function SetupWizard(props) {
             }
         };
         repoList();
+        //Fetch wizardEnv to hydrate Wizard' steps
+        const fetchWizardEnv = async () => {
+            try {
+                const response = await fetch('/api/account/getWizardEnv', {
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                });
+                setWizardEnv((await response.json()).wizardEnv);
+            } catch (error) {
+                console.log('Fetching datas error');
+            }
+        };
+        fetchWizardEnv();
     }, []);
     //Component did update
     useEffect(() => {
@@ -59,8 +74,7 @@ function SetupWizard(props) {
         label: `${repo.alias} - #${repo.id}`,
         value: `${repo.alias} - #${repo.id}`,
         id: repo.id,
-        repository: repo.repository,
-        unixUser: repo.unixUser,
+        repositoryName: repo.repositoryName,
         lanCommand: repo.lanCommand,
     }));
 
@@ -86,11 +100,26 @@ function SetupWizard(props) {
         if (step == 1) {
             return <WizardStep1 />;
         } else if (step == 2) {
-            return <WizardStep2 selectedOption={selectedOption} />;
+            return (
+                <WizardStep2
+                    selectedOption={selectedOption}
+                    wizardEnv={wizardEnv}
+                />
+            );
         } else if (step == 3) {
-            return <WizardStep3 selectedOption={selectedOption} />;
+            return (
+                <WizardStep3
+                    selectedOption={selectedOption}
+                    wizardEnv={wizardEnv}
+                />
+            );
         } else {
-            return <WizardStep4 selectedOption={selectedOption} />;
+            return (
+                <WizardStep4
+                    selectedOption={selectedOption}
+                    wizardEnv={wizardEnv}
+                />
+            );
         }
     };
 

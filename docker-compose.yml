@@ -1,0 +1,32 @@
+version: '3'
+services:
+    borgwarehouse:
+        container_name: borgwarehouse
+        # If you want to build the image yourself, uncomment the following lines and comment the image line
+        #build:
+        #   context: .
+        #   dockerfile: Dockerfile
+        image: borgwarehouse/borgwarehouse
+        # UID:GID must match the user and group ID of the host folders and must be > 1000
+        user: '1001:1001'
+        ports:
+            - '3000:3000'
+            - '2222:22'
+        environment:
+            - NEXTAUTH_URL=https://your.domain.com
+            - NEXTAUTH_SECRET=your-secret
+            - CRONJOB_KEY=your-other-secret
+            # The SSH_SERVER_PORT must match the port exposed above
+            - SSH_SERVER_PORT=2222
+            - FQDN=your.domain.com
+        volumes:
+            # The host folders must be owned by the user with UID and GID specified above
+            - <host-folder>/config:/home/borgwarehouse/app/config
+            - <host-folder>/ssh:/home/borgwarehouse/.ssh
+            - <host-folder>/ssh_host:/etc/ssh
+            - <host-folder>/repos:/home/borgwarehouse/repos
+    # Apprise is used to send notifications, it's optional. http://apprise:8000 is the URL to use in BorgWarehouse.
+    apprise:
+        container_name: apprise
+        image: caronc/apprise
+        user: 'www-data:www-data'

@@ -6,19 +6,20 @@ import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
 
 export default function QuickCommands(props) {
     ////Vars
+    const wizardEnv = props.wizardEnv;
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-    let HOSTNAME;
+    let FQDN;
     let SSH_SERVER_PORT;
     if (
         props.lanCommand &&
-        process.env.NEXT_PUBLIC_HOSTNAME_LAN &&
-        process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN
+        wizardEnv.FQDN_LAN &&
+        wizardEnv.SSH_SERVER_PORT_LAN
     ) {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME_LAN;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN;
+        FQDN = wizardEnv.FQDN_LAN;
+        SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT_LAN;
     } else {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT;
+        FQDN = wizardEnv.FQDN;
+        SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT;
     }
 
     //State
@@ -29,7 +30,7 @@ export default function QuickCommands(props) {
         // Asynchronously call copy to clipboard
         navigator.clipboard
             .writeText(
-                `borg init -e repokey-blake2 ssh://${props.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.repository}`
+                `ssh://${wizardEnv.UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.repositoryName}`
             )
             .then(() => {
                 // If successful, update the isCopied state value
@@ -49,9 +50,9 @@ export default function QuickCommands(props) {
                 <div className={classes.copyValid}>Copied !</div>
             ) : (
                 <div className={classes.tooltip}>
-                    borg init -e repokey-blake2 ssh://{props.unixUser}@
-                    {HOSTNAME}:{SSH_SERVER_PORT}/./
-                    {props.repository}
+                    ssh://{wizardEnv.UNIX_USER}@
+                    {FQDN}:{SSH_SERVER_PORT}/./
+                    {props.repositoryName}
                 </div>
             )}
             <div className={classes.icons}>

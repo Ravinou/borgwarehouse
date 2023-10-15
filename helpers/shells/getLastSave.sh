@@ -5,16 +5,12 @@
 # stdout will be an array like :
 # [
 #   {
-#     "user": "09d8240f",
-#     "lastSave": 1668513608
+#     "repositoryName": "a7035047",
+#     "lastSave": 1691341603
 #   },
 #   {
-#     "user": "635a6f8b",
-#     "lastSave": 1667910810
-#   },
-#   {
-#     "user": "83bd4ef1",
-#     "lastSave": 1667985985
+#     "repositoryName": "a7035048",
+#     "lastSave": 1691342688
 #   }
 # ]
 
@@ -22,6 +18,18 @@
 # Exit when any command fails
 set -e
 
-stat --format='{"user":"%U","lastSave":%Y}' \
-  /var/borgwarehouse/*/repos/*/integrity* |
-  jq --slurp
+# Load .env if exists
+if [[ -f .env ]]; then
+    source .env
+fi
+
+# Default value if .env not exists
+: "${home:=/home/borgwarehouse}"
+
+if [ -n "$(find ${home}/repos -mindepth 1 -maxdepth 1 -type d)" ]; then
+  stat --format='{"repositoryName":"%n","lastSave":%Y}' \
+  ${home}/repos/*/integrity* | 
+  jq --slurp '[.[] | .repositoryName = (.repositoryName | split("/")[-2])]'
+else
+    echo "[]"
+fi

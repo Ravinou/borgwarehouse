@@ -3,23 +3,17 @@ import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconTool, IconAlertCircle } from '@tabler/icons-react';
 import CopyButton from '../../UI/CopyButton/CopyButton';
+import lanCommandOption from '../../../helpers/functions/lanCommandOption';
 
 function WizardStep2(props) {
     ////Vars
+    const wizardEnv = props.wizardEnv;
+    const UNIX_USER = wizardEnv.UNIX_USER;
     //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-    let HOSTNAME;
-    let SSH_SERVER_PORT;
-    if (
-        props.selectedOption.lanCommand &&
-        process.env.NEXT_PUBLIC_HOSTNAME_LAN &&
-        process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN
-    ) {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME_LAN;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT_LAN;
-    } else {
-        HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
-        SSH_SERVER_PORT = process.env.NEXT_PUBLIC_SSH_SERVER_PORT;
-    }
+    const { FQDN, SSH_SERVER_PORT } = lanCommandOption(
+        wizardEnv,
+        props.selectedOption.lanCommand
+    );
 
     return (
         <div className={classes.container}>
@@ -39,12 +33,11 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         borg init -e repokey-blake2 ssh://
-                        {props.selectedOption.unixUser}@{HOSTNAME}:
-                        {SSH_SERVER_PORT}/./
-                        {props.selectedOption.repository}
+                        {UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
+                        {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`borg init -e repokey-blake2 ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
+                        dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 <div className={classes.note}>
@@ -95,12 +88,11 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         ssh://
-                        {props.selectedOption.unixUser}@{HOSTNAME}:
-                        {SSH_SERVER_PORT}/./
-                        {props.selectedOption.repository}
+                        {UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
+                        {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`ssh://${props.selectedOption.unixUser}@${HOSTNAME}:${SSH_SERVER_PORT}/./${props.selectedOption.repository}`}
+                        dataToCopy={`ssh://${UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 For more information about the Vorta graphical client, please
@@ -122,24 +114,21 @@ function WizardStep2(props) {
                     <b>Check the fingerprint of server</b>
                 </div>
                 To check that you are talking to the right server, please make
-                sure to validate the following sshPublicKeys when you first
-                connect :
+                sure to validate one of the following key's fingerprint when you
+                first connect :
                 <li>
                     <span className={classes.sshPublicKey}>
-                        ECDSA :{' '}
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA}
+                        ECDSA : {wizardEnv.SSH_SERVER_FINGERPRINT_ECDSA}
                     </span>
                 </li>
                 <li>
                     <span className={classes.sshPublicKey}>
-                        ED25519 :{' '}
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519}
+                        ED25519 : {wizardEnv.SSH_SERVER_FINGERPRINT_ED25519}
                     </span>
                 </li>
                 <li>
                     <span className={classes.sshPublicKey}>
-                        RSA :{' '}
-                        {process.env.NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA}
+                        RSA : {wizardEnv.SSH_SERVER_FINGERPRINT_RSA}
                     </span>
                 </li>
             </div>

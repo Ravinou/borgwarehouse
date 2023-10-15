@@ -1,7 +1,7 @@
 <div align="center">
 
-  [![Next][Next.js]][Next-url]
-  [![React][React.js]][React-url]
+[![Next][Next.js]][Next-url]
+[![React][React.js]][React-url]
 
 </div>
 
@@ -50,33 +50,34 @@ Required variables :
 -   `NEXTAUTH_URL` : The url of your application as **https://borgwarehouse.com**.
 -   `NEXTAUTH_SECRET` : A secret random key.
 -   `CRONJOB_KEY` : A secret API key for cronjob.
--   `NEXT_PUBLIC_HOSTNAME` : FQDN as **borgwarehouse.com**
--   `NEXT_PUBLIC_SSH_SERVER_PORT` : SSH port of your server as **22**.
--   `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA` : Your server SSH fingerprint for RSA.
--   `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519` : Your server SSH fingerprint for ED25519.
--   `NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA` : Your server SSH fingerprint for ECDSA.
+-   `UNIX_USER` : The unix user that run BorgWarehouse app.
+-   `FQDN` : FQDN as **borgwarehouse.com**
+-   `SSH_SERVER_PORT` : SSH port of your server as **22**.
+-   `SSH_SERVER_FINGERPRINT_RSA` : Your server SSH fingerprint for RSA.
+-   `SSH_SERVER_FINGERPRINT_ED25519` : Your server SSH fingerprint for ED25519.
+-   `SSH_SERVER_FINGERPRINT_ECDSA` : Your server SSH fingerprint for ECDSA.
 
 Example for a valid `.env.local` file :
 
 ```bash
-# Private variable
+# Application's variables
 NEXTAUTH_URL=https://yourbwdomain.com
 NEXTAUTH_SECRET=YOURFIRSTSECRET
 CRONJOB_KEY=YOURSECONDSECRET
+# Wizard's variables
+UNIX_USER=borgwarehouse
+FQDN=yourbwdomain.com
+SSH_SERVER_PORT=22
+SSH_SERVER_FINGERPRINT_RSA=SHA256:36mfYNRrm1aconVt6cBpi8LhAoPP4kB8QsVW4n8eGHQ
+SSH_SERVER_FINGERPRINT_ED25519=SHA256:tYQuzrZZMqaw0Bzvn/sMoDs1CVEitZ9IrRyUg02yTPA
+SSH_SERVER_FINGERPRINT_ECDSA=SHA256:nTpxui1oEmH9konPau17qBVIzBQVOsD1BIbBFU5IL04
+# SMTP's variables
 MAIL_SMTP_FROM=
 MAIL_SMTP_HOST=
 MAIL_SMTP_PORT=
 MAIL_SMTP_LOGIN=
 MAIL_SMTP_PWD=
 MAIL_REJECT_SELFSIGNED_TLS=true
-
-# Public variable (Any change need a rebuild of app)
-NEXT_PUBLIC_HOSTNAME=yourbwdomain.com
-NEXT_PUBLIC_SSH_SERVER_PORT=22
-NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_RSA=SHA256:36mfYNRrm1aconVt6cBpi8LhAoPP4kB8QsVW4n8eGHQ
-NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ED25519=SHA256:tYQuzrZZMqaw0Bzvn/sMoDs1CVEitZ9IrRyUg02yTPA
-NEXT_PUBLIC_SSH_SERVER_FINGERPRINT_ECDSA=SHA256:nTpxui1oEmH9konPau17qBVIzBQVOsD1BIbBFU5IL04
-
 # Disable NextJS telemetry
 NEXT_TELEMETRY_DISABLED=1
 ```

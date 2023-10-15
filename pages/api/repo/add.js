@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import repoHistory from '../../../helpers/functions/repoHistory';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
@@ -49,7 +50,7 @@ export default async function handler(req, res) {
             const newRepo = {
                 id: newID,
                 alias: alias,
-                repository: 'repo' + newID,
+                repositoryName: '',
                 status: false,
                 lastSave: 0,
                 alert: alert,
@@ -58,7 +59,6 @@ export default async function handler(req, res) {
                 sshPublicKey: sshPublicKey,
                 comment: comment,
                 displayDetails: true,
-                unixUser: '',
                 lanCommand: lanCommand,
             };
 
@@ -66,21 +66,17 @@ export default async function handler(req, res) {
             //Find the absolute path of the shells directory
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
-            const { stdout, stderr } = await exec(
-                `${shellsDirectory}/shells/createRepo.sh ${newRepo.repository} "${newRepo.sshPublicKey}" ${newRepo.storageSize}`
+            const { stdout } = await exec(
+                `${shellsDirectory}/shells/createRepo.sh "${newRepo.sshPublicKey}" ${newRepo.storageSize}`
             );
-            if (stderr) {
-                console.log('stderr:', stderr);
-                res.status(500).json({
-                    status: 500,
-                    message: 'Error on creation, contact the administrator.',
-                });
-                return;
-            }
-            newRepo.unixUser = stdout.trim();
+
+            newRepo.repositoryName = stdout.trim();
 
             //Create the new repoList with the new repo
             let newRepoList = [newRepo, ...repoList];
+
+            //History the new repoList
+            await repoHistory(newRepoList);
 
             //Stringify the newRepoList to write it into the json file.
             newRepoList = JSON.stringify(newRepoList);
@@ -106,7 +102,7 @@ export default async function handler(req, res) {
             } else {
                 res.status(500).json({
                     status: 500,
-                    message: 'API error, contact the administrator',
+                    message: error.stdout,
                 });
             }
             return;

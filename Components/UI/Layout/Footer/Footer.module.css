@@ -3,8 +3,12 @@
     text-align: center;
     position: absolute;
     bottom: 0;
-    width: calc(100% + 70px);
+    width: 100%;
     height: 50px;
+}
+
+.footer p {
+    padding-left: 70px;
 }
 
 a.site {
@@ -15,5 +19,8 @@ a.site {
 @media all and (max-width: 1000px) {
     .footer {
         width: 100%;
+    }
+    .footer p {
+        padding-left: 0;
     }
 }

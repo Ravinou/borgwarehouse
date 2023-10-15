@@ -4,6 +4,11 @@
 [![React][React.js]][React-url]
 
 </div>
+<div align="center">
+
+[![Docker](https://img.shields.io/badge/Docker-borgwarehouse-blue?style=for-the-badge&logo=docker)](https://hub.docker.com/r/borgwarehouse/borgwarehouse)
+
+</div>
 
   <h3 align="center">BorgWarehouse</h3>
 
@@ -19,7 +24,7 @@
   </a>
 </div>
 
-## What is BorgWarehouse ?
+## ✨ What is BorgWarehouse ?
 
 **BorgWarehouse is a graphical interface to manage a central [BorgBackup](https://borgbackup.readthedocs.io/en/stable/#what-is-borgbackup) repository server.**
 
@@ -37,54 +42,17 @@ With BorgWarehouse, you have an interface that allows you to do all this simply 
 
 The whole system part is automatically managed by BorgWarehouse and **you don't have to touch your terminal anymore** while enjoying a visual feedback on the status of your repositories.
 
-## Get started
+## 📖 Get started
 
-You can find the documentation here : <a href="https://borgwarehouse.com/docs/prologue/introduction/">https://borgwarehouse.com/</a>
+You can find the documentation here : [borgwarehouse.com](https://borgwarehouse.com/docs/prologue/introduction/)
 
 ## :key: Environment Variables
 
-To run this project, you will need to add the following environment variables to your `.env.local` file.
+To run this project, you will need to add some environment variables.
 
-Required variables :
+You will find a complete documentation for this [here](https://borgwarehouse.com/docs/admin-manual/environment-variables/).
 
--   `NEXTAUTH_URL` : The url of your application as **https://borgwarehouse.com**.
--   `NEXTAUTH_SECRET` : A secret random key.
--   `CRONJOB_KEY` : A secret API key for cronjob.
--   `UNIX_USER` : The unix user that run BorgWarehouse app.
--   `FQDN` : FQDN as **borgwarehouse.com**
--   `SSH_SERVER_PORT` : SSH port of your server as **22**.
--   `SSH_SERVER_FINGERPRINT_RSA` : Your server SSH fingerprint for RSA.
--   `SSH_SERVER_FINGERPRINT_ED25519` : Your server SSH fingerprint for ED25519.
--   `SSH_SERVER_FINGERPRINT_ECDSA` : Your server SSH fingerprint for ECDSA.
-
-Example for a valid `.env.local` file :
-
-```bash
-# Application's variables
-NEXTAUTH_URL=https://yourbwdomain.com
-NEXTAUTH_SECRET=YOURFIRSTSECRET
-CRONJOB_KEY=YOURSECONDSECRET
-# Wizard's variables
-UNIX_USER=borgwarehouse
-FQDN=yourbwdomain.com
-SSH_SERVER_PORT=22
-SSH_SERVER_FINGERPRINT_RSA=SHA256:36mfYNRrm1aconVt6cBpi8LhAoPP4kB8QsVW4n8eGHQ
-SSH_SERVER_FINGERPRINT_ED25519=SHA256:tYQuzrZZMqaw0Bzvn/sMoDs1CVEitZ9IrRyUg02yTPA
-SSH_SERVER_FINGERPRINT_ECDSA=SHA256:nTpxui1oEmH9konPau17qBVIzBQVOsD1BIbBFU5IL04
-# SMTP's variables
-MAIL_SMTP_FROM=
-MAIL_SMTP_HOST=
-MAIL_SMTP_PORT=
-MAIL_SMTP_LOGIN=
-MAIL_SMTP_PWD=
-MAIL_REJECT_SELFSIGNED_TLS=true
-# Disable NextJS telemetry
-NEXT_TELEMETRY_DISABLED=1
-```
-
-You can find more details about generating your secrets or retrieving your SSH fingerprint. You can find more details about generating your secrets or retrieving your SSH fingerprint <a href="https://borgwarehouse.com/docs/admin-manual/debian-installation/#configure-application-environment-variables">in the documentation</a>.
-
-## How to update ?
+## ⏬ How to update ?
 
 Check the online documentation [just here](https://borgwarehouse.com/docs/admin-manual/how-to-update/) !
 

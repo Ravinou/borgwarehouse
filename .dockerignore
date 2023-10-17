@@ -1,7 +1,11 @@
 node_modules
 .git
 .gitignore  
+.dockerignore
 .pre-commit-config.yaml
 .prettierrc.json
 .env.local
 .next
+Dockerfile
+docker-compose.yml
+README.md

@@ -50,7 +50,7 @@ You can find the documentation here : [borgwarehouse.com](https://borgwarehouse.
 
 To run this project, you will need to add some environment variables.
 
-You will find a complete documentation for this [here](https://borgwarehouse.com/docs/admin-manual/environment-variables/).
+You will find a complete documentation for this [here](https://borgwarehouse.com/docs/admin-manual/env-vars/).
 
 ## ⏬ How to update ?
 

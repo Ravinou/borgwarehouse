@@ -49,7 +49,7 @@ check_repos_directory() {
 
 add_cron_job() {
   print_green "Adding cron job..."
-  local CRON_JOB="* * * * * curl --request POST --url 'http://localhost:3000/api/cronjob/checkStatus' --header 'Authorization: Bearer $CRONJOB_KEY'; curl --request POST --url 'http://localhost:3000/api/cronjob/getStorageUsed' --header 'Authorization: Bearer $CRONJOB_KEY'"
+  local CRON_JOB="* * * * * curl --request POST --url 'http://$HOSTNAME:3000/api/cronjob/checkStatus' --header 'Authorization: Bearer $CRONJOB_KEY'; curl --request POST --url 'http://$HOSTNAME:3000/api/cronjob/getStorageUsed' --header 'Authorization: Bearer $CRONJOB_KEY'"
   echo "$CRON_JOB" | crontab -u borgwarehouse -
 }
 

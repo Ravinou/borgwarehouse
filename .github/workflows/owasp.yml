@@ -1,0 +1,49 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Security-scan
+
+# Controls when the action will run. 
+on:
+  schedule:
+    - cron: '0 3 * * *' # everyday at 03:00 UTC
+  pull_request:
+    branches: master
+  push:
+    branches: master
+    tags: '*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: master
+    
+      # Runs a single command using the runners shell
+      - name: Pull and start docker via docker-compose
+        run: docker-compose up -d
+
+      # Run OWASP scan
+      - name: OWASP ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          # GitHub Token to create issues in the repository
+          #token: # optional, default is ${{ github.token }}
+          # Target URL
+          target: http://localhost:3000 
+          # Relative path of the ZAP configuration file (e.g. for exclusions)
+          # rules_file_name: ".github/rules.tsv" # optional
+          # The Docker file to be executed
+          #docker_name: # default is owasp/zap2docker-stable
+          # Additional command line options
+          #cmd_options: # optional
+          # The title for the GitHub issue to be created
+          #issue_title: # optional, default is ZAP Full Scan Report
+          # The action status will be set to fail if ZAP identifies any alerts during the full scan
+          #fail_action: # optional

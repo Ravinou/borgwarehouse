@@ -7,9 +7,9 @@ on:
   schedule:
     - cron: '0 3 * * *' # everyday at 03:00 UTC
   pull_request:
-    branches: master
+    branches: main
   push:
-    branches: master
+    branches: main
     tags: '*'
 
   # Allows you to run this workflow manually from the Actions tab

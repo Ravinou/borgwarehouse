@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: master
+          ref: main
     
       # Runs a single command using the runners shell
       - name: Pull and start docker via docker-compose

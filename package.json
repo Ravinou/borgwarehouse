@@ -12,7 +12,7 @@
         "@tabler/icons-react": "^2.40.0",
         "bcryptjs": "^2.4.3",
         "chart.js": "^4.3.0",
-        "next": "^13.5.4",
+        "next": "^14.0.1",
         "next-auth": "^4.23.2",
         "nodemailer": "^6.9.7",
         "react": "^18.2.0",

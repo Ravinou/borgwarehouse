@@ -1,4 +1,4 @@
-FROM node:18-bookworm-slim as base
+FROM node:21-bookworm-slim as base
 
 # build stage
 FROM base AS deps

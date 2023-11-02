@@ -50,7 +50,7 @@ regex="command=\".*${repositoryName}.*\",restrict"
 while IFS= read -r line; do
     if [[ $line =~ $pattern ]]; then
         # Get the SSH pub key of the line (ignore the comment)
-        key1=$(echo ${BASH_REMATCH[0]} | awk '{print $1 " " $2}')
+        key1=$(echo "${BASH_REMATCH[0]}" | awk '{print $1 " " $2}')
         # Get the SSH pub key of the new SSH pub key (ignore the comment)
         key2=$(echo "$2" | awk '{print $1 " " $2}')
         

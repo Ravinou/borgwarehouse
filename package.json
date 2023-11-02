@@ -14,7 +14,7 @@
         "chart.js": "^4.3.0",
         "next": "^13.5.4",
         "next-auth": "^4.23.2",
-        "nodemailer": "^6.9.3",
+        "nodemailer": "^6.9.7",
         "react": "^18.2.0",
         "react-chartjs-2": "^5.2.0",
         "react-dom": "^18.2.0",

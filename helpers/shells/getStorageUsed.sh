@@ -23,5 +23,5 @@ fi
 : "${home:=/home/borgwarehouse}"
 
 # Use jc to output a JSON format with du command
-cd ${home}/repos
+cd "${home}"/repos
 du -s -- * | jc --du

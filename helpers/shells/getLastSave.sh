@@ -26,9 +26,9 @@ fi
 # Default value if .env not exists
 : "${home:=/home/borgwarehouse}"
 
-if [ -n "$(find ${home}/repos -mindepth 1 -maxdepth 1 -type d)" ]; then
+if [ -n "$(find "${home}"/repos -mindepth 1 -maxdepth 1 -type d)" ]; then
   stat --format='{"repositoryName":"%n","lastSave":%Y}' \
-  ${home}/repos/*/integrity* | 
+  "${home}"/repos/*/integrity* | 
   jq --slurp '[.[] | .repositoryName = (.repositoryName | split("/")[-2])]'
 else
     echo "[]"

@@ -24,10 +24,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Copy .env file
+        run: mv .env.sample .env
     
       # Runs a single command using the runners shell
       - name: Pull and start docker via docker-compose
         run: docker-compose up -d
+        env:
+          UID: $USER
+          GID: $USER
 
       # Run OWASP scan
       - name: OWASP ZAP Full Scan

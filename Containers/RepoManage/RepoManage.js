@@ -23,6 +23,7 @@ export default function RepoManage(props) {
     } = useForm({ mode: 'onChange' });
     //List of possible times for alerts
     const alertOptions = [
+        { value: 0, label: 'Disabled' },
         { value: 3600, label: '1 hour' },
         { value: 21600, label: '6 hours' },
         { value: 43200, label: '12 hours' },
@@ -471,7 +472,7 @@ export default function RepoManage(props) {
                                                       x.value ===
                                                       targetRepo.alert
                                               )
-                                            : alertOptions[3]
+                                            : alertOptions[4]
                                     }
                                     control={control}
                                     render={({

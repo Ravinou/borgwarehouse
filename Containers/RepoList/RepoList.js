@@ -116,6 +116,7 @@ export default function RepoList() {
                     alias={repo.alias}
                     status={repo.status}
                     lastSave={repo.lastSave}
+                    alert={repo.alert}
                     repositoryName={repo.repositoryName}
                     storageSize={repo.storageSize}
                     storageUsed={repo.storageUsed}

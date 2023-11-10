@@ -102,6 +102,7 @@ export default async function handler(req, res) {
             for (let index in newRepoList) {
                 if (
                     !newRepoList[index].status &&
+                    newRepoList[index].alert !== 0 &&
                     (!newRepoList[index].lastStatusAlertSend ||
                         date - newRepoList[index].lastStatusAlertSend > 90000)
                 ) {

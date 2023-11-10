@@ -148,6 +148,15 @@
     }
 }
 
+/* Alert icon */
+
+.alertIcon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+}
+
 /* GENERAL */
 .alias {
     font-weight: bold;

@@ -6,6 +6,7 @@ import {
     IconInfoCircle,
     IconChevronDown,
     IconChevronUp,
+    IconBellOff,
 } from '@tabler/icons-react';
 import timestampConverter from '../../helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
@@ -53,22 +54,33 @@ export default function Repo(props) {
         setDisplayDetails(boolean);
     };
 
+    //Status indicator
+    const statusIndicator = () => {
+        return props.status
+            ? classes.statusIndicatorGreen
+            : classes.statusIndicatorRed;
+    };
+
+    //Alert indicator
+    const alertIndicator = () => {
+        if (props.alert === 0) {
+            return (
+                <div className={classes.alertIcon}>
+                    <IconBellOff size={16} color='grey' />
+                </div>
+            );
+        }
+    };
+
     return (
         <>
             {displayDetails ? (
                 <>
                     <div className={classes.RepoOpen}>
                         <div className={classes.openFlex}>
-                            {props.status ? (
-                                <div
-                                    className={classes.statusIndicatorGreen}
-                                ></div>
-                            ) : (
-                                <div
-                                    className={classes.statusIndicatorRed}
-                                ></div>
-                            )}
+                            <div className={statusIndicator()} />
                             <div className={classes.alias}>{props.alias}</div>
+                            {alertIndicator()}
                             {props.comment && (
                                 <div className={classes.comment}>
                                     <IconInfoCircle size={16} color='grey' />
@@ -141,16 +153,9 @@ export default function Repo(props) {
                 <>
                     <div className={classes.RepoClose}>
                         <div className={classes.closeFlex}>
-                            {props.status ? (
-                                <div
-                                    className={classes.statusIndicatorGreen}
-                                ></div>
-                            ) : (
-                                <div
-                                    className={classes.statusIndicatorRed}
-                                ></div>
-                            )}
+                            <div className={statusIndicator()} />
                             <div className={classes.alias}>{props.alias}</div>
+                            {alertIndicator()}
                             {props.comment && (
                                 <div className={classes.comment}>
                                     <IconInfoCircle size={16} color='#637381' />

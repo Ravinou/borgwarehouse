@@ -50,11 +50,13 @@ export default function QuickCommands(props) {
                 <div className={classes.copyValid}>Copied !</div>
             ) : (
                 <div className={classes.tooltip}>
-                    ssh://{wizardEnv.UNIX_USER}@
-                    {FQDN}:{SSH_SERVER_PORT}/./
+                    ssh://{wizardEnv.UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
                     {props.repositoryName}
                 </div>
             )}
+
+            {props.lanCommand && <div className={classes.lanBadge}>LAN</div>}
+
             <div className={classes.icons}>
                 <button onClick={handleCopy} className={classes.copyButton}>
                     <IconCopy color='#65748b' stroke={1.25} />

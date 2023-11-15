@@ -26,6 +26,8 @@ export const authOptions = {
                                 password:
                                     '$2a$12$20yqRnuaDBH6AE0EvIUcEOzqkuBtn1wDzJdw2Beg8w9S.vEqdso0a',
                                 roles: ['admin'],
+                                emailAlert: false,
+                                appriseAlert: false,
                             },
                         ])
                     );

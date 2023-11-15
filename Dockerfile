@@ -27,12 +27,10 @@ FROM base AS runner
 ENV NODE_ENV production
 
 RUN apt-get update && apt-get install -y \
-    curl jq jc borgbackup openssh-server sudo cron && \
+    curl jq jc borgbackup openssh-server sudo && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/service ssh restart" >> /etc/sudoers
-
-RUN echo "borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/service cron restart" >> /etc/sudoers
 
 RUN groupadd borgwarehouse
 

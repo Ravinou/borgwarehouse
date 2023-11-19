@@ -24,6 +24,10 @@
   </a>
 </div>
 
+## ⭐ Support the Project
+
+If you find BorgWarehouse helpful or interesting, please consider **giving it a star on GitHub** and **[sponsoring](https://github.com/sponsors/Ravinou)**. Your support is greatly appreciated!
+
 ## ✨ What is BorgWarehouse ?
 
 **BorgWarehouse is a graphical interface to manage a central [BorgBackup](https://borgbackup.readthedocs.io/en/stable/#what-is-borgbackup) repository server.**
@@ -46,7 +50,7 @@ The whole system part is automatically managed by BorgWarehouse and **you don't 
 
 You can find the documentation here : [borgwarehouse.com](https://borgwarehouse.com/docs/prologue/introduction/)
 
-## :key: Environment Variables
+## 🔑 Environment Variables
 
 To run this project, you will need to add some environment variables.
 
@@ -58,6 +62,10 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+## ❤️ Special thanks to sponsors ❤️
+
+<a href="https://github.com/shad-lp"><img src="https://avatars.githubusercontent.com/shad-lp" style="width:50px; border-radius:50%;"/></a>
 
 [next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [next-url]: https://nextjs.org/

@@ -50,6 +50,6 @@ USER borgwarehouse
 
 EXPOSE 3000 22
 
-ENTRYPOINT ["./docker/docker-bw-init.sh"]
+ENTRYPOINT ["./docker-bw-init.sh"]
 
 CMD ["node", "server.js"]

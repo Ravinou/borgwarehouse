@@ -27,10 +27,9 @@ FROM base AS runner
 ENV NODE_ENV production
 
 RUN apt-get update && apt-get install -y \
-    curl jq jc borgbackup openssh-server sudo && \
+    supervisor \
+    curl jq jc borgbackup openssh-server sudo cron && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN echo "borgwarehouse ALL=(ALL) NOPASSWD: /usr/sbin/service ssh restart" >> /etc/sudoers
 
 RUN groupadd borgwarehouse
 
@@ -40,16 +39,17 @@ RUN cp /etc/ssh/sshd_config /etc/ssh/moduli /home/borgwarehouse/
 
 WORKDIR /home/borgwarehouse/app
 
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker-bw-init.sh /app/LICENSE ./
+COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/docker-bw-init.sh /app/LICENSE ./
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/helpers/shells ./helpers/shells
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/standalone ./
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/public ./public
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/static ./.next/static
+COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.conf ./
 
 USER borgwarehouse
 
 EXPOSE 3000 22
 
-ENTRYPOINT ["./docker-bw-init.sh"]
+ENTRYPOINT ["./docker/docker-bw-init.sh"]
 
 CMD ["node", "server.js"]

@@ -1,4 +1,13 @@
-FROM node:20-bookworm-slim as base
+ARG RESOURCESPLACE="/docker-resources"
+ARG RUNASUSER="borgwarehouse"
+ARG RUNASUSERID="1001"
+ARG RUNASGROUP="1001"
+
+## For arm64 : gcc lib-dev python3-dev - needed to install jc
+## try to play with $BUILDPLATFORM and buildx but impossible to get value
+ARG ADDITIONALPACKAGEARM64="gcc libc-dev python3-dev"
+
+FROM node:20.9.0-alpine3.18 as base
 
 # build stage
 FROM base AS deps
@@ -21,35 +30,42 @@ RUN sed -i "s/images:/output: 'standalone',images:/" next.config.js
 
 RUN npm run build
 
-# run stage
+# # run stage
 FROM base AS runner
+ARG RESOURCESPLACE
+ARG RUNASUSER
+ARG RUNASUSERID
+ARG RUNASGROUP
+ARG ADDITIONALPACKAGEARM64
+
+# Packages installation
+RUN apk add --no-cache jq py3-pip borgbackup openssh-server bash openssl nss_wrapper gettext ${ADDITIONALPACKAGEARM64}
+## jc installation via pip packages - not alpine package available
+RUN python3 -m pip install jc
 
 ENV NODE_ENV production
 
-RUN apt-get update && apt-get install -y \
-    supervisor \
-    curl jq jc borgbackup openssh-server sudo cron && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN addgroup -S ${RUNASUSER} --gid "${RUNASGROUP}" && adduser -S ${RUNASUSER} -s /bin/bash --uid "${RUNASUSERID}" -G ${RUNASUSER}
+## Prepare sshd configuration place
+RUN mkdir -p /etc_ssh/etc/ssh && chown -R ${RUNASUSER}:${RUNASUSER} /etc_ssh
 
-RUN groupadd borgwarehouse
+USER ${RUNASUSERID}
 
-RUN useradd -m -g borgwarehouse borgwarehouse
+## Copy sshd_config
+COPY --chown=${RUNASUSER}:${RUNASUSER} ${RESOURCESPLACE}/sshd_config /sshd_config.conf
+COPY --chmod=755 --chown=${RUNASUSER}:${RUNASUSER} ${RESOURCESPLACE}/entrypoint.sh /entrypoint.sh
+COPY --chmod=755 --chown=${RUNASUSER}:${RUNASUSER} ${RESOURCESPLACE}/nss_wrapper_profile.sh /etc/bash/.
 
-RUN cp /etc/ssh/sshd_config /etc/ssh/moduli /home/borgwarehouse/
+WORKDIR /home/${RUNASUSER}/app
 
-WORKDIR /home/borgwarehouse/app
+COPY --from=builder --chown=${RUNASUSER}:${RUNASUSER} /app/LICENSE ./
+COPY --from=builder --chown=${RUNASUSER}:${RUNASUSER} /app/helpers/shells ./helpers/shells
+COPY --from=builder --chown=${RUNASUSER}:${RUNASUSER} /app/.next/standalone ./
+COPY --from=builder --chown=${RUNASUSER}:${RUNASUSER} /app/public ./public
+COPY --from=builder --chown=${RUNASUSER}:${RUNASUSER} /app/.next/static ./.next/static
 
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/docker-bw-init.sh /app/LICENSE ./
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/helpers/shells ./helpers/shells
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/standalone ./
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/public ./public
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/static ./.next/static
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.conf ./
+EXPOSE 2222 3000
 
-USER borgwarehouse
-
-EXPOSE 3000 22
-
-ENTRYPOINT ["./docker-bw-init.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["node", "server.js"]

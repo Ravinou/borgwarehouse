@@ -40,7 +40,5 @@ fi
 if [ ! -f "$dockerfileVolume/etc/ssh/sshd_config" ]; then
   cp /sshd_config.conf $dockerfileVolume/etc/ssh/sshd_config
 fi
-# Starting sshd daemon and log to file... change LOGLEVEL in sshd_config
-/usr/sbin/sshd -f $dockerfileVolume/etc/ssh/sshd_config -E $dockerfileVolume/etc/ssh/sshd.log
 
 exec "$@"

@@ -41,7 +41,7 @@ ARG ADDITIONALPACKAGEARM64
 # Packages installation
 RUN apk add --no-cache jq py3-pip borgbackup openssh-server bash openssl nss_wrapper gettext ${ADDITIONALPACKAGEARM64}
 ## jc installation via pip packages - not alpine package available
-RUN python3 -m pip install jc
+RUN python3 -m pip install jc supervisor supervisord-dependent-startup
 
 ENV NODE_ENV production
 
@@ -68,4 +68,4 @@ EXPOSE 2222 3000
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["node", "server.js"]
+CMD ["supervisord","-c", "/etc_ssh/etc/ssh/supervisord.conf"]

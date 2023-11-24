@@ -3,13 +3,21 @@ ARG RUNASUSER="borgwarehouse"
 ARG RUNASUSERID="1001"
 ARG RUNASGROUP="1001"
 
-## For arm64 : gcc lib-dev python3-dev - needed to install jc
-## try to play with $BUILDPLATFORM and buildx but impossible to get value
-ARG ADDITIONALPACKAGEARM64="gcc libc-dev python3-dev"
-
 FROM node:20.9.0-alpine3.18 as base
 
-# build stage
+# build stages
+
+## no prebuilt jc package for alpine
+FROM base AS jc
+
+###################################
+# jc installation via pip packages
+# For arm64 : gcc lib-dev python3-dev - needed to install jc
+RUN apk add --no-cache py3-pip gcc libc-dev python3-dev
+
+RUN python3 -m pip install jc
+
+## npm install
 FROM base AS deps
 
 WORKDIR /app
@@ -18,6 +26,7 @@ COPY package.json package-lock.json ./
 
 RUN npm ci --only=production
 
+## npm build
 FROM base AS builder
 
 WORKDIR /app
@@ -26,35 +35,41 @@ COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
 
+ENV NODE_ENV=production
+
 RUN sed -i "s/images:/output: 'standalone',images:/" next.config.js
 
 RUN npm run build
 
-# # run stage
+# run stage
 FROM base AS runner
 ARG RESOURCESPLACE
 ARG RUNASUSER
 ARG RUNASUSERID
 ARG RUNASGROUP
-ARG ADDITIONALPACKAGEARM64
 
-# Packages installation
-RUN apk add --no-cache jq py3-pip borgbackup openssh-server bash openssl nss_wrapper gettext ${ADDITIONALPACKAGEARM64}
-## jc installation via pip packages - not alpine package available
-RUN python3 -m pip install jc supervisor supervisord-dependent-startup
+## Packages installation
+RUN apk add --no-cache jq python3 borgbackup openssh-server bash openssl supervisor nss_wrapper gettext rsyslog
+## install jc FROM jc stage
+COPY --from=jc --chown=${RUNASUSER}:${RUNASUSER} /usr/bin/jc /usr/bin/jc
+COPY --from=jc --chown=${RUNASUSER}:${RUNASUSER} /usr/lib/python3.11/site-packages/jc /usr/lib/python3.11/site-packages/jc
 
-ENV NODE_ENV production
-
+## Creating user & group
 RUN addgroup -S ${RUNASUSER} --gid "${RUNASGROUP}" && adduser -S ${RUNASUSER} -s /bin/bash --uid "${RUNASUSERID}" -G ${RUNASUSER}
-## Prepare sshd configuration place
-RUN mkdir -p /etc_ssh/etc/ssh && chown -R ${RUNASUSER}:${RUNASUSER} /etc_ssh
+
+## Base configurations
+COPY ${RESOURCESPLACE}/sshd_config /sshd_config.conf
+COPY ${RESOURCESPLACE}/rsyslog.conf /etc/rsyslog.conf
+COPY ${RESOURCESPLACE}/supervisord.conf /etc/supervisord.conf
+COPY ${RESOURCESPLACE}/nss_wrapper_profile.sh /etc/bash/.
+
+## Entrypoint
+COPY ${RESOURCESPLACE}/entrypoint.sh /entrypoint.sh
+
+## Prepare sshd key files place && set authorizations
+RUN chown -R ${RUNASUSER}:${RUNASUSER} /etc/ssh /tmp
 
 USER ${RUNASUSERID}
-
-## Copy sshd_config
-COPY --chown=${RUNASUSER}:${RUNASUSER} ${RESOURCESPLACE}/sshd_config /sshd_config.conf
-COPY --chmod=755 --chown=${RUNASUSER}:${RUNASUSER} ${RESOURCESPLACE}/entrypoint.sh /entrypoint.sh
-COPY --chmod=755 --chown=${RUNASUSER}:${RUNASUSER} ${RESOURCESPLACE}/nss_wrapper_profile.sh /etc/bash/.
 
 WORKDIR /home/${RUNASUSER}/app
 
@@ -68,4 +83,4 @@ EXPOSE 2222 3000
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["supervisord","-c", "/etc_ssh/etc/ssh/supervisord.conf"]
+CMD ["supervisord","-c","/etc/supervisord.conf"]

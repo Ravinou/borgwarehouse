@@ -15,16 +15,16 @@ Port 2222
 ListenAddress 0.0.0.0
 #ListenAddress ::
 
-HostKey /etc_ssh/etc/ssh/ssh_host_rsa_key
-HostKey /etc_ssh/etc/ssh/ssh_host_ecdsa_key
-HostKey /etc_ssh/etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
 
 # Ciphers and keying
 #RekeyLimit default none
 
 # Logging
-#SyslogFacility AUTH
-#LogLevel DEBUG
+# SyslogFacility AUTH
+LogLevel INFO
 
 # Authentication:
 
@@ -60,7 +60,7 @@ AuthorizedKeysFile .ssh/authorized_keys
 #IgnoreRhosts yes
 
 # To disable tunneled clear text passwords, change to no here!
-#PasswordAuthentication yes
+PasswordAuthentication no
 #PermitEmptyPasswords no
 
 # Change to no to disable s/key passwords
@@ -103,7 +103,7 @@ X11Forwarding no
 #ClientAliveInterval 0
 #ClientAliveCountMax 3
 #UseDNS no
-PidFile /etc_ssh/etc/ssh/sshd.pid
+PidFile /tmp/sshd.pid
 #MaxStartups 10:30:100
 #PermitTunnel no
 #ChrootDirectory none

@@ -8,6 +8,13 @@ on:
 jobs:
     build-container:
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                platform:
+                    - linux/amd64
+                    - linux/arm/v7
+                    - linux/arm64/v8
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -16,5 +23,9 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
             - name: Build Docker Container
-              run: |
-                  docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t borgwarehouse:pr-${{ github.event.pull_request.number }} .
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  push: false
+                  platforms: ${{ matrix.platform }}
+                  tags: borgwarehouse:pr-${{ github.event.pull_request.number }}

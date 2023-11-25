@@ -5,6 +5,10 @@ on:
         branches:
             - 'develop'
 
+# allow forks to override the dockerhub namespace with one of their own
+env:
+    DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE || 'borgwarehouse' }}
+
 jobs:
     docker:
         runs-on: ubuntu-latest
@@ -25,5 +29,5 @@ jobs:
               with:
                   context: .
                   push: true
-                  platforms: linux/amd64,linux/arm64,linux/arm/v7
-                  tags: borgwarehouse/borgwarehouse:develop
+                  platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
+                  tags: ${{ env.DOCKERHUB_NAMESPACE }}/borgwarehouse:develop

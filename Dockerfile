@@ -43,7 +43,7 @@ ARG RUNASGROUP
 ## Packages installation
 # NOTE: jc isn't available in alpine repos, so we need to install it via pip
 # NOTE2: we pre-install all the available dependencies for jc from the alpine repos to avoid having to build them ourselves
-RUN apk add jq python3 borgbackup openssh-server bash openssl supervisor nss_wrapper gettext rsyslog py3-pip py3-ruamel.yaml py3-xmltodict \
+RUN apk add jq python3 borgbackup openssh-server bash coreutils openssl supervisor nss_wrapper gettext rsyslog py3-pip py3-ruamel.yaml py3-xmltodict \
     && python3 -m pip install --root-user-action=ignore jc \
     && apk del py3-pip \
     && rm -rf /var/cache/apk/*

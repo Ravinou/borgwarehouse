@@ -33,7 +33,7 @@ fi
 
 # Generate ssh keys if not exist - is empty ?
 if [ ! "$(ls -A "/etc/ssh")" ]; then
-  ssh-keygen -A -f /etc/ssh
+  ssh-keygen -A
 fi
 
 # Install sshd_config

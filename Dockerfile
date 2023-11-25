@@ -2,23 +2,15 @@ ARG RESOURCESPLACE="/docker-resources"
 ARG RUNASUSER="borgwarehouse"
 ARG RUNASUSERID="1001"
 ARG RUNASGROUP="1001"
+ARG BASE_IMAGE="node:20.9.0-alpine3.18"
 
-FROM node:20.9.0-alpine3.18 as base
+FROM ${BASE_IMAGE} as base
+FROM --platform=${BUILDPLATFORM:-linux/amd64} ${BASE_IMAGE} as build_base
 
 # build stages
 
-## no prebuilt jc package for alpine
-FROM base AS jc
-
-###################################
-# jc installation via pip packages
-# For arm64 : gcc lib-dev python3-dev - needed to install jc
-RUN apk add --no-cache py3-pip gcc libc-dev python3-dev
-
-RUN python3 -m pip install jc
-
 ## npm install
-FROM base AS deps
+FROM build_base AS deps
 
 WORKDIR /app
 
@@ -27,7 +19,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --only=production
 
 ## npm build
-FROM base AS builder
+FROM build_base AS builder
 
 WORKDIR /app
 
@@ -49,10 +41,12 @@ ARG RUNASUSERID
 ARG RUNASGROUP
 
 ## Packages installation
-RUN apk add --no-cache jq python3 borgbackup openssh-server bash openssl supervisor nss_wrapper gettext rsyslog
-## install jc FROM jc stage
-COPY --from=jc --chown=${RUNASUSER}:${RUNASUSER} /usr/bin/jc /usr/bin/jc
-COPY --from=jc --chown=${RUNASUSER}:${RUNASUSER} /usr/lib/python3.11/site-packages/jc /usr/lib/python3.11/site-packages/jc
+# NOTE: jc isn't available in alpine repos, so we need to install it via pip
+# NOTE2: we pre-install all the available dependencies for jc from the alpine repos to avoid having to build them ourselves
+RUN apk add jq python3 borgbackup openssh-server bash openssl supervisor nss_wrapper gettext rsyslog py3-pip py3-ruamel.yaml py3-xmltodict \
+    && python3 -m pip install --root-user-action=ignore jc \
+    && apk del py3-pip \
+    && rm -rf /var/cache/apk/*
 
 ## Creating user & group
 RUN addgroup -S ${RUNASUSER} --gid "${RUNASGROUP}" && adduser -S ${RUNASUSER} -s /bin/bash --uid "${RUNASUSERID}" -G ${RUNASUSER}

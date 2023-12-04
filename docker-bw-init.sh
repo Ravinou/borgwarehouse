@@ -88,4 +88,4 @@ get_SSH_fingerprints
 sudo service ssh restart
 sudo service cron restart
 
-exec "$@"
+cd /home/borgwarehouse/app && node server.js

@@ -11,12 +11,8 @@ services:
         ports:
             - "${WEB_SERVER_PORT:?WEB_SERVER_PORT variable missing}:3000"
             - "${SSH_SERVER_PORT:?SSH_SERVER_PORT variable missing}:22"
-        environment:
-            - NEXTAUTH_URL=${NEXTAUTH_URL:?NEXTAUTH_URL variable missing}
-            - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:?NEXTAUTH_SECRET variable missing}
-            - CRONJOB_KEY=${CRONJOB_KEY:?CRONJOB_KEY variable missing}
-            - SSH_SERVER_PORT=${SSH_SERVER_PORT:?SSH_SERVER_PORT variable missing}
-            - FQDN=${FQDN:?FQDN variable missing}
+        env_file:
+            - .env
         volumes:
             - ${CONFIG_PATH:?CONFIG_PATH variable missing}:/home/borgwarehouse/app/config
             - ${SSH_PATH:?SSH_PATH variable missing}:/home/borgwarehouse/.ssh

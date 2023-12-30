@@ -7,7 +7,8 @@ services:
         #   context: .
         #   dockerfile: Dockerfile
         image: borgwarehouse/borgwarehouse
-        # UID:GID must match the user and group ID of the host folders and must be > 1000
+        # UID:GID must match the user and group ID of the host folders and must be > 1000.
+        # If you want to use a different user, you must rebuild the image yourself.
         user: '1001:1001'
         ports:
             - '3000:3000'
@@ -25,6 +26,8 @@ services:
             - <host-folder>/ssh:/home/borgwarehouse/.ssh
             - <host-folder>/ssh_host:/etc/ssh
             - <host-folder>/repos:/home/borgwarehouse/repos
+            - <host-folder>/logs:/home/borgwarehouse/logs
+            - <host-folder>/tmp:/home/borgwarehouse/tmp
     # Apprise is used to send notifications, it's optional. http://apprise:8000 is the URL to use in BorgWarehouse.
     apprise:
         container_name: apprise

@@ -78,6 +78,4 @@ create_authorized_keys_file
 check_repos_directory
 get_SSH_fingerprints
 
-sudo service ssh restart
-
-exec "$@"
+exec supervisord -c /home/borgwarehouse/app/supervisord.conf

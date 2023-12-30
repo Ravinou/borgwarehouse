@@ -57,7 +57,7 @@ function WizardStep2(props) {
             <div className={classes.separator}></div>
             <h2>Borgmatic</h2>
             <div className={classes.description}>
-                If you are using Borgmatic and have <b>already edited</b> the
+                If you are using Borgmatic and have <b>already edited</b> the configuration file
                 (find a sample on the step 4) :
                 <br />
                 <div
@@ -68,9 +68,9 @@ function WizardStep2(props) {
                     }}
                 >
                     <div className={classes.code}>
-                        borg init -e repokey-blake2
+                        borgmatic init -e repokey-blake2
                     </div>
-                    <CopyButton dataToCopy='borg init -e repokey-blake2' />
+                    <CopyButton dataToCopy='borgmatic init -e repokey-blake2' />
                 </div>
             </div>
 

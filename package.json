@@ -9,7 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@tabler/icons-react": "^2.42.0",
+        "@tabler/icons-react": "^2.44.0",
         "bcryptjs": "^2.4.3",
         "chart.js": "^4.3.0",
         "next": "^13.5.6",

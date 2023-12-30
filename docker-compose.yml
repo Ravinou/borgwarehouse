@@ -7,27 +7,19 @@ services:
         #   context: .
         #   dockerfile: Dockerfile
         image: borgwarehouse/borgwarehouse
-        # UID:GID must match the user and group ID of the host folders and must be > 1000.
-        # If you want to use a different user, you must rebuild the image yourself.
-        user: '1001:1001'
+        user: "${UID:?UID variable missing}:${GID:?GID variable missing}"
         ports:
-            - '3000:3000'
-            - '2222:22'
-        environment:
-            - NEXTAUTH_URL=https://your.domain.com
-            - NEXTAUTH_SECRET=your-secret
-            - CRONJOB_KEY=your-other-secret
-            # The SSH_SERVER_PORT must match the port exposed above
-            - SSH_SERVER_PORT=2222
-            - FQDN=your.domain.com
+            - "${WEB_SERVER_PORT:?WEB_SERVER_PORT variable missing}:3000"
+            - "${SSH_SERVER_PORT:?SSH_SERVER_PORT variable missing}:22"
+        env_file:
+            - .env
         volumes:
-            # The host folders must be owned by the user with UID and GID specified above
-            - <host-folder>/config:/home/borgwarehouse/app/config
-            - <host-folder>/ssh:/home/borgwarehouse/.ssh
-            - <host-folder>/ssh_host:/etc/ssh
-            - <host-folder>/repos:/home/borgwarehouse/repos
-            - <host-folder>/logs:/home/borgwarehouse/logs
-            - <host-folder>/tmp:/home/borgwarehouse/tmp
+            - ${CONFIG_PATH:?CONFIG_PATH variable missing}:/home/borgwarehouse/app/config
+            - ${SSH_PATH:?SSH_PATH variable missing}:/home/borgwarehouse/.ssh
+            - ${SSH_HOST:?SSH_HOST variable missing}:/etc/ssh
+            - ${BORG_REPOSITORY_PATH:?BORG_REPOSITORY_PATH variable missing}:/home/borgwarehouse/repos
+            - ${TMP_PATH:?TMP_PATH variable missing}:/home/borgwarehouse/tmp
+            - ${LOGS_PATH:?LOGS_PATH variable missing}:/home/borgwarehouse/logs
     # Apprise is used to send notifications, it's optional. http://apprise:8000 is the URL to use in BorgWarehouse.
     apprise:
         container_name: apprise

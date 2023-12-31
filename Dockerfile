@@ -28,7 +28,7 @@ ENV NODE_ENV production
 
 RUN apt-get update && apt-get install -y \
     supervisor \
-    curl jq jc borgbackup openssh-server sudo cron && \
+    curl jq jc borgbackup openssh-server sudo cron rsyslog && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd borgwarehouse
@@ -45,6 +45,7 @@ COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/standalone ./
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/public ./public
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/static ./.next/static
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.conf ./
+COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/rsyslog.conf /etc/rsyslog.conf
 
 USER borgwarehouse
 

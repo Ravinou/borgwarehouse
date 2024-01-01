@@ -47,12 +47,6 @@ check_repos_directory() {
   fi
 }
 
-add_cron_job() {
-  print_green "Adding cron job..."
-  local CRON_JOB="* * * * * curl --request POST --url 'http://$HOSTNAME:3000/api/cronjob/checkStatus' --header 'Authorization: Bearer $CRONJOB_KEY'; curl --request POST --url 'http://$HOSTNAME:3000/api/cronjob/getStorageUsed' --header 'Authorization: Bearer $CRONJOB_KEY'"
-  echo "$CRON_JOB" | crontab -u borgwarehouse -
-}
-
 get_SSH_fingerprints() {
   print_green "Getting SSH fingerprints..."
   RSA_FINGERPRINT=$(ssh-keygen -lf /etc/ssh/ssh_host_rsa_key | awk '{print $2}')
@@ -82,10 +76,6 @@ init_ssh_server
 check_ssh_directory
 create_authorized_keys_file
 check_repos_directory
-add_cron_job
 get_SSH_fingerprints
 
-sudo service ssh restart
-sudo service cron restart
-
-exec "$@"
+exec supervisord -c /home/borgwarehouse/app/supervisord.conf

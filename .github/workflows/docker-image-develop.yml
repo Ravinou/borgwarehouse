@@ -1,9 +1,9 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Image for Develop Branch
 
 on:
     push:
         branches:
-            - 'main'
+            - 'develop'
 
 jobs:
     docker:
@@ -26,4 +26,4 @@ jobs:
                   context: .
                   push: true
                   platforms: linux/amd64,linux/arm64,linux/arm/v7
-                  tags: borgwarehouse/borgwarehouse:latest
+                  tags: borgwarehouse/borgwarehouse:develop

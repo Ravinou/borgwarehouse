@@ -1,5 +1,8 @@
 FROM node:20-bookworm-slim as base
 
+ARG UID=1001
+ARG GID=1001
+
 # build stage
 FROM base AS deps
 
@@ -31,9 +34,7 @@ RUN apt-get update && apt-get install -y \
     curl jq jc borgbackup openssh-server sudo cron rsyslog && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd borgwarehouse
-
-RUN useradd -m -g borgwarehouse borgwarehouse
+RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse
 
 RUN cp /etc/ssh/sshd_config /etc/ssh/moduli /home/borgwarehouse/
 

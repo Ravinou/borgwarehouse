@@ -384,7 +384,7 @@ export default function RepoManage(props) {
                                 </span>
                             )}
                             {/* SIZE */}
-                            <label htmlFor='size'>Storage Size (Go)</label>
+                            <label htmlFor='size'>Storage Size (GB)</label>
                             <input
                                 type='number'
                                 min='1'

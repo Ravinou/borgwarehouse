@@ -116,7 +116,7 @@ export default function Repo(props) {
                             <tbody>
                                 <tr>
                                     <th>{props.repositoryName}</th>
-                                    <th>{props.storageSize}Go</th>
+                                    <th>{props.storageSize} GB</th>
                                     <th style={{ padding: '0 4% 0 4%' }}>
                                         <StorageBar
                                             storageUsed={props.storageUsed}

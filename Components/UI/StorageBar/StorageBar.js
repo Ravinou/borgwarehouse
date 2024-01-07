@@ -3,7 +3,7 @@ import classes from './StorageBar.module.css';
 
 export default function StorageBar(props) {
     //Var
-    //storageUsed is in octet, storageSize is in Go. Round to 1 decimal for %.
+    //storageUsed is in octet, storageSize is in GB. Round to 1 decimal for %.
     const storageUsedPercent = (
         ((props.storageUsed / 1000000) * 100) /
         props.storageSize
@@ -23,8 +23,8 @@ export default function StorageBar(props) {
                 </div>
                 <div className={classes.tooltip}>
                     {storageUsedPercent}% (
-                    {(props.storageUsed / 1000000).toFixed(1)}Go/
-                    {props.storageSize}Go)
+                    {(props.storageUsed / 1000000).toFixed(1)} GB /{' '}
+                    {props.storageSize} GB)
                 </div>
             </div>
         </div>

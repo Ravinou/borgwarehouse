@@ -25,6 +25,11 @@
 </div>
 
 ## ⭐ Support the Project
+<div align="center">
+<img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/Ravinou?style=for-the-badge&logo=github&label=Github%20Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2FRavinou">
+<img alt="Liberapay patrons" src="https://img.shields.io/liberapay/patrons/R4VEN?style=for-the-badge&logo=liberapay&label=Liberapay%20Sponsors&link=https%3A%2F%2Fliberapay.com%2FR4VEN">
+</div>
+
 
 If you find BorgWarehouse helpful or interesting, please consider **giving it a star on GitHub** and **[sponsoring](https://github.com/sponsors/Ravinou)**. Your support is greatly appreciated!
 
@@ -66,6 +71,7 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 ## ❤️ Special thanks to sponsors ❤️
 
 <a href="https://github.com/shad-lp"><img src="https://avatars.githubusercontent.com/shad-lp" style="width:50px; border-radius:50%;"/></a>
+<a href="https://github.com/Magneticdud"><img src="https://avatars.githubusercontent.com/Magneticdud" style="width:50px; border-radius:50%;"/></a>
 
 [next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [next-url]: https://nextjs.org/

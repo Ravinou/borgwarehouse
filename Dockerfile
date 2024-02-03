@@ -29,9 +29,9 @@ FROM base AS runner
 
 ENV NODE_ENV production
 
+RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \
-    supervisor \
-    curl jq jc borgbackup openssh-server sudo cron rsyslog && \
+    supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse

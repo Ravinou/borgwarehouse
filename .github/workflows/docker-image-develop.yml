@@ -25,5 +25,5 @@ jobs:
               with:
                   context: .
                   push: true
-                  platforms: linux/amd64,linux/arm64,linux/arm/v7
+                  platforms: linux/amd64,linux/arm64 # linux/arm/v7 arm32 is not supported by node20 https://github.com/nodejs/docker-node/issues/1946
                   tags: borgwarehouse/borgwarehouse:develop

@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse
 
-RUN cp /etc/ssh/sshd_config /etc/ssh/moduli /home/borgwarehouse/
+RUN cp /etc/ssh/moduli /home/borgwarehouse/
 
 WORKDIR /home/borgwarehouse/app
 
@@ -47,6 +47,7 @@ COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/public ./public
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/static ./.next/static
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.conf ./
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/rsyslog.conf /etc/rsyslog.conf
+COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/sshd_config ./
 
 USER borgwarehouse
 

@@ -42,7 +42,7 @@ export const authOptions = {
                 //Step 1 : does the user exist ?
                 const userIndex = usersList
                     .map((user) => user.username)
-                    .indexOf(username);
+                    .indexOf(username.toLowerCase());
                 if (userIndex === -1) {
                     throw new Error('Incorrect credentials.');
                 }

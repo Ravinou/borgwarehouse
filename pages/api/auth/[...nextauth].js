@@ -5,11 +5,20 @@ import { verifyPassword } from '../../../helpers/functions/auth';
 import fs from 'fs';
 import path from 'path';
 
+const logLogin = async (message, req, success = false) => {
+    const ipAddress = req.headers['x-forwarded-for'] || 'unknown';
+    if (success) {
+        console.log(`Login success from ${ipAddress} with user ${message}`);
+    } else {
+        console.log(`Login failed from ${ipAddress} : ${message}`);
+    }
+};
+
 ////Use if need getServerSideProps and therefore getServerSession
 export const authOptions = {
     providers: [
         CredentialsProvider({
-            async authorize(credentials) {
+            async authorize(credentials, req) {
                 const { username, password } = credentials;
                 //Read the users file
                 //Find the absolute path of the json directory
@@ -42,8 +51,9 @@ export const authOptions = {
                 //Step 1 : does the user exist ?
                 const userIndex = usersList
                     .map((user) => user.username)
-                    .indexOf(username);
+                    .indexOf(username.toLowerCase());
                 if (userIndex === -1) {
+                    await logLogin(`Bad username ${req.body.username}`, req);
                     throw new Error('Incorrect credentials.');
                 }
                 const user = usersList[userIndex];
@@ -51,6 +61,10 @@ export const authOptions = {
                 //Step 2 : Is the password correct ?
                 const isValid = await verifyPassword(password, user.password);
                 if (!isValid) {
+                    await logLogin(
+                        `Wrong password for ${req.body.username}`,
+                        req
+                    );
                     throw new Error('Incorrect credentials.');
                 }
 
@@ -62,6 +76,7 @@ export const authOptions = {
                     roles: user.roles,
                 };
 
+                await logLogin(req.body.username, req, true);
                 return account;
             },
         }),

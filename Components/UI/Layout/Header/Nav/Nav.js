@@ -38,7 +38,7 @@ export default function Nav() {
                         <div>
                             <IconUser size={28} />
                         </div>
-                        <div>
+                        <div className={classes.username}>
                             {status === 'authenticated' && data.user.name}
                         </div>
                     </div>

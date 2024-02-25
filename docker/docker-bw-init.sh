@@ -17,7 +17,11 @@ init_ssh_server() {
   if [ -z "$(ls -A /etc/ssh)" ]; then
     print_green "/etc/ssh is empty, generating SSH host keys..."
     ssh-keygen -A
-    cp /home/borgwarehouse/sshd_config /home/borgwarehouse/moduli /etc/ssh/
+    cp /home/borgwarehouse/moduli /etc/ssh/
+  fi
+  if [ ! -f "/etc/ssh/sshd_config" ]; then
+    print_green "sshd_config not found in your volume, copying the default one..."
+    cp /home/borgwarehouse/app/sshd_config /etc/ssh/
   fi
 }
 

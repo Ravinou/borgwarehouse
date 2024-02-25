@@ -99,33 +99,24 @@ export default function Login() {
                                 placeholder='Username'
                                 className='signInInput'
                                 {...register('username', {
-                                    required: true,
+                                    required: 'This field is required.',
+                                    pattern: {
+                                        value: /^[^\s]+$/g,
+                                        message: 'No space allowed.',
+                                    },
                                 })}
                             />
-                            {errors.email &&
-                                errors.email.type === 'required' && (
-                                    <small
-                                        style={{
-                                            color: 'red',
-                                            display: 'block',
-                                            marginTop: '3px',
-                                        }}
-                                    >
-                                        This field is required.
-                                    </small>
-                                )}
-                            {errors.email &&
-                                errors.email.type === 'pattern' && (
-                                    <small
-                                        style={{
-                                            color: 'red',
-                                            display: 'block',
-                                            marginTop: '3px',
-                                        }}
-                                    >
-                                        Incorrect email address format.
-                                    </small>
-                                )}
+                            {errors.username && (
+                                <small
+                                    style={{
+                                        color: 'red',
+                                        display: 'block',
+                                        marginTop: '3px',
+                                    }}
+                                >
+                                    {errors.username.message}
+                                </small>
+                            )}
                         </p>
                         <p>
                             <input
@@ -133,7 +124,7 @@ export default function Login() {
                                 placeholder='Password'
                                 className='signInInput'
                                 {...register('password', {
-                                    required: true,
+                                    required: 'This field is required.',
                                 })}
                             />
                             {errors.password && (
@@ -144,7 +135,7 @@ export default function Login() {
                                         marginTop: '3px',
                                     }}
                                 >
-                                    This field is required.
+                                    {errors.password.message}
                                 </small>
                             )}
                         </p>

@@ -1,6 +1,6 @@
 {
     "name": "borgwarehouse",
-    "version": "2.0.0",
+    "version": "2.2.0",
     "private": true,
     "scripts": {
         "dev": "next dev",
@@ -9,24 +9,24 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@tabler/icons-react": "^2.40.0",
+        "@tabler/icons-react": "^2.47.0",
         "bcryptjs": "^2.4.3",
-        "chart.js": "^4.3.0",
-        "next": "^13.5.6",
-        "next-auth": "^4.24.4",
-        "nodemailer": "^6.9.7",
+        "chart.js": "^4.4.1",
+        "next": "^14.1.0",
+        "next-auth": "^4.24.6",
+        "nodemailer": "^6.9.10",
         "react": "^18.2.0",
         "react-chartjs-2": "^5.2.0",
         "react-dom": "^18.2.0",
-        "react-hook-form": "^7.36.1",
-        "react-select": "^5.6.0",
+        "react-hook-form": "^7.50.1",
+        "react-select": "^5.8.0",
         "react-toastify": "^9.0.8",
         "spinners-react": "^1.0.7",
-        "swr": "^2.2.0"
+        "swr": "^2.2.5"
     },
     "devDependencies": {
-        "eslint": "8.52.0",
-        "eslint-config-next": "^13.5.6",
-        "prettier": "^3.0.3"
+        "eslint": "8.56.0",
+        "eslint-config-next": "^14.1.0",
+        "prettier": "^3.2.5"
     }
 }

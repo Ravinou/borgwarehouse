@@ -24,6 +24,15 @@
   </a>
 </div>
 
+## ⭐ Support the Project
+<div align="center">
+<img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/Ravinou?style=for-the-badge&logo=github&label=Github%20Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2FRavinou">
+<img alt="Liberapay patrons" src="https://img.shields.io/liberapay/patrons/R4VEN?style=for-the-badge&logo=liberapay&label=Liberapay%20Sponsors&link=https%3A%2F%2Fliberapay.com%2FR4VEN">
+</div>
+
+
+If you find BorgWarehouse helpful or interesting, please consider **giving it a star on GitHub** and **[sponsoring](https://github.com/sponsors/Ravinou)**. Your support is greatly appreciated!
+
 ## ✨ What is BorgWarehouse ?
 
 **BorgWarehouse is a graphical interface to manage a central [BorgBackup](https://borgbackup.readthedocs.io/en/stable/#what-is-borgbackup) repository server.**
@@ -46,7 +55,7 @@ The whole system part is automatically managed by BorgWarehouse and **you don't 
 
 You can find the documentation here : [borgwarehouse.com](https://borgwarehouse.com/docs/prologue/introduction/)
 
-## :key: Environment Variables
+## 🔑 Environment Variables
 
 To run this project, you will need to add some environment variables.
 
@@ -58,6 +67,11 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+## ❤️ Special thanks to sponsors ❤️
+
+<a href="https://github.com/shad-lp"><img src="https://avatars.githubusercontent.com/shad-lp" style="width:50px; border-radius:50%;"/></a>
+<a href="https://github.com/Magneticdud"><img src="https://avatars.githubusercontent.com/Magneticdud" style="width:50px; border-radius:50%;"/></a>
 
 [next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [next-url]: https://nextjs.org/

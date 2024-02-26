@@ -7,13 +7,22 @@
 
 .icons {
     position: relative;
-    bottom: 14px;
+    bottom: 13px;
 }
 
 .quickSetting {
     position: absolute;
     visibility: visible;
     opacity: 1;
+}
+
+.lanBadge {
+    border-radius: 5px;
+    border: 1px solid #6d4aff;
+    color: #6d4aff;
+    font-size: 0.9em;
+    padding: 2px 5px;
+    margin-right: 8px;
 }
 
 .tooltip {
@@ -89,6 +98,15 @@
     position: absolute;
     visibility: hidden;
     opacity: 0;
+}
+
+.container:hover .lanBadge {
+    visibility: hidden;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
 }
 
 @media all and (max-width: 1000px) {

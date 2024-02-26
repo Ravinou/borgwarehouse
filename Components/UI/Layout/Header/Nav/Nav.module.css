@@ -10,6 +10,10 @@
     align-items: center;
 }
 
+.username::first-letter {
+    text-transform: capitalize;
+}
+
 .account {
     background: none;
     border: none;

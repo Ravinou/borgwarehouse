@@ -86,7 +86,7 @@ export default function PasswordSettings(props) {
                             <p>
                                 <input
                                     type='password'
-                                    placeholder='Actual password'
+                                    placeholder='Current password'
                                     {...register('oldPassword', {
                                         required: true,
                                     })}

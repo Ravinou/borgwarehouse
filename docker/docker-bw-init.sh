@@ -17,7 +17,11 @@ init_ssh_server() {
   if [ -z "$(ls -A /etc/ssh)" ]; then
     print_green "/etc/ssh is empty, generating SSH host keys..."
     ssh-keygen -A
-    cp /home/borgwarehouse/sshd_config /home/borgwarehouse/moduli /etc/ssh/
+    cp /home/borgwarehouse/moduli /etc/ssh/
+  fi
+  if [ ! -f "/etc/ssh/sshd_config" ]; then
+    print_green "sshd_config not found in your volume, copying the default one..."
+    cp /home/borgwarehouse/app/sshd_config /etc/ssh/
   fi
 }
 
@@ -45,12 +49,6 @@ check_repos_directory() {
   else 
     chmod 700 "$REPOS_DIR"
   fi
-}
-
-add_cron_job() {
-  print_green "Adding cron job..."
-  local CRON_JOB="* * * * * curl --request POST --url 'http://$HOSTNAME:3000/api/cronjob/checkStatus' --header 'Authorization: Bearer $CRONJOB_KEY'; curl --request POST --url 'http://$HOSTNAME:3000/api/cronjob/getStorageUsed' --header 'Authorization: Bearer $CRONJOB_KEY'"
-  echo "$CRON_JOB" | crontab -u borgwarehouse -
 }
 
 get_SSH_fingerprints() {
@@ -82,10 +80,6 @@ init_ssh_server
 check_ssh_directory
 create_authorized_keys_file
 check_repos_directory
-add_cron_job
 get_SSH_fingerprints
 
-sudo service ssh restart
-sudo service cron restart
-
-exec "$@"
+exec supervisord -c /home/borgwarehouse/app/supervisord.conf

@@ -82,4 +82,5 @@ create_authorized_keys_file
 check_repos_directory
 get_SSH_fingerprints
 
-exec supervisord -c /home/borgwarehouse/app/supervisord.conf
+print_green "Successful initialization. BorgWarehouse is ready !"
+exec supervisord -c /home/borgwarehouse/app/supervisord.conf 

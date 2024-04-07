@@ -72,6 +72,7 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 
 <a href="https://github.com/shad-lp"><img src="https://avatars.githubusercontent.com/shad-lp" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/Magneticdud"><img src="https://avatars.githubusercontent.com/Magneticdud" style="width:50px; border-radius:50%;"/></a>
+<a href="https://github.com/dhenry123"><img src="https://avatars.githubusercontent.com/dhenry123" style="width:50px; border-radius:50%;"/></a>
 
 [next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [next-url]: https://nextjs.org/

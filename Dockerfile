@@ -29,9 +29,12 @@ ENV NODE_ENV production
 RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
 
 # Adding nss_wrapper support
-RUN apt-get update \ 
-    && apt-get install -y supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog libnss-wrapper \ 
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# && export DEBIAN_FRONTEND=noninteractive
+# to avoid ERROR: debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module)
+RUN apt-get update \
+&& export DEBIAN_FRONTEND=noninteractive \
+&& apt-get install -y supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog libnss-wrapper \ 
+&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # nss_wrapper build with predefined user/group (keep original 1001:1001)
 RUN groupadd -g 1001 borgwarehouse && useradd -m -u 1001 -g 1001 borgwarehouse

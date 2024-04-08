@@ -24,9 +24,6 @@ RUN npm run build
 # run stage
 FROM base AS runner
 
-ARG UID
-ARG GID
-
 ENV NODE_ENV production
 
 RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list

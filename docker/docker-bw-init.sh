@@ -2,15 +2,43 @@
 
 set -e
 
+##--> NSS_WRAPPER hook
+# Dockerfile original values
+dockerfileUser="borgwarehouse"
+dockerfileUserid="1001"
+# only if runner owner is <> 1001
+if [ "$(id -u)" != "$dockerfileUserid" ]; then
+  # mapping uid/gid process owner to borgwarehouse user with nss_wrapper
+  user_id=$(id -u)
+  group_id=$(id -g)
+  # original database
+  origpasswd="/etc/passwd"
+  origgroup="/etc/group"
+  # As this container is runable in read-only mode, the new passwd/group files must be written
+  # within a mounted volume, in this specific case, use /home/borgwarehouse/tmp which is also needed by supervisord
+  newpasswd="/home/borgwarehouse/tmp/passwd"
+  newgroup="/home/borgwarehouse/tmp/group"
+  # map passwd with $dockerfileUser
+  export user_id group_id # needed for awk commands
+  line=$(grep $dockerfileUser ${origpasswd} | awk -F ":" '{print $1":"$2":"ENVIRON["user_id"]":"ENVIRON["group_id"]":"$5":"$6":"$7}')
+  cat ${origpasswd} | sed -E "s|^$dockerfileUser.*$|$line|" >${newpasswd}
+  # map group with $dockerfileUser
+  line=$(grep $dockerfileUser ${origgroup} | awk -F ":" '{print $1":x:"ENVIRON["group_id"]":"}')
+  cat ${origgroup} | sed -E "s|^$dockerfileUser.*$|$line|" >${newgroup}
+  # set nss_wrapper environment
+  . /etc/profile.d/nss_wrapper_profile.sh
+fi
+##<--
+
 SSH_DIR="/home/borgwarehouse/.ssh"
 AUTHORIZED_KEYS_FILE="$SSH_DIR/authorized_keys"
 REPOS_DIR="/home/borgwarehouse/repos"
 
 print_green() {
-  echo -e "\e[92m$1\e[0m";
+  echo -e "\e[92m$1\e[0m"
 }
-print_red() { 
-  echo -e "\e[91m$1\e[0m";
+print_red() {
+  echo -e "\e[91m$1\e[0m"
 }
 
 init_ssh_server() {
@@ -29,7 +57,7 @@ check_ssh_directory() {
   if [ ! -d "$SSH_DIR" ]; then
     print_red "The .ssh directory does not exist, you need to mount it as docker volume."
     exit 1
-  else 
+  else
     chmod 700 "$SSH_DIR"
   fi
 }
@@ -39,14 +67,14 @@ create_authorized_keys_file() {
     print_green "The authorized_keys file does not exist, creating..."
     touch "$AUTHORIZED_KEYS_FILE"
   fi
-    chmod 600 "$AUTHORIZED_KEYS_FILE"
+  chmod 600 "$AUTHORIZED_KEYS_FILE"
 }
 
 check_repos_directory() {
   if [ ! -d "$REPOS_DIR" ]; then
     print_red "The repos directory does not exist, you need to mount it as docker volume."
     exit 2
-  else 
+  else
     chmod 700 "$REPOS_DIR"
   fi
 }
@@ -83,4 +111,8 @@ check_repos_directory
 get_SSH_fingerprints
 
 print_green "Successful initialization. BorgWarehouse is ready !"
-exec supervisord -c /home/borgwarehouse/app/supervisord.conf 
+# Using the container as "Read Only", give TMP path to supervisord
+# otherwise: supervisord error:
+# FileNotFoundError: [Errno 2] No usable temporary directory found in ['/tmp', '/var/tmp', '/usr/tmp', '/home/borgwarehouse/app']
+export TMP="/home/borgwarehouse/tmp"
+exec supervisord -c /home/borgwarehouse/app/supervisord.conf

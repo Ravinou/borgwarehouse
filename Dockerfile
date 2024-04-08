@@ -1,6 +1,3 @@
-ARG UID=1001
-ARG GID=1001
-
 FROM node:20-bookworm-slim as base
 
 # build stage
@@ -33,11 +30,18 @@ ARG GID
 ENV NODE_ENV production
 
 RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
-RUN apt-get update && apt-get install -y \
-    supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse
+# Adding nss_wrapper support
+RUN apt-get update \ 
+    && apt-get install -y supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog libnss-wrapper \ 
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# nss_wrapper build with predefined user/group (keep original 1001:1001)
+RUN groupadd -g 1001 borgwarehouse && useradd -m -u 1001 -g 1001 borgwarehouse
+
+#nss_wrapper profile installation
+COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/nss_wrapper_profile.sh /etc/profile.d/.
+RUN echo '. /etc/profile.d/nss_wrapper_profile.sh' >> /etc/bash.bashrc
 
 RUN cp /etc/ssh/moduli /home/borgwarehouse/
 

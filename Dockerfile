@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim as base
+FROM node:22-bookworm-slim as base
 
 ARG UID=1001
 ARG GID=1001

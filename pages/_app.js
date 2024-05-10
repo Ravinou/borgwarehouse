@@ -20,7 +20,7 @@ export default function MyApp({ Component, pageProps }) {
                     <link rel='shortcut icon' href='/favicon.ico' />
                     <title>BorgWarehouse</title>
                 </Head>
-                <ToastContainer />
+                <ToastContainer stacked />
                 <Component {...pageProps} />
             </Layout>
         </SessionProvider>

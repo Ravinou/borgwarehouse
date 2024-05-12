@@ -170,6 +170,7 @@ export default function RepoManage(props) {
                 comment: dataForm.comment,
                 alert: dataForm.alert.value,
                 lanCommand: dataForm.lanCommand,
+                appendOnlyMode: dataForm.appendOnlyMode,
             };
             //POST API to send new repo
             await fetch('/api/repo/add', {
@@ -210,6 +211,7 @@ export default function RepoManage(props) {
                 comment: dataForm.comment,
                 alert: dataForm.alert.value,
                 lanCommand: dataForm.lanCommand,
+                appendOnlyMode: dataForm.appendOnlyMode,
             };
             await fetch('/api/repo/id/' + router.query.slug + '/edit', {
                 method: 'PUT',
@@ -426,7 +428,7 @@ export default function RepoManage(props) {
                                 </span>
                             )}
                             {/* LAN COMMAND GENERATION */}
-                            <div className={classes.lanCommandWrapper}>
+                            <div className={classes.optionCommandWrapper}>
                                 <input
                                     type='checkbox'
                                     name='lanCommand'
@@ -446,6 +448,36 @@ export default function RepoManage(props) {
                                         marginLeft: '5px',
                                     }}
                                     href='https://borgwarehouse.com/docs/user-manual/repositories/#generates-commands-for-use-over-lan'
+                                    rel='noreferrer'
+                                    target='_blank'
+                                >
+                                    <IconExternalLink
+                                        size={16}
+                                        color='#6c737f'
+                                    />
+                                </Link>
+                            </div>
+                            {/* APPEND-ONLY MODE */}
+                            <div className={classes.optionCommandWrapper}>
+                                <input
+                                    type='checkbox'
+                                    name='appendOnlyMode'
+                                    defaultChecked={
+                                        props.mode == 'edit'
+                                            ? targetRepo.appendOnlyMode
+                                            : false
+                                    }
+                                    {...register('appendOnlyMode')}
+                                />
+                                <label htmlFor='appendOnlyMode'>
+                                    Enable append-only mode.
+                                </label>
+                                <Link
+                                    style={{
+                                        alignSelf: 'baseline',
+                                        marginLeft: '5px',
+                                    }}
+                                    href='https://borgwarehouse.com/docs/user-manual/repositories/#append-only-mode'
                                     rel='noreferrer'
                                     target='_blank'
                                 >

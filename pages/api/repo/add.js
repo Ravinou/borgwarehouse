@@ -16,10 +16,23 @@ export default async function handler(req, res) {
         }
 
         //The data we expect to receive
-        const { alias, sshPublicKey, size, comment, alert, lanCommand } =
-            req.body;
+        const {
+            alias,
+            sshPublicKey,
+            size,
+            comment,
+            alert,
+            lanCommand,
+            appendOnlyMode,
+        } = req.body;
         //We check that we receive data for each variable. Only "comment" and "lanCommand" are optional in the form.
-        if (!alias || !sshPublicKey || !size || (!alert && alert !== 0)) {
+        if (
+            !alias ||
+            !sshPublicKey ||
+            !size ||
+            typeof appendOnlyMode !== 'boolean' ||
+            (!alert && alert !== 0)
+        ) {
             //If a variable is empty.
             res.status(422).json({
                 message: 'Unexpected data',
@@ -60,6 +73,7 @@ export default async function handler(req, res) {
                 comment: comment,
                 displayDetails: true,
                 lanCommand: lanCommand,
+                appendOnlyMode: appendOnlyMode,
             };
 
             ////Call the shell : createRepo.sh
@@ -67,7 +81,7 @@ export default async function handler(req, res) {
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             //Exec the shell
             const { stdout } = await exec(
-                `${shellsDirectory}/shells/createRepo.sh "${newRepo.sshPublicKey}" ${newRepo.storageSize}`
+                `${shellsDirectory}/shells/createRepo.sh "${newRepo.sshPublicKey}" ${newRepo.storageSize} ${newRepo.appendOnlyMode}`
             );
 
             newRepo.repositoryName = stdout.trim();

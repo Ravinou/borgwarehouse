@@ -7,6 +7,7 @@ import {
     IconChevronDown,
     IconChevronUp,
     IconBellOff,
+    IconLockPlus,
 } from '@tabler/icons-react';
 import timestampConverter from '../../helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
@@ -72,6 +73,16 @@ export default function Repo(props) {
         }
     };
 
+    const appendOnlyModeIndicator = () => {
+        if (props.appendOnlyMode) {
+            return (
+                <div className={classes.appendOnlyModeIcon}>
+                    <IconLockPlus size={16} color='grey' />
+                </div>
+            );
+        }
+    };
+
     return (
         <>
             {displayDetails ? (
@@ -80,6 +91,7 @@ export default function Repo(props) {
                         <div className={classes.openFlex}>
                             <div className={statusIndicator()} />
                             <div className={classes.alias}>{props.alias}</div>
+                            {appendOnlyModeIndicator()}
                             {alertIndicator()}
                             {props.comment && (
                                 <div className={classes.comment}>
@@ -155,6 +167,7 @@ export default function Repo(props) {
                         <div className={classes.closeFlex}>
                             <div className={statusIndicator()} />
                             <div className={classes.alias}>{props.alias}</div>
+                            {appendOnlyModeIndicator()}
                             {alertIndicator()}
                             {props.comment && (
                                 <div className={classes.comment}>

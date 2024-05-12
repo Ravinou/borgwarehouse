@@ -16,15 +16,26 @@ export default async function handler(req, res) {
         }
 
         //The data we expect to receive
-        const { alias, sshPublicKey, size, comment, alert, lanCommand } =
-            req.body;
-        //We check that we receive data for each variable. Only "comment" and "lanCommand" are optional in the form.
-        if (!alias || !sshPublicKey || !size || (!alert && alert !== 0)) {
-            //If a variable is empty.
+        const {
+            alias,
+            sshPublicKey,
+            size,
+            comment,
+            alert,
+            lanCommand,
+            appendOnlyMode,
+        } = req.body;
+        //Only "comment" and "lanCommand" are optional in the form.
+        if (
+            !alias ||
+            !sshPublicKey ||
+            !size ||
+            typeof appendOnlyMode !== 'boolean' ||
+            (!alert && alert !== 0)
+        ) {
             res.status(422).json({
                 message: 'Unexpected data',
             });
-            //A return to make sure we don't go any further if data are incorrect.
             return;
         }
 
@@ -49,7 +60,7 @@ export default async function handler(req, res) {
             const shellsDirectory = path.join(process.cwd(), '/helpers');
             // //Exec the shell
             await exec(
-                `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].repositoryName} "${sshPublicKey}" ${size}`
+                `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].repositoryName} "${sshPublicKey}" ${size} ${appendOnlyMode}`
             );
 
             //Find the ID in the data and change the values transmitted by the form
@@ -63,6 +74,7 @@ export default async function handler(req, res) {
                           comment: comment,
                           alert: alert,
                           lanCommand: lanCommand,
+                          appendOnlyMode: appendOnlyMode,
                       }
                     : repo
             );

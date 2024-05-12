@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
-# This shell takes 2 arguments : [SSH pub key] X [quota]
+# This shell takes 2 arguments : [SSH pub key] X [quota] x [append only mode (boolean)]
 # Main steps are :
 # - check if args are present
 # - check the ssh pub key format
@@ -31,8 +31,8 @@ pool="${home}/repos"
 authorized_keys="${home}/.ssh/authorized_keys"
 
 # Check args
-if [ "$1" == "" ] || [ "$2" == "" ];then
-    echo -n "This shell takes 2 arguments : SSH Public Key, Quota in Go [e.g. : 10] "
+if [ "$1" == "" ] || [ "$2" == "" ] ||  [ "$3" != "true" ] && [ "$3" != "false" ];then
+    echo -n "This shell takes 3 arguments : SSH Public Key, Quota in Go [e.g. : 10], Append only mode [true|false]"
     exit 1
 fi
 
@@ -43,6 +43,12 @@ if [[ ! "$1" =~ $pattern ]]
 then
     echo -n "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
     exit 2
+fi
+
+## Check if authorized_keys exists
+if [ ! -f "${authorized_keys}" ];then
+    echo -n "${authorized_keys} must be present"
+    exit 5
 fi
 
 # Check if SSH pub key is already present in authorized_keys
@@ -63,14 +69,15 @@ randRepositoryName () {
 }
 repositoryName=$(randRepositoryName)
 
-## Check if authorized_keys exists
-if [ ! -f "${authorized_keys}" ];then
-    echo -n "${authorized_keys} must be present"
-    exit 5
+# Append only mode
+if [ "$3" == "true" ]; then
+    appendOnlyMode=" --append-only"
+else
+    appendOnlyMode=""
 fi
 
 ## Add ssh public key in authorized_keys with borg restriction for only 1 repository and storage quota
-restricted_authkeys="command=\"cd ${pool};borg serve --restrict-to-path ${pool}/${repositoryName} --storage-quota $2G\",restrict $1"
+restricted_authkeys="command=\"cd ${pool};borg serve${appendOnlyMode} --restrict-to-path ${pool}/${repositoryName} --storage-quota $2G\",restrict $1"
 echo "$restricted_authkeys" | tee -a "${authorized_keys}" >/dev/null
 
 ## Return the repositoryName

@@ -123,6 +123,7 @@ export default function RepoList() {
                     sshPublicKey={repo.sshPublicKey}
                     comment={repo.comment}
                     lanCommand={repo.lanCommand}
+                    appendOnlyMode={repo.appendOnlyMode}
                     repoManageEditHandler={() => repoManageEditHandler(repo.id)}
                     wizardEnv={wizardEnv}
                 ></Repo>

@@ -126,23 +126,23 @@
     margin-top: 3px;
 }
 
-.lanCommandWrapper {
+.optionCommandWrapper {
     display: flex;
     margin-top: 20px;
     color: #494b7a;
 }
 
-.lanCommandWrapper label {
+.optionCommandWrapper label {
     margin: 0;
 }
 
-.lanCommandWrapper input[type='checkbox'] {
+.optionCommandWrapper input[type='checkbox'] {
     width: auto;
     margin-right: 8px;
     cursor: pointer;
     accent-color: #6d4aff;
 }
-.lanCommandWrapper input[type='checkbox']:focus {
+.optionCommandWrapper input[type='checkbox']:focus {
     outline: 0;
     box-shadow: none;
     accent-color: #6d4aff;

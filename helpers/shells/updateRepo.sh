@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
-# This shell takes 3 args: [repositoryName] [new SSH pub key] [quota]
+# This shell takes 4 args: [repositoryName] [new SSH pub key] [quota] [append-only mode (boolean)]
 # This shell updates the SSH key and the quota for a repository.
 
 # Exit when any command fails
@@ -16,8 +16,8 @@ fi
 : "${home:=/home/borgwarehouse}"
 
 # Check args
-if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ]; then
-    echo -n "This shell takes 3 args: [repositoryName] [new SSH pub key] [quota]"
+if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ] || [ "$4" != "true" ] && [ "$4" != "false" ]; then
+    echo -n "This shell takes 4 args: [repositoryName] [new SSH pub key] [quota] [Append only mode [true|false]]"
     exit 1
 fi
 
@@ -66,6 +66,13 @@ done < "$home/.ssh/authorized_keys"
 if [ "$found" = true ]; then
     echo -n "This SSH pub key is already present in authorized_keys on a different line."
     exit 5
+fi
+
+# Append only mode
+if [ "$4" == "true" ]; then
+    sed -ri "/command=\".*${repositoryName}.*\",restrict/ {/borg serve .*--append-only /! s|(borg serve )|\1--append-only |}" "$home/.ssh/authorized_keys"
+elif [ "$4" == "false" ]; then
+    sed -ri "/command=\".*${repositoryName}.*\",restrict/ s|(--append-only )||g" "$home/.ssh/authorized_keys"
 fi
 
 # Modify authorized_keys for the repositoryName: update the line with the quota and the SSH pub key

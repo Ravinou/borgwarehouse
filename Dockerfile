@@ -1,7 +1,7 @@
-FROM node:20-bookworm-slim as base
-
 ARG UID=1001
 ARG GID=1001
+
+FROM node:20-bookworm-slim as base
 
 # build stage
 FROM base AS deps
@@ -26,6 +26,9 @@ RUN npm run build
 
 # run stage
 FROM base AS runner
+
+ARG UID
+ARG GID
 
 ENV NODE_ENV production
 

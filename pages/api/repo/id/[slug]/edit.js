@@ -10,9 +10,18 @@ export default async function handler(req, res) {
     if (req.method == 'PUT') {
         //Verify that the user is logged in.
         const session = await getServerSession(req, res, authOptions);
-        if (!session) {
+        if (!session && req.headers.authorization == null) {
             res.status(401).json({ message: 'You must be logged in.' });
             return;
+        }
+        if (req.headers.authorization != null) {
+            const API_KEY = process.env.API_KEY;
+            const ACTION_KEY = req.headers.authorization.split(' ')[1];
+
+            if (ACTION_KEY !== API_KEY) {
+                res.status(401).json({ message: 'You must be logged in.' });
+                return;
+            }
         }
 
         //The data we expect to receive

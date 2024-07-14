@@ -6,7 +6,9 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "setup": "npm install && npm run setup:hooks",
+        "setup:hooks": "npx husky install"
     },
     "dependencies": {
         "@tabler/icons-react": "^3.10.0",
@@ -25,7 +27,10 @@
         "swr": "^2.2.5"
     },
     "devDependencies": {
+        "@commitlint/cli": "^19.3.0",
+        "@commitlint/config-conventional": "^19.2.2",
         "eslint-config-next": "^14.2.5",
+        "husky": "^9.0.11",
         "prettier": "^3.3.2"
     }
 }

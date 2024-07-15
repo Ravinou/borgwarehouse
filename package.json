@@ -31,6 +31,6 @@
         "@commitlint/config-conventional": "^19.2.2",
         "eslint-config-next": "^14.2.5",
         "husky": "^9.0.11",
-        "prettier": "^3.3.2"
+        "prettier": "^3.3.3"
     }
 }

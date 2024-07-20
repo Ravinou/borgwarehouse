@@ -14,7 +14,14 @@ export default async function handler(req, res) {
             res.status(401).json({ message: 'You must be logged in.' });
             return;
         }
-
+        //If deletion is disabled on the server, return error
+        if (process.env.DISABLE_DELETE_REPO === 'true') {
+            res.status(403).json({
+                status: 403,
+                message: 'Deletion is disabled on this server',
+            });
+            return;
+        }
         //The data we expect to receive
         const { toDelete } = req.body;
         ////We check that we receive toDelete and it must be a bool.
@@ -26,6 +33,7 @@ export default async function handler(req, res) {
             //A return to make sure we don't go any further if data are incorrect.
             return;
         }
+
         try {
             //console.log('API call (DELETE)');
             //Find the absolute path of the json directory

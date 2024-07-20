@@ -97,7 +97,12 @@ export default function RepoManage(props) {
                     );
                     router.replace('/');
                 } else {
-                    toast.error('An error has occurred', toastOptions);
+                    if (response.status == 403)
+                        toast.warning(
+                            '🔒 The server is currently protected against repository deletion.',
+                            toastOptions
+                        );
+                    else toast.error('An error has occurred', toastOptions);
                     router.replace('/');
                     console.log('Fail to delete');
                 }

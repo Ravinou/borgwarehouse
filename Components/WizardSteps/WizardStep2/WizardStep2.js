@@ -33,11 +33,12 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         borg init -e repokey-blake2 ssh://
-                        {UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
+                        {UNIX_USER}@{FQDN}
+                        {SSH_SERVER_PORT}/./
                         {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+                        dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 <div className={classes.note}>
@@ -57,8 +58,8 @@ function WizardStep2(props) {
             <div className={classes.separator}></div>
             <h2>Borgmatic</h2>
             <div className={classes.description}>
-                If you are using Borgmatic and have <b>already edited</b> the configuration file
-                (find a sample on the step 4) :
+                If you are using Borgmatic and have <b>already edited</b> the
+                configuration file (find a sample on the step 4) :
                 <br />
                 <div
                     style={{
@@ -88,11 +89,12 @@ function WizardStep2(props) {
                 >
                     <div className={classes.code}>
                         ssh://
-                        {UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
+                        {UNIX_USER}@{FQDN}
+                        {SSH_SERVER_PORT}/./
                         {props.selectedOption.repositoryName}
                     </div>
                     <CopyButton
-                        dataToCopy={`ssh://${UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+                        dataToCopy={`ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
                     />
                 </div>
                 For more information about the Vorta graphical client, please

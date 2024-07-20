@@ -16,10 +16,16 @@ export default function QuickCommands(props) {
         wizardEnv.SSH_SERVER_PORT_LAN
     ) {
         FQDN = wizardEnv.FQDN_LAN;
-        SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT_LAN;
+        SSH_SERVER_PORT =
+            wizardEnv.SSH_SERVER_PORT_LAN === 'false'
+                ? ''
+                : ':' + wizardEnv.SSH_SERVER_PORT_LAN;
     } else {
         FQDN = wizardEnv.FQDN;
-        SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT;
+        SSH_SERVER_PORT =
+            wizardEnv.SSH_SERVER_PORT === 'false'
+                ? ''
+                : ':' + wizardEnv.SSH_SERVER_PORT;
     }
 
     //State
@@ -30,7 +36,7 @@ export default function QuickCommands(props) {
         // Asynchronously call copy to clipboard
         navigator.clipboard
             .writeText(
-                `ssh://${wizardEnv.UNIX_USER}@${FQDN}:${SSH_SERVER_PORT}/./${props.repositoryName}`
+                `ssh://${wizardEnv.UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.repositoryName}`
             )
             .then(() => {
                 // If successful, update the isCopied state value
@@ -50,7 +56,8 @@ export default function QuickCommands(props) {
                 <div className={classes.copyValid}>Copied !</div>
             ) : (
                 <div className={classes.tooltip}>
-                    ssh://{wizardEnv.UNIX_USER}@{FQDN}:{SSH_SERVER_PORT}/./
+                    ssh://{wizardEnv.UNIX_USER}@{FQDN}
+                    {SSH_SERVER_PORT}/./
                     {props.repositoryName}
                 </div>
             )}

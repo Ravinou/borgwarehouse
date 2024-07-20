@@ -26,6 +26,14 @@ export default async function handler(req, res) {
             //A return to make sure we don't go any further if data are incorrect.
             return;
         }
+        //If deletion is disabled on the server, return error
+        if (process.env.DISABLE_DELETE_REPO === "true") {
+		res.status(403).json({
+		    status: 403,
+		    message: 'Deletion is disabled on this server',
+		});
+            return;
+        }
         try {
             //console.log('API call (DELETE)');
             //Find the absolute path of the json directory

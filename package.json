@@ -6,26 +6,31 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "setup": "npm install && npm run setup:hooks",
+        "setup:hooks": "npx husky install"
     },
     "dependencies": {
-        "@tabler/icons-react": "^3.6.0",
+        "@tabler/icons-react": "^3.11.0",
         "bcryptjs": "^2.4.3",
         "chart.js": "^4.4.3",
-        "next": "^14.2.4",
+        "next": "^14.2.5",
         "next-auth": "^4.24.7",
-        "nodemailer": "^6.9.13",
+        "nodemailer": "^6.9.14",
         "react": "^18.3.1",
         "react-chartjs-2": "^5.2.0",
         "react-dom": "^18.3.1",
-        "react-hook-form": "^7.51.5",
+        "react-hook-form": "^7.52.1",
         "react-select": "^5.8.0",
         "react-toastify": "^10.0.5",
         "spinners-react": "^1.0.7",
         "swr": "^2.2.5"
     },
     "devDependencies": {
-        "eslint-config-next": "^14.2.4",
-        "prettier": "^3.3.2"
+        "@commitlint/cli": "^19.3.0",
+        "@commitlint/config-conventional": "^19.2.2",
+        "eslint-config-next": "^14.2.5",
+        "husky": "^9.1.1",
+        "prettier": "^3.3.3"
     }
 }

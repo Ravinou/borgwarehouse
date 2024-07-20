@@ -24,7 +24,7 @@ jobs:
               id: get_release_tag
               run: echo "::set-output name=TAG::${{ github.event.release.tag_name }}"
             - name: Build and push
-              uses: docker/build-push-action@v5
+              uses: docker/build-push-action@v6
               with:
                   context: .
                   push: true

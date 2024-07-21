@@ -1,7 +1,7 @@
 //Lib
 import classes from './CopyButton.module.css';
 import { useState } from 'react';
-import { IconCopy } from '@tabler/icons-react';
+import { IconChecks, IconCopy } from '@tabler/icons-react';
 
 export default function CopyButton(props) {
     //State
@@ -29,11 +29,26 @@ export default function CopyButton(props) {
                 className={classes.copyButton}
                 onClick={() => handleCopy(props.dataToCopy)}
             >
-                <IconCopy color='#65748b' stroke={1.25} size={props.size} />
+                {props.children}
+                {isCopied && props.displayIconConfirmation ? (
+                    <IconChecks
+                        color='#07bc0c'
+                        stroke={props.stroke || 1.25}
+                        size={props.size}
+                    />
+                ) : (
+                    <IconCopy
+                        color='#65748b'
+                        stroke={props.stroke || 1.25}
+                        size={props.size}
+                    />
+                )}
             </button>
-            {isCopied ? (
-                <span className={classes.copyValid}>Copied !</span>
-            ) : null}
+            {isCopied
+                ? !props.displayIconConfirmation && (
+                      <span className={classes.copyValid}>Copied !</span>
+                  )
+                : null}
         </>
     );
 }

@@ -47,6 +47,189 @@
     width: 100%;
 }
 
+/* Tokens generation */
+
+.tokenGen {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tokenGen input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.newTokenWrapper {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    color: #494b7a;
+    outline: 1px solid #6d4aff;
+    box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
+    animation: entrance ease-in 0.3s 1 normal none;
+    padding: 10px;
+    font-family: (
+        --pure-material-font,
+        'Roboto',
+        'Segoe UI',
+        BlinkMacSystemFont,
+        system-ui
+    );
+}
+
+.tokenCardList {
+    min-width: 50%;
+}
+
+.tokenCardWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tokenCard {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tokenCardHeader {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    color: #494b7a;
+}
+
+.tokenCardBody {
+    font-size: 0.9em;
+}
+
+.tokenCardBody p {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 10px 0;
+    color: #494b7a;
+}
+
+.tokenCardHighlight {
+    animation: highlightEffect 1s ease-out forwards;
+}
+
+@keyframes highlightEffect {
+    0% {
+        outline: 1px solid #6d4aff;
+        box-shadow: 0 0 0 rgba(110, 74, 255, 0.5); /* Pas d'ombre au début */
+    }
+    50% {
+        outline: 1px solid #6d4aff;
+        box-shadow: 0 0 15px rgba(110, 74, 255, 0.6); /* Ombre qui s'agrandit */
+    }
+    100% {
+        outline: 1px solid transparent; /* Bordure devient transparente */
+        box-shadow: 0;
+    }
+}
+
+.cancelButton {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #c1c1c1;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.cancelButton:hover {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #9a9a9a;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.cancelButton:active {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #9a9a9a;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transform: scale(0.9);
+}
+
+.confirmButton {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #ff0000;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.confirmButton:hover {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #ff4b4b;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.confirmButton:active {
+    border: 0;
+    padding: 10px 15px;
+    background-color: #ff4b4b;
+    color: white;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transform: scale(0.9);
+}
+
+.permissionBadge {
+    border-radius: 5px;
+    border: 1px solid #6d4aff;
+    color: #6d4aff;
+    font-size: 0.9em;
+    padding: 2px 5px;
+    margin-right: 8px;
+}
+
 /* Forms */
 
 .bwForm {
@@ -81,6 +264,10 @@
     text-align: center;
     /* margin-top: 20px; */
     color: #494b7a;
+}
+
+.bwForm.tokenGen label {
+    margin-bottom: 0px;
 }
 
 .bwForm input,

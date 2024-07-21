@@ -24,7 +24,8 @@
         "react-select": "^5.8.0",
         "react-toastify": "^10.0.5",
         "spinners-react": "^1.0.7",
-        "swr": "^2.2.5"
+        "swr": "^2.2.5",
+        "uuid": "^10.0.0"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.4.0",

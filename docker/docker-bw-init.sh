@@ -75,12 +75,26 @@ check_env() {
   fi
 }
 
+check_auto_refresh() {
+  if [ -z "$AUTO_REFRESH" ]; then
+    AUTO_REFRESH="false"
+    export AUTO_REFRESH
+  fi
+
+  if [ "$AUTO_REFRESH" = "true" ]; then
+    sed -ri "/command=\".*${repositoryName}.*\",restrict/ {/\;\/bin\/bash \/home\/borgwarehouse\/app\/helpers\/shells\/cronjob\.sh\",restrict/! s/\",restrict/;\/bin\/bash \/home\/borgwarehouse\/app\/helpers\/shells\/cronjob\.sh\",restrict/}" "$AUTHORIZED_KEYS_FILE"
+  else
+    sed -ri "/command=\".*${repositoryName}.*\",restrict/ s/;\/bin\/bash \/home\/borgwarehouse\/app\/helpers\/shells\/cronjob.sh//g" "$AUTHORIZED_KEYS_FILE"
+  fi
+}
+
 check_env
 init_ssh_server
 check_ssh_directory
 create_authorized_keys_file
 check_repos_directory
 get_SSH_fingerprints
+check_auto_refresh
 
 print_green "Successful initialization. BorgWarehouse is ready !"
 exec supervisord -c /home/borgwarehouse/app/supervisord.conf 

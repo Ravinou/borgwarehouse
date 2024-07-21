@@ -36,7 +36,6 @@ export default function PasswordSettings(props) {
     //Form submit Handler for ADD a repo
     const formSubmitHandler = async (data) => {
         console.log(data);
-
         //Remove old error
         setError();
         //Loading button on submit to avoid multiple send.

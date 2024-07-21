@@ -9,10 +9,12 @@ import PasswordSettings from './PasswordSettings/PasswordSettings';
 import UsernameSettings from './UsernameSettings/UsernameSettings';
 import EmailAlertSettings from './EmailAlertSettings/EmailAlertSettings';
 import AppriseAlertSettings from './AppriseAlertSettings/AppriseAlertSettings';
+import Integrations from './Integrations/Integrations';
 
 export default function UserSettings(props) {
     //States
     const [tab, setTab] = useState('General');
+    const [displayDeleteDialog, setDisplayDeleteDialog] = useState(false);
 
     return (
         <div className={classes.containerSettings}>
@@ -48,6 +50,16 @@ export default function UserSettings(props) {
                 >
                     Notifications
                 </button>
+                <button
+                    className={
+                        tab == 'Integrations'
+                            ? classes.tabListButtonActive
+                            : classes.tabListButton
+                    }
+                    onClick={() => setTab('Integrations')}
+                >
+                    Integrations
+                </button>
             </div>
             {tab == 'General' && (
                 <>
@@ -60,6 +72,11 @@ export default function UserSettings(props) {
                 <>
                     <EmailAlertSettings />
                     <AppriseAlertSettings />
+                </>
+            )}
+            {tab == 'Integrations' && (
+                <>
+                    <Integrations />
                 </>
             )}
         </div>

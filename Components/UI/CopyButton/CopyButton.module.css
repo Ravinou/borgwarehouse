@@ -4,6 +4,15 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.copyButton span {
+    font-size: 0.95rem;
+    color: #6d4aff;
+    margin-right: 5px;
+    user-select: text;
 }
 
 .copyValid {

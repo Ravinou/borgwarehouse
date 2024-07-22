@@ -66,7 +66,6 @@ export default function Integrations() {
     setError();
     //Loading button on submit to avoid multiple send.
     setIsLoading(true);
-    console.log(data);
     //Generate a UUIDv4
     const token = uuidv4();
     setLastGeneratedToken({ name: data.tokenName, value: token });
@@ -105,7 +104,6 @@ export default function Integrations() {
     } catch (error) {
       reset();
       setIsLoading(false);
-      console.log(error);
       toast.error("Can't generate your token. Contact your administrator.", toastOptions);
       setTimeout(() => setError(), 4000);
     }

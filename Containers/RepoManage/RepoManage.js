@@ -78,7 +78,6 @@ export default function RepoManage(props) {
       headers: {
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({ toDelete: true }),
     })
       .then((response) => {
         if (response.ok) {

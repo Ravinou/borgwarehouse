@@ -1,74 +1,74 @@
 /* NAVSIDE */
 
 .NavSide {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    position: absolute;
-    top: 50px;
-    left: 0;
-    bottom: 0;
-    text-align: center;
-    /* border-right: 2px solid #e5e7eb; */
-    height: calc(100% - 50px);
-    width: 70px;
-    list-style-type: none;
-    /* background: #1b1340; */
-    background: #111827;
-    /* box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  text-align: center;
+  /* border-right: 2px solid #e5e7eb; */
+  height: calc(100% - 50px);
+  width: 70px;
+  list-style-type: none;
+  /* background: #1b1340; */
+  background: #111827;
+  /* box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); */
 }
 
 ul.NavSide {
-    padding-top: 10px;
-    margin: 0;
-    padding-inline-start: 0px;
+  padding-top: 10px;
+  margin: 0;
+  padding-inline-start: 0px;
 }
 
 /* NAV SIDE ITEMS */
 .NavSideItem {
-    margin: 0px 0px 30px 0px;
+  margin: 0px 0px 30px 0px;
 }
 
 .NavSideItem a {
-    text-decoration: none;
-    color: #494b7a;
-    font-weight: bold;
+  text-decoration: none;
+  color: #494b7a;
+  font-weight: bold;
 }
 
 .NavSideItem a:hover,
 .NavSideItem a:focus,
 .NavSideItem a.active {
-    color: #6d4aff;
-    font-weight: bold;
-    /* border-bottom: 2px solid #6d4aff; */
-    /* padding-bottom: 15px; */
-    text-shadow: #6d4aff 0px 0px 18px;
+  color: #6d4aff;
+  font-weight: bold;
+  /* border-bottom: 2px solid #6d4aff; */
+  /* padding-bottom: 15px; */
+  text-shadow: #6d4aff 0px 0px 18px;
 }
 
 .tooltip {
-    visibility: hidden;
-    width: 120px;
-    /* background-color: #1b1340; */
-    background-color: #111827;
-    color: #d1d5db;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    margin: 5px 0 0 20px;
-    opacity: 0;
-    transition: 0.5s opacity;
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.251);
+  visibility: hidden;
+  width: 120px;
+  /* background-color: #1b1340; */
+  background-color: #111827;
+  color: #d1d5db;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  margin: 5px 0 0 20px;
+  opacity: 0;
+  transition: 0.5s opacity;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.251);
 }
 
 .NavSideItem:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
 
 @media all and (max-width: 1000px) {
-    .NavSide {
-        display: none;
-    }
+  .NavSide {
+    display: none;
+  }
 }

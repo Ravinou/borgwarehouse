@@ -1,31 +1,31 @@
 .Header {
-    width: 100%;
-    background: #111827;
-    box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.16),
-        0 3px 6px rgba(0, 0, 0, 0.23);
-    height: 50px;
-    color: white;
-    display: flex;
-    align-items: center;
-    position: static;
-    top: 0;
-    z-index: 1000;
+  width: 100%;
+  background: #111827;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
+  height: 50px;
+  color: white;
+  display: flex;
+  align-items: center;
+  position: static;
+  top: 0;
+  z-index: 1000;
 }
 
 .flex {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1500px;
-    margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1500px;
+  margin: auto;
 }
 
 .logo {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #6d4aff;
-    text-shadow: #6d4aff 0px 0px 18px;
-    margin-left: 20px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #6d4aff;
+  text-shadow: #6d4aff 0px 0px 18px;
+  margin-left: 20px;
 }

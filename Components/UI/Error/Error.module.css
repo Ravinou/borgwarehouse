@@ -1,18 +1,18 @@
 .errorMessage {
-    margin: 15px 0px;
-    background-color: red;
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-    animation: myAnim 1s ease 0s 1 normal forwards;
+  margin: 15px 0px;
+  background-color: red;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  animation: myAnim 1s ease 0s 1 normal forwards;
 }
 
 @keyframes myAnim {
-    0% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 0;
+  }
 
-    100% {
-        opacity: 1;
-    }
+  100% {
+    opacity: 1;
+  }
 }

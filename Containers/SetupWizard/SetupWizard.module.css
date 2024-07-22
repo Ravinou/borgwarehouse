@@ -1,28 +1,28 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: #494b7a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #494b7a;
 }
 .container a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .wizardStepTransition-enter {
-    opacity: 0;
+  opacity: 0;
 }
 .wizardStepTransition-enter-active {
-    opacity: 1;
-    transition: opacity 200ms;
+  opacity: 1;
+  transition: opacity 200ms;
 }
 .wizardStepTransition-exit {
-    opacity: 1;
+  opacity: 1;
 }
 .wizardStepTransition-exit-active {
-    opacity: 0;
-    transition: opacity 200ms;
+  opacity: 0;
+  transition: opacity 200ms;
 }
 .selectRepo {
-    margin: 30px auto auto auto;
-    width: 300px;
+  margin: 30px auto auto auto;
+  width: 300px;
 }

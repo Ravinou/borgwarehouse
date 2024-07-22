@@ -8,7 +8,8 @@
         "start": "next start",
         "lint": "next lint",
         "setup": "npm install && npm run setup:hooks",
-        "setup:hooks": "npx husky install"
+        "setup:hooks": "npx husky install",
+        "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
     },
     "dependencies": {
         "@tabler/icons-react": "^3.14.0",
@@ -34,4 +35,5 @@
         "husky": "^9.1.5",
         "prettier": "^3.3.3"
     }
+    
 }

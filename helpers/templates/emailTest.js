@@ -1,11 +1,11 @@
 export default function emailTest(mailTo, username) {
-    const template = {
-        from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
-        to: mailTo,
-        subject: 'Testing email settings',
-        text: 'If you received this email then the mail configuration seems to be correct.',
-        html:
-            `
+  const template = {
+    from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
+    to: mailTo,
+    subject: 'Testing email settings',
+    text: 'If you received this email then the mail configuration seems to be correct.',
+    html:
+      `
             <!DOCTYPE html>
             <html>
             <head>
@@ -78,8 +78,8 @@ export default function emailTest(mailTo, username) {
                         </div>
                         <div class="message">
                             <p>Good job, ` +
-            username +
-            `!</p>
+      username +
+      `!</p>
                         </div>
                         <div class="description">
                             <p>If you received this mail then the configuration seems to be correct.</p>
@@ -92,12 +92,12 @@ export default function emailTest(mailTo, username) {
             </body>
             </html>
         `,
-        attachments: [
-            {
-                path: 'helpers/templates/attachments/valid-icon.png',
-                cid: 'valid-icon',
-            },
-        ],
-    };
-    return template;
+    attachments: [
+      {
+        path: 'helpers/templates/attachments/valid-icon.png',
+        cid: 'valid-icon',
+      },
+    ],
+  };
+  return template;
 }

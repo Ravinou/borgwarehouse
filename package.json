@@ -1,37 +1,38 @@
 {
-    "name": "borgwarehouse",
-    "version": "2.3.0",
-    "private": true,
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint",
-        "setup": "npm install && npm run setup:hooks",
-        "setup:hooks": "npx husky install"
-    },
-    "dependencies": {
-        "@tabler/icons-react": "^3.11.0",
-        "bcryptjs": "^2.4.3",
-        "chart.js": "^4.4.3",
-        "next": "^14.2.5",
-        "next-auth": "^4.24.7",
-        "nodemailer": "^6.9.14",
-        "react": "^18.3.1",
-        "react-chartjs-2": "^5.2.0",
-        "react-dom": "^18.3.1",
-        "react-hook-form": "^7.52.2",
-        "react-select": "^5.8.0",
-        "react-toastify": "^10.0.5",
-        "spinners-react": "^1.0.7",
-        "swr": "^2.2.5",
-        "uuid": "^10.0.0"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "^19.4.0",
-        "@commitlint/config-conventional": "^19.2.2",
-        "eslint-config-next": "^14.2.5",
-        "husky": "^9.1.4",
-        "prettier": "^3.3.3"
-    }
+  "name": "borgwarehouse",
+  "version": "2.3.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "setup": "npm install && npm run setup:hooks",
+    "setup:hooks": "npx husky install",
+    "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+  },
+  "dependencies": {
+    "@tabler/icons-react": "^3.11.0",
+    "bcryptjs": "^2.4.3",
+    "chart.js": "^4.4.3",
+    "next": "^14.2.5",
+    "next-auth": "^4.24.7",
+    "nodemailer": "^6.9.14",
+    "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.2",
+    "react-select": "^5.8.0",
+    "react-toastify": "^10.0.5",
+    "spinners-react": "^1.0.7",
+    "swr": "^2.2.5",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "eslint-config-next": "^14.2.5",
+    "husky": "^9.1.4",
+    "prettier": "^3.3.3"
+  }
 }

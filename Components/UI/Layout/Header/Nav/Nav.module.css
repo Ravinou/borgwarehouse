@@ -1,54 +1,54 @@
 .Nav {
-    list-style-type: none;
-    margin: 0px 15px 0px 0px;
-    padding: 0;
-    display: flex;
+  list-style-type: none;
+  margin: 0px 15px 0px 0px;
+  padding: 0;
+  display: flex;
 }
 
 .user {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .username::first-letter {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 .account {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #494b7a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #494b7a;
 }
 
 .account a {
-    color: #494b7a;
-    text-decoration: none;
+  color: #494b7a;
+  text-decoration: none;
 }
 
 .account :focus,
 .account .active,
 .account :hover {
-    color: #6d4aff;
-    text-shadow: #6d4aff 0px 0px 18px;
+  color: #6d4aff;
+  text-shadow: #6d4aff 0px 0px 18px;
 }
 
 .logout {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #494b7a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #494b7a;
 }
 
 .logout :focus,
 .logout .active,
 .logout :hover {
-    color: #6d4aff;
-    text-shadow: #6d4aff 0px 0px 18px;
+  color: #6d4aff;
+  text-shadow: #6d4aff 0px 0px 18px;
 }
 
 @media all and (max-width: 1000px) {
-    .account {
-        display: none;
-    }
+  .account {
+    display: none;
+  }
 }

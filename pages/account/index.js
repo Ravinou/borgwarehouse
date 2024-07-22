@@ -9,42 +9,38 @@ import { getServerSession } from 'next-auth/next';
 import UserSettings from '../../Containers/UserSettings/UserSettings';
 
 export default function Account() {
-    ////Var
-    const { status, data } = useSession();
+  ////Var
+  const { status, data } = useSession();
 
-    //Function
-    if (status == 'unauthenticated' || status == 'loading') {
-        return <p>Loading...</p>;
-    }
-    return (
-        <>
-            <Head>
-                <title>Account - BorgWarehouse</title>
-            </Head>
+  //Function
+  if (status == 'unauthenticated' || status == 'loading') {
+    return <p>Loading...</p>;
+  }
+  return (
+    <>
+      <Head>
+        <title>Account - BorgWarehouse</title>
+      </Head>
 
-            <UserSettings status={status} data={data} />
-        </>
-    );
+      <UserSettings status={status} data={data} />
+    </>
+  );
 }
 
 export async function getServerSideProps(context) {
-    //Var
-    const session = await getServerSession(
-        context.req,
-        context.res,
-        authOptions
-    );
+  //Var
+  const session = await getServerSession(context.req, context.res, authOptions);
 
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/login',
-                permanent: false,
-            },
-        };
-    }
-
+  if (!session) {
     return {
-        props: {},
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
     };
+  }
+
+  return {
+    props: {},
+  };
 }

@@ -1,250 +1,249 @@
 /*Repo CLOSE*/
 .RepoClose {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.12),
-        0 1px 2px rgba(0, 0, 0, 0.24);
-    width: auto;
-    max-height: 65px;
-    margin: 20px 0px 0px 0px;
-    border-radius: 5px;
-    overflow: visible;
-    /* Need to display comment on hover (which is position : absolute) */
-    position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
+  width: auto;
+  max-height: 65px;
+  margin: 20px 0px 0px 0px;
+  border-radius: 5px;
+  overflow: visible;
+  /* Need to display comment on hover (which is position : absolute) */
+  position: relative;
 }
 
 .closeFlex {
-    display: flex;
-    align-items: center;
-    padding: 15px;
+  display: flex;
+  align-items: center;
+  padding: 15px;
 }
 
 .RepoClose .lastSave {
-    padding: 15px;
+  padding: 15px;
 }
 
 /* REPO OPEN */
 .RepoOpen {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.12),
-        0 1px 2px rgba(0, 0, 0, 0.24);
-    width: auto;
-    max-height: 200px;
-    margin: 20px 0px 0px 0px;
-    padding: 15px;
-    border-radius: 5px;
-    transition: max-height 0.1s linear;
-    overflow: visible;
-    /* Need to display comment on hover (which is position : absolute) */
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
+  width: auto;
+  max-height: 200px;
+  margin: 20px 0px 0px 0px;
+  padding: 15px;
+  border-radius: 5px;
+  transition: max-height 0.1s linear;
+  overflow: visible;
+  /* Need to display comment on hover (which is position : absolute) */
+  position: relative;
 }
 
 .openFlex {
-    display: flex;
-    align-items: center;
-    align-self: flex-start;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  width: 100%;
 }
 
 .tabInfo {
-    width: 100%;
-    overflow-wrap: break-word;
-    border-collapse: collapse;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 25px auto;
-    table-layout: fixed;
+  width: 100%;
+  overflow-wrap: break-word;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 25px auto;
+  table-layout: fixed;
 }
 
 .tabInfo thead tr {
-    height: 50px;
-    background: #111827;
-    color: #fff;
+  height: 50px;
+  background: #111827;
+  color: #fff;
 }
 
 .tabInfo thead th {
-    font-size: 1em;
-    color: #fff;
-    line-height: 1.2;
-    font-weight: normal;
+  font-size: 1em;
+  color: #fff;
+  line-height: 1.2;
+  font-weight: normal;
 }
 
 .tabInfo tbody tr {
-    background-color: #f3f4f6;
-    height: 50px;
+  background-color: #f3f4f6;
+  height: 50px;
 }
 
 .tabInfo tbody tr th {
-    color: #65748b;
-    font-size: 0.95rem;
-    font-weight: 400;
+  color: #65748b;
+  font-size: 0.95rem;
+  font-weight: 400;
 }
 
 /*STATUS*/
 
 .statusIndicatorGreen {
-    background: rgb(9, 255, 0);
-    border-radius: 50%;
-    margin: 10px;
-    height: 15px;
-    width: 15px;
-    box-shadow: 0 0 0 0 rgb(9, 255, 0);
-    transform: scale(1);
-    animation: pulseGreen 5s infinite;
-    animation-delay: 1s;
+  background: rgb(9, 255, 0);
+  border-radius: 50%;
+  margin: 10px;
+  height: 15px;
+  width: 15px;
+  box-shadow: 0 0 0 0 rgb(9, 255, 0);
+  transform: scale(1);
+  animation: pulseGreen 5s infinite;
+  animation-delay: 1s;
 }
 
 @keyframes pulseGreen {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(17, 255, 0, 0.7);
-    }
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(17, 255, 0, 0.7);
+  }
 
-    10% {
-        transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(17, 255, 0, 0);
-    }
+  10% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(17, 255, 0, 0);
+  }
 
-    90% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(17, 255, 0, 0);
-    }
+  90% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(17, 255, 0, 0);
+  }
 }
 
 .statusIndicatorRed {
-    background: rgb(255, 0, 0);
-    border-radius: 50%;
-    margin: 10px;
-    height: 15px;
-    width: 15px;
+  background: rgb(255, 0, 0);
+  border-radius: 50%;
+  margin: 10px;
+  height: 15px;
+  width: 15px;
 
-    box-shadow: 0 0 0 0 rgb(255, 0, 0);
-    transform: scale(1);
-    animation: pulseRed 5s infinite;
-    animation-delay: 0.5s;
+  box-shadow: 0 0 0 0 rgb(255, 0, 0);
+  transform: scale(1);
+  animation: pulseRed 5s infinite;
+  animation-delay: 0.5s;
 }
 
 @keyframes pulseRed {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
-    }
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+  }
 
-    10% {
-        transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
-    }
+  10% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+  }
 
-    90% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
-    }
+  90% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
 }
 
 /* Alert icon */
 
 .alertIcon {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 10px;
 }
 
 .appendOnlyModeIcon {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 10px;
 }
 
 /* GENERAL */
 .alias {
-    font-weight: bold;
-    color: #111827;
-    font-size: 1.05em;
+  font-weight: bold;
+  color: #111827;
+  font-size: 1.05em;
 }
 
 .lastSave {
-    color: #65748b;
+  color: #65748b;
 }
 
 .editButton {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 /* Comment */
 .comment {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 10px;
 }
 
 .toolTip {
-    visibility: hidden;
-    width: auto;
-    height: auto;
-    max-width: 400px;
-    max-height: 250px;
-    background-color: #fff;
-    color: #637381;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 5px;
-    position: absolute;
-    z-index: 1;
-    margin: 0px 0 0 20px;
-    opacity: 1;
-    transition: 0.5s opacity;
-    box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.16),
-        0 3px 6px rgba(0, 0, 0, 0.23);
-    overflow: auto;
+  visibility: hidden;
+  width: auto;
+  height: auto;
+  max-width: 400px;
+  max-height: 250px;
+  background-color: #fff;
+  color: #637381;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  z-index: 1;
+  margin: 0px 0 0 20px;
+  opacity: 1;
+  transition: 0.5s opacity;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
+  overflow: auto;
 }
 
 .comment:hover .toolTip,
 .comment:active .toolTip {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
 
 .chevron {
-    margin: auto;
+  margin: auto;
 }
 
 .chevron :focus,
 .chevron :hover {
-    cursor: pointer;
-    filter: invert(27%) sepia(82%) saturate(2209%) hue-rotate(240deg)
-        brightness(99%) contrast(105%);
+  cursor: pointer;
+  filter: invert(27%) sepia(82%) saturate(2209%) hue-rotate(240deg) brightness(99%) contrast(105%);
 }
 
 /* MOBILE */
 @media all and (max-width: 1000px) {
-    .tabInfo {
-        display: none;
-    }
-    .toolTip {
-        display: none;
-    }
-    .comment {
-        display: none;
-    }
-    .lastSave {
-        display: none;
-    }
-    .closeFlex {
-        margin: auto;
-    }
-    .openFlex {
-        margin: auto;
-        width: auto;
-    }
+  .tabInfo {
+    display: none;
+  }
+  .toolTip {
+    display: none;
+  }
+  .comment {
+    display: none;
+  }
+  .lastSave {
+    display: none;
+  }
+  .closeFlex {
+    margin: auto;
+  }
+  .openFlex {
+    margin: auto;
+    width: auto;
+  }
 }

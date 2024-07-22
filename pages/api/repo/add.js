@@ -3,21 +3,43 @@ import path from 'path';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import repoHistory from '../../../helpers/functions/repoHistory';
+import tokenController from '../../../helpers/functions/tokenController';
+import isSshPubKeyDuplicate from '../../../helpers/functions/isSshPubKeyDuplicate';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
 export default async function handler(req, res) {
-  if (req.method == 'POST') {
-    //Verify that the user is logged in.
+  if (req.method === 'POST') {
+    //AUTHENTICATION
     const session = await getServerSession(req, res, authOptions);
-    if (!session) {
-      res.status(401).json({ message: 'You must be logged in.' });
+    const { authorization } = req.headers;
+
+    if (!session && !authorization) {
+      res.status(401).end();
       return;
     }
 
-    //The data we expect to receive
+    try {
+      if (authorization) {
+        const API_KEY = authorization.split(' ')[1];
+        const permissions = await tokenController(API_KEY);
+        if (!permissions) {
+          res.status(403).json({ message: 'Invalid API key' });
+          return;
+        }
+        if (!permissions.write) {
+          res.status(401).json({ message: 'Insufficient permissions' });
+          return;
+        }
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error' });
+      return;
+    }
+
+    //DATA CONTROL
     const { alias, sshPublicKey, size, comment, alert, lanCommand, appendOnlyMode } = req.body;
-    //We check that we receive data for each variable. Only "comment" and "lanCommand" are optional in the form.
+    //Only "comment" and "lanCommand" are optional in the form.
     if (
       !alias ||
       !sshPublicKey ||
@@ -25,21 +47,26 @@ export default async function handler(req, res) {
       typeof appendOnlyMode !== 'boolean' ||
       (!alert && alert !== 0)
     ) {
-      //If a variable is empty.
-      res.status(422).json({
-        message: 'Unexpected data',
-      });
-      //A return to make sure we don't go any further if data are incorrect.
+      res.status(422).json({ message: 'Unexpected data' });
       return;
     }
 
+    //ADD REPO
     try {
-      //console.log('API call (PUT)');
       //Find the absolute path of the json directory
       const jsonDirectory = path.join(process.cwd(), '/config');
       let repoList = await fs.readFile(jsonDirectory + '/repo.json', 'utf8');
       //Parse the repoList
       repoList = JSON.parse(repoList);
+
+      const sshKeyAlreadyUsed = isSshPubKeyDuplicate(sshPublicKey, repoList);
+      if (sshKeyAlreadyUsed) {
+        res.status(409).json({
+          message:
+            'The SSH key is already used in another repository. Please use another key or delete the key from the other repository.',
+        });
+        return;
+      }
 
       //Find the first biggest ID available to assign it, so the highest ID is already the last added.
       let newID = 0;

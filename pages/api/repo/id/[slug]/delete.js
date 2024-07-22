@@ -3,34 +3,44 @@ import path from 'path';
 import { authOptions } from '../../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import repoHistory from '../../../../../helpers/functions/repoHistory';
+import tokenController from '../../../../../helpers/functions/tokenController';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
 export default async function handler(req, res) {
   if (req.method == 'DELETE') {
-    //Verify that the user is logged in.
+    //AUTHENTICATION
     const session = await getServerSession(req, res, authOptions);
-    if (!session) {
-      res.status(401).json({ message: 'You must be logged in.' });
+    const { authorization } = req.headers;
+
+    if (!session && !authorization) {
+      res.status(401).end();
       return;
     }
+
+    try {
+      if (authorization) {
+        const API_KEY = authorization.split(' ')[1];
+        const permissions = await tokenController(API_KEY);
+        if (!permissions) {
+          res.status(403).json({ message: 'Invalid API key' });
+          return;
+        }
+        if (!permissions.write) {
+          res.status(401).json({ message: 'Insufficient permissions' });
+          return;
+        }
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error' });
+      return;
+    }
+
     //If deletion is disabled on the server, return error
     if (process.env.DISABLE_DELETE_REPO === 'true') {
       res.status(403).json({
-        status: 403,
         message: 'Deletion is disabled on this server',
       });
-      return;
-    }
-    //The data we expect to receive
-    const { toDelete } = req.body;
-    ////We check that we receive toDelete and it must be a bool.
-    if (typeof toDelete != 'boolean' || toDelete === false) {
-      //If a variable is empty.
-      res.status(422).json({
-        message: 'Unexpected data',
-      });
-      //A return to make sure we don't go any further if data are incorrect.
       return;
     }
 

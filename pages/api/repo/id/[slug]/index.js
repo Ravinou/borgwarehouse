@@ -2,18 +2,38 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import tokenController from '../../../../../helpers/functions/tokenController';
 
 export default async function handler(req, res) {
   if (req.method == 'GET') {
-    //Verify that the user is logged in.
+    // AUTHENTICATION
     const session = await getServerSession(req, res, authOptions);
-    if (!session) {
-      res.status(401).json({ message: 'You must be logged in.' });
+    const { authorization } = req.headers;
+
+    if (!session && !authorization) {
+      res.status(401).end();
       return;
     }
 
     try {
-      //console.log('API call (GET)');
+      if (authorization) {
+        const API_KEY = authorization.split(' ')[1];
+        const permissions = await tokenController(API_KEY);
+        if (!permissions) {
+          res.status(403).json({ message: 'Invalid API key' });
+          return;
+        }
+        if (!permissions.read) {
+          res.status(401).json({ message: 'Insufficient permissions' });
+          return;
+        }
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error' });
+      return;
+    }
+
+    try {
       //Find the absolute path of the json directory
       const jsonDirectory = path.join(process.cwd(), '/config');
       //Read the json data file data.json

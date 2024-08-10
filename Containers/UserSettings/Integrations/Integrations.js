@@ -31,7 +31,7 @@ export default function Integrations() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm({ mode: 'onChange', defaultValues: { authorization: 'read' } });
+  } = useForm({ mode: 'onChange' });
 
   ////State
   const [isLoading, setIsLoading] = useState(false);
@@ -39,10 +39,16 @@ export default function Integrations() {
   const [error, setError] = useState();
   const [lastGeneratedToken, setLastGeneratedToken] = useState();
   const [deletingToken, setDeletingToken] = useState(null);
+  const [permissions, setPermissions] = useState({
+    create: false,
+    read: false,
+    update: false,
+    delete: false,
+  });
 
   const fetchTokenList = async () => {
     try {
-      const response = await fetch('/api/account/token-manager', {
+      const response = await fetch('/api/account/tokenManager', {
         method: 'GET',
         headers: {
           'Content-type': 'application/json',
@@ -60,7 +66,27 @@ export default function Integrations() {
     fetchTokenList();
   }, []);
 
-  //Form submit Handler for ADD a repo
+  // Permissions handler
+  const hasNoPermissionSelected = () => {
+    return !Object.values(permissions).some((value) => value);
+  };
+  const togglePermission = (permissionType) => {
+    const updatedPermissions = {
+      ...permissions,
+      [permissionType]: !permissions[permissionType],
+    };
+    setPermissions(updatedPermissions);
+  };
+  const resetPermissions = () => {
+    setPermissions({
+      create: false,
+      read: false,
+      update: false,
+      delete: false,
+    });
+  };
+
+  //Form submit Handler for ADD a new token
   const formSubmitHandler = async (data) => {
     //Remove old error
     setError();
@@ -72,7 +98,7 @@ export default function Integrations() {
 
     // Post API to send the new token integration
     try {
-      const response = await fetch('/api/account/token-manager', {
+      const response = await fetch('/api/account/tokenManager', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -81,11 +107,8 @@ export default function Integrations() {
           name: data.tokenName,
           token: token,
           creation: Math.floor(Date.now() / 1000),
-          expirition: null,
-          permissions: {
-            read: true,
-            write: data.authorization === 'write' ? true : false,
-          },
+          expiration: null,
+          permissions: permissions,
         }),
       });
       const result = await response.json();
@@ -93,16 +116,19 @@ export default function Integrations() {
       if (!response.ok) {
         setIsLoading(false);
         reset();
+        resetPermissions();
         toast.error(result.message, toastOptions);
         setTimeout(() => setError(), 4000);
       } else {
         reset();
+        resetPermissions();
         fetchTokenList();
         setIsLoading(false);
         toast.success('🔑 Token generated !', toastOptions);
       }
     } catch (error) {
       reset();
+      resetPermissions();
       setIsLoading(false);
       toast.error("Can't generate your token. Contact your administrator.", toastOptions);
       setTimeout(() => setError(), 4000);
@@ -112,7 +138,7 @@ export default function Integrations() {
   //Delete token
   const deleteTokenHandler = async (tokenName) => {
     try {
-      const response = await fetch('/api/account/token-manager', {
+      const response = await fetch('/api/account/tokenManager', {
         method: 'DELETE',
         headers: {
           'Content-type': 'application/json',
@@ -150,32 +176,50 @@ export default function Integrations() {
             onSubmit={handleSubmit(formSubmitHandler)}
             className={[classes.bwForm, classes.tokenGen].join(' ')}
           >
-            <input
-              type='text'
-              placeholder='Token name'
-              {...register('tokenName', {
-                required: true,
-                pattern: /^[a-zA-Z0-9_-]*$/,
-                maxLength: 25,
-              })}
-            />
+            <div className={classes.tokenWrapper}>
+              <input
+                type='text'
+                autocomplete='off'
+                placeholder='Token name'
+                {...register('tokenName', {
+                  required: true,
+                  pattern: /^[a-zA-Z0-9_-]*$/,
+                  maxLength: 25,
+                })}
+              />
 
-            <div className='radio-group'>
-              <label style={{ marginRight: '10px' }}>
-                <div style={{ display: 'flex' }}>
-                  <input {...register('authorization')} type='radio' value='read' />
-                  <span>Read</span>
+              <div className={classes.permissionsWrapper}>
+                <div
+                  className={`${classes.permissionBadge} ${permissions.create ? classes.highlight : ''}`}
+                  onClick={() => togglePermission('create')}
+                >
+                  Create
                 </div>
-              </label>
-              <label>
-                <div style={{ display: 'flex' }}>
-                  <input {...register('authorization')} type='radio' value='write' />
-                  <span>Write</span>
+                <div
+                  className={`${classes.permissionBadge} ${permissions.read ? classes.highlight : ''}`}
+                  onClick={() => togglePermission('read')}
+                >
+                  Read
                 </div>
-              </label>
+                <div
+                  className={`${classes.permissionBadge} ${permissions.update ? classes.highlight : ''}`}
+                  onClick={() => togglePermission('update')}
+                >
+                  Update
+                </div>
+                <div
+                  className={`${classes.permissionBadge} ${permissions.delete ? classes.highlight : ''}`}
+                  onClick={() => togglePermission('delete')}
+                >
+                  Delete
+                </div>
+              </div>
             </div>
 
-            <button className={classes.AccountSettingsButton} disabled={!isValid || isSubmitting}>
+            <button
+              className={classes.AccountSettingsButton}
+              disabled={!isValid || isSubmitting || hasNoPermissionSelected()}
+            >
               {isLoading ? (
                 <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
               ) : (
@@ -220,8 +264,14 @@ export default function Integrations() {
                       </p>
                       <p>
                         <strong>Permission:</strong>
-                        <div className={classes.permissionBadge}>
-                          {token.permissions.write ? 'Write' : 'Read'}
+                        <div className={classes.permissionBadges}>
+                          {Object.keys(token.permissions).map((permission) =>
+                            token.permissions[permission] ? (
+                              <div key={permission} className={classes.permissionBadge}>
+                                {permission.charAt(0).toUpperCase() + permission.slice(1)}
+                              </div>
+                            ) : null
+                          )}
                         </div>
                       </p>
                       {lastGeneratedToken && lastGeneratedToken.name === token.name && (

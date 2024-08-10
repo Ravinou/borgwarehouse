@@ -26,7 +26,7 @@ export default async function handler(req, res) {
           res.status(403).json({ message: 'Invalid API key' });
           return;
         }
-        if (!permissions.write) {
+        if (!permissions.delete) {
           res.status(401).json({ message: 'Insufficient permissions' });
           return;
         }

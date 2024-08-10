@@ -11,6 +11,7 @@ const exec = util.promisify(require('node:child_process').exec);
 export default async function handler(req, res) {
   if (req.method == 'PUT') {
     //AUTHENTICATION
+    const FROM_IP = req.headers['x-forwarded-for'] || 'unknown';
     const session = await getServerSession(req, res, authOptions);
     const { authorization } = req.headers;
 
@@ -22,7 +23,7 @@ export default async function handler(req, res) {
     try {
       if (authorization) {
         const API_KEY = authorization.split(' ')[1];
-        const permissions = await tokenController(API_KEY);
+        const permissions = await tokenController(API_KEY, FROM_IP);
         if (!permissions) {
           res.status(403).json({ message: 'Invalid API key' });
           return;

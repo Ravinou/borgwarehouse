@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     //Control the data
     const nameRegex = new RegExp('^[a-zA-Z0-9_-]{1,25}$');
     if (!nameRegex.test(name)) {
-      res.status(400).json({ message: 'Your name is not valid' });
+      res.status(400).json({ message: 'Your token name is not valid' });
       return;
     }
 

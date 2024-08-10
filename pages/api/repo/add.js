@@ -116,7 +116,7 @@ export default async function handler(req, res) {
       await fs.writeFile(jsonDirectory + '/repo.json', newRepoList, (err) => {
         if (err) console.log(err);
       });
-      res.status(200).json({ message: 'Envoi API réussi' });
+      res.status(200).json({ message: 'success' });
     } catch (error) {
       //Log for backend
       console.log(error);

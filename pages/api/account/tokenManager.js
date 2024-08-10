@@ -122,12 +122,14 @@ export default async function handler(req, res) {
       } else {
         //Send the token list without tokens
         res.status(200).json([
-          ...usersList[userIndex].tokens.map((token) => ({
-            name: token.name,
-            creation: token.creation,
-            expiration: token.expiration,
-            permissions: token.permissions,
-          })),
+          ...(usersList[userIndex].tokens && Array.isArray(usersList[userIndex].tokens)
+            ? usersList[userIndex].tokens.map((token) => ({
+                name: token.name,
+                creation: token.creation,
+                expiration: token.expiration,
+                permissions: token.permissions,
+              }))
+            : []),
         ]);
         return;
       }

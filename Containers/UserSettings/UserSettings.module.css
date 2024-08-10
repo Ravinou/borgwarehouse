@@ -184,6 +184,11 @@
   transform: scale(0.9);
 }
 
+.deleteConfirmationButtons {
+  display: flex;
+  flex-direction: row;
+}
+
 .confirmButton {
   border: 0;
   padding: 10px 15px;
@@ -195,6 +200,15 @@
   text-decoration: none;
   font-weight: bold;
   font-size: 1em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.confirmButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .confirmButton:hover {

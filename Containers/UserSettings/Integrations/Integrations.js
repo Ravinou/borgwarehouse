@@ -35,6 +35,7 @@ export default function Integrations() {
 
   ////State
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [tokenList, setTokenList] = useState([]);
   const [error, setError] = useState();
   const [lastGeneratedToken, setLastGeneratedToken] = useState();
@@ -137,6 +138,7 @@ export default function Integrations() {
 
   //Delete token
   const deleteTokenHandler = async (tokenName) => {
+    setIsDeleteLoading(true);
     try {
       const response = await fetch('/api/account/tokenManager', {
         method: 'DELETE',
@@ -152,15 +154,18 @@ export default function Integrations() {
       if (!response.ok) {
         toast.error(result.message, toastOptions);
         setTimeout(() => setError(), 4000);
+        setIsDeleteLoading(false);
       } else {
         fetchTokenList();
+        setIsDeleteLoading(false);
         toast.success('🗑️ Token deleted !', toastOptions);
       }
     } catch (error) {
-      setIsLoading(false);
+      setIsDeleteLoading(false);
       toast.error("Can't delete your token. Contact your administrator.", toastOptions);
       setTimeout(() => setError(), 4000);
     } finally {
+      setIsDeleteLoading(false);
       setDeletingToken(null);
     }
   };
@@ -221,7 +226,7 @@ export default function Integrations() {
               disabled={!isValid || isSubmitting || hasNoPermissionSelected()}
             >
               {isLoading ? (
-                <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
+                <SpinnerDotted size={15} thickness={150} speed={100} color='#fff' />
               ) : (
                 'Generate'
               )}
@@ -296,15 +301,21 @@ export default function Integrations() {
                           <button
                             className={classes.confirmButton}
                             onClick={() => deleteTokenHandler(token.name)}
+                            disabled={isDeleteLoading}
                           >
                             Confirm
+                            {isDeleteLoading && (
+                              <SpinnerDotted size={15} thickness={150} speed={100} color='#fff' />
+                            )}{' '}
                           </button>
-                          <button
-                            className={classes.cancelButton}
-                            onClick={() => setDeletingToken(null)}
-                          >
-                            Cancel
-                          </button>
+                          {!isDeleteLoading && (
+                            <button
+                              className={classes.cancelButton}
+                              onClick={() => setDeletingToken(null)}
+                            >
+                              Cancel
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>

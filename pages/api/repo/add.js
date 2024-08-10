@@ -83,6 +83,7 @@ export default async function handler(req, res) {
         repositoryName: '',
         status: false,
         lastSave: 0,
+        lastStatusAlertSend: Math.floor(Date.now() / 1000),
         alert: alert,
         storageSize: Number(size),
         storageUsed: 0,

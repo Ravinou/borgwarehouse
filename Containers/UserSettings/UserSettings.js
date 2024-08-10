@@ -14,7 +14,7 @@ import Integrations from './Integrations/Integrations';
 export default function UserSettings(props) {
   //States
   const [tab, setTab] = useState('General');
-  const [displayDeleteDialog, setDisplayDeleteDialog] = useState(false);
+  const DISABLE_INTEGRATIONS = process.env.NEXT_PUBLIC_DISABLE_INTEGRATIONS === 'true';
 
   return (
     <div className={classes.containerSettings}>
@@ -31,38 +31,40 @@ export default function UserSettings(props) {
       </div>
       <div className={classes.tabList}>
         <button
-          className={tab == 'General' ? classes.tabListButtonActive : classes.tabListButton}
+          className={tab === 'General' ? classes.tabListButtonActive : classes.tabListButton}
           onClick={() => setTab('General')}
         >
           General
         </button>
         <button
-          className={tab == 'Notifications' ? classes.tabListButtonActive : classes.tabListButton}
+          className={tab === 'Notifications' ? classes.tabListButtonActive : classes.tabListButton}
           onClick={() => setTab('Notifications')}
         >
           Notifications
         </button>
-        <button
-          className={tab == 'Integrations' ? classes.tabListButtonActive : classes.tabListButton}
-          onClick={() => setTab('Integrations')}
-        >
-          Integrations
-        </button>
+        {!DISABLE_INTEGRATIONS && (
+          <button
+            className={tab === 'Integrations' ? classes.tabListButtonActive : classes.tabListButton}
+            onClick={() => setTab('Integrations')}
+          >
+            Integrations
+          </button>
+        )}
       </div>
-      {tab == 'General' && (
+      {tab === 'General' && (
         <>
           <PasswordSettings username={props.data.user.name} />
           <EmailSettings email={props.data.user.email} />
           <UsernameSettings username={props.data.user.name} />{' '}
         </>
       )}
-      {tab == 'Notifications' && (
+      {tab === 'Notifications' && (
         <>
           <EmailAlertSettings />
           <AppriseAlertSettings />
         </>
       )}
-      {tab == 'Integrations' && (
+      {tab === 'Integrations' && (
         <>
           <Integrations />
         </>

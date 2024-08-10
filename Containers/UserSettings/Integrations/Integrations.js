@@ -179,7 +179,7 @@ export default function Integrations() {
             <div className={classes.tokenWrapper}>
               <input
                 type='text'
-                autocomplete='off'
+                autoComplete='off'
                 placeholder='Token name'
                 {...register('tokenName', {
                   required: true,

@@ -63,12 +63,10 @@ export default async function handler(req, res) {
       //Log for frontend
       if (error.code == 'ENOENT') {
         res.status(500).json({
-          status: 500,
           message: 'No such file or directory',
         });
       } else {
         res.status(500).json({
-          status: 500,
           message: 'API error, contact the administrator',
         });
       }

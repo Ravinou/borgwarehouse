@@ -10,6 +10,7 @@ import { SpinnerDotted } from 'spinners-react';
 import Select from 'react-select';
 import Link from 'next/link';
 import { IconExternalLink } from '@tabler/icons-react';
+import { alertOptions } from '../../domain/constants';
 
 export default function RepoManage(props) {
   ////Var
@@ -21,23 +22,7 @@ export default function RepoManage(props) {
     control,
     formState: { errors, isSubmitting, isValid },
   } = useForm({ mode: 'onChange' });
-  //List of possible times for alerts
-  const alertOptions = [
-    { value: 0, label: 'Disabled' },
-    { value: 3600, label: '1 hour' },
-    { value: 21600, label: '6 hours' },
-    { value: 43200, label: '12 hours' },
-    { value: 90000, label: '1 day' },
-    { value: 172800, label: '2 days' },
-    { value: 259200, label: '3 days' },
-    { value: 345600, label: '4 days' },
-    { value: 432000, label: '5 days' },
-    { value: 518400, label: '6 days' },
-    { value: 604800, label: '7 days' },
-    { value: 864000, label: '10 days' },
-    { value: 1209600, label: '14 days' },
-    { value: 2592000, label: '30 days' },
-  ];
+
   const toastOptions = {
     position: 'top-right',
     autoClose: 5000,
@@ -157,7 +142,7 @@ export default function RepoManage(props) {
     if (props.mode == 'add') {
       const newRepo = {
         alias: dataForm.alias,
-        size: dataForm.size,
+        storageSize: parseInt(dataForm.storageSize),
         sshPublicKey: dataForm.sshkey,
         comment: dataForm.comment,
         alert: dataForm.alert.value,
@@ -192,7 +177,7 @@ export default function RepoManage(props) {
     } else if (props.mode == 'edit') {
       const dataEdited = {
         alias: dataForm.alias,
-        size: dataForm.size,
+        storageSize: parseInt(dataForm.storageSize),
         sshPublicKey: dataForm.sshkey,
         comment: dataForm.comment,
         alert: dataForm.alert.value,
@@ -200,7 +185,7 @@ export default function RepoManage(props) {
         appendOnlyMode: dataForm.appendOnlyMode,
       };
       await fetch('/api/repo/id/' + router.query.slug + '/edit', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-type': 'application/json',
         },
@@ -334,17 +319,19 @@ export default function RepoManage(props) {
               {errors.sshkey && (
                 <span className={classes.errorMessage}>{errors.sshkey.message}</span>
               )}
-              {/* SIZE */}
-              <label htmlFor='size'>Storage Size (GB)</label>
+              {/* storageSize */}
+              <label htmlFor='storageSize'>Storage Size (GB)</label>
               <input
                 type='number'
                 min='1'
                 defaultValue={props.mode == 'edit' ? targetRepo.storageSize : null}
-                {...register('size', {
-                  required: 'A size is required.',
+                {...register('storageSize', {
+                  required: 'A storage size is required.',
                 })}
               />
-              {errors.size && <span className={classes.errorMessage}>{errors.size.message}</span>}
+              {errors.storageSize && (
+                <span className={classes.errorMessage}>{errors.storageSize.message}</span>
+              )}
               {/* COMMENT */}
               <label htmlFor='comment'>Comment</label>
               <textarea
@@ -413,7 +400,10 @@ export default function RepoManage(props) {
                   name='alert'
                   defaultValue={
                     props.mode == 'edit'
-                      ? alertOptions.find((x) => x.value === targetRepo.alert)
+                      ? alertOptions.find((x) => x.value === targetRepo.alert) || {
+                          value: targetRepo.alert,
+                          label: `${targetRepo.alert} seconds (custom)`,
+                        }
                       : alertOptions[4]
                   }
                   control={control}

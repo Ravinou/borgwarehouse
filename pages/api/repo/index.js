@@ -50,12 +50,10 @@ export default async function handler(req, res) {
       console.log(error);
       if (error.code == 'ENOENT') {
         res.status(500).json({
-          status: 500,
           message: 'No such file or directory',
         });
       } else {
         res.status(500).json({
-          status: 500,
           message: 'API error, contact the administrator !',
         });
       }
@@ -63,7 +61,6 @@ export default async function handler(req, res) {
     }
   } else {
     res.status(405).json({
-      status: 405,
       message: 'Method Not Allowed ',
     });
     return;

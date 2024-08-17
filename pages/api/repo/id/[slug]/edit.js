@@ -20,7 +20,8 @@ export default async function handler(req, res) {
   const { authorization } = req.headers;
 
   if (!(await isAuthenticated(session, authorization, FROM_IP))) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    res.status(401).json({ message: 'Invalid API key' });
+    return;
   }
 
   // DATA CONTROL

@@ -24,11 +24,11 @@ export default async function handler(req, res) {
         const API_KEY = authorization.split(' ')[1];
         const permissions = await tokenController(API_KEY, FROM_IP);
         if (!permissions) {
-          res.status(403).json({ message: 'Invalid API key' });
+          res.status(401).json({ message: 'Invalid API key' });
           return;
         }
         if (!permissions.delete) {
-          res.status(401).json({ message: 'Insufficient permissions' });
+          res.status(403).json({ message: 'Insufficient permissions' });
           return;
         }
       }

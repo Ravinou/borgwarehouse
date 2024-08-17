@@ -4,12 +4,13 @@ import { getServerSession } from 'next-auth/next';
 
 export default async function handler(req, res) {
   if (req.method == 'GET') {
-    //Verify that the user is logged in.
+    //AUTHENTICATION
     const session = await getServerSession(req, res, authOptions);
     if (!session) {
       res.status(401).json({ message: 'You must be logged in.' });
       return;
     }
+
     try {
       function getEnvVariable(envName, defaultValue = '') {
         return process.env[envName] || defaultValue;
@@ -24,15 +25,15 @@ export default async function handler(req, res) {
         SSH_SERVER_FINGERPRINT_RSA: getEnvVariable('SSH_SERVER_FINGERPRINT_RSA'),
         SSH_SERVER_FINGERPRINT_ED25519: getEnvVariable('SSH_SERVER_FINGERPRINT_ED25519'),
         SSH_SERVER_FINGERPRINT_ECDSA: getEnvVariable('SSH_SERVER_FINGERPRINT_ECDSA'),
+        HIDE_SSH_PORT: getEnvVariable('HIDE_SSH_PORT', 'false'),
+        DISABLE_INTEGRATIONS: getEnvVariable('DISABLE_INTEGRATIONS', 'false'),
       };
+
       res.status(200).json({ wizardEnv });
       return;
     } catch (error) {
-      //Log for backend
       console.log(error);
-      //Log for frontend
       res.status(500).json({
-        status: 500,
         message: 'API error, contact the administrator',
       });
       return;

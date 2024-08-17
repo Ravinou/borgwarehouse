@@ -4,8 +4,7 @@ import path from 'path';
 export default async function tokenController(API_KEY, FROM_IP) {
   const jsonDirectory = path.join(process.cwd(), 'config');
   try {
-    const DISABLE_INTEGRATIONS = process.env.NEXT_PUBLIC_DISABLE_INTEGRATIONS === 'true';
-    if (DISABLE_INTEGRATIONS) {
+    if (process.env.DISABLE_INTEGRATIONS === 'true') {
       console.log('API auth failed from : ' + FROM_IP);
       return null;
     }

@@ -1,7 +1,7 @@
 //Lib
 import 'react-toastify/dist/ReactToastify.css';
 import classes from './UserSettings.module.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 //Components
 import EmailSettings from './EmailSettings/EmailSettings';
@@ -14,7 +14,25 @@ import Integrations from './Integrations/Integrations';
 export default function UserSettings(props) {
   //States
   const [tab, setTab] = useState('General');
-  const DISABLE_INTEGRATIONS = process.env.NEXT_PUBLIC_DISABLE_INTEGRATIONS === 'true';
+  const [wizardEnv, setWizardEnv] = useState({});
+
+  //ComponentDidMount
+  useEffect(() => {
+    const fetchWizardEnv = async () => {
+      try {
+        const response = await fetch('/api/account/getWizardEnv', {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
+        setWizardEnv((await response.json()).wizardEnv);
+      } catch (error) {
+        console.log('Fetching datas error');
+      }
+    };
+    fetchWizardEnv();
+  }, []);
 
   return (
     <div className={classes.containerSettings}>
@@ -42,7 +60,7 @@ export default function UserSettings(props) {
         >
           Notifications
         </button>
-        {!DISABLE_INTEGRATIONS && (
+        {wizardEnv.DISABLE_INTEGRATIONS !== 'true' && (
           <button
             className={tab === 'Integrations' ? classes.tabListButtonActive : classes.tabListButton}
             onClick={() => setTab('Integrations')}

@@ -4,10 +4,11 @@ export default function lanCommandOption(wizardEnv, lanCommand) {
   if (lanCommand && wizardEnv.FQDN_LAN && wizardEnv.SSH_SERVER_PORT_LAN) {
     FQDN = wizardEnv.FQDN_LAN;
     SSH_SERVER_PORT =
-      wizardEnv.SSH_SERVER_PORT_LAN === 'false' ? '' : ':' + wizardEnv.SSH_SERVER_PORT_LAN;
+      process.env.NEXT_PUBLIC_HIDE_SSH_PORT === 'true' ? '' : ':' + wizardEnv.SSH_SERVER_PORT_LAN;
   } else {
     FQDN = wizardEnv.FQDN;
-    SSH_SERVER_PORT = wizardEnv.SSH_SERVER_PORT === 'false' ? '' : ':' + wizardEnv.SSH_SERVER_PORT;
+    SSH_SERVER_PORT =
+      process.env.NEXT_PUBLIC_HIDE_SSH_PORT === 'true' ? '' : ':' + wizardEnv.SSH_SERVER_PORT;
   }
 
   return { FQDN, SSH_SERVER_PORT };

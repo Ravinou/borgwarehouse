@@ -1,33 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
 ##--> NSS_WRAPPER hook
 # Dockerfile original values
 dockerfileUser="borgwarehouse"
-dockerfileUserid="1001"
-# only if runner owner is <> 1001
-if [ "$(id -u)" != "$dockerfileUserid" ]; then
-  # mapping uid/gid process owner to borgwarehouse user with nss_wrapper
-  user_id=$(id -u)
-  group_id=$(id -g)
-  # original database
-  origpasswd="/etc/passwd"
-  origgroup="/etc/group"
-  # As this container is runable in read-only mode, the new passwd/group files must be written
-  # within a mounted volume, in this specific case, use /home/borgwarehouse/tmp which is also needed by supervisord
-  newpasswd="/home/borgwarehouse/tmp/passwd"
-  newgroup="/home/borgwarehouse/tmp/group"
-  # map passwd with $dockerfileUser
-  export user_id group_id # needed for awk commands
-  line=$(grep $dockerfileUser ${origpasswd} | awk -F ":" '{print $1":"$2":"ENVIRON["user_id"]":"ENVIRON["group_id"]":"$5":"$6":"$7}')
-  cat ${origpasswd} | sed -E "s|^$dockerfileUser.*$|$line|" >${newpasswd}
-  # map group with $dockerfileUser
-  line=$(grep $dockerfileUser ${origgroup} | awk -F ":" '{print $1":x:"ENVIRON["group_id"]":"}')
-  cat ${origgroup} | sed -E "s|^$dockerfileUser.*$|$line|" >${newgroup}
-  # set nss_wrapper environment
-  . /etc/profile.d/nss_wrapper_profile.sh
-fi
+# mapping uid/gid process owner to borgwarehouse user with nss_wrapper
+user_id=$(id -u)
+group_id=$(id -g)
+# original database
+origpasswd="/etc/passwd"
+origgroup="/etc/group"
+# As this container is runable in read-only mode, the new passwd/group files must be written
+# within a mounted volume, in this specific case, use /home/borgwarehouse/tmp which is also needed by supervisord
+newpasswd="/home/borgwarehouse/tmp/passwd"
+newgroup="/home/borgwarehouse/tmp/group"
+# map passwd with $dockerfileUser
+export user_id group_id # needed for awk commands
+line=$(grep $dockerfileUser ${origpasswd} | awk -F ":" '{print $1":"$2":"ENVIRON["user_id"]":"ENVIRON["group_id"]":"$5":"$6":"$7}')
+cat ${origpasswd} | sed -E "s|^$dockerfileUser.*$|$line|" >${newpasswd}
+# map group with $dockerfileUser
+line=$(grep $dockerfileUser ${origgroup} | awk -F ":" '{print $1":x:"ENVIRON["group_id"]":"}')
+cat ${origgroup} | sed -E "s|^$dockerfileUser.*$|$line|" >${newgroup}
+# set nss_wrapper environment
+source "/etc/profile.d/nss_wrapper_profile.sh"
 ##<--
 
 SSH_DIR="/home/borgwarehouse/.ssh"

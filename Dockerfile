@@ -1,3 +1,6 @@
+ARG UID=1001
+ARG GID=1001
+
 FROM node:20-bookworm-slim as base
 
 # build stage
@@ -7,7 +10,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm ci --only=production
+RUN NEXT_TELEMETRY_DISABLED=1 npm ci --only=production
 
 FROM base AS builder
 
@@ -26,22 +29,21 @@ FROM base AS runner
 
 ENV NODE_ENV production
 
-RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
+RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >>/etc/apt/sources.list
 
 # Adding nss_wrapper support
 # && export DEBIAN_FRONTEND=noninteractive
 # to avoid ERROR: debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module)
-RUN apt-get update \
-&& export DEBIAN_FRONTEND=noninteractive \
-&& apt-get install -y supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog libnss-wrapper \ 
-&& apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get install -y \
+    supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog libnss-wrapper && \ 
+apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# nss_wrapper build with predefined user/group (keep original 1001:1001)
-RUN groupadd -g 1001 borgwarehouse && useradd -m -u 1001 -g 1001 borgwarehouse
+RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse
 
 #nss_wrapper profile installation
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/nss_wrapper_profile.sh /etc/profile.d/.
-RUN echo '. /etc/profile.d/nss_wrapper_profile.sh' >> /etc/bash.bashrc
+RUN echo '. /etc/profile.d/nss_wrapper_profile.sh' >>/etc/bash.bashrc
+RUN echo '. /etc/profile.d/nss_wrapper_profile.sh' >>/etc/profile
 
 RUN cp /etc/ssh/moduli /home/borgwarehouse/
 

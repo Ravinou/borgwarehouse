@@ -7,10 +7,11 @@ import path from 'path';
 
 const logLogin = async (message, req, success = false) => {
   const ipAddress = req.headers['x-forwarded-for'] || 'unknown';
+  const timestamp = new Date().toISOString();
   if (success) {
-    console.log(`Login success from ${ipAddress} with user ${message}`);
+    console.log(`Login success from ${ipAddress} with user ${message} [${timestamp}]`);
   } else {
-    console.log(`Login failed from ${ipAddress} : ${message}`);
+    console.log(`Login failed from ${ipAddress} : ${message} [${timestamp}]`);
   }
 };
 

@@ -7,7 +7,8 @@ import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 import { v4 as uuidv4 } from 'uuid';
 import timestampConverter from '../../../helpers/functions/timestampConverter';
-import { IconTrash } from '@tabler/icons-react';
+import { IconTrash, IconExternalLink } from '@tabler/icons-react';
+import Link from 'next/link';
 
 //Components
 import Error from '../../../Components/UI/Error/Error';
@@ -174,7 +175,15 @@ export default function Integrations() {
     <>
       <div className={classes.containerSetting}>
         <div className={classes.settingCategory}>
-          <h2>Generate token</h2>
+          <h2 style={{ alignSelf: 'baseline' }}>Generate token</h2>
+          <Link
+            style={{ alignSelf: 'baseline', marginLeft: '5px' }}
+            href='https://borgwarehouse.com/docs/developer-manual/api/'
+            rel='noreferrer'
+            target='_blank'
+          >
+            <IconExternalLink size={16} color='#6c737f' />
+          </Link>
         </div>
         <div className={classes.setting}>
           <form

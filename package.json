@@ -11,7 +11,7 @@
         "setup:hooks": "npx husky install"
     },
     "dependencies": {
-        "@tabler/icons-react": "^3.13.0",
+        "@tabler/icons-react": "^3.14.0",
         "bcryptjs": "^2.4.3",
         "chart.js": "^4.4.4",
         "next": "^14.2.6",

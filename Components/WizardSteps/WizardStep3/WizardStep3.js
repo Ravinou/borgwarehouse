@@ -155,10 +155,15 @@ function WizardStep3(props) {
         </a>{' '}
         for a consistency check.
       </div>
-      <h2>Vorta</h2>
+      <h2>Pika, Vorta...</h2>
       <div className={classes.description}>
         If you are using the Vorta graphical client, please refer to{' '}
         <a href='https://vorta.borgbase.com/usage/' rel='noreferrer' target='_blank'>
+          this documentation
+        </a>
+        .<br />
+        If you are using Pika, please refer to{' '}
+        <a href='https://apps.gnome.org/PikaBackup/' rel='noreferrer' target='_blank'>
           this documentation
         </a>
         .

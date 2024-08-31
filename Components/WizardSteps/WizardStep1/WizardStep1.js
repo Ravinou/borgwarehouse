@@ -39,11 +39,20 @@ function WizardStep1() {
         Graphical User Interface
       </h1>
       <div className={classes.description}>
-        <b>Vorta</b> is an opensource (GPLv3) backup client for Borg Backup.
-        <br />
-        It runs on Linux, MacOS and Windows (via Windows’ Linux Subsystem (WSL)). Find the right way
-        to install it{' '}
+        BorgWarehouse is <b>compatible with all BorgBackup graphical clients</b>, including the
+        well-known{' '}
+        <a href='https://apps.gnome.org/PikaBackup/' target='_blank' rel='noreferrer'>
+          Pika Backup
+        </a>{' '}
+        and{' '}
         <a href='https://vorta.borgbase.com/' target='_blank' rel='noreferrer'>
+          Vorta
+        </a>
+        .
+        <br />
+        Vorta runs on Linux, MacOS and Windows (via Windows’ Linux Subsystem (WSL)). Find the right
+        way to install it{' '}
+        <a href='https://vorta.borgbase.com/install/' target='_blank' rel='noreferrer'>
           just here
         </a>
         .

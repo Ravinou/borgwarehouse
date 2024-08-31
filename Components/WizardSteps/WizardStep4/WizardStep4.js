@@ -70,11 +70,20 @@ consistency:
       </div>
 
       <div className={classes.separator} />
-      <h2>Vorta</h2>
+      <h2>Pika, Vorta...</h2>
       <div className={classes.description}>
         If you are using the Vorta graphical client, please refer to&nbsp;
         <a
           href='https://vorta.borgbase.com/usage/#scheduling-automatic-backups'
+          rel='noreferrer'
+          target='_blank'
+        >
+          this documentation
+        </a>
+        .<br />
+        If you are using Pika Backup, please refer to&nbsp;
+        <a
+          href='https://world.pages.gitlab.gnome.org/pika-backup/help/C/feature-schedule.html'
           rel='noreferrer'
           target='_blank'
         >

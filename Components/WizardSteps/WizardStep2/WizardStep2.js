@@ -69,10 +69,10 @@ function WizardStep2(props) {
         </div>
       </div>
 
-      <h2>Vorta</h2>
+      <h2>Pika, Vorta...</h2>
       <div className={classes.description}>
         To "Initialize a new repository" or "Add existing repository", copy this into the field
-        "Repository URL" of Vorta :
+        "Repository URL" of your graphical client :
         <br />
         <div
           style={{
@@ -91,11 +91,6 @@ function WizardStep2(props) {
             dataToCopy={`ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
           />
         </div>
-        For more information about the Vorta graphical client, please refer to{' '}
-        <a href='https://vorta.borgbase.com/usage/remote/' rel='noreferrer' target='_blank'>
-          this documentation
-        </a>
-        .
       </div>
 
       <div className={classes.separator} />

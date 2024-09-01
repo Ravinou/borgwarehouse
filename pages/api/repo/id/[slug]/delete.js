@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     }
 
     try {
-      if (authorization) {
+      if (!session && authorization) {
         const API_KEY = authorization.split(' ')[1];
         const permissions = await tokenController(API_KEY, FROM_IP);
         if (!permissions) {

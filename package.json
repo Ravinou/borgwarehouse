@@ -1,6 +1,6 @@
 {
     "name": "borgwarehouse",
-    "version": "2.3.0",
+    "version": "2.4.0",
     "private": true,
     "scripts": {
         "dev": "next dev",
@@ -35,5 +35,4 @@
         "husky": "^9.1.5",
         "prettier": "^3.3.3"
     }
-    
 }

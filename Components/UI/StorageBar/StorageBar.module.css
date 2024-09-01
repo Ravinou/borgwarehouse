@@ -1,36 +1,36 @@
 .barContainer {
-    margin: auto;
+  margin: auto;
 }
 
 .barBackground {
-    background-color: #704dff5e;
-    border-radius: 3px;
-    height: 19px;
-    width: 100%;
-    position: relative;
+  background-color: #704dff5e;
+  border-radius: 3px;
+  height: 19px;
+  width: 100%;
+  position: relative;
 }
 
 .progressionStyle {
-    background-color: #704dff;
-    border-radius: 3px;
-    height: 19px;
-    width: 100%;
+  background-color: #704dff;
+  border-radius: 3px;
+  height: 19px;
+  width: 100%;
 }
 
 .tooltip {
-    visibility: hidden;
-    width: auto;
-    height: auto;
-    color: #fff;
-    text-align: center;
-    opacity: 0;
-    transition: 0.5s opacity;
-    position: absolute;
-    left: calc(30%);
-    top: 0px;
+  visibility: hidden;
+  width: auto;
+  height: auto;
+  color: #fff;
+  text-align: center;
+  opacity: 0;
+  transition: 0.5s opacity;
+  position: absolute;
+  left: calc(30%);
+  top: 0px;
 }
 
 .barBackground:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }

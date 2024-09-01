@@ -2,117 +2,156 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { authOptions } from '../../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import { alertOptions } from '../../../../../domain/constants';
 import repoHistory from '../../../../../helpers/functions/repoHistory';
+import tokenController from '../../../../../helpers/functions/tokenController';
+import isSshPubKeyDuplicate from '../../../../../helpers/functions/isSshPubKeyDuplicate';
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
 export default async function handler(req, res) {
-    if (req.method == 'PUT') {
-        //Verify that the user is logged in.
-        const session = await getServerSession(req, res, authOptions);
-        if (!session) {
-            res.status(401).json({ message: 'You must be logged in.' });
-            return;
-        }
+  if (req.method !== 'PATCH') {
+    return res.status(405).json({ status: 405, message: 'Method Not Allowed' });
+  }
 
-        //The data we expect to receive
-        const {
-            alias,
-            sshPublicKey,
-            size,
-            comment,
-            alert,
-            lanCommand,
-            appendOnlyMode,
-        } = req.body;
-        //Only "comment" and "lanCommand" are optional in the form.
-        if (
-            !alias ||
-            !sshPublicKey ||
-            !size ||
-            typeof appendOnlyMode !== 'boolean' ||
-            (!alert && alert !== 0)
-        ) {
-            res.status(422).json({
-                message: 'Unexpected data',
-            });
-            return;
-        }
+  // AUTHENTICATION
+  const FROM_IP = req.headers['x-forwarded-for'] || 'unknown';
+  const session = await getServerSession(req, res, authOptions);
+  const { authorization } = req.headers;
 
-        try {
-            //Find the absolute path of the json directory
-            const jsonDirectory = path.join(process.cwd(), '/config');
-            let repoList = await fs.readFile(
-                jsonDirectory + '/repo.json',
-                'utf8'
-            );
-            //Parse the repoList
-            repoList = JSON.parse(repoList);
+  if (!(await isAuthenticated(session, authorization, FROM_IP))) {
+    res.status(401).json({ message: 'Invalid API key' });
+    return;
+  }
 
-            //Find the index of the repo in repoList
-            //NOTE : req.query.slug return a string, so parseInt to use with indexOf.
-            const repoIndex = repoList
-                .map((repo) => repo.id)
-                .indexOf(parseInt(req.query.slug));
+  // DATA CONTROL
+  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } = req.body;
 
-            ////Call the shell : updateRepo.sh
-            //Find the absolute path of the shells directory
-            const shellsDirectory = path.join(process.cwd(), '/helpers');
-            // //Exec the shell
-            await exec(
-                `${shellsDirectory}/shells/updateRepo.sh ${repoList[repoIndex].repositoryName} "${sshPublicKey}" ${size} ${appendOnlyMode}`
-            );
+  if (!isValidPatchData(req.body)) {
+    return res.status(422).json({ message: 'Unexpected data' });
+  }
 
-            //Find the ID in the data and change the values transmitted by the form
-            let newRepoList = repoList.map((repo) =>
-                repo.id == req.query.slug
-                    ? {
-                          ...repo,
-                          alias: alias,
-                          sshPublicKey: sshPublicKey,
-                          storageSize: Number(size),
-                          comment: comment,
-                          alert: alert,
-                          lanCommand: lanCommand,
-                          appendOnlyMode: appendOnlyMode,
-                      }
-                    : repo
-            );
-            //History the new repoList
-            await repoHistory(newRepoList);
-            //Stringify the newRepoList to write it into the json file.
-            newRepoList = JSON.stringify(newRepoList);
-            //Write the new json
-            await fs.writeFile(
-                jsonDirectory + '/repo.json',
-                newRepoList,
-                (err) => {
-                    if (err) console.log(err);
-                }
-            );
+  try {
+    const repoList = await getRepoList();
+    const repoId = parseInt(req.query.slug);
+    const filteredRepoList = repoList.filter((repo) => repo.id !== repoId);
 
-            res.status(200).json({ message: 'Envoi API réussi' });
-        } catch (error) {
-            //Log for backend
-            console.log(error);
-            //Log for frontend
-            if (error.code == 'ENOENT') {
-                res.status(500).json({
-                    status: 500,
-                    message: 'No such file or directory',
-                });
-            } else {
-                res.status(500).json({
-                    status: 500,
-                    message: error.stdout,
-                });
-            }
-            return;
-        }
-    } else {
-        res.status(405).json({
-            status: 405,
-            message: 'Method Not Allowed ',
-        });
+    if (isSshKeyConflict(sshPublicKey, filteredRepoList)) {
+      return res.status(409).json({
+        message:
+          'The SSH key is already used in another repository. Please use another key or delete the key from the other repository.',
+      });
     }
+
+    const repoIndex = repoList.findIndex((repo) => repo.id === repoId);
+    await updateRepoShell(repoList[repoIndex], sshPublicKey, storageSize, appendOnlyMode);
+    const newRepoList = updateRepoList(repoList, req.query.slug, {
+      alias,
+      sshPublicKey,
+      storageSize,
+      comment,
+      alert,
+      lanCommand,
+      appendOnlyMode,
+    });
+
+    await saveRepoList(newRepoList);
+    return res.status(200).json({ message: 'success' });
+  } catch (error) {
+    handleError(error, res);
+  }
+}
+
+// --------------
+// Functions
+// --------------
+async function isAuthenticated(session, authorization, FROM_IP) {
+  if (session) return true;
+
+  if (authorization) {
+    const API_KEY = authorization.split(' ')[1];
+    const permissions = await tokenController(API_KEY, FROM_IP);
+    return permissions?.update;
+  }
+  return false;
+}
+
+function isValidPatchData(body) {
+  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } = body;
+  const expectedKeys = [
+    'alias',
+    'sshPublicKey',
+    'storageSize',
+    'comment',
+    'alert',
+    'lanCommand',
+    'appendOnlyMode',
+  ];
+  const hasAtLeastOneKey = expectedKeys.some((key) => body.hasOwnProperty(key));
+  const hasUnexpectedKeys = Object.keys(body).some((key) => !expectedKeys.includes(key));
+
+  return (
+    hasAtLeastOneKey &&
+    !hasUnexpectedKeys &&
+    (typeof alias === 'undefined' || (typeof alias === 'string' && alias.trim() !== '')) &&
+    (typeof sshPublicKey === 'undefined' ||
+      (typeof sshPublicKey === 'string' && sshPublicKey.trim() !== '')) &&
+    (typeof comment === 'undefined' || typeof comment === 'string') &&
+    (typeof storageSize === 'undefined' ||
+      (typeof storageSize === 'number' && Number.isInteger(storageSize) && storageSize > 0)) &&
+    (typeof alert === 'undefined' ||
+      (typeof alert === 'number' && alertOptions.some((option) => option.value === alert))) &&
+    (typeof lanCommand === 'undefined' || typeof lanCommand === 'boolean') &&
+    (typeof appendOnlyMode === 'undefined' || typeof appendOnlyMode === 'boolean')
+  );
+}
+
+async function getRepoList() {
+  const jsonDirectory = path.join(process.cwd(), '/config');
+  const repoData = await fs.readFile(jsonDirectory + '/repo.json', 'utf8');
+  return JSON.parse(repoData);
+}
+
+function isSshKeyConflict(sshPublicKey, repoList) {
+  return typeof sshPublicKey === 'string' && isSshPubKeyDuplicate(sshPublicKey, repoList);
+}
+
+async function updateRepoShell(repo, sshPublicKey, storageSize, appendOnlyMode) {
+  const shellsDirectory = path.join(process.cwd(), '/helpers');
+  await exec(
+    `${shellsDirectory}/shells/updateRepo.sh ${repo.repositoryName} "${sshPublicKey ?? repo.sshPublicKey}" ${storageSize ?? repo.storageSize} ${appendOnlyMode ?? repo.appendOnlyMode}`
+  );
+}
+
+function updateRepoList(repoList, slug, updates) {
+  return repoList.map((repo) =>
+    repo.id == slug
+      ? {
+          ...repo,
+          alias: updates.alias ?? repo.alias,
+          sshPublicKey: updates.sshPublicKey ?? repo.sshPublicKey,
+          storageSize:
+            updates.storageSize !== undefined ? Number(updates.storageSize) : repo.storageSize,
+          comment: updates.comment ?? repo.comment,
+          alert: updates.alert ?? repo.alert,
+          lanCommand: updates.lanCommand ?? repo.lanCommand,
+          appendOnlyMode: updates.appendOnlyMode ?? repo.appendOnlyMode,
+        }
+      : repo
+  );
+}
+
+async function saveRepoList(newRepoList) {
+  const jsonDirectory = path.join(process.cwd(), '/config');
+  await repoHistory(newRepoList);
+  await fs.writeFile(jsonDirectory + '/repo.json', JSON.stringify(newRepoList));
+}
+
+function handleError(error, res) {
+  console.log(error);
+  if (error.code == 'ENOENT') {
+    res.status(500).json({ message: 'No such file or directory' });
+  } else {
+    res.status(500).json({ message: error.stdout });
+  }
 }

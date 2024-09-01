@@ -1,26 +1,25 @@
 .footer {
-    color: #494b7a;
-    text-align: center;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
+  color: #494b7a;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .footer p {
-    padding-left: 70px;
+  padding-left: 70px;
 }
 
 a.site {
-    color: #6d4aff;
-    text-decoration: none;
+  color: #6d4aff;
+  text-decoration: none;
 }
 
 @media all and (max-width: 1000px) {
-    .footer {
-        width: 100%;
-    }
-    .footer p {
-        padding-left: 0;
-    }
+  .footer {
+    width: 100%;
+  }
+  .footer p {
+    padding-left: 0;
+  }
 }

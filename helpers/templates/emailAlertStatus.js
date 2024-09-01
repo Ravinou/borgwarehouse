@@ -1,19 +1,19 @@
 export default function emailTest(mailTo, username, aliasList) {
-    const aliasTemplate = (x) => {
-        let str = '';
-        for (const alias of x) {
-            str = str + '<li>' + alias + '</li>';
-        }
-        return str;
-    };
+  const aliasTemplate = (x) => {
+    let str = '';
+    for (const alias of x) {
+      str = str + '<li>' + alias + '</li>';
+    }
+    return str;
+  };
 
-    const template = {
-        from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
-        to: mailTo,
-        subject: 'Down status alert !',
-        text: 'Some repositories require your attention ! Please, check your BorgWarehouse interface.',
-        html:
-            `
+  const template = {
+    from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
+    to: mailTo,
+    subject: 'Down status alert !',
+    text: 'Some repositories require your attention ! Please, check your BorgWarehouse interface.',
+    html:
+      `
             <!DOCTYPE html>
             <html>
             <head>
@@ -101,14 +101,14 @@ export default function emailTest(mailTo, username, aliasList) {
                         </div>
                         <div class="message">
                             <p>Some repositories require your attention, ` +
-            username +
-            `!</p>
+      username +
+      `!</p>
                         </div>
                         <div class="description">
                             <p>List of repositories with down status:</p>
                             <ul>` +
-            aliasTemplate(aliasList) +
-            `</ul>
+      aliasTemplate(aliasList) +
+      `</ul>
                         </div>
                         <div class="alert">
                             <div style="flex-shrink: 1; margin-right: 0.75rem">🚩</div>
@@ -124,12 +124,12 @@ export default function emailTest(mailTo, username, aliasList) {
             </body>
             </html>
         `,
-        attachments: [
-            {
-                path: 'helpers/templates/attachments/alert-icon.png',
-                cid: 'alert-icon',
-            },
-        ],
-    };
-    return template;
+    attachments: [
+      {
+        path: 'helpers/templates/attachments/alert-icon.png',
+        cid: 'alert-icon',
+      },
+    ],
+  };
+  return template;
 }

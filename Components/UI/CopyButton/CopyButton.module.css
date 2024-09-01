@@ -1,26 +1,35 @@
 .copyButton {
-    visibility: visible;
-    opacity: 1;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
+  visibility: visible;
+  opacity: 1;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.copyButton span {
+  font-size: 0.95rem;
+  color: #6d4aff;
+  margin-right: 5px;
+  user-select: text;
 }
 
 .copyValid {
-    font-size: 0.95rem;
-    color: #6d4aff;
-    animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  font-size: 0.95rem;
+  color: #6d4aff;
+  animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 @keyframes scale-in-center {
-    0% {
-        -webkit-transform: scale(0);
-        transform: scale(0);
-        opacity: 1;
-    }
-    100% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-        opacity: 1;
-    }
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
 }

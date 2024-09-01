@@ -1,0 +1,16 @@
+export const alertOptions = [
+  { value: 0, label: 'Disabled' },
+  { value: 3600, label: '1 hour' },
+  { value: 21600, label: '6 hours' },
+  { value: 43200, label: '12 hours' },
+  { value: 90000, label: '1 day' },
+  { value: 172800, label: '2 days' },
+  { value: 259200, label: '3 days' },
+  { value: 345600, label: '4 days' },
+  { value: 432000, label: '5 days' },
+  { value: 518400, label: '6 days' },
+  { value: 604800, label: '7 days' },
+  { value: 864000, label: '10 days' },
+  { value: 1209600, label: '14 days' },
+  { value: 2592000, label: '30 days' },
+];

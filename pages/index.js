@@ -8,46 +8,42 @@ import Head from 'next/head';
 import RepoList from '../Containers/RepoList/RepoList';
 
 export default function Index() {
-    const { status } = useSession();
+  const { status } = useSession();
 
-    return (
+  return (
+    <>
+      {status === 'unauthenticated' || status === 'loading' ? null : (
         <>
-            {status === 'unauthenticated' || status === 'loading' ? null : (
-                <>
-                    <Head>
-                        {/* <link
+          <Head>
+            {/* <link
                             rel='preload'
                             href='/api/repo'
                             as='fetch'
                             crossorigin='anonymous'
                         ></link> */}
-                        <title>Repositories - BorgWarehouse</title>
-                    </Head>
-                    <RepoList />
-                </>
-            )}
+            <title>Repositories - BorgWarehouse</title>
+          </Head>
+          <RepoList />
         </>
-    );
+      )}
+    </>
+  );
 }
 
 export async function getServerSideProps(context) {
-    //Var
-    const session = await getServerSession(
-        context.req,
-        context.res,
-        authOptions
-    );
+  //Var
+  const session = await getServerSession(context.req, context.res, authOptions);
 
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/login',
-                permanent: false,
-            },
-        };
-    }
-
+  if (!session) {
     return {
-        props: {},
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
     };
+  }
+
+  return {
+    props: {},
+  };
 }

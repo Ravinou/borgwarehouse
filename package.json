@@ -15,7 +15,7 @@
         "@tabler/icons-react": "^3.16.0",
         "bcryptjs": "^2.4.3",
         "chart.js": "^4.4.4",
-        "next": "^14.2.8",
+        "next": "^14.2.12",
         "next-auth": "^4.24.7",
         "nodemailer": "^6.9.15",
         "react": "^18.3.1",

@@ -31,7 +31,7 @@ pool="${home}/repos"
 authorized_keys="${home}/.ssh/authorized_keys"
 
 # Check args
-if [ "$1" == "" ] || [ "$2" == "" ] ||  [ "$3" != "true" ] && [ "$3" != "false" ];then
+if [ "$1" == "" ] || [ "$2" == "" ] || ! [[ "$2" =~ ^[0-9]+$ ]] || [ "$3" != "true" ] && [ "$3" != "false" ]; then
     echo -n "This shell takes 3 arguments : SSH Public Key, Quota in Go [e.g. : 10], Append only mode [true|false]"
     exit 1
 fi

@@ -112,3 +112,6 @@ config/users.json
 
 # docker files
 docker-compose.yml
+
+# Commit tests docker-compose
+!tests/bats/docker-compose.yml

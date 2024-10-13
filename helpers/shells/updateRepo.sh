@@ -30,11 +30,11 @@ then
     exit 2
 fi
 
-# Check if repositoryName length is 8 char. With createRepo.sh our randoms have a length of 8 characters.
-# If we receive another length, there is necessarily a problem.
+# Check if the repositoryName pattern is an hexa 8 char. With createRepo.sh our randoms are hexa of 8 characters.
+# If we receive another pattern there is necessarily a problem.
 repositoryName=$1
-if [ ${#repositoryName} != 8 ]; then
-    echo -n "Error with the length of the repositoryName."
+if ! [[ "$repositoryName" =~ ^[a-f0-9]{8}$ ]]; then
+    echo "Invalid repository name. Must be an 8-character hex string."
     exit 3
 fi
 

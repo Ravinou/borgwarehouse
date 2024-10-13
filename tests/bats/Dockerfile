@@ -4,6 +4,7 @@ RUN apk add --no-cache bash bats git openssl borgbackup
 
 COPY helpers/shells/ /test/scripts/
 COPY tests/bats/createRepo.bats /test/tests/createRepo.bats
+COPY tests/bats/deleteRepo.bats /test/tests/deleteRepo.bats
 
 RUN chmod +x /test/scripts/*.sh
 

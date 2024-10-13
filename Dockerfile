@@ -52,7 +52,22 @@ COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/rsyslog.conf /etc/rsyslog.conf
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/sshd_config ./
 
+RUN chown -R borgwarehouse:borgwarehouse /etc/ssh
+
 USER borgwarehouse
+
+RUN mkdir -p /home/borgwarehouse/app/config \
+    /home/borgwarehouse/.ssh \
+    /home/borgwarehouse/repos \
+    /home/borgwarehouse/tmp \
+    /home/borgwarehouse/logs
+
+VOLUME /home/borgwarehouse/app/config \
+       /home/borgwarehouse/.ssh \
+       /etc/ssh \
+       /home/borgwarehouse/repos \
+       /home/borgwarehouse/tmp \
+       /home/borgwarehouse/logs
 
 EXPOSE 3000 22
 

@@ -22,6 +22,12 @@ fi
 # Default value if .env not exists
 : "${home:=/home/borgwarehouse}"
 
-# Use jc to output a JSON format with du command
+# Get the size of each repository and format as JSON
 cd "${home}"/repos
-du -s -- * | jc --du
+output=$(du -s -- * 2>/dev/null | awk '{print "{\"size\":" $1 ",\"name\":\"" $2 "\"}"}' | jq -s '.')
+if [ -z "$output" ]; then
+  output="[]"
+fi
+
+# Print the JSON output
+echo "$output"

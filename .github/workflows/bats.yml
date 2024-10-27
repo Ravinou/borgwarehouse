@@ -1,0 +1,26 @@
+name: Bats
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  bats-test:
+    name: Run bats tests against shells
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build container & run bats tests
+        run: |
+          docker compose -f tests/bats/docker-compose.yml up --abort-on-container-exit --build

@@ -1,5 +1,5 @@
 services:
-  test:
+  bats-test:
     build:
       context: ../..
       dockerfile: tests/bats/Dockerfile

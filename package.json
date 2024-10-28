@@ -14,7 +14,7 @@
     "dependencies": {
         "@tabler/icons-react": "^3.20.0",
         "bcryptjs": "^2.4.3",
-        "chart.js": "^4.4.5",
+        "chart.js": "^4.4.6",
         "next": "^14.2.15",
         "next-auth": "^4.24.10",
         "nodemailer": "^6.9.15",

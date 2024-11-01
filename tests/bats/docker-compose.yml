@@ -1,0 +1,8 @@
+services:
+  bats-test:
+    build:
+      context: ../..
+      dockerfile: tests/bats/Dockerfile
+    volumes:
+      - ../../helpers/shells:/test/scripts:ro
+    container_name: bats-test-container

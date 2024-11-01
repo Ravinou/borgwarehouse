@@ -1,21 +1,21 @@
-name: Test Docker Container Build on Pull Request
+name: Test to build docker container on Pull Request
 
 on:
-    pull_request:
-        branches:
-            - main
-            - develop
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
-    build-container:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - name: Set up QEMU
-              uses: docker/setup-qemu-action@v3
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
-            - name: Build Docker Container
-              run: |
-                  docker buildx build --platform linux/amd64,linux/arm64 -t borgwarehouse:pr-${{ github.event.pull_request.number }} .
+  build-container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build BorgWarehouse Container
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t borgwarehouse:pr-${{ github.event.pull_request.number }} .

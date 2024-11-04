@@ -31,6 +31,7 @@ ARG UID
 ARG GID
 
 ENV NODE_ENV production
+ENV HOSTNAME=
 
 RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \

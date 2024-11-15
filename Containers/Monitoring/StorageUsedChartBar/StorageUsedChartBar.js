@@ -71,9 +71,9 @@ export default function StorageUsedChartBar() {
     datasets: [
       {
         label: 'Storage used (%)',
-        //storageUsed is in octet, storageSize is in GB. Round to 1 decimal for %.
+        //storageUsed is in kB, storageSize is in GB. Round to 1 decimal for %.
         data: data.map((repo) =>
-          (((repo.storageUsed / 1000000) * 100) / repo.storageSize).toFixed(1)
+          (((repo.storageUsed / 1024 ** 2) * 100) / repo.storageSize).toFixed(1)
         ),
         backgroundColor: '#704dff',
       },

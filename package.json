@@ -22,7 +22,7 @@
         "react-chartjs-2": "^5.2.0",
         "react-dom": "^18.3.1",
         "react-hook-form": "^7.53.2",
-        "react-select": "^5.8.2",
+        "react-select": "^5.8.3",
         "react-toastify": "^10.0.6",
         "spinners-react": "^1.0.10",
         "swr": "^2.2.5",

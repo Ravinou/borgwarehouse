@@ -30,7 +30,7 @@
     },
     "devDependencies": {
         "@commitlint/cli": "^19.6.0",
-        "@commitlint/config-conventional": "^19.5.0",
+        "@commitlint/config-conventional": "^19.6.0",
         "eslint-config-next": "^14.2.15",
         "husky": "^9.1.7",
         "prettier": "^3.4.1"

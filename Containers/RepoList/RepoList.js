@@ -1,6 +1,6 @@
 //Lib
 import classes from './RepoList.module.css';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -109,7 +109,7 @@ export default function RepoList() {
   //Dynamic list of repositories (with a map of Repo components)
   const renderRepoList = data.repoList.map((repo, index) => {
     return (
-      <>
+      <React.Fragment key={repo.id}>
         <Repo
           key={repo.id}
           id={repo.id}
@@ -127,7 +127,7 @@ export default function RepoList() {
           repoManageEditHandler={() => repoManageEditHandler(repo.id)}
           wizardEnv={wizardEnv}
         ></Repo>
-      </>
+      </React.Fragment>
     );
   });
 

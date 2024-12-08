@@ -76,3 +76,32 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$normalized_output" == "$normalized_expected_output" ]
 }
+
+@test "Test getStorageUsed.sh ignores lost+found directory" {
+  mkdir -p "${home}/repos/lost+found"
+  dd if=/dev/zero of="${home}/repos/lost+found/file1" bs=1K count=500
+  
+  run bash /test/scripts/getStorageUsed.sh
+
+  # Expected output should NOT include lost+found
+  expected_output='[
+    {
+      "size": 36,
+      "name": "repo1"
+    },
+    {
+      "size": 1160,
+      "name": "repo2"
+    },
+    {
+      "size": 116, 
+      "name": "repo3"
+    }
+  ]'
+
+  normalized_output=$(echo "$output" | jq .)
+  normalized_expected_output=$(echo "$expected_output" | jq .)
+
+  [ "$status" -eq 0 ]
+  [ "$normalized_output" == "$normalized_expected_output" ]
+}

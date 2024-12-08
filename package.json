@@ -15,7 +15,7 @@
         "@tabler/icons-react": "^3.24.0",
         "bcryptjs": "^2.4.3",
         "chart.js": "^4.4.7",
-        "next": "^14.2.15",
+        "next": "^15.0.4",
         "next-auth": "^4.24.10",
         "nodemailer": "^6.9.16",
         "react": "^18.3.1",
@@ -31,7 +31,7 @@
     "devDependencies": {
         "@commitlint/cli": "^19.6.0",
         "@commitlint/config-conventional": "^19.6.0",
-        "eslint-config-next": "^14.2.15",
+        "eslint-config-next": "^15.0.4",
         "husky": "^9.1.7",
         "prettier": "^3.4.2"
     }

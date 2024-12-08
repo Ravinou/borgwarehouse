@@ -14,6 +14,9 @@
 # Exit when any command fails
 set -e
 
+# Ignore "lost+found" directories
+GLOBIGNORE="LOST+FOUND:lost+found"
+
 # Load .env if exists
 if [[ -f .env ]]; then
     source .env

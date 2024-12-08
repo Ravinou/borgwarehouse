@@ -1,7 +1,7 @@
 ARG UID=1001
 ARG GID=1001
 
-FROM node:20-bookworm-slim as base
+FROM node:22-bookworm-slim as base
 
 # build stage
 FROM base AS deps
@@ -10,7 +10,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 FROM base AS builder
 

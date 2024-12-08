@@ -30,6 +30,7 @@ function findTypeIcon() {
   declare -A icons
   icons[build]='🤖'
   icons[chore]='🧹'
+  icons["chore(deps)"]='🧹'
   icons[config]='🔧'
   icons[deploy]='🚀'
   icons[doc]='📚'

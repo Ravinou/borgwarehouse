@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
     await saveRepoList(newRepoList);
 
-    return res.status(200).json({ message: 'success' });
+    return res.status(200).json({ id: newRepo.id, repositoryName: newRepo.repositoryName });
   } catch (error) {
     handleError(error, res);
   }

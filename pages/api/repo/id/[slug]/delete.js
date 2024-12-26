@@ -77,9 +77,9 @@ export default async function handler(req, res) {
       if (indexToDelete !== -1) {
         repoList.splice(indexToDelete, 1);
       } else {
-        console.log('The index to delete does not existe (-1)');
-        res.status(500).json({
-          message: 'API error, contact the administrator',
+        console.log('The index to delete does not exist');
+        res.status(400).json({
+          message: 'This repository does not exist',
         });
         return;
       }

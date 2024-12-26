@@ -110,10 +110,17 @@ export default function EmailAlertSettings() {
       .then((response) => {
         if (!response.ok) {
           setTestIsLoading(false);
-          setError('Failed to send the notification.');
+          response
+            .json()
+            .then((data) => {
+              setError(data.message || 'Failed to send the notification.');
+            })
+            .catch(() => {
+              setError('Failed to send the notification.');
+            });
           setTimeout(() => {
             setError();
-          }, 4000);
+          }, 10000);
         } else {
           setTestIsLoading(false);
           setInfo(true);
@@ -124,7 +131,6 @@ export default function EmailAlertSettings() {
       })
       .catch((error) => {
         setTestIsLoading(false);
-        console.log(error);
         setError('Send email failed. Contact your administrator.');
         setTimeout(() => {
           setError();

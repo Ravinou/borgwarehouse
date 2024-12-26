@@ -1,6 +1,3 @@
-#!/bin/bash
-. "$(dirname "$0")/_/husky.sh"
-
 # Check if it's an amend commit
 if [ "$2" = "commit" ]; then
   echo "Amendment detected, appending icon..."

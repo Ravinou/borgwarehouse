@@ -88,7 +88,7 @@ export default function RepoList() {
   };
 
   //BUTTON : Display RepoManage component box for EDIT
-  const repoManageEditHandler = (id) => {
+  const repoManageEditHandler = (id: number) => {
     router.replace('/manage-repo/edit/' + id);
   };
 

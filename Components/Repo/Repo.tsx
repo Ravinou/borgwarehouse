@@ -9,29 +9,40 @@ import {
   IconBellOff,
   IconLockPlus,
 } from '@tabler/icons-react';
-import timestampConverter from '../../helpers/functions/timestampConverter';
+import { timestampConverter } from '~/helpers/functions';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
+import { Repository } from '~/domain/repository';
 
-export default function Repo(props) {
+type RepoProps = Repository & {
+  repoManageEditHandler: () => void;
+  wizardEnv: string;
+};
+
+export default function Repo(props: RepoProps) {
   //Load displayDetails from LocalStorage
-  const displayDetailsFromLS = () => {
+  const displayDetailsFromLS = (): boolean => {
+    const key = `displayDetailsRepo${props.id}`;
+
     try {
-      if (localStorage.getItem('displayDetailsRepo' + props.id) === null) {
-        localStorage.setItem('displayDetailsRepo' + props.id, JSON.stringify(true));
-        return true;
-      } else {
-        return JSON.parse(localStorage.getItem('displayDetailsRepo' + props.id));
+      const storedValue = localStorage.getItem(key);
+
+      if (storedValue === null) {
+        const defaultValue = true;
+        localStorage.setItem(key, JSON.stringify(defaultValue));
+        return defaultValue;
       }
+
+      const parsedValue = JSON.parse(storedValue);
+      if (typeof parsedValue === 'boolean') {
+        return parsedValue;
+      }
+
+      localStorage.removeItem(key);
+      return true;
     } catch (error) {
-      console.log(
-        'LocalStorage error, key',
-        'displayDetailsRepo' + props.id,
-        'will be removed. Try again.',
-        'Error message on this key : ',
-        error
-      );
-      localStorage.removeItem('displayDetailsRepo' + props.id);
+      localStorage.removeItem(key);
+      return true;
     }
   };
 
@@ -39,7 +50,7 @@ export default function Repo(props) {
   const [displayDetails, setDisplayDetails] = useState(displayDetailsFromLS);
 
   //BUTTON : Display or not repo details for ONE repo
-  const displayDetailsForOneHandler = (boolean) => {
+  const displayDetailsForOneHandler = (boolean: boolean) => {
     //Update localStorage
     localStorage.setItem('displayDetailsRepo' + props.id, JSON.stringify(boolean));
     setDisplayDetails(boolean);

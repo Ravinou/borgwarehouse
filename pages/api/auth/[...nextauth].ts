@@ -1,11 +1,13 @@
 //Lib
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '../../../helpers/functions/auth';
 import fs from 'fs';
 import path from 'path';
+import { BorgWarehouseUser } from '~/domain/config.types';
+import { NextApiRequest } from 'next';
 
-const logLogin = async (message, req, success = false) => {
+const logLogin = async (message: string, req, success = false) => {
   const ipAddress = req.headers['x-forwarded-for'] || 'unknown';
   const timestamp = new Date().toISOString();
   if (success) {
@@ -15,11 +17,22 @@ const logLogin = async (message, req, success = false) => {
   }
 };
 
+interface customUser extends User {
+  roles: string[];
+}
+
 ////Use if need getServerSideProps and therefore getServerSession
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
+      credentials: {
+        username: { type: 'text' },
+        password: { type: 'password' },
+      },
       async authorize(credentials, req) {
+        if (!credentials) {
+          throw new Error('Missing credentials');
+        }
         const { username, password } = credentials;
         //Read the users file
         //Find the absolute path of the json directory
@@ -41,14 +54,20 @@ export const authOptions = {
             ])
           );
         }
-        let usersList = await fs.promises.readFile(jsonDirectory + '/users.json', 'utf8');
-        //Parse the usersList
-        usersList = JSON.parse(usersList);
+
+        const usersData = await fs.promises.readFile(jsonDirectory + '/users.json', 'utf8');
+        const usersList = (() => {
+          try {
+            return JSON.parse(usersData) as BorgWarehouseUser[];
+          } catch (error) {
+            throw new Error('Failed to parse users.json. Please check its format.');
+          }
+        })();
 
         //Step 1 : does the user exist ?
         const userIndex = usersList.map((user) => user.username).indexOf(username.toLowerCase());
         if (userIndex === -1) {
-          await logLogin(`Bad username ${req.body.username}`, req);
+          await logLogin(`Bad username ${req.body?.username}`, req);
           throw new Error('Incorrect credentials.');
         }
         const user = usersList[userIndex];
@@ -56,19 +75,19 @@ export const authOptions = {
         //Step 2 : Is the password correct ?
         const isValid = await verifyPassword(password, user.password);
         if (!isValid) {
-          await logLogin(`Wrong password for ${req.body.username}`, req);
+          await logLogin(`Wrong password for ${req.body?.username}`, req);
           throw new Error('Incorrect credentials.');
         }
 
         //Success
-        const account = {
+        const account: customUser = {
           name: user.username,
           email: user.email,
-          id: user.id,
+          id: user.id.toString(),
           roles: user.roles,
         };
 
-        await logLogin(req.body.username, req, true);
+        await logLogin(req.body?.username, req, true);
         return account;
       },
     }),
@@ -84,7 +103,7 @@ export const authOptions = {
     },
     async session({ session, token }) {
       // Send properties to the client to access to the token info through session().
-      if (token) {
+      if (token && session.user) {
         session.user.roles = token.roles;
         session.user.id = token.id;
       }

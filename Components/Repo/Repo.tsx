@@ -9,10 +9,10 @@ import {
   IconBellOff,
   IconLockPlus,
 } from '@tabler/icons-react';
-import { timestampConverter } from '~/helpers/functions';
+import { timestampConverter } from '~/helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
-import { Repository } from '~/domain/repository';
+import { Repository } from '~/domain/config.types';
 
 type RepoProps = Repository & {
   repoManageEditHandler: () => void;

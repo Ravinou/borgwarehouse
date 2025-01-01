@@ -1,16 +1,16 @@
 //Lib
-import React from 'react';
-import classes from '../WizardStep1/WizardStep1.module.css';
-import { IconTool, IconAlertCircle } from '@tabler/icons-react';
-import CopyButton from '../../UI/CopyButton/CopyButton';
+import { IconAlertCircle, IconTool } from '@tabler/icons-react';
 import lanCommandOption from '../../../helpers/functions/lanCommandOption';
+import CopyButton from '../../UI/CopyButton/CopyButton';
+import { WizardStepProps } from '../wizard.types';
+import classes from '../WizardStep1/WizardStep1.module.css';
 
-function WizardStep2(props) {
+function WizardStep2(props: WizardStepProps) {
   ////Vars
   const wizardEnv = props.wizardEnv;
-  const UNIX_USER = wizardEnv.UNIX_USER;
+  const UNIX_USER = wizardEnv?.UNIX_USER;
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-  const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedOption.lanCommand);
+  const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedRepo?.lanCommand);
 
   return (
     <div className={classes.container}>
@@ -32,10 +32,10 @@ function WizardStep2(props) {
             borg init -e repokey-blake2 ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
-            {props.selectedOption.repositoryName}
+            {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
-            dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+            dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>
         <div className={classes.note}>
@@ -85,10 +85,10 @@ function WizardStep2(props) {
             ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
-            {props.selectedOption.repositoryName}
+            {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
-            dataToCopy={`ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+            dataToCopy={`ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>
       </div>
@@ -103,16 +103,18 @@ function WizardStep2(props) {
         following key's fingerprint when you first connect :
         <li>
           <span className={classes.sshPublicKey}>
-            ECDSA : {wizardEnv.SSH_SERVER_FINGERPRINT_ECDSA}
+            ECDSA : {wizardEnv?.SSH_SERVER_FINGERPRINT_ECDSA}
           </span>
         </li>
         <li>
           <span className={classes.sshPublicKey}>
-            ED25519 : {wizardEnv.SSH_SERVER_FINGERPRINT_ED25519}
+            ED25519 : {wizardEnv?.SSH_SERVER_FINGERPRINT_ED25519}
           </span>
         </li>
         <li>
-          <span className={classes.sshPublicKey}>RSA : {wizardEnv.SSH_SERVER_FINGERPRINT_RSA}</span>
+          <span className={classes.sshPublicKey}>
+            RSA : {wizardEnv?.SSH_SERVER_FINGERPRINT_RSA}
+          </span>
         </li>
       </div>
 

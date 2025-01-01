@@ -1,36 +1,39 @@
 //Lib
-import React from 'react';
-import classes from './SetupWizard.module.css';
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Select from 'react-select';
+import { useEffect, useState } from 'react';
+import Select, { SingleValue } from 'react-select';
+import classes from './SetupWizard.module.css';
 
 //Components
-import WizardStepBar from '../../Components/WizardSteps/WizardStepBar/WizardStepBar';
+import { SelectedRepoWizard } from '~/Components/WizardSteps/wizard.types';
+import { Repository, WizardEnvType } from '~/domain/config.types';
+import { Optional } from '~/types';
 import WizardStep1 from '../../Components/WizardSteps/WizardStep1/WizardStep1';
 import WizardStep2 from '../../Components/WizardSteps/WizardStep2/WizardStep2';
 import WizardStep3 from '../../Components/WizardSteps/WizardStep3/WizardStep3';
 import WizardStep4 from '../../Components/WizardSteps/WizardStep4/WizardStep4';
+import WizardStepBar from '../../Components/WizardSteps/WizardStepBar/WizardStepBar';
 
-function SetupWizard(props) {
+type SetupWizardProps = {
+  step?: number;
+};
+
+function SetupWizard(props: SetupWizardProps) {
   ////Var
   const router = useRouter();
 
   ////States
-  const [list, setList] = useState([]);
-  const [listIsLoading, setListIsLoading] = useState(true);
-  const [step, setStep] = useState();
-  const [wizardEnv, setWizardEnv] = useState({});
-  const [selectedOption, setSelectedOption] = useState({
-    id: '#id',
-    repository: 'repo',
-  });
+  const [repoList, setRepoList] = useState<Optional<Array<Repository>>>();
+  const [repoListIsLoading, setRepoListIsLoading] = useState<boolean>(true);
+  const [step, setStep] = useState<number>(1);
+  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
+  const [selectedItem, setSelectedItem] = useState<Optional<SelectedRepoWizard>>();
 
   ////LifeCycle
   //ComponentDidMount
   useEffect(() => {
     //retrieve the repository list
-    const repoList = async () => {
+    const fetchRepoList = async () => {
       try {
         const response = await fetch('/api/repo', {
           method: 'GET',
@@ -38,13 +41,13 @@ function SetupWizard(props) {
             'Content-type': 'application/json',
           },
         });
-        setList((await response.json()).repoList);
-        setListIsLoading(false);
+        setRepoList((await response.json()).repoList);
+        setRepoListIsLoading(false);
       } catch (error) {
         console.log('Fetching datas error');
       }
     };
-    repoList();
+    fetchRepoList();
     //Fetch wizardEnv to hydrate Wizard' steps
     const fetchWizardEnv = async () => {
       try {
@@ -64,47 +67,55 @@ function SetupWizard(props) {
   //Component did update
   useEffect(() => {
     //Go to the step in the URL param when URL change
-    setStep(props.step);
+    props.step && setStep(props.step);
   }, [props.step]);
 
   ////Functions
 
   //Options for react-select
-  const options = list.map((repo) => ({
+  const options: Optional<Array<SelectedRepoWizard>> = repoList?.map((repo) => ({
     label: `${repo.alias} - #${repo.id}`,
     value: `${repo.alias} - #${repo.id}`,
-    id: repo.id,
+    id: repo.id.toString(),
     repositoryName: repo.repositoryName,
     lanCommand: repo.lanCommand,
   }));
 
   //Step button (free selection of user)
-  const changeStepHandler = (x) => router.push('/setup-wizard/' + x);
+  const changeStepHandler = (x: number) => router.push('/setup-wizard/' + x.toString());
 
   //Next Step button
   const nextStepHandler = () => {
-    if (step < 4) {
-      router.push('/setup-wizard/' + `${Number(step) + 1}`);
+    if (step && step < 4) {
+      router.push('/setup-wizard/' + `${step + 1}`);
     }
   };
 
   //Previous Step button
   const previousStepHandler = () => {
-    if (step > 1) {
-      router.push('/setup-wizard/' + `${Number(step) - 1}`);
+    if (step && step > 1) {
+      router.push('/setup-wizard/' + `${step - 1}`);
+    }
+  };
+
+  const onChangeSelect = (option: SingleValue<SelectedRepoWizard>) => {
+    if (option) {
+      setSelectedItem(option);
+    } else {
+      setSelectedItem(undefined);
     }
   };
 
   //Change Step with State
-  const wizardStep = (step) => {
-    if (step == 1) {
+  const wizardStep = (step?: number) => {
+    if (!step || step === 1) {
       return <WizardStep1 />;
-    } else if (step == 2) {
-      return <WizardStep2 selectedOption={selectedOption} wizardEnv={wizardEnv} />;
-    } else if (step == 3) {
-      return <WizardStep3 selectedOption={selectedOption} wizardEnv={wizardEnv} />;
+    } else if (step === 2) {
+      return <WizardStep2 selectedRepo={selectedItem} wizardEnv={wizardEnv} />;
+    } else if (step === 3) {
+      return <WizardStep3 selectedRepo={selectedItem} wizardEnv={wizardEnv} />;
     } else {
-      return <WizardStep4 selectedOption={selectedOption} wizardEnv={wizardEnv} />;
+      return <WizardStep4 selectedRepo={selectedItem} wizardEnv={wizardEnv} />;
     }
   };
 
@@ -118,15 +129,15 @@ function SetupWizard(props) {
       />
       <div className={classes.selectRepo}>
         <Select
-          onChange={setSelectedOption}
-          isLoading={listIsLoading}
-          isDisabled={listIsLoading}
+          onChange={(item) => onChangeSelect(item)}
+          isLoading={repoListIsLoading}
+          isDisabled={repoListIsLoading}
           options={options}
           isSearchable
           placeholder='Select your repository...'
           theme={(theme) => ({
             ...theme,
-            borderRadius: '5px',
+            borderRadius: 5,
             colors: {
               ...theme.colors,
               primary25: '#c3b6fa',

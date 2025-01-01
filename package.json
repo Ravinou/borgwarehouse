@@ -1,41 +1,43 @@
 {
-    "name": "borgwarehouse",
-    "version": "2.4.3",
-    "private": true,
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint",
-        "setup": "npm install && npm run setup:hooks",
-        "setup:hooks": "npx husky install",
-        "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
-    },
-    "dependencies": {
-        "@tabler/icons-react": "^3.26.0",
-        "bcryptjs": "^2.4.3",
-        "chart.js": "^4.4.7",
-        "next": "^15.1.2",
-        "next-auth": "^4.24.10",
-        "nodemailer": "^6.9.16",
-        "react": "^18.3.1",
-        "react-chartjs-2": "^5.2.0",
-        "react-dom": "^18.3.1",
-        "react-hook-form": "^7.54.2",
-        "react-select": "^5.9.0",
-        "react-toastify": "^10.0.6",
-        "spinners-react": "^1.0.10",
-        "swr": "^2.3.0",
-        "uuid": "^11.0.3"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "^19.6.0",
-        "@commitlint/config-conventional": "^19.6.0",
-        "@types/node": "^22.10.2",
-        "@types/react": "^18.3.18",
-        "eslint-config-next": "^15.1.2",
-        "husky": "^9.1.7",
-        "prettier": "^3.4.2",
-        "typescript": "^5.7.2"
-    }
+  "name": "borgwarehouse",
+  "version": "2.4.3",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "setup": "npm install && npm run setup:hooks",
+    "setup:hooks": "npx husky install",
+    "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+  },
+  "dependencies": {
+    "@tabler/icons-react": "^3.26.0",
+    "bcryptjs": "^2.4.3",
+    "chart.js": "^4.4.7",
+    "next": "^15.1.2",
+    "next-auth": "^4.24.10",
+    "nodemailer": "^6.9.16",
+    "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
+    "react-select": "^5.9.0",
+    "react-toastify": "^10.0.6",
+    "spinners-react": "^1.0.10",
+    "swr": "^2.3.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.10.2",
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^18.3.18",
+    "eslint-config-next": "^15.1.2",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  }
 }

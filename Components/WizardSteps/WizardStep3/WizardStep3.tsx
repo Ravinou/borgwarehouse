@@ -4,13 +4,14 @@ import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconChecks, IconPlayerPlay } from '@tabler/icons-react';
 import CopyButton from '../../UI/CopyButton/CopyButton';
 import lanCommandOption from '../../../helpers/functions/lanCommandOption';
+import { WizardStepProps } from '../wizard.types';
 
-function WizardStep3(props) {
+function WizardStep3(props: WizardStepProps) {
   ////Vars
   const wizardEnv = props.wizardEnv;
-  const UNIX_USER = wizardEnv.UNIX_USER;
+  const UNIX_USER = wizardEnv?.UNIX_USER;
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-  const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedOption.lanCommand);
+  const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedRepo?.lanCommand);
 
   return (
     <div className={classes.container}>
@@ -31,11 +32,11 @@ function WizardStep3(props) {
             borg create ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
-            {props.selectedOption.repositoryName}
+            {props.selectedRepo?.repositoryName}
             ::archive1 /your/pathToBackup
           </div>
           <CopyButton
-            dataToCopy={`borg create ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}::archive1 /your/pathToBackup`}
+            dataToCopy={`borg create ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /your/pathToBackup`}
           />
         </div>
       </div>
@@ -70,10 +71,10 @@ function WizardStep3(props) {
             borg check -v --progress ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
-            {props.selectedOption.repositoryName}
+            {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
-            dataToCopy={`borg check -v --progress ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+            dataToCopy={`borg check -v --progress ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>
         <li>List the remote archives with :</li>
@@ -88,10 +89,10 @@ function WizardStep3(props) {
             borg list ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
-            {props.selectedOption.repositoryName}
+            {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
-            dataToCopy={`borg list ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}`}
+            dataToCopy={`borg list ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>
         <li>Download a remote archive with the following command :</li>
@@ -106,11 +107,11 @@ function WizardStep3(props) {
             borg export-tar --tar-filter="gzip -9" ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
-            {props.selectedOption.repositoryName}
+            {props.selectedRepo?.repositoryName}
             ::archive1 archive1.tar.gz
           </div>
           <CopyButton
-            dataToCopy={`borg export-tar --tar-filter="gzip -9" ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}::archive1 archive1.tar.gz`}
+            dataToCopy={`borg export-tar --tar-filter="gzip -9" ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 archive1.tar.gz`}
           />
         </div>
         <li>Mount an archive to compare or backup some files without download all the archive :</li>
@@ -125,11 +126,11 @@ function WizardStep3(props) {
             borg mount ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
-            {props.selectedOption.repositoryName}
+            {props.selectedRepo?.repositoryName}
             ::archive1 /tmp/yourMountPoint
           </div>
           <CopyButton
-            dataToCopy={`borg mount ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}::archive1 /tmp/yourMountPoint`}
+            dataToCopy={`borg mount ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /tmp/yourMountPoint`}
           />
         </div>
         <br />

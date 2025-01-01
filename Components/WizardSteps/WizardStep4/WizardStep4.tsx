@@ -4,13 +4,14 @@ import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconWand } from '@tabler/icons-react';
 import CopyButton from '../../UI/CopyButton/CopyButton';
 import lanCommandOption from '../../../helpers/functions/lanCommandOption';
+import { WizardStepProps } from '../wizard.types';
 
-function WizardStep4(props) {
+function WizardStep4(props: WizardStepProps) {
   ////Vars
   const wizardEnv = props.wizardEnv;
-  const UNIX_USER = wizardEnv.UNIX_USER;
+  const UNIX_USER = wizardEnv?.UNIX_USER;
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
-  const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedOption.lanCommand);
+  const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedRepo?.lanCommand);
 
   const configBorgmatic = `location:
     # List of source directories to backup.
@@ -20,7 +21,7 @@ function WizardStep4(props) {
 
 repositories:
     # Paths of local or remote repositories to backup to.
-    - ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedOption.repositoryName}
+    - ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}
 
 storage:
     archive_name_format: '{FQDN}-documents-{now}'

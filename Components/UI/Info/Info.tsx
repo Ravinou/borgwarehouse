@@ -1,7 +1,14 @@
 //Lib
+import { ReactNode } from 'react';
 import classes from './Info.module.css';
 
-export default function Info(props) {
+type InfoProps = {
+  message: string;
+  color: string;
+  children?: ReactNode;
+};
+
+export default function Info(props: InfoProps) {
   return (
     <div className={classes.infoMessage} style={{ backgroundColor: props.color }}>
       {props.message}

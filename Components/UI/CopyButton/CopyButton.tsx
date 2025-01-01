@@ -1,14 +1,22 @@
 //Lib
 import classes from './CopyButton.module.css';
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { IconChecks, IconCopy } from '@tabler/icons-react';
 
-export default function CopyButton(props) {
+type CopyButtonProps = {
+  dataToCopy: string;
+  children?: ReactNode;
+  displayIconConfirmation?: boolean;
+  size?: number;
+  stroke?: number;
+};
+
+export default function CopyButton(props: CopyButtonProps) {
   //State
   const [isCopied, setIsCopied] = useState(false);
 
   //Function
-  const handleCopy = async (data) => {
+  const handleCopy = async (data: string) => {
     navigator.clipboard
       .writeText(data)
       .then(() => {

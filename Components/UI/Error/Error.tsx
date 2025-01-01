@@ -1,6 +1,10 @@
 //Lib
 import classes from './Error.module.css';
 
-export default function Error(props) {
+type ErrorProps = {
+  message: string;
+};
+
+export default function Error(props: ErrorProps) {
   return <div className={classes.errorMessage}>{props.message}</div>;
 }

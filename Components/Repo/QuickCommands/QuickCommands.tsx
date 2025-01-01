@@ -5,7 +5,13 @@ import classes from './QuickCommands.module.css';
 import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
 import lanCommandOption from '../../../helpers/functions/lanCommandOption';
 
-export default function QuickCommands(props) {
+type QuickCommandsProps = {
+  repositoryName: string;
+  wizardEnv: any;
+  lanCommand: boolean;
+};
+
+export default function QuickCommands(props: QuickCommandsProps) {
   ////Vars
   const wizardEnv = props.wizardEnv;
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.

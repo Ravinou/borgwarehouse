@@ -25,12 +25,12 @@ export default function Nav() {
   return (
     <ul className={classes.Nav}>
       <li style={{ margin: '0px 15px 0px 0px' }} className={classes.account}>
-        <Link href='/account' className={currentRoute === '/account' ? classes.active : null}>
+        <Link href='/account' className={currentRoute === '/account' ? classes.active : undefined}>
           <div className={classes.user}>
             <div>
               <IconUser size={28} />
             </div>
-            <div className={classes.username}>{status === 'authenticated' && data.user.name}</div>
+            <div className={classes.username}>{status === 'authenticated' && data.user?.name}</div>
           </div>
         </Link>
       </li>

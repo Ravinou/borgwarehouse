@@ -10,10 +10,12 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useState, useEffect } from 'react';
+import { Repository } from '~/domain/config.types';
+import { Optional } from '~/types';
 
 export default function StorageUsedChartBar() {
   //States
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Optional<Array<Repository>>>();
 
   //LifeCycle
   useEffect(() => {
@@ -41,10 +43,10 @@ export default function StorageUsedChartBar() {
     responsive: true,
     plugins: {
       legend: {
-        position: 'bottom',
+        position: 'bottom' as const,
       },
       title: {
-        position: 'bottom',
+        position: 'bottom' as const,
         display: true,
         text: 'Storage used for each repository',
       },
@@ -55,7 +57,7 @@ export default function StorageUsedChartBar() {
         min: 0,
         ticks: {
           // Include a dollar sign in the ticks
-          callback: function (value) {
+          callback: function (value: number | string) {
             return value + '%';
           },
           stepSize: 10,
@@ -64,7 +66,7 @@ export default function StorageUsedChartBar() {
     },
   };
 
-  const labels = data.map((repo) => repo.alias);
+  const labels = data?.map((repo) => repo.alias);
 
   const dataChart = {
     labels,
@@ -72,7 +74,7 @@ export default function StorageUsedChartBar() {
       {
         label: 'Storage used (%)',
         //storageUsed is in kB, storageSize is in GB. Round to 1 decimal for %.
-        data: data.map((repo) =>
+        data: data?.map((repo) =>
           (((repo.storageUsed / 1024 ** 2) * 100) / repo.storageSize).toFixed(1)
         ),
         backgroundColor: '#704dff',

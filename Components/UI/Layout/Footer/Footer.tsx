@@ -1,6 +1,6 @@
 //Lib
 import classes from './Footer.module.css';
-import packageInfo from '../../../../package.json';
+import packageInfo from '~/package.json';
 
 function Footer() {
   return (

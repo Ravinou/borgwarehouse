@@ -5,7 +5,11 @@ import NavSide from './NavSide/NavSide';
 import classes from './Layout.module.css';
 import { useSession } from 'next-auth/react';
 
-function Layout(props) {
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
+function Layout(props: LayoutProps) {
   //Var
   const { status } = useSession();
 

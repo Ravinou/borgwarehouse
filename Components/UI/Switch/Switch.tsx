@@ -1,7 +1,16 @@
 //Lib
+import { Optional } from '~/types';
 import classes from './Switch.module.css';
 
-export default function Switch(props) {
+type SwitchProps = {
+  switchName: string;
+  switchDescription: string;
+  checked: Optional<boolean>;
+  disabled: boolean;
+  onChange: (checked: boolean) => void;
+};
+
+export default function Switch(props: SwitchProps) {
   return (
     <>
       <div className={classes.switchWrapper}>

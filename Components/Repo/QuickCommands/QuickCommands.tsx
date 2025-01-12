@@ -4,10 +4,12 @@ import { useState } from 'react';
 import classes from './QuickCommands.module.css';
 import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
 import lanCommandOption from '../../../helpers/functions/lanCommandOption';
+import { Optional } from '~/types';
+import { WizardEnvType } from '~/domain/config.types';
 
 type QuickCommandsProps = {
   repositoryName: string;
-  wizardEnv: any;
+  wizardEnv: Optional<WizardEnvType>;
   lanCommand: boolean;
 };
 
@@ -24,7 +26,9 @@ export default function QuickCommands(props: QuickCommandsProps) {
   const handleCopy = async () => {
     // Asynchronously call copy to clipboard
     navigator.clipboard
-      .writeText(`ssh://${wizardEnv.UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.repositoryName}`)
+      .writeText(
+        `ssh://${wizardEnv?.UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.repositoryName}`
+      )
       .then(() => {
         // If successful, update the isCopied state value
         setIsCopied(true);
@@ -43,7 +47,7 @@ export default function QuickCommands(props: QuickCommandsProps) {
         <div className={classes.copyValid}>Copied !</div>
       ) : (
         <div className={classes.tooltip}>
-          ssh://{wizardEnv.UNIX_USER}@{FQDN}
+          ssh://{wizardEnv?.UNIX_USER}@{FQDN}
           {SSH_SERVER_PORT}/./
           {props.repositoryName}
         </div>

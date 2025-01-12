@@ -12,11 +12,12 @@ import {
 import { timestampConverter } from '~/helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
-import { Repository } from '~/domain/config.types';
+import { Repository, WizardEnvType } from '~/domain/config.types';
+import { Optional } from '~/types';
 
-type RepoProps = Repository & {
+type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
   repoManageEditHandler: () => void;
-  wizardEnv: string;
+  wizardEnv: Optional<WizardEnvType>;
 };
 
 export default function Repo(props: RepoProps) {

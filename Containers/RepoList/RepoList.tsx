@@ -5,19 +5,21 @@ import { IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import useSWR, { useSWRConfig } from 'swr';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, ToastOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 //Composants
 import Repo from '../../Components/Repo/Repo';
 import RepoManage from '../RepoManage/RepoManage';
 import ShimmerRepoList from '../../Components/UI/ShimmerRepoList/ShimmerRepoList';
+import { Repository, WizardEnvType } from '~/domain/config.types';
+import { Optional } from '~/types';
 
 export default function RepoList() {
   ////Var
   const router = useRouter();
   const { mutate } = useSWRConfig();
-  const toastOptions = {
+  const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 8000,
     hideProgressBar: false,
@@ -29,7 +31,7 @@ export default function RepoList() {
 
   ////Datas
   //Write a fetcher function to wrap the native fetch function and return the result of a call to url in json format
-  const fetcher = async (url) => await fetch(url).then((res) => res.json());
+  const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
   const { data, error } = useSWR('/api/repo', fetcher);
 
   ////LifeCycle
@@ -63,7 +65,7 @@ export default function RepoList() {
   ////States
   const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
   const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
-  const [wizardEnv, setWizardEnv] = useState({});
+  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
 
   ////Functions
 
@@ -88,7 +90,7 @@ export default function RepoList() {
   };
 
   //BUTTON : Display RepoManage component box for EDIT
-  const repoManageEditHandler = (id: number) => {
+  const manageRepoEditHandler = (id: number) => {
     router.replace('/manage-repo/edit/' + id);
   };
 
@@ -107,7 +109,7 @@ export default function RepoList() {
   };
 
   //Dynamic list of repositories (with a map of Repo components)
-  const renderRepoList = data.repoList.map((repo, index) => {
+  const renderRepoList = data.repoList.map((repo: Repository) => {
     return (
       <React.Fragment key={repo.id}>
         <Repo
@@ -124,7 +126,7 @@ export default function RepoList() {
           comment={repo.comment}
           lanCommand={repo.lanCommand}
           appendOnlyMode={repo.appendOnlyMode}
-          repoManageEditHandler={() => repoManageEditHandler(repo.id)}
+          repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
           wizardEnv={wizardEnv}
         ></Repo>
       </React.Fragment>
@@ -148,12 +150,12 @@ export default function RepoList() {
           <div className={classes.RepoList}>{renderRepoList}</div>
         </div>
       </div>
-      {displayRepoAdd ? (
+      {displayRepoAdd && (
         <RepoManage mode='add' repoList={data.repoList} closeHandler={closeRepoManageBoxHandler} />
-      ) : null}
-      {displayRepoEdit ? (
+      )}
+      {displayRepoEdit && (
         <RepoManage mode='edit' repoList={data.repoList} closeHandler={closeRepoManageBoxHandler} />
-      ) : null}
+      )}
     </>
   );
 }

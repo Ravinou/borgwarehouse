@@ -3,7 +3,7 @@ import classes from './RepoManage.module.css';
 import { IconAlertCircle, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
+import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useForm, Controller } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
@@ -11,19 +11,41 @@ import Select from 'react-select';
 import Link from 'next/link';
 import { IconExternalLink } from '@tabler/icons-react';
 import { alertOptions } from '../../domain/constants';
+import { Repository } from '~/domain/config.types';
+import { Optional } from '~/types';
 
-export default function RepoManage(props) {
+type RepoManageProps = {
+  mode: 'add' | 'edit';
+  repoList: Optional<Array<Repository>>;
+  closeHandler: () => void;
+};
+
+type DataForm = {
+  alias: string;
+  storageSize: string;
+  sshkey: string;
+  comment: string;
+  alert: { value: Optional<number>; label: string };
+  lanCommand: boolean;
+  appendOnlyMode: boolean;
+};
+
+export default function RepoManage(props: RepoManageProps) {
   ////Var
-  let targetRepo;
   const router = useRouter();
+  const targetRepo =
+    props.mode === 'edit' && router.query.slug
+      ? props.repoList?.find((repo) => repo.id.toString() === router.query.slug)
+      : undefined;
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting, isValid },
-  } = useForm({ mode: 'onChange' });
+  } = useForm<DataForm>({ mode: 'onChange' });
 
-  const toastOptions = {
+  const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
@@ -40,18 +62,11 @@ export default function RepoManage(props) {
   ////Functions
   //router.query.slug is undefined for few milliseconds on first render for a direct URL access (https://github.com/vercel/next.js/discussions/11484).
   //If I call repoManage with edit mode (props), i'm firstly waiting that router.query.slug being available before rendering.
-  if (!router.query.slug && props.mode == 'edit') {
-    return <SpinnerDotted size={30} thickness={100} speed={180} color='rgba(109, 74, 255, 1)' />;
-  } else if (props.mode == 'edit') {
-    for (let element in props.repoList) {
-      if (props.repoList[element].id == router.query.slug) {
-        targetRepo = props.repoList[element];
-      }
-    }
-    //If the ID does not exist > 404
-    if (!targetRepo) {
+  if (props.mode === 'edit') {
+    if (!router.query.slug) {
+      return <SpinnerDotted size={30} thickness={100} speed={180} color='rgba(109, 74, 255, 1)' />;
+    } else if (!targetRepo) {
       router.push('/404');
-      return null;
     }
   }
 
@@ -89,48 +104,39 @@ export default function RepoManage(props) {
       });
   };
 
-  //Verify that the SSH key is unique
-  const isSSHKeyUnique = async (sshPublicKey) => {
-    let isUnique = true;
+  const isSSHKeyUnique = async (sshPublicKey: string): Promise<boolean> => {
+    try {
+      // Extract the first two columns of the SSH key in the form
+      const publicKeyPrefix = sshPublicKey.split(' ').slice(0, 2).join(' ');
 
-    // Extract the first two columns of the SSH key in the form
-    const publicKeyPrefix = sshPublicKey.split(' ').slice(0, 2).join(' ');
+      const response = await fetch('/api/repo', { method: 'GET' });
+      const data = await response.json();
 
-    await fetch('/api/repo', { method: 'GET' })
-      .then((response) => response.json())
-      .then((data) => {
-        for (let element in data.repoList) {
-          // Extract the first two columns of the SSH key in the repoList
-          const repoPublicKeyPrefix = data.repoList[element].sshPublicKey
-            .split(' ')
-            .slice(0, 2)
-            .join(' ');
-
-          if (
-            repoPublicKeyPrefix === publicKeyPrefix && // Compare the first two columns of the SSH key
-            (!targetRepo || data.repoList[element].id != targetRepo.id)
-          ) {
-            toast.error(
-              'The SSH key is already used in repository #' +
-                data.repoList[element].id +
-                '. Please use another key or delete the key from the other repository.',
-              toastOptions
-            );
-            isUnique = false;
-            break;
-          }
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error('An error has occurred', toastOptions);
-        isUnique = false;
+      const conflictingRepo = data.repoList.find((repo: { sshPublicKey: string; id: number }) => {
+        const repoPublicKeyPrefix = repo.sshPublicKey.split(' ').slice(0, 2).join(' ');
+        return (
+          repoPublicKeyPrefix === publicKeyPrefix && (!targetRepo || repo.id !== targetRepo.id)
+        );
       });
-    return isUnique;
+
+      if (conflictingRepo) {
+        toast.error(
+          `The SSH key is already used in repository #${conflictingRepo.id}. Please use another key or delete the key from the other repository.`,
+          toastOptions
+        );
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      toast.error('An error has occurred', toastOptions);
+      return false;
+    }
   };
 
   //Form submit Handler for ADD or EDIT a repo
-  const formSubmitHandler = async (dataForm) => {
+  const formSubmitHandler = async (dataForm: DataForm) => {
     //Loading button on submit to avoid multiple send.
     setIsLoading(true);
     //Verify that the SSH key is unique
@@ -194,7 +200,7 @@ export default function RepoManage(props) {
         .then(async (response) => {
           if (response.ok) {
             toast.success(
-              'The repository #' + targetRepo.id + ' has been successfully edited !',
+              'The repository #' + targetRepo?.id + ' has been successfully edited !',
               toastOptions
             );
             router.replace('/');
@@ -231,14 +237,14 @@ export default function RepoManage(props) {
                     color: 'rgba(99, 115, 129, 0.38)',
                   }}
                 >
-                  #{targetRepo.id}
+                  #{targetRepo?.id}
                 </span>{' '}
                 ?
               </h1>
             </div>
             <div className={classes.deleteDialogMessage}>
               <div style={{ marginBottom: '5px' }}>
-                You are about to permanently delete the repository <b>#{targetRepo.id}</b> and all
+                You are about to permanently delete the repository <b>#{targetRepo?.id}</b> and all
                 the backups it contains.
               </div>
               <div>The data will not be recoverable and it will not be possible to go back.</div>
@@ -274,7 +280,7 @@ export default function RepoManage(props) {
                     color: 'rgba(99, 115, 129, 0.38)',
                   }}
                 >
-                  #{targetRepo.id}
+                  #{targetRepo?.id}
                 </span>
               </h1>
             )}
@@ -286,7 +292,7 @@ export default function RepoManage(props) {
                 className='form-control is-invalid'
                 placeholder='Alias for the repository, e.g."Server 1"'
                 type='text'
-                defaultValue={props.mode == 'edit' ? targetRepo.alias : null}
+                defaultValue={props.mode == 'edit' ? targetRepo?.alias : undefined}
                 {...register('alias', {
                   required: 'An alias is required.',
                   minLength: {
@@ -304,8 +310,7 @@ export default function RepoManage(props) {
               <label htmlFor='sshkey'>SSH public key</label>
               <textarea
                 placeholder='Public key in OpenSSH format (rsa, ed25519, ed25519-sk)'
-                type='text'
-                defaultValue={props.mode == 'edit' ? targetRepo.sshPublicKey : null}
+                defaultValue={props.mode == 'edit' ? targetRepo?.sshPublicKey : undefined}
                 {...register('sshkey', {
                   required: 'SSH public key is required.',
                   pattern: {
@@ -324,7 +329,7 @@ export default function RepoManage(props) {
               <input
                 type='number'
                 min='1'
-                defaultValue={props.mode == 'edit' ? targetRepo.storageSize : null}
+                defaultValue={props.mode == 'edit' ? targetRepo?.storageSize : undefined}
                 {...register('storageSize', {
                   required: 'A storage size is required.',
                 })}
@@ -335,9 +340,8 @@ export default function RepoManage(props) {
               {/* COMMENT */}
               <label htmlFor='comment'>Comment</label>
               <textarea
-                type='text'
                 placeholder='Little comment for your repository...'
-                defaultValue={props.mode == 'edit' ? targetRepo.comment : null}
+                defaultValue={props.mode == 'edit' ? targetRepo?.comment : undefined}
                 {...register('comment', {
                   required: false,
                   maxLength: {
@@ -353,8 +357,7 @@ export default function RepoManage(props) {
               <div className={classes.optionCommandWrapper}>
                 <input
                   type='checkbox'
-                  name='lanCommand'
-                  defaultChecked={props.mode == 'edit' ? targetRepo.lanCommand : false}
+                  defaultChecked={props.mode == 'edit' ? targetRepo?.lanCommand : false}
                   {...register('lanCommand')}
                 />
                 <label htmlFor='lanCommand'>Generates commands for use over LAN.</label>
@@ -374,8 +377,7 @@ export default function RepoManage(props) {
               <div className={classes.optionCommandWrapper}>
                 <input
                   type='checkbox'
-                  name='appendOnlyMode'
-                  defaultChecked={props.mode == 'edit' ? targetRepo.appendOnlyMode : false}
+                  defaultChecked={props.mode == 'edit' ? targetRepo?.appendOnlyMode : false}
                   {...register('appendOnlyMode')}
                 />
                 <label htmlFor='appendOnlyMode'>Enable append-only mode.</label>
@@ -400,9 +402,9 @@ export default function RepoManage(props) {
                   name='alert'
                   defaultValue={
                     props.mode == 'edit'
-                      ? alertOptions.find((x) => x.value === targetRepo.alert) || {
-                          value: targetRepo.alert,
-                          label: `${targetRepo.alert} seconds (custom)`,
+                      ? alertOptions.find((x) => x.value === targetRepo?.alert) || {
+                          value: targetRepo?.alert,
+                          label: `Custom value (${targetRepo?.alert} seconds)`,
                         }
                       : alertOptions[4]
                   }
@@ -417,7 +419,7 @@ export default function RepoManage(props) {
                       menuPlacement='top'
                       theme={(theme) => ({
                         ...theme,
-                        borderRadius: '5px',
+                        borderRadius: 5,
                         colors: {
                           ...theme.colors,
                           primary25: '#c3b6fa',

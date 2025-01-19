@@ -39,3 +39,8 @@ export enum WizardEnvEnum {
 }
 
 export type WizardEnvType = Record<WizardEnvEnum, string>;
+
+export enum AppriseModeEnum {
+  PACKAGE = 'package',
+  STATELESS = 'stateless',
+}

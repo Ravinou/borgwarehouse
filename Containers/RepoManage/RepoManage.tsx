@@ -10,8 +10,8 @@ import { SpinnerDotted } from 'spinners-react';
 import Select from 'react-select';
 import Link from 'next/link';
 import { IconExternalLink } from '@tabler/icons-react';
-import { alertOptions } from '../../domain/constants';
-import { Repository } from '~/domain/config.types';
+import { alertOptions } from '../../types/domain/constants';
+import { Repository } from '~/types/domain/config.types';
 import { Optional } from '~/types';
 
 type RepoManageProps = {

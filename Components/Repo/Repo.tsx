@@ -12,7 +12,7 @@ import {
 import { timestampConverter } from '~/helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
-import { Repository, WizardEnvType } from '~/domain/config.types';
+import { Repository, WizardEnvType } from '~/types/domain/config.types';
 import { Optional } from '~/types';
 
 type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {

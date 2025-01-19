@@ -1,4 +1,4 @@
-import { WizardEnvType } from '~/domain/config.types';
+import { WizardEnvType } from '~/types/domain/config.types';
 import { Optional } from '~/types';
 
 export default function lanCommandOption(

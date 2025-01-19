@@ -12,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Repo from '../../Components/Repo/Repo';
 import RepoManage from '../RepoManage/RepoManage';
 import ShimmerRepoList from '../../Components/UI/ShimmerRepoList/ShimmerRepoList';
-import { Repository, WizardEnvType } from '~/domain/config.types';
+import { Repository, WizardEnvType } from '~/types/domain/config.types';
 import { Optional } from '~/types';
 
 export default function RepoList() {

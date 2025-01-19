@@ -5,7 +5,7 @@ import classes from './QuickCommands.module.css';
 import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
 import lanCommandOption from '../../../helpers/functions/lanCommandOption';
 import { Optional } from '~/types';
-import { WizardEnvType } from '~/domain/config.types';
+import { WizardEnvType } from '~/types/domain/config.types';
 
 type QuickCommandsProps = {
   repositoryName: string;

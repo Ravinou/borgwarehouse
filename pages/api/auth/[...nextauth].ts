@@ -4,7 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '../../../helpers/functions/auth';
 import fs from 'fs';
 import path from 'path';
-import { BorgWarehouseUser } from '~/domain/config.types';
+import { BorgWarehouseUser } from '~/types/domain/config.types';
 import { NextApiRequest } from 'next';
 
 const logLogin = async (message: string, req, success = false) => {

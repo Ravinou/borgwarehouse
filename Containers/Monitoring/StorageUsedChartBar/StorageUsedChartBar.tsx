@@ -10,7 +10,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useState, useEffect } from 'react';
-import { Repository } from '~/domain/config.types';
+import { Repository } from '~/types/domain/config.types';
 import { Optional } from '~/types';
 
 export default function StorageUsedChartBar() {

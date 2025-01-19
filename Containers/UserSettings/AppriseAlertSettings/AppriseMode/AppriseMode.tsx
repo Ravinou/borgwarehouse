@@ -4,9 +4,18 @@ import classes from '../../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
 import { useForm } from 'react-hook-form';
+import { AppriseModeEnum } from '~/types/domain/config.types';
 
 //Components
-import Error from '../../../../Components/UI/Error/Error';
+import Error from '~/Components/UI/Error/Error';
+import { Optional } from '~/types';
+import { AppriseModeResponse } from '~/types/api/apprise-mode.types';
+import { useFormStatus } from '~/hooks/useFormStatus';
+
+type AppriseModeDataForm = {
+  appriseMode: string;
+  appriseStatelessURL: string;
+};
 
 export default function AppriseMode() {
   //Var
@@ -14,15 +23,15 @@ export default function AppriseMode() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ mode: 'onBlur' });
+  } = useForm<AppriseModeDataForm>({ mode: 'onBlur' });
+
+  const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
+    useFormStatus();
 
   ////State
-  const [formIsLoading, setFormIsLoading] = useState(false);
-  const [modeFormIsSaved, setModeFormIsSaved] = useState(false);
-  const [error, setError] = useState(false);
-  const [displayStatelessURL, setDisplayStatelessURL] = useState(false);
-  const [appriseMode, setAppriseMode] = useState('stateless');
-  const [appriseStatelessURL, setAppriseStatelessURL] = useState();
+  const [displayStatelessURL, setDisplayStatelessURL] = useState<boolean>(false);
+  const [appriseMode, setAppriseMode] = useState<AppriseModeEnum>(AppriseModeEnum.STATELESS);
+  const [appriseStatelessURL, setAppriseStatelessURL] = useState<Optional<string>>();
 
   ////LifeCycle
   //Component did mount
@@ -36,9 +45,12 @@ export default function AppriseMode() {
             'Content-type': 'application/json',
           },
         });
-        const { appriseStatelessURL, appriseMode } = await response.json();
+
+        const data: AppriseModeResponse = await response.json();
+        const { appriseStatelessURL, appriseMode } = data;
         setAppriseMode(appriseMode);
-        if (appriseMode == 'stateless') {
+
+        if (appriseMode == AppriseModeEnum.STATELESS) {
           setAppriseStatelessURL(appriseStatelessURL);
           setDisplayStatelessURL(true);
         }
@@ -50,13 +62,10 @@ export default function AppriseMode() {
   }, []);
 
   ////Functions
-  //Form submit handler to modify Apprise Mode
-  const modeFormSubmitHandler = async (data) => {
-    //Remove old error
-    setError();
-    //Loading button on submit to avoid multiple send.
-    setFormIsLoading(true);
-    //POST API to update Apprise Mode
+  const modeFormSubmitHandler = async (data: AppriseModeDataForm) => {
+    clearError();
+    setIsLoading(true);
+
     try {
       const response = await fetch('/api/account/updateAppriseMode', {
         method: 'PUT',
@@ -68,20 +77,12 @@ export default function AppriseMode() {
       const result = await response.json();
 
       if (!response.ok) {
-        setFormIsLoading(false);
-        setError(result.message);
-        setTimeout(() => setError(), 4000);
+        handleError(result.message);
       } else {
-        setFormIsLoading(false);
-        setModeFormIsSaved(true);
-        setTimeout(() => setModeFormIsSaved(false), 3000);
+        handleSuccess();
       }
     } catch (error) {
-      setFormIsLoading(false);
-      setError('Change mode failed. Contact your administrator.');
-      setTimeout(() => {
-        setError();
-      }, 4000);
+      handleError('The Apprise mode change has failed');
     }
   };
 
@@ -91,7 +92,7 @@ export default function AppriseMode() {
       <div className={classes.headerFormAppriseUrls}>
         <div style={{ margin: '0px 10px 0px 0px' }}>Apprise mode</div>
         <div style={{ display: 'flex' }}>
-          {formIsLoading && (
+          {isLoading && (
             <SpinnerCircularFixed
               size={18}
               thickness={150}
@@ -100,7 +101,7 @@ export default function AppriseMode() {
               secondaryColor='#c3b6fa'
             />
           )}
-          {modeFormIsSaved && (
+          {isSaved && (
             <div className={classes.formIsSavedMessage}>✅ Apprise mode has been saved.</div>
           )}
         </div>
@@ -116,7 +117,7 @@ export default function AppriseMode() {
                 value='package'
                 onClick={() => {
                   setDisplayStatelessURL(false);
-                  setAppriseMode('package');
+                  setAppriseMode(AppriseModeEnum.PACKAGE);
                 }}
                 checked={appriseMode == 'package' ? true : false}
               />
@@ -131,7 +132,7 @@ export default function AppriseMode() {
                 type='radio'
                 onClick={() => {
                   setDisplayStatelessURL(true);
-                  setAppriseMode('stateless');
+                  setAppriseMode(AppriseModeEnum.STATELESS);
                 }}
                 checked={appriseMode == 'stateless' ? true : false}
               />

@@ -6,7 +6,7 @@ import classes from './SetupWizard.module.css';
 
 //Components
 import { SelectedRepoWizard } from '~/Components/WizardSteps/wizard.types';
-import { Repository, WizardEnvType } from '~/domain/config.types';
+import { Repository, WizardEnvType } from '~/types/domain/config.types';
 import { Optional } from '~/types';
 import WizardStep1 from '../../Components/WizardSteps/WizardStep1/WizardStep1';
 import WizardStep2 from '../../Components/WizardSteps/WizardStep2/WizardStep2';

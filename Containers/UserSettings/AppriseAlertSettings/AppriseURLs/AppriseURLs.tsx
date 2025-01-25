@@ -6,7 +6,14 @@ import { SpinnerCircularFixed } from 'spinners-react';
 import { useForm } from 'react-hook-form';
 
 //Components
-import Error from '../../../../Components/UI/Error/Error';
+import Error from '~/Components/UI/Error/Error';
+import { Optional } from '~/types';
+import { AppriseServicesResponse } from '~/types/api/apprise.types';
+import { useFormStatus } from '~/hooks/useFormStatus';
+
+type AppriseURLsDataForm = {
+  appriseURLs: string;
+};
 
 export default function AppriseURLs() {
   //Var
@@ -14,13 +21,14 @@ export default function AppriseURLs() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ mode: 'onBlur' });
+  } = useForm<AppriseURLsDataForm>({ mode: 'onBlur' });
+
+  const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
+    useFormStatus();
 
   ////State
-  const [formIsLoading, setFormIsLoading] = useState(false);
-  const [urlsFormIsSaved, setUrlsFormIsSaved] = useState(false);
-  const [appriseServicesList, setAppriseServicesList] = useState();
-  const [error, setError] = useState();
+  const [appriseServicesList, setAppriseServicesList] = useState<Optional<string>>();
+  const [fetchError, setFetchError] = useState<Optional<boolean>>();
 
   ////LifeCycle
   //Component did mount
@@ -34,17 +42,14 @@ export default function AppriseURLs() {
             'Content-type': 'application/json',
           },
         });
-        let servicesArray = (await response.json()).appriseServices;
-        const AppriseServicesListToText = () => {
-          let list = '';
-          for (let service of servicesArray) {
-            list += service + '\n';
-          }
-          return list;
-        };
-        setAppriseServicesList(AppriseServicesListToText());
+
+        const data: AppriseServicesResponse = await response.json();
+        const servicesText = data.appriseServices.join('\n');
+        setAppriseServicesList(servicesText);
+        setFetchError(false);
       } catch (error) {
-        console.log('Fetching Apprise services list failed.');
+        setFetchError(true);
+        handleError('Fetching Apprise services list failed.');
       }
     };
     getAppriseServices();
@@ -52,12 +57,14 @@ export default function AppriseURLs() {
 
   ////Functions
   //Form submit handler to modify Apprise services
-  const urlsFormSubmitHandler = async (data) => {
-    //Remove old error
-    setError();
-    //Loading button on submit to avoid multiple send.
-    setFormIsLoading(true);
-    //POST API to update Apprise Services
+  const urlsFormSubmitHandler = async (data: AppriseURLsDataForm) => {
+    clearError();
+    if (fetchError) {
+      handleError('Cannot update Apprise services. Failed to fetch the initial list.');
+      return;
+    }
+    setIsLoading(true);
+
     try {
       const response = await fetch('/api/account/updateAppriseServices', {
         method: 'PUT',
@@ -69,20 +76,12 @@ export default function AppriseURLs() {
       const result = await response.json();
 
       if (!response.ok) {
-        setFormIsLoading(false);
-        setError(result.message);
-        setTimeout(() => setError(), 4000);
+        handleError(result.message);
       } else {
-        setFormIsLoading(false);
-        setUrlsFormIsSaved(true);
-        setTimeout(() => setUrlsFormIsSaved(false), 3000);
+        handleSuccess();
       }
     } catch (error) {
-      setFormIsLoading(false);
-      setError('Failed to update your services. Contact your administrator.');
-      setTimeout(() => {
-        setError();
-      }, 4000);
+      handleError('Failed to update your Apprise services.');
     }
   };
 
@@ -91,9 +90,8 @@ export default function AppriseURLs() {
       {/* APPRISE SERVICES URLS */}
       <div className={classes.headerFormAppriseUrls}>
         <div style={{ marginRight: '10px' }}>Apprise URLs</div>
-        {error && <Error message={error} />}
         <div style={{ display: 'flex' }}>
-          {formIsLoading && (
+          {isLoading && (
             <SpinnerCircularFixed
               size={18}
               thickness={150}
@@ -102,7 +100,7 @@ export default function AppriseURLs() {
               secondaryColor='#c3b6fa'
             />
           )}
-          {urlsFormIsSaved && (
+          {isSaved && (
             <div className={classes.formIsSavedMessage}>
               ✅ Apprise configuration has been saved.
             </div>
@@ -115,7 +113,6 @@ export default function AppriseURLs() {
       >
         <textarea
           style={{ height: '100px' }}
-          type='text'
           placeholder={
             'matrixs://{user}:{password}@{matrixhost}\ndiscord://{WebhookID}/{WebhookToken}\nmmosts://user@hostname/authkey'
           }
@@ -151,6 +148,7 @@ export default function AppriseURLs() {
         </a>{' '}
         to send a notification to any service. Only one URL per line.
       </div>
+      {error && <Error message={error} />}
     </>
   );
 }

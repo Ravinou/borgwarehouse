@@ -77,24 +77,21 @@ export default function AppriseAlertSettings() {
       body: JSON.stringify(data),
     })
       .then((response) => {
-        console.log(response);
-        if (response.ok) {
-          if (data.appriseAlert) {
-            setIsAlertEnabled(!isAlertEnabled);
-            setIsSwitchDisabled(false);
-            toast.success('Apprise notifications enabled.', toastOptions);
-          } else {
-            setIsAlertEnabled(!isAlertEnabled);
-            setIsSwitchDisabled(false);
-            toast.success('Apprise notifications disabled.', toastOptions);
-          }
+        if (response.ok && typeof data.appriseAlert === 'boolean') {
+          setIsAlertEnabled(data.appriseAlert);
+          toast.success(
+            data.appriseAlert ? 'Apprise notifications enabled' : 'Apprise notifications disabled',
+            toastOptions
+          );
         } else {
           handleError('Update apprise alert setting failed.');
         }
       })
       .catch((error) => {
         handleError('Update Apprise failed. Contact your administrator.');
-        console.log(error);
+      })
+      .finally(() => {
+        setIsSwitchDisabled(false);
       });
   };
 
@@ -124,8 +121,7 @@ export default function AppriseAlertSettings() {
       }
     } catch (error) {
       setIsSendingTestNotification(false);
-      console.log(error);
-      handleError('Send notification failed. Contact your administrator.');
+      handleError('Send notification failed');
     }
   };
 

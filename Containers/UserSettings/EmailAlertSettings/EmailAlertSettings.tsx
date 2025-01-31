@@ -1,6 +1,6 @@
 //Lib
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
@@ -9,12 +9,18 @@ import { IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
 
 //Components
-import Error from '../../../Components/UI/Error/Error';
-import Switch from '../../../Components/UI/Switch/Switch';
+import Error from '~/Components/UI/Error/Error';
+import Switch from '~/Components/UI/Switch/Switch';
+import { useFormStatus } from '~/hooks/useFormStatus';
+import { Optional } from '~/types';
+
+type EmailAlertDataForm = {
+  emailAlert: boolean;
+};
 
 export default function EmailAlertSettings() {
   //Var
-  const toastOptions = {
+  const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
@@ -23,15 +29,16 @@ export default function EmailAlertSettings() {
     draggable: true,
     progress: undefined,
     //Callback > re-enabled button after notification.
-    onClose: () => setDisabled(false),
+    onClose: () => setIsSwitchDisabled(false),
   };
 
+  const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
+    useFormStatus();
+
   ////State
-  const [isLoading, setIsLoading] = useState(true);
-  const [testIsLoading, setTestIsLoading] = useState(false);
-  const [error, setError] = useState();
-  const [disabled, setDisabled] = useState(false);
-  const [checked, setChecked] = useState();
+  const [isSendingTestNotification, setIsSendingTestNotification] = useState(false);
+  const [isSwitchDisabled, setIsSwitchDisabled] = useState(true);
+  const [isAlertEnabled, setIsAlertEnabled] = useState<Optional<boolean>>(undefined);
   const [info, setInfo] = useState(false);
 
   ////LifeCycle
@@ -45,12 +52,14 @@ export default function EmailAlertSettings() {
             'Content-type': 'application/json',
           },
         });
-        setChecked((await response.json()).emailAlert);
-        setIsLoading(false);
+
+        const data: EmailAlertDataForm = await response.json();
+        setIsAlertEnabled(data.emailAlert);
+        setIsSwitchDisabled(false);
       } catch (error) {
-        setError('Fetching email alert setting failed. Contact your administrator.');
-        console.log('Fetching email alert setting failed.');
-        setIsLoading(false);
+        setIsSwitchDisabled(true);
+        setIsAlertEnabled(false);
+        handleError('Fetching email alert setting failed');
       }
     };
     dataFetch();
@@ -58,11 +67,9 @@ export default function EmailAlertSettings() {
 
   ////Functions
   //Switch to enable/disable Email notifications
-  const onChangeSwitchHandler = async (data) => {
-    //Remove old error
-    setError();
-    //Disabled button
-    setDisabled(true);
+  const onChangeSwitchHandler = async (data: EmailAlertDataForm) => {
+    clearError();
+    setIsSwitchDisabled(true);
     await fetch('/api/account/updateEmailAlert', {
       method: 'PUT',
       headers: {
@@ -71,71 +78,51 @@ export default function EmailAlertSettings() {
       body: JSON.stringify(data),
     })
       .then((response) => {
-        console.log(response);
-        if (response.ok) {
-          if (data.emailAlert) {
-            setChecked(!checked);
-            toast.success('Email notification enabled !', toastOptions);
-          } else {
-            setChecked(!checked);
-            toast.success('Email notification disabled !', toastOptions);
-          }
+        if (response.ok && typeof data.emailAlert === 'boolean') {
+          setIsAlertEnabled(data.emailAlert);
+          toast.success(
+            data.emailAlert ? 'Email notification enabled !' : 'Email notification disabled !',
+            toastOptions
+          );
         } else {
-          setError('Update email alert setting failed.');
-          setTimeout(() => {
-            setError();
-            setDisabled(false);
-          }, 4000);
+          handleError('Update email alert setting failed.');
         }
       })
       .catch((error) => {
-        console.log(error);
-        setError('Update failed. Contact your administrator.');
-        setTimeout(() => {
-          setError();
-          setDisabled(false);
-        }, 4000);
+        handleError('Update email alert setting failed.');
+      })
+      .finally(() => {
+        setIsSwitchDisabled(false);
       });
   };
 
   //Send a test notification by email
   const onSendTestMailHandler = async () => {
-    //Loading
-    setTestIsLoading(true);
-    //Remove old error
-    setError();
-    await fetch('/api/account/sendTestEmail', {
-      method: 'POST',
-    })
-      .then((response) => {
-        if (!response.ok) {
-          setTestIsLoading(false);
-          response
-            .json()
-            .then((data) => {
-              setError(data.message || 'Failed to send the notification.');
-            })
-            .catch(() => {
-              setError('Failed to send the notification.');
-            });
-          setTimeout(() => {
-            setError();
-          }, 10000);
-        } else {
-          setTestIsLoading(false);
-          setInfo(true);
-          setTimeout(() => {
-            setInfo(false);
-          }, 4000);
-        }
-      })
-      .catch((error) => {
-        setTestIsLoading(false);
-        setError('Send email failed. Contact your administrator.');
-        setTimeout(() => {
-          setError();
-        }, 4000);
+    clearError();
+    setIsSendingTestNotification(true);
+    try {
+      const response = await fetch('/api/account/sendTestEmail', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
       });
+      const result = await response.json();
+
+      if (!response.ok) {
+        setIsSendingTestNotification(false);
+        handleError(result.message);
+      } else {
+        setIsSendingTestNotification(false);
+        setInfo(true);
+        setTimeout(() => {
+          setInfo(false);
+        }, 4000);
+      }
+    } catch (error) {
+      setIsSendingTestNotification(false);
+      handleError('Send notification failed');
+    }
   };
 
   return (
@@ -155,24 +142,15 @@ export default function EmailAlertSettings() {
         </div>
         <div className={classes.setting}>
           <div className={classes.bwFormWrapper}>
-            {isLoading ? (
-              <SpinnerCircularFixed
-                size={30}
-                thickness={150}
-                speed={150}
-                color='#704dff'
-                secondaryColor='#c3b6fa'
-              />
-            ) : (
-              <Switch
-                checked={checked}
-                disabled={disabled}
-                switchName='Alert me by email'
-                switchDescription='You will receive an alert every 24H if you have a down status.'
-                onChange={(e) => onChangeSwitchHandler({ emailAlert: e })}
-              />
-            )}
-            {testIsLoading ? (
+            <Switch
+              loading={isAlertEnabled === undefined}
+              checked={isAlertEnabled}
+              disabled={isSwitchDisabled}
+              switchName='Alert me by email'
+              switchDescription='You will receive an alert every 24H if you have a down status.'
+              onChange={(e) => onChangeSwitchHandler({ emailAlert: e })}
+            />
+            {isSendingTestNotification ? (
               <SpinnerCircularFixed
                 size={30}
                 thickness={150}

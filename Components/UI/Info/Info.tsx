@@ -4,7 +4,7 @@ import classes from './Info.module.css';
 
 type InfoProps = {
   message: string;
-  color: string;
+  color?: string;
   children?: ReactNode;
 };
 

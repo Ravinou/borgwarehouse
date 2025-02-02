@@ -1,5 +1,5 @@
 //Lib
-import { toast } from 'react-toastify';
+import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
@@ -7,12 +7,21 @@ import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 
 //Components
-import Error from '../../../Components/UI/Error/Error';
-import Info from '../../../Components/UI/Info/Info';
+import Error from '~/Components/UI/Error/Error';
+import Info from '~/Components/UI/Info/Info';
+import { useFormStatus } from '~/hooks/useFormStatus';
 
-export default function EmailSettings(props) {
+type EmailDataForm = {
+  email: string;
+};
+
+type EmailSettingsProps = {
+  email?: string;
+};
+
+export default function EmailSettings(props: EmailSettingsProps) {
   //Var
-  const toastOptions = {
+  const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 8000,
     hideProgressBar: false,
@@ -27,21 +36,18 @@ export default function EmailSettings(props) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm({ mode: 'onChange' });
+  } = useForm<EmailDataForm>({ mode: 'onChange' });
+
+  const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
 
   ////State
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
   const [info, setInfo] = useState(false);
 
   ////Functions
-  //Form submit Handler for ADD a repo
-  const formSubmitHandler = async (data) => {
-    //Remove old error
-    setError();
-    //Loading button on submit to avoid multiple send.
+  const formSubmitHandler = async (data: EmailDataForm) => {
+    clearError();
     setIsLoading(true);
-    //POST API to send the new mail address
+
     try {
       const response = await fetch('/api/account/updateEmail', {
         method: 'PUT',
@@ -53,10 +59,8 @@ export default function EmailSettings(props) {
       const result = await response.json();
 
       if (!response.ok) {
-        setIsLoading(false);
         reset();
-        setError(result.message);
-        setTimeout(() => setError(), 4000);
+        handleError(result.message);
       } else {
         reset();
         setIsLoading(false);
@@ -65,9 +69,7 @@ export default function EmailSettings(props) {
       }
     } catch (error) {
       reset();
-      setIsLoading(false);
-      setError("Can't update your email. Contact your administrator.");
-      setTimeout(() => setError(), 4000);
+      handleError('Updating your email failed.');
     }
   };
   return (

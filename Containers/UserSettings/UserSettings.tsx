@@ -10,11 +10,20 @@ import UsernameSettings from './UsernameSettings/UsernameSettings';
 import EmailAlertSettings from './EmailAlertSettings/EmailAlertSettings';
 import AppriseAlertSettings from './AppriseAlertSettings/AppriseAlertSettings';
 import Integrations from './Integrations/Integrations';
+import { SessionStatus } from '~/types/api/next-auth.types';
+import { Session } from 'next-auth';
+import { WizardEnvType } from '~/types/domain/config.types';
+import { Optional } from '~/types';
 
-export default function UserSettings(props) {
+type UserSettingsProps = {
+  status: SessionStatus;
+  data: Session;
+};
+
+export default function UserSettings(props: UserSettingsProps) {
   //States
   const [tab, setTab] = useState('General');
-  const [wizardEnv, setWizardEnv] = useState({});
+  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
 
   //ComponentDidMount
   useEffect(() => {
@@ -26,7 +35,8 @@ export default function UserSettings(props) {
             'Content-type': 'application/json',
           },
         });
-        setWizardEnv((await response.json()).wizardEnv);
+        const data: { wizardEnv: WizardEnvType } = await response.json();
+        setWizardEnv(data.wizardEnv);
       } catch (error) {
         console.log('Fetching datas error');
       }
@@ -60,7 +70,7 @@ export default function UserSettings(props) {
         >
           Notifications
         </button>
-        {wizardEnv.DISABLE_INTEGRATIONS !== 'true' && (
+        {wizardEnv?.DISABLE_INTEGRATIONS !== 'true' && (
           <button
             className={tab === 'Integrations' ? classes.tabListButtonActive : classes.tabListButton}
             onClick={() => setTab('Integrations')}
@@ -71,9 +81,9 @@ export default function UserSettings(props) {
       </div>
       {tab === 'General' && (
         <>
-          <PasswordSettings username={props.data.user.name} />
-          <EmailSettings email={props.data.user.email} />
-          <UsernameSettings username={props.data.user.name} />{' '}
+          <PasswordSettings username={props.data.user?.name ?? undefined} />
+          <EmailSettings email={props.data.user?.email ?? undefined} />
+          <UsernameSettings username={props.data.user?.name ?? undefined} />{' '}
         </>
       )}
       {tab === 'Notifications' && (

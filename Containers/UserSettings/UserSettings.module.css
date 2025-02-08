@@ -117,7 +117,7 @@
   align-content: baseline;
 }
 
-.tokenCardBody p {
+.tokenInfo {
   display: flex;
   align-items: center;
   gap: 5px;

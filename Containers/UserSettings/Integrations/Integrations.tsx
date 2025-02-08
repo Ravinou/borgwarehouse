@@ -1,23 +1,34 @@
 //Lib
-import { toast } from 'react-toastify';
+import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 import { v4 as uuidv4 } from 'uuid';
-import timestampConverter from '../../../helpers/functions/timestampConverter';
+import { fromUnixTime } from 'date-fns';
 import { IconTrash, IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
 
 //Components
-import Error from '../../../Components/UI/Error/Error';
-import CopyButton from '../../../Components/UI/CopyButton/CopyButton';
-import Info from '../../../Components/UI/Info/Info';
+import Error from '~/Components/UI/Error/Error';
+import CopyButton from '~/Components/UI/CopyButton/CopyButton';
+import Info from '~/Components/UI/Info/Info';
+import {
+  IntegrationTokenType,
+  TokenPermissionEnum,
+  TokenPermissionsType,
+} from '~/types/api/integrations.types';
+import { useFormStatus } from '~/hooks/useFormStatus';
+import { Optional } from '~/types';
+
+type IntegrationsDataForm = {
+  tokenName: string;
+};
 
 export default function Integrations() {
   //Var
-  const toastOptions = {
+  const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
@@ -32,16 +43,27 @@ export default function Integrations() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm({ mode: 'onChange' });
+  } = useForm<IntegrationsDataForm>({ mode: 'onChange' });
+
+  const { error, handleError, clearError, setIsLoading, isLoading } = useFormStatus();
+
+  const renderPermissionBadges = (permissions: TokenPermissionsType) => {
+    return Object.entries(permissions)
+      .filter(([, hasPermission]) => hasPermission)
+      .map(([key]) => (
+        <div key={key} className={classes.permissionBadge}>
+          {key.charAt(0).toUpperCase() + key.slice(1)}
+        </div>
+      ));
+  };
 
   ////State
-  const [isLoading, setIsLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-  const [tokenList, setTokenList] = useState([]);
-  const [error, setError] = useState();
-  const [lastGeneratedToken, setLastGeneratedToken] = useState();
-  const [deletingToken, setDeletingToken] = useState(null);
-  const [permissions, setPermissions] = useState({
+  const [tokenList, setTokenList] = useState<Array<IntegrationTokenType>>();
+  const [lastGeneratedToken, setLastGeneratedToken] =
+    useState<Optional<{ name: string; value: string }>>();
+  const [deletingToken, setDeletingToken] = useState<Optional<IntegrationTokenType>>(undefined);
+  const [permissions, setPermissions] = useState<TokenPermissionsType>({
     create: false,
     read: false,
     update: false,
@@ -56,10 +78,10 @@ export default function Integrations() {
           'Content-type': 'application/json',
         },
       });
-      const tokensArray = await response.json();
-      setTokenList(tokensArray);
+      const data: Array<IntegrationTokenType> = await response.json();
+      setTokenList(data);
     } catch (error) {
-      console.log('Fetching token list failed.');
+      handleError('Fetching token list failed.');
     }
   };
 
@@ -72,7 +94,7 @@ export default function Integrations() {
   const hasNoPermissionSelected = () => {
     return !Object.values(permissions).some((value) => value);
   };
-  const togglePermission = (permissionType) => {
+  const togglePermission = (permissionType: TokenPermissionEnum) => {
     const updatedPermissions = {
       ...permissions,
       [permissionType]: !permissions[permissionType],
@@ -88,13 +110,11 @@ export default function Integrations() {
     });
   };
 
-  //Form submit Handler for ADD a new token
-  const formSubmitHandler = async (data) => {
-    //Remove old error
-    setError();
-    //Loading button on submit to avoid multiple send.
+  //Form submit handler to ADD a new token
+  const formSubmitHandler = async (data: IntegrationsDataForm) => {
+    clearError();
     setIsLoading(true);
-    //Generate a UUIDv4
+
     const token = uuidv4();
     setLastGeneratedToken({ name: data.tokenName, value: token });
 
@@ -120,7 +140,6 @@ export default function Integrations() {
         reset();
         resetPermissions();
         toast.error(result.message, toastOptions);
-        setTimeout(() => setError(), 4000);
       } else {
         reset();
         resetPermissions();
@@ -132,13 +151,12 @@ export default function Integrations() {
       reset();
       resetPermissions();
       setIsLoading(false);
-      toast.error("Can't generate your token. Contact your administrator.", toastOptions);
-      setTimeout(() => setError(), 4000);
+      toast.error('Failed to generate a new token', toastOptions);
     }
   };
 
   //Delete token
-  const deleteTokenHandler = async (tokenName) => {
+  const deleteTokenHandler = async (tokenName: string) => {
     setIsDeleteLoading(true);
     try {
       const response = await fetch('/api/account/tokenManager', {
@@ -154,7 +172,6 @@ export default function Integrations() {
 
       if (!response.ok) {
         toast.error(result.message, toastOptions);
-        setTimeout(() => setError(), 4000);
         setIsDeleteLoading(false);
       } else {
         fetchTokenList();
@@ -163,11 +180,10 @@ export default function Integrations() {
       }
     } catch (error) {
       setIsDeleteLoading(false);
-      toast.error("Can't delete your token. Contact your administrator.", toastOptions);
-      setTimeout(() => setError(), 4000);
+      toast.error('Failed to delete the token', toastOptions);
     } finally {
       setIsDeleteLoading(false);
-      setDeletingToken(null);
+      setDeletingToken(undefined);
     }
   };
 
@@ -205,25 +221,25 @@ export default function Integrations() {
               <div className={classes.permissionsWrapper}>
                 <div
                   className={`${classes.permissionBadge} ${permissions.create ? classes.highlight : ''}`}
-                  onClick={() => togglePermission('create')}
+                  onClick={() => togglePermission(TokenPermissionEnum.CREATE)}
                 >
                   Create
                 </div>
                 <div
                   className={`${classes.permissionBadge} ${permissions.read ? classes.highlight : ''}`}
-                  onClick={() => togglePermission('read')}
+                  onClick={() => togglePermission(TokenPermissionEnum.READ)}
                 >
                   Read
                 </div>
                 <div
                   className={`${classes.permissionBadge} ${permissions.update ? classes.highlight : ''}`}
-                  onClick={() => togglePermission('update')}
+                  onClick={() => togglePermission(TokenPermissionEnum.UPDATE)}
                 >
                   Update
                 </div>
                 <div
                   className={`${classes.permissionBadge} ${permissions.delete ? classes.highlight : ''}`}
-                  onClick={() => togglePermission('delete')}
+                  onClick={() => togglePermission(TokenPermissionEnum.DELETE)}
                 >
                   Delete
                 </div>
@@ -272,25 +288,19 @@ export default function Integrations() {
                   >
                     <div className={classes.tokenCardHeader}>{token.name}</div>
                     <div className={classes.tokenCardBody}>
-                      <p>
+                      <div className={classes.tokenInfo}>
                         <strong>Created at:</strong>
-                        {timestampConverter(token.creation)}
-                      </p>
-                      <p>
+                        {fromUnixTime(token.creation).toLocaleString()}
+                      </div>
+                      <div className={classes.tokenInfo}>
                         <strong>Permission:</strong>
                         <div className={classes.permissionBadges}>
-                          {Object.keys(token.permissions).map((permission) =>
-                            token.permissions[permission] ? (
-                              <div key={permission} className={classes.permissionBadge}>
-                                {permission.charAt(0).toUpperCase() + permission.slice(1)}
-                              </div>
-                            ) : null
-                          )}
+                          {renderPermissionBadges(token.permissions)}
                         </div>
-                      </p>
+                      </div>
                       {lastGeneratedToken && lastGeneratedToken.name === token.name && (
                         <>
-                          <p>
+                          <div className={classes.tokenInfo}>
                             <strong>Token:</strong>
                             <CopyButton
                               size={22}
@@ -299,10 +309,11 @@ export default function Integrations() {
                             >
                               <span>{lastGeneratedToken.value}</span>
                             </CopyButton>
-                          </p>
-                          <Info color='#3498db'>
-                            This token will not be shown again. Please save it.
-                          </Info>
+                          </div>
+                          <Info
+                            color='#3498db'
+                            message='This token will not be shown again. Please save it.'
+                          />
                         </>
                       )}
                       {deletingToken && deletingToken.name === token.name && (
@@ -320,7 +331,7 @@ export default function Integrations() {
                           {!isDeleteLoading && (
                             <button
                               className={classes.cancelButton}
-                              onClick={() => setDeletingToken(null)}
+                              onClick={() => setDeletingToken(undefined)}
                             >
                               Cancel
                             </button>

@@ -1,17 +1,22 @@
 //Lib
-import { toast } from 'react-toastify';
+import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 
 //Components
-import Error from '../../../Components/UI/Error/Error';
+import Error from '~/Components/UI/Error/Error';
+import { useFormStatus } from '~/hooks/useFormStatus';
 
-export default function PasswordSettings(props) {
+type PasswordDataForm = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+export default function PasswordSettings() {
   //Var
-  const toastOptions = {
+  const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
@@ -26,21 +31,15 @@ export default function PasswordSettings(props) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm({ mode: 'onChange' });
+  } = useForm<PasswordDataForm>({ mode: 'onChange' });
 
-  ////State
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
 
   ////Functions
-  //Form submit Handler for ADD a repo
-  const formSubmitHandler = async (data) => {
-    console.log(data);
-    //Remove old error
-    setError();
-    //Loading button on submit to avoid multiple send.
+  const formSubmitHandler = async (data: PasswordDataForm) => {
+    clearError();
     setIsLoading(true);
-    //POST API to send the new and old password
+
     try {
       const response = await fetch('/api/account/updatePassword', {
         method: 'PUT',
@@ -54,8 +53,7 @@ export default function PasswordSettings(props) {
       if (!response.ok) {
         setIsLoading(false);
         reset();
-        setError(result.message);
-        setTimeout(() => setError(), 4000);
+        handleError(result.message);
       } else {
         reset();
         setIsLoading(false);
@@ -64,8 +62,7 @@ export default function PasswordSettings(props) {
     } catch (error) {
       reset();
       setIsLoading(false);
-      setError("Can't update your password. Contact your administrator.");
-      setTimeout(() => setError(), 4000);
+      handleError('Failed to update password. Please try again.');
     }
   };
   return (

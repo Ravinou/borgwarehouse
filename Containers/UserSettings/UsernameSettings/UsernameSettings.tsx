@@ -1,5 +1,5 @@
 //Lib
-import { toast } from 'react-toastify';
+import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
@@ -7,12 +7,21 @@ import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 
 //Components
-import Error from '../../../Components/UI/Error/Error';
-import Info from '../../../Components/UI/Info/Info';
+import Error from '~/Components/UI/Error/Error';
+import Info from '~/Components/UI/Info/Info';
+import { useFormStatus } from '~/hooks/useFormStatus';
 
-export default function UsernameSettings(props) {
+type UsernameDataForm = {
+  username: string;
+};
+
+type UsernameSettingsProps = {
+  username?: string;
+};
+
+export default function UsernameSettings(props: UsernameSettingsProps) {
   //Var
-  const toastOptions = {
+  const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 8000,
     hideProgressBar: false,
@@ -27,21 +36,18 @@ export default function UsernameSettings(props) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm({ mode: 'onChange' });
+  } = useForm<UsernameDataForm>({ mode: 'onChange' });
+
+  const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
 
   ////State
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
   const [info, setInfo] = useState(false);
 
   ////Functions
-  //Form submit Handler for ADD a repo
-  const formSubmitHandler = async (data) => {
-    //Remove old error
-    setError();
-    //Loading button on submit to avoid multiple send.
+  const formSubmitHandler = async (data: UsernameDataForm) => {
+    clearError();
     setIsLoading(true);
-    //POST API to update the username
+
     try {
       const response = await fetch('/api/account/updateUsername', {
         method: 'PUT',
@@ -55,8 +61,7 @@ export default function UsernameSettings(props) {
       if (!response.ok) {
         setIsLoading(false);
         reset();
-        setError(result.message);
-        setTimeout(() => setError(), 4000);
+        handleError(result.message);
       } else {
         reset();
         setIsLoading(false);
@@ -66,8 +71,7 @@ export default function UsernameSettings(props) {
     } catch (error) {
       reset();
       setIsLoading(false);
-      setError("Can't update your username. Contact your administrator.");
-      setTimeout(() => setError(), 4000);
+      handleError('Failed to update username. Please try again.');
     }
   };
   return (
@@ -84,7 +88,7 @@ export default function UsernameSettings(props) {
               //at the time this code is written to refresh client-side session information
               //without triggering a logout.
               //I chose to inform the user to reconnect rather than force logout.
-              <Info message='Please, logout to update your session.' />
+              <Info message='Please, logout to update your session' />
             ) : (
               <form
                 onSubmit={handleSubmit(formSubmitHandler)}
@@ -99,7 +103,7 @@ export default function UsernameSettings(props) {
                       required: 'A username is required.',
                       pattern: {
                         value: /^[a-z]{5,15}$/,
-                        message: 'Only a-z characters are allowed.',
+                        message: 'Only a-z characters are allowed',
                       },
                       maxLength: {
                         value: 10,

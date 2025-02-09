@@ -1,46 +1,61 @@
 //Lib
 import { useForm } from 'react-hook-form';
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
 import { SpinnerDotted } from 'spinners-react';
 import { useRouter } from 'next/router';
 import { authOptions } from './api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import { useFormStatus } from '~/hooks/useFormStatus';
 
 //Components
 import Error from '../Components/UI/Error/Error';
+import { GetServerSidePropsContext } from 'next';
+
+type LoginForm = {
+  username: string;
+  password: string;
+};
 
 export default function Login() {
   //Var
+  const { status } = useSession();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm<LoginForm>();
   const router = useRouter();
 
-  //State
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/');
+    }
+  }, [status, router]);
+
+  // Block the rendering of the component if the user is already connected or in the process of connecting.
+  if (status === 'loading' || status === 'authenticated') {
+    return;
+  }
 
   //Functions
-  const formSubmitHandler = async (data) => {
+  const formSubmitHandler = async (data: LoginForm) => {
     setIsLoading(true);
-    setError(null);
+    clearError();
     const resultat = await signIn('credentials', {
       username: data.username,
       password: data.password,
       redirect: false,
     });
 
-    setIsLoading(false);
-
-    if (resultat.error) {
+    if (resultat?.error) {
       reset();
-      setError(resultat.error);
-      setTimeout(() => setError(), 4000);
+      handleError(resultat.error);
     } else {
+      setIsLoading(false);
       router.replace('/');
     }
   };
@@ -159,7 +174,7 @@ export default function Login() {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   //Var
   const session = await getServerSession(context.req, context.res, authOptions);
 

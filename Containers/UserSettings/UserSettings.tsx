@@ -81,7 +81,7 @@ export default function UserSettings(props: UserSettingsProps) {
       </div>
       {tab === 'General' && (
         <>
-          <PasswordSettings username={props.data.user?.name ?? undefined} />
+          <PasswordSettings />
           <EmailSettings email={props.data.user?.email ?? undefined} />
           <UsernameSettings username={props.data.user?.name ?? undefined} />{' '}
         </>

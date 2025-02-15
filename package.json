@@ -23,7 +23,7 @@
         "react-dom": "^18.3.1",
         "react-hook-form": "^7.54.2",
         "react-select": "^5.10.0",
-        "react-toastify": "^10.0.6",
+        "react-toastify": "^11.0.3",
         "spinners-react": "^1.0.10",
         "swr": "^2.3.0",
         "uuid": "^11.0.5"

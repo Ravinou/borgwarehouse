@@ -30,7 +30,9 @@ export default function AppriseMode() {
 
   ////State
   const [displayStatelessURL, setDisplayStatelessURL] = useState<boolean>(false);
-  const [appriseMode, setAppriseMode] = useState<AppriseModeEnum>(AppriseModeEnum.STATELESS);
+  const [appriseMode, setAppriseMode] = useState<Optional<AppriseModeEnum>>(
+    AppriseModeEnum.STATELESS
+  );
   const [appriseStatelessURL, setAppriseStatelessURL] = useState<Optional<string>>();
 
   ////LifeCycle

@@ -4,15 +4,15 @@ export type Repository = {
   repositoryName: string;
   status: boolean;
   lastSave: number;
-  alert: number;
+  alert?: number;
   storageSize: number;
   storageUsed: number;
   sshPublicKey: string;
   comment: string;
   displayDetails: boolean;
   unixUser: string;
-  lanCommand: boolean;
-  appendOnlyMode: boolean;
+  lanCommand?: boolean;
+  appendOnlyMode?: boolean;
 };
 
 export type BorgWarehouseUser = {

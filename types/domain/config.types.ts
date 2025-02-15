@@ -1,3 +1,5 @@
+import { IntegrationTokenType } from '../api/integrations.types';
+
 export type Repository = {
   id: number;
   alias: string;
@@ -23,6 +25,10 @@ export type BorgWarehouseUser = {
   email: string;
   emailAlert?: boolean;
   appriseAlert?: boolean;
+  appriseMode?: AppriseModeEnum;
+  appriseStatelessURL?: string;
+  appriseServices?: string[];
+  tokens?: Array<IntegrationTokenType>;
 };
 
 export enum WizardEnvEnum {

@@ -44,7 +44,7 @@ export default function AppriseURLs() {
         });
 
         const data: AppriseServicesResponse = await response.json();
-        const servicesText = data.appriseServices.join('\n');
+        const servicesText = data.appriseServices?.join('\n');
         setAppriseServicesList(servicesText);
         setFetchError(false);
       } catch (error) {

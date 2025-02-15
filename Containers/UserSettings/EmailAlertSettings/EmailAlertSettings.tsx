@@ -53,8 +53,8 @@ export default function EmailAlertSettings() {
           },
         });
 
-        const data: EmailAlertDataForm = await response.json();
-        setIsAlertEnabled(data.emailAlert);
+        const data: Optional<EmailAlertDataForm> = await response.json();
+        setIsAlertEnabled(data?.emailAlert ?? false);
         setIsSwitchDisabled(false);
       } catch (error) {
         setIsSwitchDisabled(true);

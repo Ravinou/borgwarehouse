@@ -52,8 +52,8 @@ export default function AppriseAlertSettings() {
           },
         });
 
-        const data: AppriseAlertDataForm = await response.json();
-        setIsAlertEnabled(data.appriseAlert);
+        const data: Optional<AppriseAlertDataForm> = await response.json();
+        setIsAlertEnabled(data?.appriseAlert ?? false);
         setIsSwitchDisabled(false);
       } catch (error) {
         setIsSwitchDisabled(true);

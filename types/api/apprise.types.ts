@@ -8,3 +8,7 @@ export type AppriseModeResponse = {
 export type AppriseServicesResponse = {
   appriseServices?: string[];
 };
+
+export type AppriseAlertResponse = {
+  appriseAlert?: boolean;
+};

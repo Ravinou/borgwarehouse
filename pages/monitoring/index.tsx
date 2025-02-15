@@ -1,9 +1,10 @@
 import Head from 'next/head';
-import { authOptions } from '../../pages/api/auth/[...nextauth]';
+import { authOptions } from '../api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import { GetServerSidePropsContext } from 'next';
 
 //Components
-import StorageUsedChartBar from '../../Containers/Monitoring/StorageUsedChartBar/StorageUsedChartBar';
+import StorageUsedChartBar from '~/Containers/Monitoring/StorageUsedChartBar/StorageUsedChartBar';
 
 export default function Monitoring() {
   return (
@@ -45,7 +46,7 @@ export default function Monitoring() {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   //Var
   const session = await getServerSession(context.req, context.res, authOptions);
 

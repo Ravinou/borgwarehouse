@@ -1,22 +1,18 @@
 //Lib
-import { useEffect } from 'react';
-import { toast, ToastOptions } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import classes from '../UserSettings.module.css';
-import { useState } from 'react';
-import { SpinnerCircularFixed } from 'spinners-react';
 import { IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { toast, ToastOptions } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { SpinnerCircularFixed } from 'spinners-react';
+import classes from '../UserSettings.module.css';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
 import Switch from '~/Components/UI/Switch/Switch';
 import { useFormStatus } from '~/hooks/useFormStatus';
 import { Optional } from '~/types';
-
-type EmailAlertDataForm = {
-  emailAlert: boolean;
-};
+import { EmailAlert } from '~/types/api/notifications.types';
 
 export default function EmailAlertSettings() {
   //Var
@@ -32,8 +28,7 @@ export default function EmailAlertSettings() {
     onClose: () => setIsSwitchDisabled(false),
   };
 
-  const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
-    useFormStatus();
+  const { error, handleError, clearError } = useFormStatus();
 
   ////State
   const [isSendingTestNotification, setIsSendingTestNotification] = useState(false);
@@ -53,7 +48,7 @@ export default function EmailAlertSettings() {
           },
         });
 
-        const data: Optional<EmailAlertDataForm> = await response.json();
+        const data: Optional<EmailAlert> = await response.json();
         setIsAlertEnabled(data?.emailAlert ?? false);
         setIsSwitchDisabled(false);
       } catch (error) {
@@ -67,7 +62,7 @@ export default function EmailAlertSettings() {
 
   ////Functions
   //Switch to enable/disable Email notifications
-  const onChangeSwitchHandler = async (data: EmailAlertDataForm) => {
+  const onChangeSwitchHandler = async (data: EmailAlert) => {
     clearError();
     setIsSwitchDisabled(true);
     await fetch('/api/account/updateEmailAlert', {
@@ -88,7 +83,7 @@ export default function EmailAlertSettings() {
           handleError('Update email alert setting failed.');
         }
       })
-      .catch((error) => {
+      .catch(() => {
         handleError('Update email alert setting failed.');
       })
       .finally(() => {

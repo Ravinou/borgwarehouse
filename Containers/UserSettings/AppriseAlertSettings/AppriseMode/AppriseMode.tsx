@@ -9,7 +9,7 @@ import { AppriseModeEnum } from '~/types/domain/config.types';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import { Optional } from '~/types';
-import { AppriseModeResponse } from '~/types/api/apprise.types';
+import { AppriseModeResponse } from '~/types/api/notifications.types';
 import { useFormStatus } from '~/hooks/useFormStatus';
 
 type AppriseModeDataForm = {

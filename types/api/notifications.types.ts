@@ -12,3 +12,7 @@ export type AppriseServicesResponse = {
 export type AppriseAlertResponse = {
   appriseAlert?: boolean;
 };
+
+export type EmailAlert = {
+  emailAlert?: boolean;
+};

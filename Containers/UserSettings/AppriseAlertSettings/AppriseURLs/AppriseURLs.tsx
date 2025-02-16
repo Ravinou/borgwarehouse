@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import { Optional } from '~/types';
-import { AppriseServicesResponse } from '~/types/api/apprise.types';
+import { AppriseServicesResponse } from '~/types/api/notifications.types';
 import { useFormStatus } from '~/hooks/useFormStatus';
 
 type AppriseURLsDataForm = {

@@ -1,8 +1,9 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { Transporter } from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-export default function nodemailerSMTP() {
-  const config = {
-    port: parseInt(process.env.MAIL_SMTP_PORT, 10),
+export default function nodemailerSMTP(): Transporter {
+  const config: SMTPTransport.Options = {
+    port: parseInt(process.env.MAIL_SMTP_PORT || '587', 10),
     host: process.env.MAIL_SMTP_HOST,
     tls: {
       // false value allow self-signed or invalid TLS certificate
@@ -21,6 +22,6 @@ export default function nodemailerSMTP() {
     };
   }
 
-  const transporter = nodemailer.createTransport(config);
+  const transporter: Transporter = nodemailer.createTransport(config);
   return transporter;
 }

@@ -1,14 +1,13 @@
 //Lib
-import NextAuth, { NextAuthOptions, User } from 'next-auth';
+import NextAuth, { NextAuthOptions, RequestInternal, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '../../../helpers/functions/auth';
 import fs from 'fs';
 import path from 'path';
 import { BorgWarehouseUser } from '~/types/domain/config.types';
-import { NextApiRequest } from 'next';
 
-const logLogin = async (message: string, req, success = false) => {
-  const ipAddress = req.headers['x-forwarded-for'] || 'unknown';
+const logLogin = async (message: string, req: Partial<RequestInternal>, success = false) => {
+  const ipAddress = req.headers?.['x-forwarded-for'] || 'unknown';
   const timestamp = new Date().toISOString();
   if (success) {
     console.log(`Login success from ${ipAddress} with user ${message} [${timestamp}]`);
@@ -104,8 +103,8 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Send properties to the client to access to the token info through session().
       if (token && session.user) {
-        session.user.roles = token.roles;
-        session.user.id = token.id;
+        session.user.roles = token.roles as string[];
+        session.user.id = token.id as string;
       }
       return session;
     },

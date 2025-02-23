@@ -1,4 +1,4 @@
-export default function emailTest(mailTo, username) {
+export default function emailTest(mailTo: string, username: string) {
   const template = {
     from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
     to: mailTo,

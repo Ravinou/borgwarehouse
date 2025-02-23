@@ -13,11 +13,6 @@ declare module 'next-auth' {
       id?: string;
     } & DefaultSession['user'];
   }
-
-  interface JWT {
-    roles?: string[];
-    id?: string;
-  }
 }
 
 export enum SessionStatus {

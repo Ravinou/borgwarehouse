@@ -1,3 +1,7 @@
 ## BATS tests against bash scripts
 
 From `tests/bats`, launch `docker compose up --build`
+
+## supertest (Jest) is used to test API endpoints
+
+Launch `npm test`

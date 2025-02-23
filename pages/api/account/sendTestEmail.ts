@@ -16,7 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const transporter = nodemailerSMTP();
-    const mailData = emailTest(session.user?.email, session.user?.name);
+    if (!session.user?.email || !session.user?.name) {
+      return res.status(400).json({ message: 'User email or name is missing' });
+    }
+    const mailData = emailTest(session.user.email, session.user.name);
     const info = await transporter.sendMail(mailData);
     console.log(info);
 

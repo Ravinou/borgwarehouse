@@ -1,0 +1,28 @@
+import { authOptions } from '../auth/[...nextauth]';
+import { getServerSession } from 'next-auth/next';
+import { NextApiRequest, NextApiResponse } from 'next';
+import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
+import emailTest from '~/helpers/templates/emailTest';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405);
+  }
+
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) {
+    return res.status(401);
+  }
+
+  try {
+    const transporter = nodemailerSMTP();
+    const mailData = emailTest(session.user?.email, session.user?.name);
+    const info = await transporter.sendMail(mailData);
+    console.log(info);
+
+    return res.status(200).json({ message: 'Mail successfully sent' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: `An error occurred while sending the email: ${error}` });
+  }
+}

@@ -102,10 +102,6 @@ export default function AppriseAlertSettings() {
     try {
       const response = await fetch('/api/account/sendTestApprise', {
         method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({ sendTestApprise: true }),
       });
       const result = await response.json();
 

@@ -1,13 +1,13 @@
-// Imports
-import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
+//Lib
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseModeDTO } from '~/types/api/notifications.types';
+import { AppriseServicesDTO } from '~/types/api/notifications.types';
 import { ErrorResponse } from '~/types/api/error.types';
+import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
 
 export default async function handler(
-  req: NextApiRequest & { body: AppriseModeDTO },
+  req: NextApiRequest & { body: AppriseServicesDTO },
   res: NextApiResponse<ErrorResponse>
 ) {
   if (req.method !== 'PUT') {
@@ -19,11 +19,7 @@ export default async function handler(
     return res.status(401);
   }
 
-  const { appriseMode, appriseStatelessURL } = req.body;
-
-  if (!['package', 'stateless'].includes(appriseMode)) {
-    return res.status(422).json({ message: 'Unexpected data' });
-  }
+  const { appriseURLs } = req.body;
 
   try {
     const usersList = await getUsersList();
@@ -35,8 +31,14 @@ export default async function handler(
       });
     }
 
+    //Build the services URLs list from form
+    const appriseURLsArray = appriseURLs
+      .replace(/ /g, '')
+      .split('\n')
+      .filter((el: string) => el != '');
+
     const updatedUsersList = usersList.map((user, index) =>
-      index === userIndex ? { ...user, appriseMode, appriseStatelessURL } : user
+      index === userIndex ? { ...user, appriseServices: appriseURLsArray } : user
     );
 
     await updateUsersList(updatedUsersList);

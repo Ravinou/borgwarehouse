@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import { Optional } from '~/types';
-import { AppriseServicesResponse } from '~/types/api/notifications.types';
+import { AppriseServicesDTO } from '~/types/api/notifications.types';
 import { useFormStatus } from '~/hooks/useFormStatus';
 
 type AppriseURLsDataForm = {
@@ -43,7 +43,7 @@ export default function AppriseURLs() {
           },
         });
 
-        const data: AppriseServicesResponse = await response.json();
+        const data: AppriseServicesDTO = await response.json();
         const servicesText = data.appriseServices?.join('\n');
         setAppriseServicesList(servicesText);
         setFetchError(false);

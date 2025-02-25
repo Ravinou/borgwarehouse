@@ -9,7 +9,7 @@ import { AppriseModeEnum } from '~/types/domain/config.types';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import { Optional } from '~/types';
-import { AppriseModeResponse } from '~/types/api/notifications.types';
+import { AppriseModeDTO } from '~/types/api/notifications.types';
 import { useFormStatus } from '~/hooks/useFormStatus';
 
 type AppriseModeDataForm = {
@@ -48,7 +48,7 @@ export default function AppriseMode() {
           },
         });
 
-        const data: AppriseModeResponse = await response.json();
+        const data: AppriseModeDTO = await response.json();
         const { appriseStatelessURL, appriseMode } = data;
         setAppriseMode(appriseMode);
 

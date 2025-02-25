@@ -12,7 +12,7 @@ import Error from '~/Components/UI/Error/Error';
 import Switch from '~/Components/UI/Switch/Switch';
 import { useFormStatus } from '~/hooks/useFormStatus';
 import { Optional } from '~/types';
-import { EmailAlert } from '~/types/api/notifications.types';
+import { EmailAlertDTO } from '~/types/api/notifications.types';
 
 export default function EmailAlertSettings() {
   //Var
@@ -48,7 +48,7 @@ export default function EmailAlertSettings() {
           },
         });
 
-        const data: Optional<EmailAlert> = await response.json();
+        const data: Optional<EmailAlertDTO> = await response.json();
         setIsAlertEnabled(data?.emailAlert ?? false);
         setIsSwitchDisabled(false);
       } catch (error) {
@@ -62,7 +62,7 @@ export default function EmailAlertSettings() {
 
   ////Functions
   //Switch to enable/disable Email notifications
-  const onChangeSwitchHandler = async (data: EmailAlert) => {
+  const onChangeSwitchHandler = async (data: EmailAlertDTO) => {
     clearError();
     setIsSwitchDisabled(true);
     await fetch('/api/account/updateEmailAlert', {

@@ -13,6 +13,15 @@ export type AppriseAlertResponse = {
   appriseAlert?: boolean;
 };
 
-export type EmailAlert = {
+export type EmailAlertDTO = {
   emailAlert?: boolean;
+};
+
+export type AppriseAlertDTO = {
+  appriseAlert: boolean;
+};
+
+export type AppriseModeDTO = {
+  appriseMode: AppriseModeEnum;
+  appriseStatelessURL?: string;
 };

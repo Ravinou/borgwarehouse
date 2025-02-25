@@ -4,13 +4,13 @@ import path from 'path';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseModeResponse } from '~/types/api/notifications.types';
+import { AppriseModeDTO } from '~/types/api/notifications.types';
 import { ErrorResponse } from '~/types/api/error.types';
 import { BorgWarehouseUser } from '~/types/domain/config.types';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<AppriseModeResponse | ErrorResponse>
+  res: NextApiResponse<AppriseModeDTO | ErrorResponse>
 ) {
   if (req.method !== 'GET') {
     res.status(405).json({ message: 'Bad request on API' });

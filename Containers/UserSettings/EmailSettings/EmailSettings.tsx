@@ -10,16 +10,9 @@ import { SpinnerDotted } from 'spinners-react';
 import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
 import { useFormStatus } from '~/hooks/useFormStatus';
+import { EmailSettingDTO } from '~/types/api/settings.types';
 
-type EmailDataForm = {
-  email: string;
-};
-
-type EmailSettingsProps = {
-  email?: string;
-};
-
-export default function EmailSettings(props: EmailSettingsProps) {
+export default function EmailSettings(props: EmailSettingDTO) {
   //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
@@ -36,7 +29,7 @@ export default function EmailSettings(props: EmailSettingsProps) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<EmailDataForm>({ mode: 'onChange' });
+  } = useForm<EmailSettingDTO>({ mode: 'onChange' });
 
   const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
 
@@ -44,7 +37,7 @@ export default function EmailSettings(props: EmailSettingsProps) {
   const [info, setInfo] = useState(false);
 
   ////Functions
-  const formSubmitHandler = async (data: EmailDataForm) => {
+  const formSubmitHandler = async (data: EmailSettingDTO) => {
     clearError();
     setIsLoading(true);
 

@@ -1,12 +1,12 @@
 import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import { EmailAlertDTO } from '~/types/api/notifications.types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseModeDTO } from '~/types/api/notifications.types';
 import { ErrorResponse } from '~/types/api/error.types';
 
 export default async function handler(
-  req: NextApiRequest & { body: AppriseModeDTO },
+  req: NextApiRequest & { body: EmailAlertDTO },
   res: NextApiResponse<ErrorResponse>
 ) {
   if (req.method !== 'PUT') {
@@ -18,24 +18,24 @@ export default async function handler(
     return res.status(401);
   }
 
-  const { appriseMode, appriseStatelessURL } = req.body;
+  const { emailAlert } = req.body;
 
-  if (!['package', 'stateless'].includes(appriseMode)) {
+  if (typeof emailAlert !== 'boolean') {
     return res.status(422).json({ message: 'Unexpected data' });
   }
 
   try {
     const usersList = await getUsersList();
-    const userIndex = usersList.findIndex((user) => user.username === session.user?.name);
+    const userIndex = usersList.findIndex((u) => u.username === session.user?.name);
 
     if (userIndex === -1) {
-      return res.status(400).json({
-        message: 'User is incorrect. Please, logout to update your session.',
-      });
+      return res
+        .status(400)
+        .json({ message: 'User is incorrect. Please, logout to update your session.' });
     }
 
     const updatedUsersList = usersList.map((user, index) =>
-      index === userIndex ? { ...user, appriseMode, appriseStatelessURL } : user
+      index === userIndex ? { ...user, emailAlert } : user
     );
 
     await updateUsersList(updatedUsersList);

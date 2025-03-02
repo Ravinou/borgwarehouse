@@ -10,16 +10,9 @@ import { SpinnerDotted } from 'spinners-react';
 import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
 import { useFormStatus } from '~/hooks/useFormStatus';
+import { UsernameSettingDTO } from '~/types/api/settings.types';
 
-type UsernameDataForm = {
-  username: string;
-};
-
-type UsernameSettingsProps = {
-  username?: string;
-};
-
-export default function UsernameSettings(props: UsernameSettingsProps) {
+export default function UsernameSettings(props: UsernameSettingDTO) {
   //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
@@ -36,7 +29,7 @@ export default function UsernameSettings(props: UsernameSettingsProps) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<UsernameDataForm>({ mode: 'onChange' });
+  } = useForm<UsernameSettingDTO>({ mode: 'onChange' });
 
   const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
 
@@ -44,7 +37,7 @@ export default function UsernameSettings(props: UsernameSettingsProps) {
   const [info, setInfo] = useState(false);
 
   ////Functions
-  const formSubmitHandler = async (data: UsernameDataForm) => {
+  const formSubmitHandler = async (data: UsernameSettingDTO) => {
     clearError();
     setIsLoading(true);
 

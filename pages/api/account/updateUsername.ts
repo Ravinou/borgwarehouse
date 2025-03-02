@@ -1,12 +1,12 @@
-import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
+import { getUsersList, updateUsersList } from '~/helpers/functions';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import { UsernameSettingDTO } from '~/types/api/settings.types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseModeDTO } from '~/types/api/notifications.types';
 import { ErrorResponse } from '~/types/api/error.types';
 
 export default async function handler(
-  req: NextApiRequest & { body: AppriseModeDTO },
+  req: NextApiRequest & { body: UsernameSettingDTO },
   res: NextApiResponse<ErrorResponse>
 ) {
   if (req.method !== 'PUT') {
@@ -18,10 +18,18 @@ export default async function handler(
     return res.status(401);
   }
 
-  const { appriseMode, appriseStatelessURL } = req.body;
+  //The data we expect to receive
+  let { username } = req.body;
 
-  if (!['package', 'stateless'].includes(appriseMode)) {
+  if (typeof username !== 'string') {
     return res.status(422).json({ message: 'Unexpected data' });
+  }
+  const usernameRegex = new RegExp(/^[a-z]{5,15}$/);
+  if (!usernameRegex.test(username)) {
+    res.status(422).json({
+      message: 'Only a-z characters are allowed (5 to 15 char.)',
+    });
+    return;
   }
 
   try {
@@ -34,11 +42,15 @@ export default async function handler(
       });
     }
 
-    const updatedUsersList = usersList.map((user, index) =>
-      index === userIndex ? { ...user, appriseMode, appriseStatelessURL } : user
-    );
+    if (usersList.some((user) => user.username === username)) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
 
+    const updatedUsersList = usersList.map((user, index) =>
+      index === userIndex ? { ...user, username } : user
+    );
     await updateUsersList(updatedUsersList);
+
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error: any) {
     console.error(error);

@@ -2,11 +2,11 @@ import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseModeDTO } from '~/types/api/notifications.types';
+import { EmailSettingDTO } from '~/types/api/settings.types';
 import { ErrorResponse } from '~/types/api/error.types';
 
 export default async function handler(
-  req: NextApiRequest & { body: AppriseModeDTO },
+  req: NextApiRequest & { body: EmailSettingDTO },
   res: NextApiResponse<ErrorResponse>
 ) {
   if (req.method !== 'PUT') {
@@ -18,9 +18,9 @@ export default async function handler(
     return res.status(401);
   }
 
-  const { appriseMode, appriseStatelessURL } = req.body;
+  const { email } = req.body;
 
-  if (!['package', 'stateless'].includes(appriseMode)) {
+  if (!email) {
     return res.status(422).json({ message: 'Unexpected data' });
   }
 
@@ -34,8 +34,12 @@ export default async function handler(
       });
     }
 
+    if (usersList.some((user) => user.email === email)) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+
     const updatedUsersList = usersList.map((user, index) =>
-      index === userIndex ? { ...user, appriseMode, appriseStatelessURL } : user
+      index === userIndex ? { ...user, email } : user
     );
 
     await updateUsersList(updatedUsersList);

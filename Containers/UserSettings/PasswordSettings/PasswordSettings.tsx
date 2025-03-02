@@ -8,11 +8,7 @@ import { SpinnerDotted } from 'spinners-react';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import { useFormStatus } from '~/hooks/useFormStatus';
-
-type PasswordDataForm = {
-  oldPassword: string;
-  newPassword: string;
-};
+import { PasswordSettingDTO } from '~/types/api/settings.types';
 
 export default function PasswordSettings() {
   //Var
@@ -31,12 +27,12 @@ export default function PasswordSettings() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<PasswordDataForm>({ mode: 'onChange' });
+  } = useForm<PasswordSettingDTO>({ mode: 'onChange' });
 
   const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
 
   ////Functions
-  const formSubmitHandler = async (data: PasswordDataForm) => {
+  const formSubmitHandler = async (data: PasswordSettingDTO) => {
     clearError();
     setIsLoading(true);
 

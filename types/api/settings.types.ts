@@ -2,7 +2,7 @@ export type EmailSettingDTO = {
   email: string;
 };
 
-export type UserSettingDTO = {
+export type UsernameSettingDTO = {
   username: string;
 };
 

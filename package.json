@@ -25,7 +25,7 @@
         "react-select": "^5.10.0",
         "react-toastify": "^10.0.6",
         "spinners-react": "^1.0.10",
-        "swr": "^2.3.0",
+        "swr": "^2.3.3",
         "uuid": "^11.0.5"
     },
     "devDependencies": {

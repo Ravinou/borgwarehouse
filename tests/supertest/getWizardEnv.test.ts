@@ -1,7 +1,6 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/getWizardEnv';
 import { getServerSession } from 'next-auth/next';
-import { WizardEnvEnum } from '~/types/domain/config.types';
 
 jest.mock('next-auth/next');
 
@@ -33,19 +32,17 @@ describe('Get Wizard Env API', () => {
 
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
-      wizardEnv: {
-        UNIX_USER: 'borgwarehouse',
-        FQDN: 'localhost',
-        SSH_SERVER_PORT: '22',
-        FQDN_LAN: '',
-        SSH_SERVER_PORT_LAN: '',
-        SSH_SERVER_FINGERPRINT_RSA: '',
-        SSH_SERVER_FINGERPRINT_ED25519: '',
-        SSH_SERVER_FINGERPRINT_ECDSA: '',
-        HIDE_SSH_PORT: 'false',
-        DISABLE_INTEGRATIONS: 'false',
-        DISABLE_DELETE_REPO: 'false',
-      },
+      UNIX_USER: 'borgwarehouse',
+      FQDN: 'localhost',
+      SSH_SERVER_PORT: '22',
+      FQDN_LAN: '',
+      SSH_SERVER_PORT_LAN: '',
+      SSH_SERVER_FINGERPRINT_RSA: '',
+      SSH_SERVER_FINGERPRINT_ED25519: '',
+      SSH_SERVER_FINGERPRINT_ECDSA: '',
+      HIDE_SSH_PORT: 'false',
+      DISABLE_INTEGRATIONS: 'false',
+      DISABLE_DELETE_REPO: 'false',
     });
   });
 });

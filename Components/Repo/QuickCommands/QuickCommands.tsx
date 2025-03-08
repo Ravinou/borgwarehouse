@@ -3,14 +3,13 @@ import React from 'react';
 import { useState } from 'react';
 import classes from './QuickCommands.module.css';
 import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
-import lanCommandOption from '../../../helpers/functions/lanCommandOption';
-import { Optional } from '~/types';
+import lanCommandOption from '~/helpers/functions/lanCommandOption';
 import { WizardEnvType } from '~/types/domain/config.types';
 
 type QuickCommandsProps = {
   repositoryName: string;
-  wizardEnv: Optional<WizardEnvType>;
-  lanCommand: boolean;
+  wizardEnv?: WizardEnvType;
+  lanCommand?: boolean;
 };
 
 export default function QuickCommands(props: QuickCommandsProps) {

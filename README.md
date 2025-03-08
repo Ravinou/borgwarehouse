@@ -10,7 +10,7 @@
 
 </div>
 
-  <h3 align="center">BorgWarehouse</h3>
+  <img src="public/borgwarehouse-logo-violet.svg" alt="BorgWarehouse" style="margin: 30px 0">
 
   <p align="center">
     A fast and modern WebUI for a BorgBackup's central repository server.
@@ -20,16 +20,16 @@
 
 <div align="center">
   <a href="https://borgwarehouse.com">
-    <img src="medias/borgwarehouse-og.png" alt="presentation">
+    <img src="medias/borgwarehouse-og.jpg" alt="presentation">
   </a>
 </div>
 
 ## ⭐ Support the Project
+
 <div align="center">
 <a href="https://github.com/sponsors/Ravinou"><img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/Ravinou?style=for-the-badge&logo=github&label=Github%20Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2FRavinou"></a>
 <a href="https://liberapay.com/R4VEN/"><img alt="Liberapay patrons" src="https://img.shields.io/liberapay/patrons/R4VEN?style=for-the-badge&logo=liberapay&label=Liberapay%20Sponsors&link=https%3A%2F%2Fliberapay.com%2FR4VEN"></a>
 </div>
-
 
 If you find BorgWarehouse helpful or interesting, please consider **giving it a star on GitHub** and **[sponsoring](https://github.com/sponsors/Ravinou)**. Your support is greatly appreciated!
 
@@ -41,13 +41,13 @@ Today, if you want to have a large server on which you centralize backups of Bor
 
 With BorgWarehouse, you have an interface that allows you to do all this simply and quickly :
 
--   **add** repositories
--   **edit** existing repositories
--   **delete** repositories
--   be **alerted** if there are no recent backups
--   **monitor** the volume of data
--   **flexibly manage quotas** for each repository
--   ...
+- **add** repositories
+- **edit** existing repositories
+- **delete** repositories
+- be **alerted** if there are no recent backups
+- **monitor** the volume of data
+- **flexibly manage quotas** for each repository
+- ...
 
 The whole system part is automatically managed by BorgWarehouse and **you don't have to touch your terminal anymore** while enjoying a visual feedback on the status of your repositories.
 
@@ -71,12 +71,14 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 ## ❤️ Special thanks to sponsors ❤️
 
 ### 🥇 Current sponsors 🥇
+
 <a href="https://github.com/royalmoose"><img src="https://avatars.githubusercontent.com/royalmoose" style="width:50px; border-radius:50%;"/></a>
-<a href="https://github.com/Magneticdud"><img src="https://avatars.githubusercontent.com/Magneticdud" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/dhenry123"><img src="https://avatars.githubusercontent.com/dhenry123" style="width:50px; border-radius:50%;"/></a>
 
 #### Past sponsors
+
 <a href="https://github.com/shad-lp"><img src="https://avatars.githubusercontent.com/shad-lp" style="width:25px; border-radius:50%;"/></a>
+<a href="https://github.com/Magneticdud"><img src="https://avatars.githubusercontent.com/Magneticdud" style="width:25px; border-radius:50%;"/></a>
 
 [next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [next-url]: https://nextjs.org/

@@ -4,7 +4,7 @@ import path from 'path';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseServicesDTO } from '~/types/api/notifications.types';
+import { AppriseServicesDTO } from '~/types/api/notification.types';
 import { ErrorResponse } from '~/types/api/error.types';
 import { BorgWarehouseUser } from '~/types/domain/config.types';
 

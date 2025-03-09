@@ -1,7 +1,7 @@
 import { getUsersList, updateUsersList } from '~/helpers/functions';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import { UsernameSettingDTO } from '~/types/api/settings.types';
+import { UsernameSettingDTO } from '~/types/api/setting.types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse } from '~/types/api/error.types';
 

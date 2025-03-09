@@ -2,7 +2,7 @@ import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { EmailSettingDTO } from '~/types/api/settings.types';
+import { EmailSettingDTO } from '~/types/api/setting.types';
 import { ErrorResponse } from '~/types/api/error.types';
 
 export default async function handler(

@@ -1,5 +1,5 @@
-export default function emailTest(mailTo, username, aliasList) {
-  const aliasTemplate = (x) => {
+export default function emailTest(mailTo: string, username: string, aliasList: string[]) {
+  const aliasTemplate = (x: string[]) => {
     let str = '';
     for (const alias of x) {
       str = str + '<li>' + alias + '</li>';

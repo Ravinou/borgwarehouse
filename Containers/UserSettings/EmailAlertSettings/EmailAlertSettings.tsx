@@ -12,7 +12,7 @@ import Error from '~/Components/UI/Error/Error';
 import Switch from '~/Components/UI/Switch/Switch';
 import { useFormStatus } from '~/hooks/useFormStatus';
 import { Optional } from '~/types';
-import { EmailAlertDTO } from '~/types/api/notifications.types';
+import { EmailAlertDTO } from '~/types/api/notification.types';
 
 export default function EmailAlertSettings() {
   //Var

@@ -8,7 +8,7 @@ import { SpinnerDotted } from 'spinners-react';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import { useFormStatus } from '~/hooks/useFormStatus';
-import { PasswordSettingDTO } from '~/types/api/settings.types';
+import { PasswordSettingDTO } from '~/types/api/setting.types';
 
 export default function PasswordSettings() {
   //Var

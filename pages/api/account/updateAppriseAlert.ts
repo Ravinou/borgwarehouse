@@ -3,7 +3,7 @@ import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseAlertDTO, AppriseAlertResponse } from '~/types/api/notifications.types';
+import { AppriseAlertDTO, AppriseAlertResponse } from '~/types/api/notification.types';
 import { ErrorResponse } from '~/types/api/error.types';
 
 export default async function handler(

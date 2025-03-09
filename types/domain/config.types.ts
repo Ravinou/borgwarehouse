@@ -1,4 +1,4 @@
-import { IntegrationTokenType } from '../api/integrations.types';
+import { IntegrationTokenType } from '../api/integration.types';
 
 export type Repository = {
   id: number;
@@ -15,6 +15,7 @@ export type Repository = {
   unixUser: string;
   lanCommand?: boolean;
   appendOnlyMode?: boolean;
+  lastStatusAlertSend?: number;
 };
 
 export type BorgWarehouseUser = {

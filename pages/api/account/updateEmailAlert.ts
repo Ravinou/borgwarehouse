@@ -1,7 +1,7 @@
 import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import { EmailAlertDTO } from '~/types/api/notifications.types';
+import { EmailAlertDTO } from '~/types/api/notification.types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse } from '~/types/api/error.types';
 

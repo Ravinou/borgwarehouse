@@ -10,7 +10,7 @@ import { SpinnerDotted } from 'spinners-react';
 import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
 import { useFormStatus } from '~/hooks/useFormStatus';
-import { EmailSettingDTO } from '~/types/api/settings.types';
+import { EmailSettingDTO } from '~/types/api/setting.types';
 
 export default function EmailSettings(props: EmailSettingDTO) {
   //Var

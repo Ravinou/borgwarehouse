@@ -18,7 +18,7 @@ import {
   IntegrationTokenType,
   TokenPermissionEnum,
   TokenPermissionsType,
-} from '~/types/api/integrations.types';
+} from '~/types/api/integration.types';
 import { useFormStatus } from '~/hooks/useFormStatus';
 import { Optional } from '~/types';
 

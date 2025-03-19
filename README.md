@@ -74,6 +74,7 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 
 <a href="https://github.com/royalmoose"><img src="https://avatars.githubusercontent.com/royalmoose" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/dhenry123"><img src="https://avatars.githubusercontent.com/dhenry123" style="width:50px; border-radius:50%;"/></a>
+<a href="https://github.com/fphammerle"><img src="https://avatars.githubusercontent.com/fphammerle" style="width:50px; border-radius:50%;"/></a>
 
 #### Past sponsors
 

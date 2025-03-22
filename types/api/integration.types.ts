@@ -1,4 +1,5 @@
 export type IntegrationTokenType = {
+  token: string;
   name: string;
   creation: number;
   expiration?: number;

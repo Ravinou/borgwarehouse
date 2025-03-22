@@ -1,10 +1,11 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { Repository } from '~/types/domain/config.types';
 
-export default async function repoHistory(data) {
+export default async function repoHistory(repoList: Repository[]) {
   try {
     const repoHistoryDir = path.join(process.cwd(), '/config/versions');
-    const maxBackupCount = parseInt(process.env.MAX_REPO_BACKUP_COUNT) || 8;
+    const maxBackupCount = parseInt(process.env.MAX_REPO_BACKUP_COUNT ?? '8', 10);
     const timestamp = new Date().toISOString();
     const backupDate = timestamp.split('T')[0];
 
@@ -24,13 +25,12 @@ export default async function repoHistory(data) {
 
     const backupFileName = `${backupDate}.log`;
     const backupFilePath = path.join(repoHistoryDir, backupFileName);
-    const jsonData = JSON.stringify(data, null, 2);
+    const jsonData = JSON.stringify(repoList, null, 2);
 
     const logData = `\n>>>> History of file repo.json at "${timestamp}" <<<<\n${jsonData}\n`;
 
-    // Écrire ou réécrire le fichier avec le contenu mis à jour
     await fs.appendFile(backupFilePath, logData);
   } catch (error) {
-    console.error('An error occurred while saving the repo history :', error.message);
+    console.error('An error occurred while saving the repo history :', error);
   }
 }

@@ -5,6 +5,10 @@ export default class ApiResponse {
     res.status(200).json({ status: 200, message, data });
   }
 
+  static badRequest(res: NextApiResponse, message = 'Bad Request') {
+    res.status(400).json({ status: 400, message });
+  }
+
   static unauthorized(res: NextApiResponse, message = 'Unauthorized') {
     res.status(401).json({ status: 401, message });
   }
@@ -15,6 +19,10 @@ export default class ApiResponse {
 
   static notFound(res: NextApiResponse, message = 'Not Found') {
     res.status(404).json({ status: 404, message });
+  }
+
+  static methodNotAllowed(res: NextApiResponse, message = 'Method Not Allowed') {
+    res.status(405).json({ status: 405, message });
   }
 
   static validationError(res: NextApiResponse, message = 'Validation Error') {

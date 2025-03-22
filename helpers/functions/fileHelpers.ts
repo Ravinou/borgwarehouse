@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { Optional } from '~/types';
 import { BorgWarehouseUser, Repository } from '~/types/domain/config.types';
+import repoHistory from './repoHistory';
 
 // Paths definition
 const jsonDirectory = path.join(process.cwd(), '/config');
@@ -36,8 +37,11 @@ export const getRepoList = async (): Promise<Repository[]> => {
   }
 };
 
-export const updateRepoList = async (repoList: Repository[]): Promise<void> => {
+export const updateRepoList = async (repoList: Repository[], history = false): Promise<void> => {
   try {
+    if (history) {
+      await repoHistory(repoList);
+    }
     await fs.writeFile(repoFilePath, JSON.stringify(repoList, null, 2));
   } catch (error) {
     console.error('Error writing repo.json:', error);

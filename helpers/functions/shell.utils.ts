@@ -16,3 +16,13 @@ export const getStorageUsed = async (): Promise<StorageUsedDTO[]> => {
   const { stdout } = await exec(`${shellsDirectory}/shells/getStorageUsed.sh`);
   return JSON.parse(stdout || '[]');
 };
+
+export const deleteRepo = async (
+  repositoryName: string
+): Promise<{ stdout: string; stderr: string }> => {
+  const shellsDirectory = path.join(process.cwd(), '/helpers');
+  const { stdout, stderr } = await exec(
+    `${shellsDirectory}/shells/deleteRepo.sh ${repositoryName}`
+  );
+  return { stdout, stderr };
+};

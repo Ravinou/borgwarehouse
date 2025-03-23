@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { getRepoList, updateRepoList } from '~/helpers/functions';
-import ApiResponse from '~/helpers/functions/apiResponse';
+import { getRepoList, updateRepoList, tokenController } from '~/helpers/functions';
 import { deleteRepo } from '~/helpers/functions/shell.utils';
+
+import ApiResponse from '~/helpers/functions/apiResponse';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
-import tokenController from '~/helpers/functions/tokenController';
 import { authOptions } from '../../../auth/[...nextauth]';
 
 export default async function handler(
@@ -59,7 +59,7 @@ export default async function handler(
       return ApiResponse.serverError(res);
     }
 
-    const updatedRepoList = repoList.splice(indexToDelete, 1);
+    const updatedRepoList = repoList.filter((repo) => repo.id !== parseInt(slug, 10));
 
     await updateRepoList(updatedRepoList, true);
     return ApiResponse.success(res, `Repository ${repoList[indexToDelete].repositoryName} deleted`);

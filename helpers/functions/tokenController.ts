@@ -3,9 +3,9 @@ import { Optional } from '~/types';
 import { TokenPermissionsType } from '~/types/api/integration.types';
 import { getUsersList } from './fileHelpers';
 
-export default async function tokenController(
+export const tokenController = async (
   headers: IncomingHttpHeaders
-): Promise<Optional<TokenPermissionsType>> {
+): Promise<Optional<TokenPermissionsType>> => {
   const API_KEY = headers.authorization?.split(' ')[1];
   const FROM_IP = headers['x-forwarded-for'] || 'unknown';
 
@@ -35,4 +35,4 @@ export default async function tokenController(
   } catch (error) {
     throw new Error('Error with tokenController');
   }
-}
+};

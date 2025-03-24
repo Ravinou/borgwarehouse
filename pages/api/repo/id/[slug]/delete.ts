@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { getRepoList, updateRepoList, tokenController } from '~/helpers/functions';
-import { deleteRepo } from '~/helpers/functions/shell.utils';
+import { deleteRepoShell } from '~/helpers/functions/shell.utils';
 
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
@@ -52,7 +52,7 @@ export default async function handler(
       return ApiResponse.notFound(res, 'Repository not found');
     }
 
-    const { stderr } = await deleteRepo(repoList[indexToDelete].repositoryName);
+    const { stderr } = await deleteRepoShell(repoList[indexToDelete].repositoryName);
 
     if (stderr) {
       console.log('Delete repository error: ', stderr);

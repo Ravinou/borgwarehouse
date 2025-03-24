@@ -9,7 +9,7 @@ jest.mock('~/helpers/functions', () => ({
 }));
 
 jest.mock('~/helpers/functions/shell.utils', () => ({
-  getStorageUsed: jest.fn(),
+  getStorageUsedShell: jest.fn(),
 }));
 
 describe('GET /api/cronjob/getStorageUsed', () => {

@@ -9,10 +9,10 @@ import { Repository } from '~/types/domain/config.types';
  * @returns {boolean} - Returns true if the SSH public key is duplicated, otherwise false.
  * @throws {Error} - Throws an error if required parameters are missing or invalid.
  */
-export default function isSshPubKeyDuplicate(
+export const isSshPubKeyDuplicate = (
   pubKey: string,
   repoList: Array<Optional<Repository>>
-) {
+): boolean => {
   if (!pubKey || !repoList || !Array.isArray(repoList)) {
     throw new Error('Missing or invalid parameters for duplicate SSH public key check.');
   }
@@ -25,4 +25,4 @@ export default function isSshPubKeyDuplicate(
     const repoSshKeyWithoutComment = repo?.sshPublicKey.split(' ').slice(0, 2).join(' ');
     return repoSshKeyWithoutComment === pubKeyWithoutComment;
   });
-}
+};

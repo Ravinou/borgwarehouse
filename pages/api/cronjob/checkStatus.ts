@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { getRepoList, getUsersList, updateRepoList } from '~/helpers/functions/fileHelpers';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
-import { getLastSaveList } from '~/helpers/functions/shell.utils';
+import { getLastSaveListShell } from '~/helpers/functions/shell.utils';
 import emailAlertStatus from '~/helpers/templates/emailAlertStatus';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 
@@ -28,7 +28,7 @@ export default async function handler(
 
   try {
     const repoList = await getRepoList();
-    const lastSaveList = await getLastSaveList();
+    const lastSaveList = await getLastSaveListShell();
     if (repoList.length === 0 || lastSaveList.length === 0) {
       return ApiResponse.success(res, 'Status cron executed. No repository to check.');
     }

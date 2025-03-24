@@ -1,4 +1,3 @@
-import request from 'supertest';
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/delete';
 import { getServerSession } from 'next-auth/next';
@@ -27,7 +26,7 @@ jest.mock('~/helpers/functions', () => ({
 
 jest.mock('~/helpers/functions/shell.utils', () => {
   return {
-    deleteRepo: jest.fn(),
+    deleteRepoShell: jest.fn(),
   };
 });
 

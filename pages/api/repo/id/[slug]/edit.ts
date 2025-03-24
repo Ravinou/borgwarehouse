@@ -1,8 +1,5 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import { authOptions } from '../../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import { alertOptions } from '~/types/domain/constants';
 import {
   getRepoList,
   updateRepoList,
@@ -13,8 +10,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { Repository } from '~/types/domain/config.types';
 import { updateRepoShell } from '~/helpers/functions/shell.utils';
-const util = require('node:util');
-const exec = util.promisify(require('node:child_process').exec);
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -45,7 +40,14 @@ export default async function handler(
     return ApiResponse.serverError(res);
   }
 
-  dataHandler(req, res);
+  try {
+    validateRequestBody(req);
+  } catch (error) {
+    if (error instanceof Error) {
+      return ApiResponse.badRequest(res, error.message);
+    }
+    return ApiResponse.badRequest(res, 'Invalid request data');
+  }
 
   try {
     const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } =
@@ -97,31 +99,30 @@ export default async function handler(
   }
 }
 
-const dataHandler = (req: NextApiRequest, res: NextApiResponse) => {
+const validateRequestBody = (req: NextApiRequest) => {
   const slug = req.query.slug;
   if (!slug || Array.isArray(slug)) {
-    return ApiResponse.badRequest(res, 'Missing slug or slug is malformed');
+    throw new Error('Missing slug or slug is malformed');
   }
-  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } = req.body;
-  if (alias !== undefined && typeof alias !== 'string') {
-    return ApiResponse.badRequest(res, 'Alias must be a string');
+  if (req.body.alias !== undefined && typeof req.body.alias !== 'string') {
+    throw new Error('Alias must be a string');
   }
-  if (sshPublicKey !== undefined && typeof sshPublicKey !== 'string') {
-    return ApiResponse.badRequest(res, 'SSH Public Key must be a string');
+  if (req.body.sshPublicKey !== undefined && typeof req.body.sshPublicKey !== 'string') {
+    throw new Error('SSH Public Key must be a string');
   }
-  if (storageSize !== undefined && typeof storageSize !== 'number') {
-    return ApiResponse.badRequest(res, 'Storage Size must be a number');
+  if (req.body.storageSize !== undefined && typeof req.body.storageSize !== 'number') {
+    throw new Error('Storage Size must be a number');
   }
-  if (comment !== undefined && typeof comment !== 'string') {
-    return ApiResponse.badRequest(res, 'Comment must be a string');
+  if (req.body.comment !== undefined && typeof req.body.comment !== 'string') {
+    throw new Error('Comment must be a string');
   }
-  if (alert !== undefined && typeof alert !== 'number') {
-    return ApiResponse.badRequest(res, 'Alert must be a number');
+  if (req.body.alert !== undefined && typeof req.body.alert !== 'number') {
+    throw new Error('Alert must be a number');
   }
-  if (lanCommand !== undefined && typeof lanCommand !== 'boolean') {
-    return ApiResponse.badRequest(res, 'Lan Command must be a boolean');
+  if (req.body.lanCommand !== undefined && typeof req.body.lanCommand !== 'boolean') {
+    throw new Error('Lan Command must be a boolean');
   }
-  if (appendOnlyMode !== undefined && typeof appendOnlyMode !== 'boolean') {
-    return ApiResponse.badRequest(res, 'Append Only Mode must be a boolean');
+  if (req.body.appendOnlyMode !== undefined && typeof req.body.appendOnlyMode !== 'boolean') {
+    throw new Error('Append Only Mode must be a boolean');
   }
 };

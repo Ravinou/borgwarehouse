@@ -11,7 +11,7 @@ jest.mock('~/helpers/functions/fileHelpers', () => ({
 }));
 
 jest.mock('~/helpers/functions/shell.utils', () => ({
-  getLastSaveList: jest.fn(),
+  getLastSaveListShell: jest.fn(),
 }));
 
 jest.mock('~/helpers/functions/nodemailerSMTP', () => ({

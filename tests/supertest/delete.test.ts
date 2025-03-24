@@ -2,7 +2,7 @@ import request from 'supertest';
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/delete';
 import { getServerSession } from 'next-auth/next';
-import { deleteRepo } from '~/helpers/functions/shell.utils';
+import { deleteRepoShell } from '~/helpers/functions/shell.utils';
 import { getRepoList, tokenController, updateRepoList } from '~/helpers/functions';
 
 jest.mock('next-auth', () => {
@@ -106,7 +106,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       query: { slug: '123' },
     });
     (getRepoList as jest.Mock).mockResolvedValue([{ id: 123, repositoryName: 'test-repo' }]);
-    (deleteRepo as jest.Mock).mockResolvedValue({ stderr: 'Error' });
+    (deleteRepoShell as jest.Mock).mockResolvedValue({ stderr: 'Error' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(500);
     expect(res._getJSONData()).toEqual({
@@ -125,7 +125,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       query: { slug: '1234' },
     });
     (getRepoList as jest.Mock).mockResolvedValue([{ id: 1234, repositoryName: 'test-repo' }]);
-    (deleteRepo as jest.Mock).mockResolvedValue({ stderr: null });
+    (deleteRepoShell as jest.Mock).mockResolvedValue({ stderr: null });
     (updateRepoList as jest.Mock).mockResolvedValue(true);
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
@@ -147,7 +147,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       },
     });
     (getRepoList as jest.Mock).mockResolvedValue([{ id: 12345, repositoryName: 'test-repo2' }]);
-    (deleteRepo as jest.Mock).mockResolvedValue({ stderr: null });
+    (deleteRepoShell as jest.Mock).mockResolvedValue({ stderr: null });
     (updateRepoList as jest.Mock).mockResolvedValue(true);
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);

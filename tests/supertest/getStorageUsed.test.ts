@@ -1,7 +1,7 @@
 import handler from '~/pages/api/cronjob/getStorageUsed';
 import { createMocks } from 'node-mocks-http';
 import { getRepoList, updateRepoList } from '~/helpers/functions';
-import { getStorageUsed } from '~/helpers/functions/shell.utils';
+import { getStorageUsedShell } from '~/helpers/functions/shell.utils';
 
 jest.mock('~/helpers/functions', () => ({
   getRepoList: jest.fn(),
@@ -66,7 +66,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     ];
 
     (getRepoList as jest.Mock).mockResolvedValue(mockRepoList);
-    (getStorageUsed as jest.Mock).mockResolvedValue(mockStorageUsed);
+    (getStorageUsedShell as jest.Mock).mockResolvedValue(mockStorageUsed);
     (updateRepoList as jest.Mock).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
@@ -109,7 +109,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     const mockStorageUsed = [{ name: 'repo1', size: 100 }];
 
     (getRepoList as jest.Mock).mockResolvedValue(mockRepoList);
-    (getStorageUsed as jest.Mock).mockResolvedValue(mockStorageUsed);
+    (getStorageUsedShell as jest.Mock).mockResolvedValue(mockStorageUsed);
     (updateRepoList as jest.Mock).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({

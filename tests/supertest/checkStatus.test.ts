@@ -1,7 +1,7 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/cronjob/checkStatus';
 import { getRepoList, getUsersList, updateRepoList } from '~/helpers/functions/fileHelpers';
-import { getLastSaveList } from '~/helpers/functions/shell.utils';
+import { getLastSaveListShell } from '~/helpers/functions/shell.utils';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
 
 jest.mock('~/helpers/functions/fileHelpers', () => ({
@@ -72,7 +72,9 @@ describe('Cronjob API Handler', () => {
 
   it('should return 200 with message if no repository to check (empty repoList)', async () => {
     (getRepoList as jest.Mock).mockResolvedValue([]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([{ repositoryName: 'repo1', lastSave: 123 }]);
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+      { repositoryName: 'repo1', lastSave: 123 },
+    ]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -91,7 +93,7 @@ describe('Cronjob API Handler', () => {
     (getRepoList as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', alert: 100, alias: 'Repo1' },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([]);
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -111,7 +113,7 @@ describe('Cronjob API Handler', () => {
     (getRepoList as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', alert: 1000, alias: 'Repo1', status: true },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime },
     ]);
     (updateRepoList as jest.Mock).mockResolvedValue(undefined);
@@ -153,7 +155,7 @@ describe('Cronjob API Handler', () => {
     (getRepoList as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', alert: 100, alias: 'Repo1' },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled email alert but enabled Apprise alert
@@ -183,7 +185,7 @@ describe('Cronjob API Handler', () => {
     (getRepoList as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', alert: 100, alias: 'Repo1' },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled Apprise alert but enabled email alert
@@ -216,7 +218,7 @@ describe('Cronjob API Handler', () => {
     (getRepoList as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', alert: 0, alias: 'Repo1' },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 1000 },
     ]);
     (getUsersList as jest.Mock).mockResolvedValue([
@@ -252,7 +254,7 @@ describe('Cronjob API Handler', () => {
     (getRepoList as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', status: true, alert: 100 },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: Math.floor(Date.now() / 1000) },
     ]);
 
@@ -284,7 +286,7 @@ describe('Cronjob API Handler', () => {
         alert: 100,
       },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     (getUsersList as jest.Mock).mockResolvedValue([
@@ -322,7 +324,7 @@ describe('Cronjob API Handler', () => {
         lastStatusAlertSend: null,
       },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
 
@@ -358,7 +360,7 @@ describe('Cronjob API Handler', () => {
         lastStatusAlertSend: currentTime - 80000,
       },
     ]);
-    (getLastSaveList as jest.Mock).mockResolvedValue([
+    (getLastSaveListShell as jest.Mock).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     (getUsersList as jest.Mock).mockResolvedValue([

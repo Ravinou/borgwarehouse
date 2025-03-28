@@ -14,7 +14,7 @@ export const getUsersList = async (): Promise<BorgWarehouseUser[]> => {
     const fileContent = await fs.readFile(usersFilePath, 'utf8');
     return JSON.parse(fileContent) || [];
   } catch (error) {
-    console.error('Error reading users.json:', error);
+    console.log('Error reading users.json:', error);
     return [];
   }
 };
@@ -23,7 +23,7 @@ export const updateUsersList = async (usersList: BorgWarehouseUser[]): Promise<v
   try {
     await fs.writeFile(usersFilePath, JSON.stringify(usersList, null, 2));
   } catch (error) {
-    console.error('Error writing users.json:', error);
+    console.log('Error writing users.json:', error);
   }
 };
 
@@ -32,7 +32,7 @@ export const getRepoList = async (): Promise<Repository[]> => {
     const fileContent = await fs.readFile(repoFilePath, 'utf8');
     return JSON.parse(fileContent) || [];
   } catch (error) {
-    console.error('Error reading repo.json:', error);
+    console.log('Error reading repo.json:', error);
     return [];
   }
 };
@@ -44,6 +44,6 @@ export const updateRepoList = async (repoList: Repository[], history = false): P
     }
     await fs.writeFile(repoFilePath, JSON.stringify(repoList, null, 2));
   } catch (error) {
-    console.error('Error writing repo.json:', error);
+    console.log('Error writing repo.json:', error);
   }
 };

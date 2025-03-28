@@ -41,7 +41,7 @@ export default async function handler(
     await updateRepoList(updatedRepoList);
     return ApiResponse.success(res, 'Storage cron has been executed.');
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return ApiResponse.serverError(res);
   }
 }

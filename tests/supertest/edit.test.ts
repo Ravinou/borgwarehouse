@@ -38,6 +38,8 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetModules();
+    jest.resetAllMocks();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if method is not PATCH', async () => {

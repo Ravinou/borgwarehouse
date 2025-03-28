@@ -49,7 +49,7 @@ export default async function handler(
 
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error: any) {
-    console.error(error);
+    console.log(error);
     return res.status(500).json({
       status: 500,
       message:

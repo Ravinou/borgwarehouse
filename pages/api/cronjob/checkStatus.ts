@@ -95,7 +95,7 @@ export default async function handler(
     await updateRepoList(updatedRepoList);
     return ApiResponse.success(res, 'Status cron executed successfully.');
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return ApiResponse.serverError(res);
   }
 }

@@ -32,10 +32,10 @@ export const updateRepoShell = async (
   sshPublicKey: string,
   storageSize: number,
   appendOnlyMode: boolean
-): Promise<{ stderr?: string }> => {
+): Promise<{ stdout?: string; stderr?: string }> => {
   const shellsDirectory = path.join(process.cwd(), '/helpers');
-  const { stderr } = await exec(
+  const { stdout, stderr } = await exec(
     `${shellsDirectory}/shells/updateRepo.sh ${repositoryName} "${sshPublicKey}" ${storageSize} ${appendOnlyMode}`
   );
-  return { stderr };
+  return { stdout, stderr };
 };

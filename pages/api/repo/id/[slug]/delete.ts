@@ -64,7 +64,7 @@ export default async function handler(
     await updateRepoList(updatedRepoList, true);
     return ApiResponse.success(res, `Repository ${repoList[indexToDelete].repositoryName} deleted`);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return ApiResponse.serverError(res);
   }
 }

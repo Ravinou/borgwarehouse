@@ -11,6 +11,13 @@ jest.mock('~/helpers/functions/fileHelpers', () => ({
 }));
 
 describe('PUT /api/account/updateAppriseURLs', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetModules();
+    jest.resetAllMocks();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
   it('should return 401 if not authenticated', async () => {
     // Mock unauthenticated session
     (getServerSession as jest.Mock).mockResolvedValue(null);

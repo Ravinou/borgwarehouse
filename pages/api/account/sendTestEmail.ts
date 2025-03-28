@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ message: 'Mail successfully sent' });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return res.status(500).json({ message: `An error occurred while sending the email: ${error}` });
   }
 }

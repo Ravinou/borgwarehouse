@@ -31,6 +31,6 @@ export default async function repoHistory(repoList: Repository[]) {
 
     await fs.appendFile(backupFilePath, logData);
   } catch (error) {
-    console.error('An error occurred while saving the repo history :', error);
+    console.log('An error occurred while saving the repo history :', error);
   }
 }

@@ -11,6 +11,13 @@ jest.mock('~/helpers/functions/fileHelpers', () => ({
 }));
 
 describe('Notifications API', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetModules();
+    jest.resetAllMocks();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
   it('should return 405 if the method is not PUT', async () => {
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);

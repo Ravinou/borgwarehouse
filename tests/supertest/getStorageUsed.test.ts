@@ -13,6 +13,13 @@ jest.mock('~/helpers/functions/shell.utils', () => ({
 }));
 
 describe('GET /api/cronjob/getStorageUsed', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetModules();
+    jest.resetAllMocks();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
   const CRONJOB_KEY = 'test-cronjob-key';
   process.env.CRONJOB_KEY = CRONJOB_KEY;
 

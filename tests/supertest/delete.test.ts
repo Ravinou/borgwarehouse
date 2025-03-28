@@ -34,6 +34,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetModules();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if method is not DELETE', async () => {

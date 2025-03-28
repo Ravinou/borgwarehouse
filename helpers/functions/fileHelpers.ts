@@ -29,6 +29,13 @@ export const updateUsersList = async (usersList: BorgWarehouseUser[]): Promise<v
 
 export const getRepoList = async (): Promise<Repository[]> => {
   try {
+    await fs.access(repoFilePath);
+  } catch {
+    console.log('repo.json not found, creating a new one.');
+    await fs.writeFile(repoFilePath, JSON.stringify([]));
+  }
+
+  try {
     const fileContent = await fs.readFile(repoFilePath, 'utf8');
     return JSON.parse(fileContent) || [];
   } catch (error) {

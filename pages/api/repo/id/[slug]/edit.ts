@@ -87,15 +87,16 @@ export default async function handler(
     );
     if (stderr) {
       console.log('Update repository error: ', stderr);
-      return ApiResponse.serverError(res);
+      throw new Error();
     }
 
     const updatedRepoList = [...filteredRepoList, updatedRepo];
     await updateRepoList(updatedRepoList, true);
+
     return res.status(200).json({ message: `Repository ${repo.repositoryName} has been edited` });
   } catch (error) {
-    console.error(error);
-    return ApiResponse.serverError(res);
+    console.log(error);
+    return ApiResponse.serverError(res, error as string);
   }
 }
 

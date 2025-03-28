@@ -44,6 +44,7 @@ describe('Cronjob API Handler', () => {
     process.env.CRONJOB_KEY = 'test-key';
     jest.clearAllMocks();
     jest.resetModules();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 401 if no authorization header', async () => {

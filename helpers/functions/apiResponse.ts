@@ -29,7 +29,10 @@ export default class ApiResponse {
     res.status(422).json({ status: 422, message });
   }
 
-  static serverError(res: NextApiResponse, message = 'API error, contact the administrator.') {
+  static serverError(
+    res: NextApiResponse,
+    message: string = 'API error, contact the administrator.'
+  ) {
     res.status(500).json({ status: 500, message });
   }
 }

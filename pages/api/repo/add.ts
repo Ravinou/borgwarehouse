@@ -64,18 +64,18 @@ export default async function handler(
 
     const newRepo: Repository = {
       id: repoList.length > 0 ? Math.max(...repoList.map((repo) => repo.id)) + 1 : 0,
-      alias: alias!,
+      alias: alias,
       repositoryName: '',
       status: false,
       lastSave: 0,
       lastStatusAlertSend: getUnixTime(new Date()),
-      alert: alert!,
-      storageSize: storageSize!,
+      alert: alert ?? 0,
+      storageSize: storageSize,
       storageUsed: 0,
-      sshPublicKey: sshPublicKey!,
-      comment: comment!,
-      lanCommand: lanCommand!,
-      appendOnlyMode: appendOnlyMode!,
+      sshPublicKey: sshPublicKey,
+      comment: comment ?? '',
+      lanCommand: lanCommand ?? false,
+      appendOnlyMode: appendOnlyMode ?? false,
     };
 
     const { stdout, stderr } = await createRepoShell(
@@ -101,6 +101,7 @@ export default async function handler(
 
 const validateRequestBody = (req: NextApiRequest) => {
   const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } = req.body;
+  // Required fields
   if (!alias || typeof alias !== 'string') {
     throw new Error('Alias must be a non-empty string');
   }
@@ -110,16 +111,17 @@ const validateRequestBody = (req: NextApiRequest) => {
   if (typeof storageSize !== 'number' || storageSize <= 0 || !Number.isInteger(storageSize)) {
     throw new Error('Storage Size must be a positive integer');
   }
-  if (typeof comment !== 'string') {
+  // Optional fields
+  if (comment != undefined && typeof comment !== 'string') {
     throw new Error('Comment must be a string');
   }
-  if (typeof alert !== 'number') {
+  if (alert != undefined && typeof alert !== 'number') {
     throw new Error('Alert must be a number');
   }
-  if (typeof lanCommand !== 'boolean') {
+  if (lanCommand != undefined && typeof lanCommand !== 'boolean') {
     throw new Error('Lan Command must be a boolean');
   }
-  if (typeof appendOnlyMode !== 'boolean') {
+  if (appendOnlyMode != undefined && typeof appendOnlyMode !== 'boolean') {
     throw new Error('Append Only Mode must be a boolean');
   }
 };

@@ -12,6 +12,10 @@ jest.mock('fs', () => ({
 }));
 
 describe('Get Apprise Mode API', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
   it('should return 405 if the method is not GET', async () => {
     const { req, res } = createMocks({ method: 'POST' });
     await handler(req, res);

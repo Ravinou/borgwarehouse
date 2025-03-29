@@ -39,3 +39,15 @@ export const updateRepoShell = async (
   );
   return { stdout, stderr };
 };
+
+export const createRepoShell = async (
+  sshPublicKey: string,
+  storageSize: number,
+  appendOnlyMode: boolean
+): Promise<{ stdout: string; stderr: string }> => {
+  const shellsDirectory = path.join(process.cwd(), '/helpers');
+  const { stdout, stderr } = await exec(
+    `${shellsDirectory}/shells/createRepo.sh "${sshPublicKey}" ${storageSize} ${appendOnlyMode}`
+  );
+  return { stdout, stderr };
+};

@@ -5,7 +5,6 @@ import classes from '../UserSettings.module.css';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
-import { v4 as uuidv4 } from 'uuid';
 import { fromUnixTime } from 'date-fns';
 import { IconTrash, IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -115,9 +114,6 @@ export default function Integrations() {
     clearError();
     setIsLoading(true);
 
-    const token = uuidv4();
-    setLastGeneratedToken({ name: data.tokenName, value: token });
-
     // Post API to send the new token integration
     try {
       const response = await fetch('/api/account/tokenManager', {
@@ -127,13 +123,11 @@ export default function Integrations() {
         },
         body: JSON.stringify({
           name: data.tokenName,
-          token: token,
-          creation: Math.floor(Date.now() / 1000),
-          expiration: null,
           permissions: permissions,
         }),
       });
       const result = await response.json();
+      setLastGeneratedToken({ name: data.tokenName, value: result.token });
 
       if (!response.ok) {
         setIsLoading(false);

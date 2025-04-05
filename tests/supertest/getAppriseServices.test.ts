@@ -1,18 +1,16 @@
-import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/account/getAppriseServices';
 import { getServerSession } from 'next-auth/next';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { createMocks } from 'node-mocks-http';
+import { getUsersList } from '~/helpers/functions';
+import handler from '~/pages/api/account/getAppriseServices';
 
 jest.mock('next-auth/next');
-jest.mock('fs', () => ({
-  promises: {
-    readFile: jest.fn(),
-  },
+jest.mock('~/helpers/functions/fileHelpers', () => ({
+  getUsersList: jest.fn(),
 }));
 
 describe('Get Apprise Services API', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
@@ -35,9 +33,9 @@ describe('Get Apprise Services API', () => {
       user: { name: 'nonexistent' },
     });
 
-    (fs.readFile as jest.Mock).mockResolvedValue(
-      JSON.stringify([{ username: 'testuser', appriseServices: ['service1', 'service2'] }])
-    );
+    (getUsersList as jest.Mock).mockResolvedValue([
+      { username: 'testuser', appriseServices: ['service1', 'service2'] },
+    ]);
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
@@ -53,9 +51,9 @@ describe('Get Apprise Services API', () => {
       user: { name: 'testuser' },
     });
 
-    (fs.readFile as jest.Mock).mockResolvedValue(
-      JSON.stringify([{ username: 'testuser', appriseServices: ['service1', 'service2'] }])
-    );
+    (getUsersList as jest.Mock).mockResolvedValue([
+      { username: 'testuser', appriseServices: ['service1', 'service2'] },
+    ]);
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
@@ -71,12 +69,17 @@ describe('Get Apprise Services API', () => {
       user: { name: 'testuser' },
     });
 
-    (fs.readFile as jest.Mock).mockRejectedValue({ code: 'ENOENT' });
+    (getUsersList as jest.Mock).mockImplementation(() => {
+      throw new Error();
+    });
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(500);
-    expect(res._getJSONData()).toEqual({ status: 500, message: 'No such file or directory' });
+    expect(res._getJSONData()).toEqual({
+      status: 500,
+      message: 'API error, contact the administrator',
+    });
   });
 });

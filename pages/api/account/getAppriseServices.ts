@@ -1,12 +1,9 @@
-//Lib
-import { promises as fs } from 'fs';
-import path from 'path';
-import { authOptions } from '../auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AppriseServicesDTO } from '~/types/api/notification.types';
+import { getServerSession } from 'next-auth/next';
+import { getUsersList } from '~/helpers/functions';
 import { ErrorResponse } from '~/types/api/error.types';
-import { BorgWarehouseUser } from '~/types/domain/config.types';
+import { AppriseServicesDTO } from '~/types/api/notification.types';
+import { authOptions } from '../auth/[...nextauth]';
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,12 +20,7 @@ export default async function handler(
     return;
   }
   try {
-    //Read the users file
-    const jsonDirectory = path.join(process.cwd(), '/config');
-    const fileContent = await fs.readFile(jsonDirectory + '/users.json', 'utf8');
-
-    //Parse the usersList
-    const usersList: Array<BorgWarehouseUser> = JSON.parse(fileContent);
+    const usersList = await getUsersList();
 
     //Verify that the user of the session exists
     const user = usersList.find((u) => u.username === session.user?.name);

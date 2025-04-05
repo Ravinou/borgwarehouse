@@ -1,20 +1,12 @@
-import { authOptions } from '../auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { ErrorResponse, SuccessResponse } from '~/types/api/error.types';
-import { BorgWarehouseUser } from '~/types/domain/config.types';
 import { exec } from 'child_process';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth/next';
 import { promisify } from 'util';
+import { getUsersList } from '~/helpers/functions';
+import { ErrorResponse, SuccessResponse } from '~/types/api/error.types';
+import { authOptions } from '../auth/[...nextauth]';
 
 const execAsync = promisify(exec);
-
-const getUsersList = async (): Promise<BorgWarehouseUser[]> => {
-  const jsonDirectory = path.join(process.cwd(), '/config');
-  const fileContent = await fs.readFile(`${jsonDirectory}/users.json`, 'utf8');
-  return JSON.parse(fileContent);
-};
 
 const getAppriseServicesURLs = (services: string[]): string => services.join(' ');
 

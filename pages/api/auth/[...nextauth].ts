@@ -1,10 +1,9 @@
-//Lib
+import fs from 'fs';
 import NextAuth, { NextAuthOptions, RequestInternal, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { verifyPassword } from '../../../helpers/functions/auth';
-import fs from 'fs';
 import path from 'path';
-import { BorgWarehouseUser } from '~/types/domain/config.types';
+import { getUsersList } from '~/helpers/functions';
+import { verifyPassword } from '../../../helpers/functions/auth';
 
 const logLogin = async (message: string, req: Partial<RequestInternal>, success = false) => {
   const ipAddress = req.headers?.['x-forwarded-for'] || 'unknown';
@@ -54,14 +53,7 @@ export const authOptions: NextAuthOptions = {
           );
         }
 
-        const usersData = await fs.promises.readFile(jsonDirectory + '/users.json', 'utf8');
-        const usersList = (() => {
-          try {
-            return JSON.parse(usersData) as BorgWarehouseUser[];
-          } catch (error) {
-            throw new Error('Failed to parse users.json. Please check its format.');
-          }
-        })();
+        const usersList = await getUsersList();
 
         //Step 1 : does the user exist ?
         const userIndex = usersList.map((user) => user.username).indexOf(username.toLowerCase());

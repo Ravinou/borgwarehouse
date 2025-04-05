@@ -3,16 +3,16 @@ import handler from '~/pages/api/account/getEmailAlert';
 import { getServerSession } from 'next-auth/next';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { getUsersList } from '~/helpers/functions';
 
 jest.mock('next-auth/next');
-jest.mock('fs', () => ({
-  promises: {
-    readFile: jest.fn(),
-  },
+jest.mock('~/helpers/functions/fileHelpers', () => ({
+  getUsersList: jest.fn(),
 }));
 
 describe('Get Email Alert API', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
@@ -35,9 +35,7 @@ describe('Get Email Alert API', () => {
       user: { name: 'nonexistent' },
     });
 
-    (fs.readFile as jest.Mock).mockResolvedValue(
-      JSON.stringify([{ username: 'testuser', emailAlert: true }])
-    );
+    (getUsersList as jest.Mock).mockResolvedValue([{ username: 'testuser', emailAlert: true }]);
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
@@ -53,9 +51,7 @@ describe('Get Email Alert API', () => {
       user: { name: 'testuser' },
     });
 
-    (fs.readFile as jest.Mock).mockResolvedValue(
-      JSON.stringify([{ username: 'testuser', emailAlert: true }])
-    );
+    (getUsersList as jest.Mock).mockResolvedValue([{ username: 'testuser', emailAlert: true }]);
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
@@ -71,12 +67,17 @@ describe('Get Email Alert API', () => {
       user: { name: 'testuser' },
     });
 
-    (fs.readFile as jest.Mock).mockRejectedValue({ code: 'ENOENT' });
+    (getUsersList as jest.Mock).mockImplementation(() => {
+      throw new Error();
+    });
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(500);
-    expect(res._getJSONData()).toEqual({ status: 500, message: 'No such file or directory' });
+    expect(res._getJSONData()).toEqual({
+      status: 500,
+      message: 'API error, contact the administrator',
+    });
   });
 });

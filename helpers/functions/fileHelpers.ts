@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { Optional } from '~/types';
 import { BorgWarehouseUser, Repository } from '~/types/domain/config.types';
 import repoHistory from './repoHistory';
 

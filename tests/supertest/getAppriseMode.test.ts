@@ -1,18 +1,16 @@
-import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/account/getAppriseMode';
 import { getServerSession } from 'next-auth/next';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { createMocks } from 'node-mocks-http';
+import { getUsersList } from '~/helpers/functions';
+import handler from '~/pages/api/account/getAppriseMode';
 
 jest.mock('next-auth/next');
-jest.mock('fs', () => ({
-  promises: {
-    readFile: jest.fn(),
-  },
+jest.mock('~/helpers/functions/fileHelpers', () => ({
+  getUsersList: jest.fn(),
 }));
 
 describe('Get Apprise Mode API', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
@@ -35,15 +33,13 @@ describe('Get Apprise Mode API', () => {
       user: { name: 'nonexistent' },
     });
 
-    (fs.readFile as jest.Mock).mockResolvedValue(
-      JSON.stringify([
-        {
-          username: 'testuser',
-          appriseMode: 'stateless',
-          appriseStatelessURL: 'https://example.com',
-        },
-      ])
-    );
+    (getUsersList as jest.Mock).mockResolvedValue([
+      {
+        username: 'testuser',
+        appriseMode: 'stateless',
+        appriseStatelessURL: 'https://example.com',
+      },
+    ]);
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
@@ -59,15 +55,13 @@ describe('Get Apprise Mode API', () => {
       user: { name: 'testuser' },
     });
 
-    (fs.readFile as jest.Mock).mockResolvedValue(
-      JSON.stringify([
-        {
-          username: 'testuser',
-          appriseMode: 'stateless',
-          appriseStatelessURL: 'https://example.com',
-        },
-      ])
-    );
+    (getUsersList as jest.Mock).mockResolvedValue([
+      {
+        username: 'testuser',
+        appriseMode: 'stateless',
+        appriseStatelessURL: 'https://example.com',
+      },
+    ]);
 
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
@@ -84,12 +78,16 @@ describe('Get Apprise Mode API', () => {
       user: { name: 'testuser' },
     });
 
-    (fs.readFile as jest.Mock).mockRejectedValue({ code: 'ENOENT' });
-
+    (getUsersList as jest.Mock).mockImplementation(() => {
+      throw new Error();
+    });
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(500);
-    expect(res._getJSONData()).toEqual({ status: 500, message: 'No such file or directory' });
+    expect(res._getJSONData()).toEqual({
+      status: 500,
+      message: 'API error, contact the administrator',
+    });
   });
 });

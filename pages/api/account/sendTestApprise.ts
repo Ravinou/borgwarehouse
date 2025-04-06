@@ -2,7 +2,7 @@ import { exec } from 'child_process';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { promisify } from 'util';
-import { getUsersList } from '~/helpers/functions';
+import { getUsersList } from '~/services';
 import { ErrorResponse, SuccessResponse } from '~/types/api/error.types';
 import { authOptions } from '../auth/[...nextauth]';
 

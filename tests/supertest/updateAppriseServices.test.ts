@@ -1,11 +1,11 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updateAppriseServices';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
+import { getUsersList, updateUsersList } from '~/services';
 
 // Mock imports
 jest.mock('next-auth/next');
-jest.mock('~/helpers/functions/fileHelpers', () => ({
+jest.mock('~/services', () => ({
   getUsersList: jest.fn(),
   updateUsersList: jest.fn(),
 }));

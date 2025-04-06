@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList } from '~/helpers/functions';
+import { getUsersList } from '~/services';
 import { ErrorResponse } from '~/types/api/error.types';
 import { AppriseServicesDTO } from '~/types/api/notification.types';
 import { authOptions } from '../auth/[...nextauth]';

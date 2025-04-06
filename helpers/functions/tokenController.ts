@@ -1,7 +1,7 @@
 import { IncomingHttpHeaders } from 'http2';
 import { Optional } from '~/types';
 import { TokenPermissionsType } from '~/types/api/integration.types';
-import { getUsersList } from './fileHelpers';
+import { getUsersList } from '~/services';
 
 export const tokenController = async (
   headers: IncomingHttpHeaders

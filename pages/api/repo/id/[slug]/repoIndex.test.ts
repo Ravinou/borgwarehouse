@@ -1,26 +1,20 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]';
 import { getServerSession } from 'next-auth/next';
-import { getRepoList, tokenController } from '~/helpers/functions';
+import { tokenController } from '~/helpers/functions';
+import { getRepoList } from '~/services';
 import { Repository } from '~/types/domain/config.types';
 
-jest.mock('next-auth', () => {
-  return jest.fn(() => {
-    return {
-      auth: { session: {} },
-      GET: jest.fn(),
-      POST: jest.fn(),
-    };
-  });
-});
-
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
+vi.mock('next-auth/next', () => ({
+  getServerSession: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions', () => ({
-  getRepoList: jest.fn(),
-  tokenController: jest.fn(),
+vi.mock('~/helpers/functions', () => ({
+  tokenController: vi.fn(),
+}));
+
+vi.mock('~/services', () => ({
+  getRepoList: vi.fn(),
 }));
 
 const mockRepoList: Repository[] = [
@@ -58,9 +52,9 @@ const mockRepoList: Repository[] = [
 
 describe('GET /api/repo/id/[slug]', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.resetModules();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if method is not GET', async () => {
@@ -76,8 +70,8 @@ describe('GET /api/repo/id/[slug]', () => {
   });
 
   it('should return 401 if API key is invalid', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
-    (tokenController as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue(null);
     const { req, res } = createMocks({
       method: 'GET',
       headers: { authorization: 'Bearer INVALID_API_KEY' },
@@ -87,8 +81,8 @@ describe('GET /api/repo/id/[slug]', () => {
   });
 
   it('should return 403 if API key does not have read permissions', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
-    (tokenController as jest.Mock).mockResolvedValue({ read: false });
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue({ read: false });
     const { req, res } = createMocks({
       method: 'GET',
       headers: { authorization: 'Bearer API_KEY' },
@@ -98,23 +92,23 @@ describe('GET /api/repo/id/[slug]', () => {
   });
 
   it('should return 400 if slug is missing or malformed', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     const { req, res } = createMocks({ method: 'GET', query: { slug: undefined } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(400);
   });
 
   it('should return 404 if repository is not found', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
-    (getRepoList as jest.Mock).mockResolvedValue([]);
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getRepoList).mockResolvedValue([]);
     const { req, res } = createMocks({ method: 'GET', query: { slug: '3' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(404);
   });
 
   it('should return 200 and the repository data if found', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
-    (getRepoList as jest.Mock).mockResolvedValue(mockRepoList);
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
     const { req, res } = createMocks({ method: 'GET', query: { slug: '1' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);

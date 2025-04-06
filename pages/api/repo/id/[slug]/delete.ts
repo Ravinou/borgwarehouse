@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { getRepoList, updateRepoList, tokenController } from '~/helpers/functions';
+import { tokenController } from '~/helpers/functions';
 import { deleteRepoShell } from '~/helpers/functions/shell.utils';
+import { getRepoList, updateRepoList } from '~/services';
 
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getRepoList, updateRepoList } from '~/helpers/functions';
+import { getRepoList, updateRepoList } from '~/services';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { getStorageUsedShell } from '~/helpers/functions/shell.utils';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';

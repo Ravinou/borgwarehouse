@@ -3,19 +3,19 @@ import handler from '~/pages/api/account/updateAppriseAlert';
 import { getServerSession } from 'next-auth/next';
 import { getUsersList, updateUsersList } from '~/services';
 
-jest.mock('next-auth/next');
-jest.mock('~/services', () => ({
+vi.mock('next-auth/next');
+vi.mock('~/services', () => ({
   __esModule: true,
-  getUsersList: jest.fn(),
-  updateUsersList: jest.fn(),
+  getUsersList: vi.fn(),
+  updateUsersList: vi.fn(),
 }));
 
 describe('Notifications API', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
-    jest.resetAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.resetModules();
+    vi.resetAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if the method is not PUT', async () => {
@@ -25,7 +25,7 @@ describe('Notifications API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: true } });
     await handler(req, res);
@@ -33,7 +33,7 @@ describe('Notifications API', () => {
   });
 
   it('should return 422 if the request body is invalid', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -44,11 +44,20 @@ describe('Notifications API', () => {
   });
 
   it('should return 400 if the user does not exist', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'nonexistent' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([{ username: 'testuser', appriseAlert: false }]);
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'testuser',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseAlert: false,
+      },
+    ]);
 
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: true } });
     await handler(req, res);
@@ -59,26 +68,44 @@ describe('Notifications API', () => {
   });
 
   it('should update appriseAlert and return 200 if everything is correct', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([{ username: 'testuser', appriseAlert: false }]);
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'testuser',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseAlert: false,
+      },
+    ]);
 
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: true } });
     await handler(req, res);
 
-    expect(updateUsersList).toHaveBeenCalledWith([{ username: 'testuser', appriseAlert: true }]);
+    expect(updateUsersList).toHaveBeenCalledWith([
+      {
+        id: 1,
+        username: 'testuser',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseAlert: true,
+      },
+    ]);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ message: 'Successful API send' });
   });
 
   it('should return 500 if there is an error reading users file', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
-    (getUsersList as jest.Mock).mockRejectedValue({ code: 'ENOENT' });
+    vi.mocked(getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: true } });
     await handler(req, res);

@@ -3,7 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { getRepoList, tokenController } from '~/helpers/functions';
+import { tokenController } from '~/helpers/functions';
+import { getRepoList } from '~/services';
 import { Repository } from '~/types/domain/config.types';
 
 export default async function handler(

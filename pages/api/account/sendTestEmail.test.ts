@@ -2,34 +2,26 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/sendTestEmail';
 import { getServerSession } from 'next-auth/next';
 
-jest.mock('next-auth', () => {
-  return jest.fn(() => {
-    return {
-      auth: { session: {} },
-      GET: jest.fn(),
-      POST: jest.fn(),
-    };
-  });
-});
-
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
-}));
-jest.mock('~/helpers/functions/nodemailerSMTP', () => ({
+vi.mock('next-auth/next', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
-    sendMail: jest.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
+  getServerSession: vi.fn(),
+}));
+
+vi.mock('~/helpers/functions/nodemailerSMTP', () => ({
+  __esModule: true,
+  default: vi.fn(() => ({
+    sendMail: vi.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
   })),
 }));
 
 describe('Email API', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 401 if not authenticated', async () => {
     // Mock unauthenticated session
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
 
     // Simulate a POST request
     const { req, res } = createMocks({ method: 'POST' });
@@ -41,7 +33,7 @@ describe('Email API', () => {
 
   it('should send an email if authenticated', async () => {
     // Mock unauthenticated session
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { email: 'ada-lovelace@example.com', name: 'Lovelace' },
     });
 

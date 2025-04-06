@@ -2,7 +2,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/getWizardEnv';
 import { getServerSession } from 'next-auth/next';
 
-jest.mock('next-auth/next');
+vi.mock('next-auth/next');
 
 describe('Get Wizard Env API', () => {
   it('should return 405 if the method is not GET', async () => {
@@ -12,14 +12,14 @@ describe('Get Wizard Env API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
   });
 
   it('should return 200 with wizardEnv if the user is authenticated', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'testuser' } });
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testuser' } });
 
     process.env.UNIX_USER = 'borgwarehouse';
     process.env.FQDN = 'localhost';

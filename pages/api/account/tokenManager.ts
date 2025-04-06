@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { IntegrationTokenType, TokenPermissionsType } from '~/types/api/integration.types';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { getUsersList, updateUsersList } from '~/helpers/functions';
+import { getUsersList, updateUsersList } from '~/services';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';

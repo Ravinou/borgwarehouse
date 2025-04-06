@@ -3,24 +3,23 @@ import handler from '~/pages/api/account/updateAppriseServices';
 import { getServerSession } from 'next-auth/next';
 import { getUsersList, updateUsersList } from '~/services';
 
-// Mock imports
-jest.mock('next-auth/next');
-jest.mock('~/services', () => ({
-  getUsersList: jest.fn(),
-  updateUsersList: jest.fn(),
+vi.mock('next-auth/next');
+vi.mock('~/services', () => ({
+  getUsersList: vi.fn(),
+  updateUsersList: vi.fn(),
 }));
 
 describe('PUT /api/account/updateAppriseURLs', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
-    jest.resetAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.resetModules();
+    vi.resetAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 401 if not authenticated', async () => {
     // Mock unauthenticated session
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT' });
     await handler(req, res);
@@ -37,11 +36,19 @@ describe('PUT /api/account/updateAppriseURLs', () => {
 
   it('should return 400 if user is not found in the users list', async () => {
     // Mock authenticated session
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([{ username: 'Ada' }]);
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'Ada',
+        password: 'securepassword',
+        roles: ['user'],
+        email: 'ada@example.com',
+      },
+    ]);
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -56,12 +63,21 @@ describe('PUT /api/account/updateAppriseURLs', () => {
   });
 
   it('should return 200 and successfully update the appriseURLs', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([{ username: 'Lovelace', appriseServices: [] }]);
-    (updateUsersList as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'Lovelace',
+        password: 'securepassword',
+        roles: ['user'],
+        email: 'lovelace@example.com',
+        appriseServices: [],
+      },
+    ]);
+    vi.mocked(updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -74,11 +90,11 @@ describe('PUT /api/account/updateAppriseURLs', () => {
   });
 
   it('should return 500 if there is an error reading the users file', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
-    (getUsersList as jest.Mock).mockRejectedValue({ code: 'ENOENT' });
+    vi.mocked(getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -94,11 +110,11 @@ describe('PUT /api/account/updateAppriseURLs', () => {
   });
 
   it('should return 500 if there is an API error', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
-    (getUsersList as jest.Mock).mockRejectedValue({ code: 'UNKNOWN_ERROR' });
+    vi.mocked(getUsersList).mockRejectedValue({ code: 'UNKNOWN_ERROR' });
 
     const { req, res } = createMocks({
       method: 'PUT',

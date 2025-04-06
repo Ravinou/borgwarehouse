@@ -1,23 +1,21 @@
 import handler from '~/pages/api/cronjob/getStorageUsed';
 import { createMocks } from 'node-mocks-http';
-import { getRepoList, updateRepoList } from '~/helpers/functions';
+import { getRepoList, updateRepoList } from '~/services';
 import { getStorageUsedShell } from '~/helpers/functions/shell.utils';
 
-jest.mock('~/helpers/functions', () => ({
-  getRepoList: jest.fn(),
-  updateRepoList: jest.fn(),
+vi.mock('~/services', () => ({
+  getRepoList: vi.fn(),
+  updateRepoList: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions/shell.utils', () => ({
-  getStorageUsedShell: jest.fn(),
+vi.mock('~/helpers/functions/shell.utils', () => ({
+  getStorageUsedShell: vi.fn(),
 }));
 
 describe('GET /api/cronjob/getStorageUsed', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
-    jest.resetAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   const CRONJOB_KEY = 'test-cronjob-key';
@@ -47,7 +45,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
   });
 
   it('should return success if no repositories are found', async () => {
-    (getRepoList as jest.Mock).mockResolvedValue([]);
+    vi.mocked(getRepoList).mockResolvedValue([]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -72,9 +70,9 @@ describe('GET /api/cronjob/getStorageUsed', () => {
       { name: 'repo2', size: 200 },
     ];
 
-    (getRepoList as jest.Mock).mockResolvedValue(mockRepoList);
-    (getStorageUsedShell as jest.Mock).mockResolvedValue(mockStorageUsed);
-    (updateRepoList as jest.Mock).mockResolvedValue(undefined);
+    vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
+    vi.mocked(getStorageUsedShell).mockResolvedValue(mockStorageUsed);
+    vi.mocked(updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -94,7 +92,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
   });
 
   it('should return server error if an exception occurs', async () => {
-    (getRepoList as jest.Mock).mockRejectedValue(new Error('Test error'));
+    vi.mocked(getRepoList).mockRejectedValue(new Error('Test error'));
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -115,9 +113,9 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     ];
     const mockStorageUsed = [{ name: 'repo1', size: 100 }];
 
-    (getRepoList as jest.Mock).mockResolvedValue(mockRepoList);
-    (getStorageUsedShell as jest.Mock).mockResolvedValue(mockStorageUsed);
-    (updateRepoList as jest.Mock).mockResolvedValue(undefined);
+    vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
+    vi.mocked(getStorageUsedShell).mockResolvedValue(mockStorageUsed);
+    vi.mocked(updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
       method: 'POST',

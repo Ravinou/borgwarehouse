@@ -1,5 +1,6 @@
-import { getUsersList, updateUsersList, hashPassword, verifyPassword } from '~/helpers/functions';
+import { hashPassword, verifyPassword } from '~/helpers/functions';
 import { authOptions } from '../auth/[...nextauth]';
+import { getUsersList, updateUsersList } from '~/services';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse } from '~/types/api/error.types';

@@ -2,11 +2,12 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updateAppriseMode';
 import { getServerSession } from 'next-auth/next';
 import { getUsersList, updateUsersList } from '~/services';
+import { AppriseModeEnum } from '~/types/domain/config.types';
 
-jest.mock('next-auth/next');
-jest.mock('~/services', () => ({
-  getUsersList: jest.fn(),
-  updateUsersList: jest.fn(),
+vi.mock('next-auth/next');
+vi.mock('~/services', () => ({
+  getUsersList: vi.fn(),
+  updateUsersList: vi.fn(),
 }));
 
 describe('Apprise Mode API', () => {
@@ -17,7 +18,7 @@ describe('Apprise Mode API', () => {
   });
 
   it('should return 401 if not authenticated', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT' });
     await handler(req, res);
@@ -26,7 +27,7 @@ describe('Apprise Mode API', () => {
   });
 
   it('should return 422 if invalid data is provided', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'testuser' } });
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testuser' } });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -38,9 +39,16 @@ describe('Apprise Mode API', () => {
   });
 
   it('should return 400 if user does not exist', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'unknownuser' } });
-    (getUsersList as jest.Mock).mockResolvedValue([
-      { username: 'testuser', appriseMode: 'package' },
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'unknownuser' } });
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'testuser',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseMode: AppriseModeEnum.PACKAGE,
+      },
     ]);
 
     const { req, res } = createMocks({
@@ -53,11 +61,18 @@ describe('Apprise Mode API', () => {
   });
 
   it('should update user settings and return 200', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'testuser' } });
-    (getUsersList as jest.Mock).mockResolvedValue([
-      { username: 'testuser', appriseMode: 'package' },
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testuser' } });
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'testuser',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseMode: AppriseModeEnum.PACKAGE,
+      },
     ]);
-    (updateUsersList as jest.Mock).mockResolvedValue(null);
+    vi.mocked(updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -68,8 +83,12 @@ describe('Apprise Mode API', () => {
 
     expect(updateUsersList).toHaveBeenCalledWith([
       {
+        id: 1,
         username: 'testuser',
-        appriseMode: 'stateless',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseMode: AppriseModeEnum.STATELESS,
         appriseStatelessURL: 'https://example.com',
       },
     ]);

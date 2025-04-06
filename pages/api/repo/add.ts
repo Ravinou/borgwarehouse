@@ -1,16 +1,12 @@
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import {
-  getRepoList,
-  updateRepoList,
-  tokenController,
-  isSshPubKeyDuplicate,
-} from '~/helpers/functions';
+import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { Repository } from '~/types/domain/config.types';
 import { createRepoShell } from '~/helpers/functions/shell.utils';
 import { getUnixTime } from 'date-fns';
+import { getRepoList, updateRepoList } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },

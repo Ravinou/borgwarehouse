@@ -1,17 +1,17 @@
 import { getServerSession } from 'next-auth/next';
 import { createMocks } from 'node-mocks-http';
 import { getUsersList } from '~/services';
-import handler from '~/pages/api/account/getAppriseMode';
+import handler from '~/pages/api/account/getAppriseAlert';
 
-jest.mock('next-auth/next');
-jest.mock('~/services', () => ({
-  getUsersList: jest.fn(),
+vi.mock('next-auth/next');
+vi.mock('~/services', () => ({
+  getUsersList: vi.fn(),
 }));
 
-describe('Get Apprise Mode API', () => {
+describe('Get Apprise Alert API', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if the method is not GET', async () => {
@@ -21,7 +21,7 @@ describe('Get Apprise Mode API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
@@ -29,15 +29,18 @@ describe('Get Apprise Mode API', () => {
   });
 
   it('should return 400 if the user does not exist', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'nonexistent' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([
+    vi.mocked(getUsersList).mockResolvedValue([
       {
+        id: 1,
         username: 'testuser',
-        appriseMode: 'stateless',
-        appriseStatelessURL: 'https://example.com',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseAlert: true,
       },
     ]);
 
@@ -50,37 +53,37 @@ describe('Get Apprise Mode API', () => {
     });
   });
 
-  it('should return appriseMode and appriseStatelessURL if the user exists', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+  it('should return appriseAlert value if the user exists', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([
+    vi.mocked(getUsersList).mockResolvedValue([
       {
+        id: 1,
         username: 'testuser',
-        appriseMode: 'stateless',
-        appriseStatelessURL: 'https://example.com',
+        password: 'hashedpassword',
+        roles: ['user'],
+        email: 'testuser@example.com',
+        appriseAlert: true,
       },
     ]);
-
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(200);
-    expect(res._getJSONData()).toEqual({
-      appriseMode: 'stateless',
-      appriseStatelessURL: 'https://example.com',
-    });
+    expect(res._getJSONData()).toEqual({ appriseAlert: true });
   });
 
   it('should return 500 if there is an error reading the file', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
-    (getUsersList as jest.Mock).mockImplementation(() => {
+    vi.mocked(getUsersList).mockImplementation(() => {
       throw new Error();
     });
+
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
 

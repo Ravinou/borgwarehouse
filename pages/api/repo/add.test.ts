@@ -1,45 +1,34 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/add';
 import { getServerSession } from 'next-auth/next';
-import {
-  getRepoList,
-  updateRepoList,
-  tokenController,
-  isSshPubKeyDuplicate,
-} from '~/helpers/functions';
+import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
+import { getRepoList, updateRepoList } from '~/services';
 import { createRepoShell } from '~/helpers/functions/shell.utils';
 
-jest.mock('next-auth', () => {
-  return jest.fn(() => {
-    return {
-      auth: { session: {} },
-      GET: jest.fn(),
-      POST: jest.fn(),
-    };
-  });
-});
-
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
+vi.mock('next-auth/next', () => ({
+  getServerSession: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions', () => ({
-  getRepoList: jest.fn(),
-  updateRepoList: jest.fn(),
-  tokenController: jest.fn(),
-  isSshPubKeyDuplicate: jest.fn(),
+vi.mock('~/helpers/functions', () => ({
+  tokenController: vi.fn(),
+  isSshPubKeyDuplicate: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions/shell.utils', () => ({
-  createRepoShell: jest.fn(),
+vi.mock('~/services', () => ({
+  getRepoList: vi.fn(),
+  updateRepoList: vi.fn(),
+}));
+
+vi.mock('~/helpers/functions/shell.utils', () => ({
+  createRepoShell: vi.fn(),
 }));
 
 describe('POST /api/repo/add', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
-    jest.resetAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.resetModules();
+    vi.resetAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if method is not POST', async () => {
@@ -55,8 +44,8 @@ describe('POST /api/repo/add', () => {
   });
 
   it('should return 401 if API key is invalid', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
-    (tokenController as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue(null);
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer INVALID_API_KEY' },
@@ -66,8 +55,8 @@ describe('POST /api/repo/add', () => {
   });
 
   it('should return 403 if API key does not have create permissions', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
-    (tokenController as jest.Mock).mockResolvedValue({ create: false });
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue({ create: false });
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer API_KEY' },
@@ -77,9 +66,9 @@ describe('POST /api/repo/add', () => {
   });
 
   it('should return 409 if SSH key is duplicated', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
-    (getRepoList as jest.Mock).mockResolvedValue([{ id: 1, sshPublicKey: 'duplicate-key' }]);
-    (isSshPubKeyDuplicate as jest.Mock).mockReturnValue(true);
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getRepoList).mockResolvedValue([{ id: 1, sshPublicKey: 'duplicate-key' }]);
+    (isSshPubKeyDuplicate as vi.Mock).mockReturnValue(true);
     const { req, res } = createMocks({
       method: 'POST',
       body: { alias: 'repo1', sshPublicKey: 'duplicate-key', storageSize: 10 },
@@ -89,9 +78,9 @@ describe('POST /api/repo/add', () => {
   });
 
   it('should return 500 if createRepoShell fails', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
-    (getRepoList as jest.Mock).mockResolvedValue([]);
-    (createRepoShell as jest.Mock).mockResolvedValue({ stderr: 'Error' });
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getRepoList).mockResolvedValue([]);
+    (createRepoShell as vi.Mock).mockResolvedValue({ stderr: 'Error' });
     const { req, res } = createMocks({
       method: 'POST',
       body: { alias: 'repo1', sshPublicKey: 'valid-key', storageSize: 10 },
@@ -101,10 +90,10 @@ describe('POST /api/repo/add', () => {
   });
 
   it('should successfully create a repository with a session', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
-    (getRepoList as jest.Mock).mockResolvedValue([]);
-    (createRepoShell as jest.Mock).mockResolvedValue({ stdout: 'new-repo' });
-    (updateRepoList as jest.Mock).mockResolvedValue(true);
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getRepoList).mockResolvedValue([]);
+    (createRepoShell as vi.Mock).mockResolvedValue({ stdout: 'new-repo' });
+    vi.mocked(updateRepoList).mockResolvedValue(true);
     const { req, res } = createMocks({
       method: 'POST',
       body: { alias: 'repo1', sshPublicKey: 'valid-key', storageSize: 10 },
@@ -115,10 +104,10 @@ describe('POST /api/repo/add', () => {
   });
 
   it('should add missing optional properties with default values and update repo list correctly', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
-    (getRepoList as jest.Mock).mockResolvedValue([]);
-    (createRepoShell as jest.Mock).mockResolvedValue({ stdout: 'new-repo' });
-    (updateRepoList as jest.Mock).mockResolvedValue(true);
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getRepoList).mockResolvedValue([]);
+    (createRepoShell as vi.Mock).mockResolvedValue({ stdout: 'new-repo' });
+    vi.mocked(updateRepoList).mockResolvedValue(true);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -153,16 +142,16 @@ describe('POST /api/repo/add', () => {
   });
 
   it('should assign the correct ID based on existing repositories', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
 
-    (getRepoList as jest.Mock).mockResolvedValue([
+    vi.mocked(getRepoList).mockResolvedValue([
       { id: 0, alias: 'repo0', sshPublicKey: 'key0', storageSize: 10 },
       { id: 1, alias: 'repo1', sshPublicKey: 'key1', storageSize: 20 },
       { id: 3, alias: 'repo3', sshPublicKey: 'key3', storageSize: 30 },
     ]);
 
-    (createRepoShell as jest.Mock).mockResolvedValue({ stdout: 'new-repo' });
-    (updateRepoList as jest.Mock).mockResolvedValue(true);
+    (createRepoShell as vi.Mock).mockResolvedValue({ stdout: 'new-repo' });
+    vi.mocked(updateRepoList).mockResolvedValue(true);
 
     const { req, res } = createMocks({
       method: 'POST',

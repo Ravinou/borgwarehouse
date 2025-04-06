@@ -1,17 +1,17 @@
 import { getServerSession } from 'next-auth/next';
 import { createMocks } from 'node-mocks-http';
+import handler from '~/pages/api/account/getEmailAlert';
 import { getUsersList } from '~/services';
-import handler from '~/pages/api/account/getAppriseServices';
 
-jest.mock('next-auth/next');
-jest.mock('~/services', () => ({
-  getUsersList: jest.fn(),
+vi.mock('next-auth/next');
+vi.mock('~/services', () => ({
+  getUsersList: vi.fn(),
 }));
 
-describe('Get Apprise Services API', () => {
+describe('Get Email Alert API', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if the method is not GET', async () => {
@@ -21,7 +21,7 @@ describe('Get Apprise Services API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
@@ -29,12 +29,19 @@ describe('Get Apprise Services API', () => {
   });
 
   it('should return 400 if the user does not exist', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'nonexistent' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([
-      { username: 'testuser', appriseServices: ['service1', 'service2'] },
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'testuser',
+        email: 'testuser@example.com',
+        password: 'hashedpassword',
+        roles: ['user'],
+        emailAlert: true,
+      },
     ]);
 
     const { req, res } = createMocks({ method: 'GET' });
@@ -46,13 +53,20 @@ describe('Get Apprise Services API', () => {
     });
   });
 
-  it('should return appriseServices if the user exists', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+  it('should return emailAlert if the user exists', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
-    (getUsersList as jest.Mock).mockResolvedValue([
-      { username: 'testuser', appriseServices: ['service1', 'service2'] },
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        username: 'testuser',
+        email: 'testuser@example.com',
+        password: 'hashedpassword',
+        roles: ['user'],
+        emailAlert: true,
+      },
     ]);
 
     const { req, res } = createMocks({ method: 'GET' });
@@ -60,16 +74,16 @@ describe('Get Apprise Services API', () => {
 
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
-      appriseServices: ['service1', 'service2'],
+      emailAlert: true,
     });
   });
 
   it('should return 500 if there is an error reading the file', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
-    (getUsersList as jest.Mock).mockImplementation(() => {
+    vi.mocked(getUsersList).mockImplementation(() => {
       throw new Error();
     });
 

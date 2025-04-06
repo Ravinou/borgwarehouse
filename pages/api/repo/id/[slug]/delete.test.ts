@@ -2,39 +2,33 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/delete';
 import { getServerSession } from 'next-auth/next';
 import { deleteRepoShell } from '~/helpers/functions/shell.utils';
-import { getRepoList, tokenController, updateRepoList } from '~/helpers/functions';
+import { getRepoList, updateRepoList } from '~/services';
+import { tokenController } from '~/helpers/functions';
 
-jest.mock('next-auth', () => {
-  return jest.fn(() => {
-    return {
-      auth: { session: {} },
-      GET: jest.fn(),
-      POST: jest.fn(),
-    };
-  });
-});
-
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
+vi.mock('next-auth/next', () => ({
+  getServerSession: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions', () => ({
-  getRepoList: jest.fn(),
-  updateRepoList: jest.fn(),
-  tokenController: jest.fn(),
+vi.mock('~/helpers/functions', () => ({
+  tokenController: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions/shell.utils', () => {
+vi.mock('~/services', () => ({
+  getRepoList: vi.fn(),
+  updateRepoList: vi.fn(),
+}));
+
+vi.mock('~/helpers/functions/shell.utils', () => {
   return {
-    deleteRepoShell: jest.fn(),
+    deleteRepoShell: vi.fn(),
   };
 });
 
 describe('DELETE /api/repo/id/[slug]/delete', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.resetModules();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 405 if method is not DELETE', async () => {
@@ -51,7 +45,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
 
   it('should return 403 if deletion is disabled via environment variable', async () => {
     process.env.DISABLE_DELETE_REPO = 'true';
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({ method: 'DELETE' });
@@ -65,7 +59,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   });
 
   it('should return 400 if slug is missing or malformed', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
@@ -81,14 +75,14 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   });
 
   it('should return 404 if repository is not found', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '123' },
     });
-    (getRepoList as jest.Mock).mockResolvedValue([]);
+    vi.mocked(getRepoList).mockResolvedValue([]);
     await handler(req, res);
     expect(res._getStatusCode()).toBe(404);
     expect(res._getJSONData()).toEqual({
@@ -98,15 +92,15 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   });
 
   it('should return 500 if deleteRepo fails', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '123' },
     });
-    (getRepoList as jest.Mock).mockResolvedValue([{ id: 123, repositoryName: 'test-repo' }]);
-    (deleteRepoShell as jest.Mock).mockResolvedValue({ stderr: 'Error' });
+    vi.mocked(getRepoList).mockResolvedValue([{ id: 123, repositoryName: 'test-repo' }]);
+    vi.mocked(deleteRepoShell).mockResolvedValue({ stderr: 'Error' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(500);
     expect(res._getJSONData()).toEqual({
@@ -117,16 +111,16 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   });
 
   it('should delete the repository and return 200 on success with a session', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '1234' },
     });
-    (getRepoList as jest.Mock).mockResolvedValue([{ id: 1234, repositoryName: 'test-repo' }]);
-    (deleteRepoShell as jest.Mock).mockResolvedValue({ stderr: null });
-    (updateRepoList as jest.Mock).mockResolvedValue(true);
+    vi.mocked(getRepoList).mockResolvedValue([{ id: 1234, repositoryName: 'test-repo' }]);
+    vi.mocked(deleteRepoShell).mockResolvedValue({ stderr: null });
+    vi.mocked(updateRepoList).mockResolvedValue(true);
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
@@ -137,8 +131,8 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   });
 
   it('should delete the repository and return 200 on success with an API key', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
-    (tokenController as jest.Mock).mockResolvedValue({ delete: true });
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue({ delete: true });
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '12345' },
@@ -146,9 +140,9 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
         authorization: 'Bearer API_KEY',
       },
     });
-    (getRepoList as jest.Mock).mockResolvedValue([{ id: 12345, repositoryName: 'test-repo2' }]);
-    (deleteRepoShell as jest.Mock).mockResolvedValue({ stderr: null });
-    (updateRepoList as jest.Mock).mockResolvedValue(true);
+    vi.mocked(getRepoList).mockResolvedValue([{ id: 12345, repositoryName: 'test-repo2' }]);
+    vi.mocked(deleteRepoShell).mockResolvedValue({ stderr: null });
+    vi.mocked(updateRepoList).mockResolvedValue(true);
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
@@ -159,8 +153,8 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   });
 
   it('should return 401 if the API key is invalid', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
-    (tokenController as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue(null);
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '12345' },
@@ -177,8 +171,8 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
   });
 
   it('should return 403 if the API key does not have delete permissions', async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
-    (tokenController as jest.Mock).mockResolvedValue({ delete: false });
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue({ delete: false });
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '12345' },

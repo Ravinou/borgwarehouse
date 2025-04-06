@@ -3,33 +3,33 @@ import handler from '~/pages/api/cronjob/checkStatus';
 import { getRepoList, getUsersList, updateRepoList } from '~/services';
 import { getLastSaveListShell } from '~/helpers/functions/shell.utils';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
+import { AppriseModeEnum } from '~/types/domain/config.types';
 
-jest.mock('~/services', () => ({
-  getRepoList: jest.fn(),
-  getUsersList: jest.fn(),
-  updateRepoList: jest.fn(),
+vi.mock('~/services', () => ({
+  getRepoList: vi.fn(),
+  getUsersList: vi.fn(),
+  updateRepoList: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions/shell.utils', () => ({
-  getLastSaveListShell: jest.fn(),
+vi.mock('~/helpers/functions/shell.utils', () => ({
+  getLastSaveListShell: vi.fn(),
 }));
 
-jest.mock('~/helpers/functions/nodemailerSMTP', () => ({
-  __esModule: true,
-  default: jest.fn(() => ({
-    sendMail: jest.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
+vi.mock('~/helpers/functions/nodemailerSMTP', () => ({
+  default: vi.fn(() => ({
+    sendMail: vi.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
   })),
 }));
 
-jest.mock('~/helpers/templates/emailAlertStatus', () =>
-  jest.fn(() => ({
+vi.mock('~/helpers/templates/emailAlertStatus', () => ({
+  default: vi.fn(() => ({
     subject: 'Alert',
     text: 'Alert text',
-  }))
-);
+  })),
+}));
 
-jest.mock('node:child_process', () => ({
-  exec: jest.fn(
+vi.mock('node:child_process', () => ({
+  exec: vi.fn(
     (
       command: string,
       callback: (err: Error | null, result: { stdout: string; stderr: string }) => void
@@ -42,9 +42,9 @@ jest.mock('node:child_process', () => ({
 describe('Cronjob API Handler', () => {
   beforeEach(() => {
     process.env.CRONJOB_KEY = 'test-key';
-    jest.clearAllMocks();
-    jest.resetModules();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
+    vi.clearAllMocks();
+    vi.resetModules();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('should return 401 if no authorization header', async () => {
@@ -72,10 +72,8 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should return 200 with message if no repository to check (empty repoList)', async () => {
-    (getRepoList as jest.Mock).mockResolvedValue([]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
-      { repositoryName: 'repo1', lastSave: 123 },
-    ]);
+    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(getLastSaveListShell).mockResolvedValue([{ repositoryName: 'repo1', lastSave: 123 }]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -91,10 +89,21 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should return 200 with message if no repository to check (empty lastSaveList)', async () => {
-    (getRepoList as jest.Mock).mockResolvedValue([
-      { repositoryName: 'repo1', alert: 100, alias: 'Repo1' },
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alert: 100,
+        alias: 'Repo1',
+        id: 1,
+        status: true,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+      },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([]);
+    vi.mocked(getLastSaveListShell).mockResolvedValue([]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -111,14 +120,25 @@ describe('Cronjob API Handler', () => {
 
   it('should execute successfully without alerts if all repositories are OK', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    (getRepoList as jest.Mock).mockResolvedValue([
-      { repositoryName: 'repo1', alert: 1000, alias: 'Repo1', status: true },
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alert: 1000,
+        alias: 'Repo1',
+        status: true,
+        id: 1,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+      },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime },
     ]);
-    (updateRepoList as jest.Mock).mockResolvedValue(undefined);
-    (getUsersList as jest.Mock).mockResolvedValue([]);
+    vi.mocked(updateRepoList).mockResolvedValue(undefined);
+    vi.mocked(getUsersList).mockResolvedValue([]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -135,7 +155,7 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should return 500 if an error occurs', async () => {
-    (getRepoList as jest.Mock).mockRejectedValue(new Error('Test error'));
+    vi.mocked(getRepoList).mockRejectedValue(new Error('Test error'));
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -153,19 +173,33 @@ describe('Cronjob API Handler', () => {
   it('should not send email alert if emailAlert is false', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
 
-    (getRepoList as jest.Mock).mockResolvedValue([
-      { repositoryName: 'repo1', alert: 100, alias: 'Repo1' },
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alert: 100,
+        alias: 'Repo1',
+        id: 1,
+        status: true,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+      },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled email alert but enabled Apprise alert
-    (getUsersList as jest.Mock).mockResolvedValue([
+    vi.mocked(getUsersList).mockResolvedValue([
       {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
         emailAlert: false,
         appriseAlert: true,
         appriseServices: ['http://example.com'],
-        appriseMode: 'package',
+        appriseMode: AppriseModeEnum.PACKAGE,
         appriseStatelessURL: 'http://example.com',
         email: 'test@example.com',
         username: 'testuser',
@@ -183,19 +217,33 @@ describe('Cronjob API Handler', () => {
 
   it('should not send apprise alert if appriseAlert is false', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    (getRepoList as jest.Mock).mockResolvedValue([
-      { repositoryName: 'repo1', alert: 100, alias: 'Repo1' },
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alert: 100,
+        alias: 'Repo1',
+        id: 1,
+        status: true,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+      },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled Apprise alert but enabled email alert
-    (getUsersList as jest.Mock).mockResolvedValue([
+    vi.mocked(getUsersList).mockResolvedValue([
       {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
         emailAlert: true,
         appriseAlert: false,
         appriseServices: ['http://example.com'],
-        appriseMode: 'package',
+        appriseMode: AppriseModeEnum.PACKAGE,
         appriseStatelessURL: 'http://example.com',
         email: 'test@example.com',
         username: 'testuser',
@@ -203,7 +251,7 @@ describe('Cronjob API Handler', () => {
     ]);
 
     // Spy on exec to check if it is called
-    const execSpy = jest.spyOn(require('node:child_process'), 'exec');
+    const execSpy = vi.spyOn(require('node:child_process'), 'exec');
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer test-key' },
@@ -216,27 +264,37 @@ describe('Cronjob API Handler', () => {
 
   it('should not send alert if alert is disabled on repo (repo.alert === 0)', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    (getRepoList as jest.Mock).mockResolvedValue([
-      { repositoryName: 'repo1', alert: 0, alias: 'Repo1' },
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alert: 0,
+        alias: 'Repo1',
+        id: 1,
+        status: false,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+      },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 1000 },
     ]);
-    (getUsersList as jest.Mock).mockResolvedValue([
+    vi.mocked(getUsersList).mockResolvedValue([
       {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
         emailAlert: true,
         appriseAlert: true,
         appriseServices: ['http://example.com'],
-        appriseMode: 'package',
+        appriseMode: AppriseModeEnum.PACKAGE,
         appriseStatelessURL: 'http://example.com',
         email: 'test@example.com',
         username: 'testuser',
       },
     ]);
-
-    // Spy on exec to check if it is called
-    const nodemailerSpy = jest.spyOn(require('~/helpers/functions/nodemailerSMTP'), 'default');
-    const execSpy = jest.spyOn(require('node:child_process'), 'exec');
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -244,18 +302,30 @@ describe('Cronjob API Handler', () => {
     });
     await handler(req, res);
 
-    expect(nodemailerSpy).not.toHaveBeenCalled();
-    expect(execSpy).not.toHaveBeenCalled();
+    expect(nodemailerSMTP).not.toHaveBeenCalled();
 
-    nodemailerSpy.mockRestore();
-    execSpy.mockRestore();
+    const childProcess = await import('node:child_process');
+    expect(childProcess.exec).not.toHaveBeenCalled();
   });
 
   it('should not update lastStatusAlertSend or add to repoListToSendAlert if repo status is OK', async () => {
-    (getRepoList as jest.Mock).mockResolvedValue([
-      { repositoryName: 'repo1', status: true, alert: 100 },
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        status: true,
+        alert: 100,
+        id: 1,
+        alias: 'Repo1',
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+        lastStatusAlertSend: 1000,
+      },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(updateRepoList).mockResolvedValue(undefined);
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: Math.floor(Date.now() / 1000) },
     ]);
 
@@ -271,7 +341,14 @@ describe('Cronjob API Handler', () => {
         repositoryName: 'repo1',
         status: true,
         alert: 100,
+        id: 1,
+        alias: 'Repo1',
         lastSave: expect.any(Number),
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+        lastStatusAlertSend: 1000,
       },
     ]);
     expect(res._getStatusCode()).toBe(200);
@@ -279,19 +356,32 @@ describe('Cronjob API Handler', () => {
 
   it('should update lastStatusAlertSend if repo is down and alert is enabled', async () => {
     const currentTime = 1741535661;
-    (getRepoList as jest.Mock).mockResolvedValue([
+    vi.mocked(getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
         status: false,
         alert: 100,
+        id: 1,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
       },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
-    (getUsersList as jest.Mock).mockResolvedValue([
-      { emailAlert: true, email: 'test@example.com', username: 'TestUser' },
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
+        emailAlert: true,
+        email: 'test@example.com',
+        username: 'TestUser',
+      },
     ]);
 
     const { req, res } = createMocks({
@@ -307,8 +397,13 @@ describe('Cronjob API Handler', () => {
         alias: 'Repo1',
         status: false,
         alert: 100,
+        id: 1,
+        lastSave: currentTime - 200,
         lastStatusAlertSend: expect.any(Number),
-        lastSave: expect.any(Number),
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
       },
     ]);
     expect(res._getStatusCode()).toBe(200);
@@ -316,16 +411,22 @@ describe('Cronjob API Handler', () => {
 
   it('should not update lastStatusAlertSend or send alerts if alert is disabled', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    (getRepoList as jest.Mock).mockResolvedValue([
+    vi.mocked(getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
         status: false,
         alert: 0,
-        lastStatusAlertSend: null,
+        lastStatusAlertSend: undefined,
+        id: 1,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
       },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
 
@@ -342,8 +443,13 @@ describe('Cronjob API Handler', () => {
         alias: 'Repo1',
         status: false,
         alert: 0,
-        lastStatusAlertSend: null,
+        lastStatusAlertSend: undefined,
+        id: 1,
         lastSave: currentTime - 200,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
       },
     ]);
     expect(nodemailerSMTP).not.toHaveBeenCalled();
@@ -352,20 +458,33 @@ describe('Cronjob API Handler', () => {
 
   it('should update lastStatusAlertSend only if the last alert was sent more than 90000 seconds ago', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    (getRepoList as jest.Mock).mockResolvedValue([
+    vi.mocked(getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
         status: false,
         alert: 100,
         lastStatusAlertSend: currentTime - 80000,
+        id: 1,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
       },
     ]);
-    (getLastSaveListShell as jest.Mock).mockResolvedValue([
+    vi.mocked(getLastSaveListShell).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
-    (getUsersList as jest.Mock).mockResolvedValue([
-      { emailAlert: true, email: 'test@example.com', username: 'TestUser' },
+    vi.mocked(getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
+        emailAlert: true,
+        email: 'test@example.com',
+        username: 'TestUser',
+      },
     ]);
 
     const { req, res } = createMocks({
@@ -382,7 +501,12 @@ describe('Cronjob API Handler', () => {
         status: false,
         alert: 100,
         lastStatusAlertSend: expect.any(Number),
+        id: 1,
         lastSave: currentTime - 200,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
       },
     ]);
     expect(res._getStatusCode()).toBe(200);

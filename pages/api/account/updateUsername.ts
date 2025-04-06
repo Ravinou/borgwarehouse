@@ -1,4 +1,4 @@
-import { getUsersList, updateUsersList } from '~/helpers/functions';
+import { getUsersList, updateUsersList } from '~/services';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { UsernameSettingDTO } from '~/types/api/setting.types';

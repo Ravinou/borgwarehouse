@@ -1,19 +1,22 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/account/updateUsername'; // adapte le chemin si besoin
+import handler from '~/pages/api/account/updatePassword';
 import { getServerSession } from 'next-auth/next';
 import { getUsersList, updateUsersList } from '~/services';
+import { verifyPassword, hashPassword } from '~/helpers/functions';
 
 vi.mock('next-auth/next');
 vi.mock('~/services', () => ({
   getUsersList: vi.fn(),
   updateUsersList: vi.fn(),
 }));
+vi.mock('~/helpers/functions', () => ({
+  verifyPassword: vi.fn(),
+  hashPassword: vi.fn(),
+}));
 
-describe('PUT /api/account/updateUsername', () => {
+describe('PUT /api/account/updatePassword', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.resetModules();
-    vi.resetAllMocks();
     vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
@@ -33,12 +36,14 @@ describe('PUT /api/account/updateUsername', () => {
     expect(res._getStatusCode()).toBe(405);
   });
 
-  it('should return 422 if username is not a string', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+  it('should return 422 if oldPassword or newPassword are missing or not strings', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'Lovelace' },
+    });
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { username: 12345 },
+      body: { oldPassword: 1234, newPassword: true },
     });
 
     await handler(req, res);
@@ -47,32 +52,18 @@ describe('PUT /api/account/updateUsername', () => {
     expect(res._getJSONData()).toEqual({ message: 'Unexpected data' });
   });
 
-  it('should return 422 if username format is invalid', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
-
-    const { req, res } = createMocks({
-      method: 'PUT',
-      body: { username: 'Too$hort!' },
-    });
-
-    await handler(req, res);
-
-    expect(res._getStatusCode()).toBe(422);
-    expect(res._getJSONData()).toEqual({
-      message: 'Only a-z characters are allowed (5 to 15 char.)',
-    });
-  });
-
   it('should return 400 if user is not found', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'Lovelace' },
+    });
 
     vi.mocked(getUsersList).mockResolvedValue([
-      { username: 'Ada', email: 'ada@example.com', password: 'xxx', id: 1, roles: ['user'] },
+      { id: 1, username: 'Ada', password: 'hashedpass', roles: [], email: 'ada@example.com' },
     ]);
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { username: 'newname' },
+      body: { oldPassword: 'test', newPassword: 'newpass' },
     });
 
     await handler(req, res);
@@ -83,64 +74,71 @@ describe('PUT /api/account/updateUsername', () => {
     });
   });
 
-  it('should return 400 if new username already exists', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+  it('should return 400 if old password is incorrect', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'Lovelace' },
+    });
 
     vi.mocked(getUsersList).mockResolvedValue([
-      { username: 'Lovelace', email: 'love@example.com', password: 'xxx', id: 1, roles: ['user'] },
-      {
-        username: 'newname',
-        email: 'someone@example.com',
-        password: 'xxx',
-        id: 2,
-        roles: ['user'],
-      },
+      { id: 1, username: 'Lovelace', password: 'hashedpass', roles: [], email: 'love@example.com' },
     ]);
+
+    vi.mocked(verifyPassword).mockResolvedValue(false);
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { username: 'newname' },
+      body: { oldPassword: 'wrongpass', newPassword: 'newpass' },
     });
 
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(400);
-    expect(res._getJSONData()).toEqual({ message: 'Username already exists' });
+    expect(res._getJSONData()).toEqual({ message: 'Old password is incorrect.' });
   });
 
-  it('should return 200 and update the username', async () => {
-    const originalUser = {
-      username: 'Lovelace',
-      email: 'love@example.com',
-      password: 'xxx',
+  it('should update password and return 200 on success', async () => {
+    const oldUser = {
       id: 1,
-      roles: ['user'],
+      username: 'Lovelace',
+      password: 'hashedpass',
+      roles: [],
+      email: 'love@example.com',
     };
 
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'Lovelace' },
+    });
 
-    vi.mocked(getUsersList).mockResolvedValue([originalUser]);
+    vi.mocked(getUsersList).mockResolvedValue([oldUser]);
+
+    vi.mocked(verifyPassword).mockResolvedValue(true);
+    vi.mocked(hashPassword).mockResolvedValue('newHashedPassword');
     vi.mocked(updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { username: 'newusername' },
+      body: { oldPassword: 'oldpass', newPassword: 'newpass' },
     });
 
     await handler(req, res);
 
-    expect(updateUsersList).toHaveBeenCalledWith([{ ...originalUser, username: 'newusername' }]);
+    expect(verifyPassword).toHaveBeenCalledWith('oldpass', 'hashedpass');
+    expect(hashPassword).toHaveBeenCalledWith('newpass');
+    expect(updateUsersList).toHaveBeenCalledWith([{ ...oldUser, password: 'newHashedPassword' }]);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ message: 'Successful API send' });
   });
 
-  it('should return 500 if file not found (ENOENT)', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+  it('should return 500 if there is a file system error (ENOENT)', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'Lovelace' },
+    });
+
     vi.mocked(getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { username: 'newname' },
+      body: { oldPassword: 'test', newPassword: 'new' },
     });
 
     await handler(req, res);
@@ -153,12 +151,15 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 500 on unknown error', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'Lovelace' },
+    });
+
     vi.mocked(getUsersList).mockRejectedValue({ code: 'SOMETHING_ELSE' });
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { username: 'newname' },
+      body: { oldPassword: 'test', newPassword: 'new' },
     });
 
     await handler(req, res);

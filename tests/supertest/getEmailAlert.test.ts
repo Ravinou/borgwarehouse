@@ -3,10 +3,10 @@ import handler from '~/pages/api/account/getEmailAlert';
 import { getServerSession } from 'next-auth/next';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { getUsersList } from '~/helpers/functions';
+import { getUsersList } from '~/services';
 
 jest.mock('next-auth/next');
-jest.mock('~/helpers/functions/fileHelpers', () => ({
+jest.mock('~/services', () => ({
   getUsersList: jest.fn(),
 }));
 

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { exec as execCallback } from 'node:child_process';
 import { promisify } from 'util';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { getRepoList, getUsersList, updateRepoList } from '~/helpers/functions/fileHelpers';
+import { getRepoList, getUsersList, updateRepoList } from '~/services';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
 import { getLastSaveListShell } from '~/helpers/functions/shell.utils';
 import emailAlertStatus from '~/helpers/templates/emailAlertStatus';

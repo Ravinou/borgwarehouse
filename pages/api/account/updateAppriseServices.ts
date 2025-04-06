@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { AppriseServicesDTO } from '~/types/api/notification.types';
 import { ErrorResponse } from '~/types/api/error.types';
-import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
+import { getUsersList, updateUsersList } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: AppriseServicesDTO },

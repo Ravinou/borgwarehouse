@@ -1,4 +1,4 @@
-import { getUsersList, updateUsersList } from '~/helpers/functions/fileHelpers';
+import { getUsersList, updateUsersList } from '~/services';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';

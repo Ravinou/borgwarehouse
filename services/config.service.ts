@@ -1,4 +1,3 @@
-// dbHelper.ts
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import path from 'path';

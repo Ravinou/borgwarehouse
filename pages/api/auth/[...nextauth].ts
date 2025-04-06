@@ -2,7 +2,7 @@ import fs from 'fs';
 import NextAuth, { NextAuthOptions, RequestInternal, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import path from 'path';
-import { getUsersList } from '~/helpers/functions';
+import { getUsersList } from '~/services';
 import { verifyPassword } from '../../../helpers/functions/auth';
 
 const logLogin = async (message: string, req: Partial<RequestInternal>, success = false) => {

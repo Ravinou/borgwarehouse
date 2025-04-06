@@ -1,10 +1,10 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/cronjob/checkStatus';
-import { getRepoList, getUsersList, updateRepoList } from '~/helpers/functions/fileHelpers';
+import { getRepoList, getUsersList, updateRepoList } from '~/services';
 import { getLastSaveListShell } from '~/helpers/functions/shell.utils';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
 
-jest.mock('~/helpers/functions/fileHelpers', () => ({
+jest.mock('~/services', () => ({
   getRepoList: jest.fn(),
   getUsersList: jest.fn(),
   updateRepoList: jest.fn(),

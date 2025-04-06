@@ -1,5 +1,4 @@
 export * from './auth';
-export * from './fileHelpers';
 export * from './isSshPubKeyDuplicate';
 export * from './lanCommandOption';
 export * from './nodemailerSMTP';

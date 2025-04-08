@@ -1,14 +1,10 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updateAppriseAlert';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 
 vi.mock('next-auth/next');
-vi.mock('~/services', () => ({
-  __esModule: true,
-  getUsersList: vi.fn(),
-  updateUsersList: vi.fn(),
-}));
+vi.mock('~/services');
 
 describe('Notifications API', () => {
   beforeEach(() => {
@@ -48,7 +44,7 @@ describe('Notifications API', () => {
       user: { name: 'nonexistent' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testuser',
@@ -72,7 +68,7 @@ describe('Notifications API', () => {
       user: { name: 'testuser' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testuser',
@@ -86,7 +82,7 @@ describe('Notifications API', () => {
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: true } });
     await handler(req, res);
 
-    expect(updateUsersList).toHaveBeenCalledWith([
+    expect(ConfigService.updateUsersList).toHaveBeenCalledWith([
       {
         id: 1,
         username: 'testuser',
@@ -105,7 +101,7 @@ describe('Notifications API', () => {
       user: { name: 'testuser' },
     });
 
-    vi.mocked(getUsersList).mockRejectedValue({ code: 'ENOENT' });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: true } });
     await handler(req, res);

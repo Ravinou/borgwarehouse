@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { tokenController } from '~/helpers/functions';
-import { getRepoList } from '~/services';
+import { ConfigService } from '~/services';
 import { Repository } from '~/types/domain/config.types';
 
 export default async function handler(
@@ -36,7 +36,7 @@ export default async function handler(
   }
 
   try {
-    const repoList = await getRepoList();
+    const repoList = await ConfigService.getRepoList();
 
     return res.status(200).json({ repoList });
   } catch (error) {

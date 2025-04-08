@@ -2,7 +2,7 @@ import fs from 'fs';
 import NextAuth, { NextAuthOptions, RequestInternal, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import path from 'path';
-import { getUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { verifyPassword } from '../../../helpers/functions/auth';
 
 const logLogin = async (message: string, req: Partial<RequestInternal>, success = false) => {
@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
           );
         }
 
-        const usersList = await getUsersList();
+        const usersList = await ConfigService.getUsersList();
 
         //Step 1 : does the user exist ?
         const userIndex = usersList.map((user) => user.username).indexOf(username.toLowerCase());

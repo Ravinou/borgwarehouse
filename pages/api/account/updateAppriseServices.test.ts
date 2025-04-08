@@ -1,13 +1,10 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updateAppriseServices';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 
 vi.mock('next-auth/next');
-vi.mock('~/services', () => ({
-  getUsersList: vi.fn(),
-  updateUsersList: vi.fn(),
-}));
+vi.mock('~/services');
 
 describe('PUT /api/account/updateAppriseURLs', () => {
   beforeEach(() => {
@@ -40,7 +37,7 @@ describe('PUT /api/account/updateAppriseURLs', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'Ada',
@@ -67,7 +64,7 @@ describe('PUT /api/account/updateAppriseURLs', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'Lovelace',
@@ -77,7 +74,7 @@ describe('PUT /api/account/updateAppriseURLs', () => {
         appriseServices: [],
       },
     ]);
-    vi.mocked(updateUsersList).mockResolvedValue();
+    vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -94,7 +91,7 @@ describe('PUT /api/account/updateAppriseURLs', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockRejectedValue({ code: 'ENOENT' });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -114,7 +111,7 @@ describe('PUT /api/account/updateAppriseURLs', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockRejectedValue({ code: 'UNKNOWN_ERROR' });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'UNKNOWN_ERROR' });
 
     const { req, res } = createMocks({
       method: 'PUT',

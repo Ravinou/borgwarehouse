@@ -4,7 +4,7 @@ import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { Repository } from '~/types/domain/config.types';
-import { getRepoList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -48,7 +48,7 @@ export default async function handler(
     const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } =
       req.body;
     const slug = req.query.slug;
-    const repoList = await getRepoList();
+    const repoList = await ConfigService.getRepoList();
     const repoId = parseInt(slug as string, 10);
     const repo = repoList.find((repo) => repo.id === repoId);
     if (!repo) {
@@ -86,7 +86,7 @@ export default async function handler(
     }
 
     const updatedRepoList = [...filteredRepoList, updatedRepo];
-    await updateRepoList(updatedRepoList, true);
+    await ConfigService.updateRepoList(updatedRepoList, true);
 
     return res.status(200).json({ message: `Repository ${repo.repositoryName} has been edited` });
   } catch (error) {

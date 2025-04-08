@@ -5,7 +5,7 @@ import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { tokenController } from '~/helpers/functions';
 import { Repository } from '~/types/domain/config.types';
-import { getRepoList } from '~/services';
+import { ConfigService } from '~/services';
 
 export default async function handler(
   req: NextApiRequest,
@@ -36,7 +36,7 @@ export default async function handler(
   }
 
   try {
-    const repoList = await getRepoList();
+    const repoList = await ConfigService.getRepoList();
 
     const slug = req.query.slug;
     if (!slug || Array.isArray(slug)) {

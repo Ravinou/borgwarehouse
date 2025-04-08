@@ -1,17 +1,10 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/cronjob/checkStatus';
-import { getRepoList, getUsersList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
 import { AppriseModeEnum } from '~/types/domain/config.types';
 
-vi.mock('~/services', () => ({
-  getRepoList: vi.fn(),
-  getUsersList: vi.fn(),
-  updateRepoList: vi.fn(),
-  ShellService: {
-    getLastSaveList: vi.fn(),
-  },
-}));
+vi.mock('~/services');
 
 vi.mock('~/helpers/functions/nodemailerSMTP', () => ({
   default: vi.fn(() => ({
@@ -70,7 +63,7 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should return 200 with message if no repository to check (empty repoList)', async () => {
-    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: 123 },
     ]);
@@ -89,7 +82,7 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should return 200 with message if no repository to check (empty lastSaveList)', async () => {
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alert: 100,
@@ -120,7 +113,7 @@ describe('Cronjob API Handler', () => {
 
   it('should execute successfully without alerts if all repositories are OK', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alert: 1000,
@@ -137,8 +130,8 @@ describe('Cronjob API Handler', () => {
     vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime },
     ]);
-    vi.mocked(updateRepoList).mockResolvedValue(undefined);
-    vi.mocked(getUsersList).mockResolvedValue([]);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -151,11 +144,11 @@ describe('Cronjob API Handler', () => {
       status: 200,
       message: 'Status cron executed successfully.',
     });
-    expect(updateRepoList).toHaveBeenCalled();
+    expect(ConfigService.updateRepoList).toHaveBeenCalled();
   });
 
   it('should return 500 if an error occurs', async () => {
-    vi.mocked(getRepoList).mockRejectedValue(new Error('Test error'));
+    vi.mocked(ConfigService.getRepoList).mockRejectedValue(new Error('Test error'));
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -173,7 +166,7 @@ describe('Cronjob API Handler', () => {
   it('should not send email alert if emailAlert is false', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
 
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alert: 100,
@@ -191,7 +184,7 @@ describe('Cronjob API Handler', () => {
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled email alert but enabled Apprise alert
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         password: 'hashed-password',
@@ -217,7 +210,7 @@ describe('Cronjob API Handler', () => {
 
   it('should not send apprise alert if appriseAlert is false', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alert: 100,
@@ -235,7 +228,7 @@ describe('Cronjob API Handler', () => {
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled Apprise alert but enabled email alert
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         password: 'hashed-password',
@@ -264,7 +257,7 @@ describe('Cronjob API Handler', () => {
 
   it('should not send alert if alert is disabled on repo (repo.alert === 0)', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alert: 0,
@@ -281,7 +274,7 @@ describe('Cronjob API Handler', () => {
     vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 1000 },
     ]);
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         password: 'hashed-password',
@@ -309,7 +302,7 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should not update lastStatusAlertSend or add to repoListToSendAlert if repo status is OK', async () => {
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         status: true,
@@ -324,7 +317,7 @@ describe('Cronjob API Handler', () => {
         lastStatusAlertSend: 1000,
       },
     ]);
-    vi.mocked(updateRepoList).mockResolvedValue(undefined);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
     vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: Math.floor(Date.now() / 1000) },
     ]);
@@ -336,7 +329,7 @@ describe('Cronjob API Handler', () => {
 
     await handler(req, res);
 
-    expect(updateRepoList).toHaveBeenCalledWith([
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
       {
         repositoryName: 'repo1',
         status: true,
@@ -356,7 +349,7 @@ describe('Cronjob API Handler', () => {
 
   it('should update lastStatusAlertSend if repo is down and alert is enabled', async () => {
     const currentTime = 1741535661;
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
@@ -373,7 +366,7 @@ describe('Cronjob API Handler', () => {
     vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         password: 'hashed-password',
@@ -391,7 +384,7 @@ describe('Cronjob API Handler', () => {
 
     await handler(req, res);
 
-    expect(updateRepoList).toHaveBeenCalledWith([
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
@@ -411,7 +404,7 @@ describe('Cronjob API Handler', () => {
 
   it('should not update lastStatusAlertSend or send alerts if alert is disabled', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
@@ -437,7 +430,7 @@ describe('Cronjob API Handler', () => {
 
     await handler(req, res);
 
-    expect(updateRepoList).toHaveBeenCalledWith([
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
@@ -458,7 +451,7 @@ describe('Cronjob API Handler', () => {
 
   it('should update lastStatusAlertSend only if the last alert was sent more than 90000 seconds ago', async () => {
     const currentTime = Math.floor(Date.now() / 1000);
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
@@ -476,7 +469,7 @@ describe('Cronjob API Handler', () => {
     vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         password: 'hashed-password',
@@ -494,7 +487,7 @@ describe('Cronjob API Handler', () => {
 
     await handler(req, res);
 
-    expect(updateRepoList).toHaveBeenCalledWith([
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
       {
         repositoryName: 'repo1',
         alias: 'Repo1',

@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth/next';
 import { createMocks } from 'node-mocks-http';
 import { isSshPubKeyDuplicate, tokenController } from '~/helpers/functions';
 import handler from '~/pages/api/repo/add';
-import { getRepoList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 
 vi.mock('next-auth/next', () => ({
   getServerSession: vi.fn(),
@@ -13,13 +13,7 @@ vi.mock('~/helpers/functions', () => ({
   isSshPubKeyDuplicate: vi.fn(),
 }));
 
-vi.mock('~/services', () => ({
-  getRepoList: vi.fn(),
-  updateRepoList: vi.fn(),
-  ShellService: {
-    createRepo: vi.fn(),
-  },
-}));
+vi.mock('~/services');
 
 describe('POST /api/repo/add', () => {
   beforeEach(() => {
@@ -65,7 +59,9 @@ describe('POST /api/repo/add', () => {
 
   it('should return 409 if SSH key is duplicated', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 1, sshPublicKey: 'duplicate-key' }]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
+      { id: 1, sshPublicKey: 'duplicate-key' },
+    ]);
     vi.mocked(isSshPubKeyDuplicate).mockReturnValue(true);
     const { req, res } = createMocks({
       method: 'POST',
@@ -77,7 +73,7 @@ describe('POST /api/repo/add', () => {
 
   it('should return 500 if createRepoShell fails', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stderr: 'Error' });
     const { req, res } = createMocks({
       method: 'POST',
@@ -89,9 +85,9 @@ describe('POST /api/repo/add', () => {
 
   it('should successfully create a repository with a session', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
     const { req, res } = createMocks({
       method: 'POST',
       body: { alias: 'repo1', sshPublicKey: 'valid-key', storageSize: 10 },
@@ -103,9 +99,9 @@ describe('POST /api/repo/add', () => {
 
   it('should add missing optional properties with default values and update repo list correctly', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -117,7 +113,7 @@ describe('POST /api/repo/add', () => {
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ id: 0, repositoryName: 'new-repo' });
 
-    expect(updateRepoList).toHaveBeenCalledWith(
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith(
       [
         {
           id: 0,
@@ -142,7 +138,7 @@ describe('POST /api/repo/add', () => {
   it('should assign the correct ID based on existing repositories', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
 
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 0,
         alias: 'repo0',
@@ -179,7 +175,7 @@ describe('POST /api/repo/add', () => {
     ]);
 
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -191,7 +187,7 @@ describe('POST /api/repo/add', () => {
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ id: 4, repositoryName: 'new-repo' });
 
-    expect(updateRepoList).toHaveBeenCalledWith(
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith(
       [
         {
           id: 0,

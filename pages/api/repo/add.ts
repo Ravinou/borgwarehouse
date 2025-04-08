@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { Repository } from '~/types/domain/config.types';
 import { getUnixTime } from 'date-fns';
-import { getRepoList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -48,7 +48,7 @@ export default async function handler(
   try {
     const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } =
       req.body;
-    const repoList = await getRepoList();
+    const repoList = await ConfigService.getRepoList();
 
     if (sshPublicKey && isSshPubKeyDuplicate(sshPublicKey, repoList)) {
       return res.status(409).json({
@@ -85,7 +85,7 @@ export default async function handler(
 
     newRepo.repositoryName = stdout.trim();
     const updatedRepoList = [...repoList, newRepo];
-    await updateRepoList(updatedRepoList, true);
+    await ConfigService.updateRepoList(updatedRepoList, true);
 
     return res.status(200).json({ id: newRepo.id, repositoryName: newRepo.repositoryName });
   } catch (error) {

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { exec as execCallback } from 'node:child_process';
 import { promisify } from 'util';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { getRepoList, getUsersList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
 import emailAlertStatus from '~/helpers/templates/emailAlertStatus';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
@@ -26,7 +26,7 @@ export default async function handler(
   }
 
   try {
-    const repoList = await getRepoList();
+    const repoList = await ConfigService.getRepoList();
     const lastSaveList = await ShellService.getLastSaveList();
     if (repoList.length === 0 || lastSaveList.length === 0) {
       return ApiResponse.success(res, 'Status cron executed. No repository to check.');
@@ -58,7 +58,7 @@ export default async function handler(
     });
 
     if (repoListToSendAlert.length > 0) {
-      const usersList = await getUsersList();
+      const usersList = await ConfigService.getUsersList();
 
       // Send Email Alert
       if (usersList[0].emailAlert) {
@@ -91,7 +91,7 @@ export default async function handler(
       }
     }
 
-    await updateRepoList(updatedRepoList);
+    await ConfigService.updateRepoList(updatedRepoList);
     return ApiResponse.success(res, 'Status cron executed successfully.');
   } catch (error) {
     console.log(error);

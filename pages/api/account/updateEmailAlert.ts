@@ -1,4 +1,4 @@
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { EmailAlertDTO } from '~/types/api/notification.types';
@@ -25,7 +25,7 @@ export default async function handler(
   }
 
   try {
-    const usersList = await getUsersList();
+    const usersList = await ConfigService.getUsersList();
     const userIndex = usersList.findIndex((u) => u.username === session.user?.name);
 
     if (userIndex === -1) {
@@ -38,7 +38,7 @@ export default async function handler(
       index === userIndex ? { ...user, emailAlert } : user
     );
 
-    await updateUsersList(updatedUsersList);
+    await ConfigService.updateUsersList(updatedUsersList);
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error: any) {
     console.log(error);

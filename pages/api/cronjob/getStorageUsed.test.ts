@@ -1,14 +1,8 @@
 import handler from '~/pages/api/cronjob/getStorageUsed';
 import { createMocks } from 'node-mocks-http';
-import { getRepoList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 
-vi.mock('~/services', () => ({
-  getRepoList: vi.fn(),
-  updateRepoList: vi.fn(),
-  ShellService: {
-    getStorageUsed: vi.fn(),
-  },
-}));
+vi.mock('~/services');
 
 describe('GET /api/cronjob/getStorageUsed', () => {
   beforeEach(() => {
@@ -43,7 +37,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
   });
 
   it('should return success if no repositories are found', async () => {
-    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -68,9 +62,9 @@ describe('GET /api/cronjob/getStorageUsed', () => {
       { name: 'repo2', size: 200 },
     ];
 
-    vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
     vi.mocked(ShellService.getStorageUsed).mockResolvedValue(mockStorageUsed);
-    vi.mocked(updateRepoList).mockResolvedValue(undefined);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -83,14 +77,14 @@ describe('GET /api/cronjob/getStorageUsed', () => {
 
     expect(res._getStatusCode()).toBe(200);
     expect(res._getData()).toContain('Storage cron has been executed');
-    expect(updateRepoList).toHaveBeenCalledWith([
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
       { repositoryName: 'repo1', storageUsed: 100 },
       { repositoryName: 'repo2', storageUsed: 200 },
     ]);
   });
 
   it('should return server error if an exception occurs', async () => {
-    vi.mocked(getRepoList).mockRejectedValue(new Error('Test error'));
+    vi.mocked(ConfigService.getRepoList).mockRejectedValue(new Error('Test error'));
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -111,9 +105,9 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     ];
     const mockStorageUsed = [{ name: 'repo1', size: 100 }];
 
-    vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
     vi.mocked(ShellService.getStorageUsed).mockResolvedValue(mockStorageUsed);
-    vi.mocked(updateRepoList).mockResolvedValue(undefined);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -125,7 +119,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(200);
-    expect(updateRepoList).toHaveBeenCalledWith([
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
       { repositoryName: 'repo1', storageUsed: 100 },
       { repositoryName: 'repo2', storageUsed: 0 },
     ]);

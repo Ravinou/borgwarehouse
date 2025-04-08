@@ -1,15 +1,14 @@
 import { getServerSession } from 'next-auth/next';
 import { createMocks } from 'node-mocks-http';
-import { isSshPubKeyDuplicate, tokenController } from '~/helpers/functions';
+import { isSshPubKeyDuplicate } from '~/helpers/functions';
 import handler from '~/pages/api/repo/add';
-import { ConfigService, ShellService } from '~/services';
+import { ConfigService, ShellService, AuthService } from '~/services';
 
 vi.mock('next-auth/next', () => ({
   getServerSession: vi.fn(),
 }));
 
 vi.mock('~/helpers/functions', () => ({
-  tokenController: vi.fn(),
   isSshPubKeyDuplicate: vi.fn(),
 }));
 
@@ -37,7 +36,7 @@ describe('POST /api/repo/add', () => {
 
   it('should return 401 if API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(undefined);
+    vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer INVALID_API_KEY' },
@@ -48,7 +47,7 @@ describe('POST /api/repo/add', () => {
 
   it('should return 403 if API key does not have create permissions', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({ create: false });
+    vi.mocked(AuthService.tokenController).mockResolvedValue({ create: false });
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer API_KEY' },

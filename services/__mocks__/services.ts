@@ -12,3 +12,9 @@ export const ConfigService = {
   updateUsersList: vi.fn(),
   updateRepoList: vi.fn(),
 };
+
+export const AuthService = {
+  verifyPassword: vi.fn(),
+  hashPassword: vi.fn(),
+  tokenController: vi.fn(),
+};

@@ -1,13 +1,12 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/edit';
 import { getServerSession } from 'next-auth/next';
-import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
-import { ConfigService, ShellService } from '~/services';
+import { isSshPubKeyDuplicate } from '~/helpers/functions';
+import { ConfigService, ShellService, AuthService } from '~/services';
 
 vi.mock('next-auth/next');
 
 vi.mock('~/helpers/functions', () => ({
-  tokenController: vi.fn(),
   isSshPubKeyDuplicate: vi.fn(),
 }));
 
@@ -34,7 +33,7 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should return 401 if API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(undefined);
+    vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'PATCH',
       headers: { authorization: 'Bearer INVALID_API_KEY' },
@@ -45,7 +44,7 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should return 403 if API key does not have update permissions', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({
+    vi.mocked(AuthService.tokenController).mockResolvedValue({
       update: false,
       create: false,
       delete: false,
@@ -156,7 +155,7 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should successfully update repository with API key', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({
+    vi.mocked(AuthService.tokenController).mockResolvedValue({
       update: true,
       create: false,
       delete: false,

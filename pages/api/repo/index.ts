@@ -3,8 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { tokenController } from '~/helpers/functions';
-import { ConfigService } from '~/services';
+import { ConfigService, AuthService } from '~/services';
 import { Repository } from '~/types/domain/config.types';
 
 export default async function handler(
@@ -23,7 +22,7 @@ export default async function handler(
 
   try {
     if (!session && authorization) {
-      const permissions = await tokenController(req.headers);
+      const permissions = await AuthService.tokenController(req.headers);
       if (!permissions) {
         return ApiResponse.unauthorized(res, 'Invalid API key');
       }

@@ -1,11 +1,11 @@
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
+import { isSshPubKeyDuplicate } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { Repository } from '~/types/domain/config.types';
 import { getUnixTime } from 'date-fns';
-import { ConfigService, ShellService } from '~/services';
+import { ConfigService, ShellService, AuthService } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -24,7 +24,7 @@ export default async function handler(
 
   try {
     if (!session && authorization) {
-      const permissions = await tokenController(req.headers);
+      const permissions = await AuthService.tokenController(req.headers);
       if (!permissions) {
         return ApiResponse.unauthorized(res, 'Invalid API key');
       }

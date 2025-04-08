@@ -2,8 +2,7 @@ import fs from 'fs';
 import NextAuth, { NextAuthOptions, RequestInternal, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import path from 'path';
-import { ConfigService } from '~/services';
-import { verifyPassword } from '../../../helpers/functions/auth';
+import { ConfigService, AuthService } from '~/services';
 
 const logLogin = async (message: string, req: Partial<RequestInternal>, success = false) => {
   const ipAddress = req.headers?.['x-forwarded-for'] || 'unknown';
@@ -64,7 +63,7 @@ export const authOptions: NextAuthOptions = {
         const user = usersList[userIndex];
 
         //Step 2 : Is the password correct ?
-        const isValid = await verifyPassword(password, user.password);
+        const isValid = await AuthService.verifyPassword(password, user.password);
         if (!isValid) {
           await logLogin(`Wrong password for ${req.body?.username}`, req);
           throw new Error('Incorrect credentials.');

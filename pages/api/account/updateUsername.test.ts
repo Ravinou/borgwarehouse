@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/account/updateUsername'; // adapte le chemin si besoin
+import handler from '~/pages/api/account/updateUsername';
 import { getServerSession } from 'next-auth/next';
 import { getUsersList, updateUsersList } from '~/services';
 

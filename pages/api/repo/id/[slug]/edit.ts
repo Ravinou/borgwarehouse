@@ -4,8 +4,7 @@ import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { Repository } from '~/types/domain/config.types';
-import { updateRepoShell } from '~/helpers/functions/shell.utils';
-import { getRepoList, updateRepoList } from '~/services';
+import { getRepoList, updateRepoList, ShellService } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -75,7 +74,7 @@ export default async function handler(
       appendOnlyMode: appendOnlyMode ?? repo.appendOnlyMode,
     };
 
-    const { stderr } = await updateRepoShell(
+    const { stderr } = await ShellService.updateRepo(
       updatedRepo.repositoryName,
       updatedRepo.sshPublicKey,
       updatedRepo.storageSize,

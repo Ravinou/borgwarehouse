@@ -1,14 +1,10 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/delete';
 import { getServerSession } from 'next-auth/next';
-import { deleteRepoShell } from '~/helpers/functions/shell.utils';
-import { getRepoList, updateRepoList } from '~/services';
+import { getRepoList, updateRepoList, ShellService } from '~/services';
 import { tokenController } from '~/helpers/functions';
 
-vi.mock('next-auth/next', () => ({
-  getServerSession: vi.fn(),
-}));
-
+vi.mock('next-auth/next');
 vi.mock('~/helpers/functions', () => ({
   tokenController: vi.fn(),
 }));
@@ -16,13 +12,10 @@ vi.mock('~/helpers/functions', () => ({
 vi.mock('~/services', () => ({
   getRepoList: vi.fn(),
   updateRepoList: vi.fn(),
+  ShellService: {
+    deleteRepo: vi.fn(),
+  },
 }));
-
-vi.mock('~/helpers/functions/shell.utils', () => {
-  return {
-    deleteRepoShell: vi.fn(),
-  };
-});
 
 describe('DELETE /api/repo/id/[slug]/delete', () => {
   beforeEach(() => {
@@ -99,8 +92,20 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       method: 'DELETE',
       query: { slug: '123' },
     });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 123, repositoryName: 'test-repo' }]);
-    vi.mocked(deleteRepoShell).mockResolvedValue({ stderr: 'Error' });
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        id: 123,
+        repositoryName: 'test-repo',
+        alias: 'test-alias',
+        status: true,
+        lastSave: 0,
+        storageSize: 1024,
+        storageUsed: 512,
+        sshPublicKey: 'ssh-rsa AAAAB3Nz',
+        comment: 'Test repository',
+      },
+    ]);
+    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: 'Error' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(500);
     expect(res._getJSONData()).toEqual({
@@ -118,9 +123,21 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       method: 'DELETE',
       query: { slug: '1234' },
     });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 1234, repositoryName: 'test-repo' }]);
-    vi.mocked(deleteRepoShell).mockResolvedValue({ stderr: null });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        id: 1234,
+        repositoryName: 'test-repo',
+        alias: 'test-alias',
+        status: true,
+        lastSave: 0,
+        storageSize: 1024,
+        storageUsed: 512,
+        sshPublicKey: 'ssh-rsa AAAAB3Nz',
+        comment: 'Test repository',
+      },
+    ]);
+    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: null });
+    vi.mocked(updateRepoList).mockResolvedValue();
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
@@ -132,7 +149,12 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
 
   it('should delete the repository and return 200 on success with an API key', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({ delete: true });
+    vi.mocked(tokenController).mockResolvedValue({
+      delete: true,
+      read: true,
+      create: true,
+      update: true,
+    });
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '12345' },
@@ -140,9 +162,21 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
         authorization: 'Bearer API_KEY',
       },
     });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 12345, repositoryName: 'test-repo2' }]);
-    vi.mocked(deleteRepoShell).mockResolvedValue({ stderr: null });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        id: 12345,
+        repositoryName: 'test-repo2',
+        alias: 'test-alias',
+        status: true,
+        lastSave: 0,
+        storageSize: 1024,
+        storageUsed: 512,
+        sshPublicKey: 'ssh-rsa AAAAB3Nz',
+        comment: 'Test repository',
+      },
+    ]);
+    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stdout: 'delete' });
+    vi.mocked(updateRepoList).mockResolvedValue();
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
@@ -154,7 +188,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
 
   it('should return 401 if the API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '12345' },
@@ -172,7 +206,12 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
 
   it('should return 403 if the API key does not have delete permissions', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({ delete: false });
+    vi.mocked(tokenController).mockResolvedValue({
+      delete: false,
+      read: true,
+      create: true,
+      update: true,
+    });
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '12345' },

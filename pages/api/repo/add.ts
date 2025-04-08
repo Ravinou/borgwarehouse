@@ -4,9 +4,8 @@ import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { Repository } from '~/types/domain/config.types';
-import { createRepoShell } from '~/helpers/functions/shell.utils';
 import { getUnixTime } from 'date-fns';
-import { getRepoList, updateRepoList } from '~/services';
+import { getRepoList, updateRepoList, ShellService } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -74,14 +73,14 @@ export default async function handler(
       appendOnlyMode: appendOnlyMode ?? false,
     };
 
-    const { stdout, stderr } = await createRepoShell(
+    const { stdout, stderr } = await ShellService.createRepo(
       newRepo.sshPublicKey,
       newRepo.storageSize,
       newRepo.appendOnlyMode ?? false
     );
-    if (stderr) {
+    if (stderr || !stdout) {
       console.log('Create repository error: ', stderr);
-      throw new Error();
+      throw new Error(stderr || 'Unknown error occurred while creating the repository');
     }
 
     newRepo.repositoryName = stdout.trim();

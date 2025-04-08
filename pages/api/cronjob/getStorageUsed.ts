@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getRepoList, updateRepoList } from '~/services';
+import { getRepoList, updateRepoList, ShellService } from '~/services';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { getStorageUsedShell } from '~/helpers/functions/shell.utils';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 
 export default async function handler(
@@ -26,7 +25,7 @@ export default async function handler(
       return ApiResponse.success(res, 'Storage cron executed. No repository to check.');
     }
 
-    const storageUsed = await getStorageUsedShell();
+    const storageUsed = await ShellService.getStorageUsed();
 
     //Update the storageUsed value of each repository
     const updatedRepoList = repoList.map((repo) => {

@@ -1,16 +1,11 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]';
 import { getServerSession } from 'next-auth/next';
-import { tokenController } from '~/helpers/functions';
-import { ConfigService } from '~/services';
+import { ConfigService, AuthService } from '~/services';
 import { Repository } from '~/types/domain/config.types';
 
 vi.mock('next-auth/next', () => ({
   getServerSession: vi.fn(),
-}));
-
-vi.mock('~/helpers/functions', () => ({
-  tokenController: vi.fn(),
 }));
 
 vi.mock('~/services');
@@ -69,7 +64,7 @@ describe('GET /api/repo/id/[slug]', () => {
 
   it('should return 401 if API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(undefined);
+    vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'GET',
       headers: { authorization: 'Bearer INVALID_API_KEY' },
@@ -80,7 +75,7 @@ describe('GET /api/repo/id/[slug]', () => {
 
   it('should return 403 if API key does not have read permissions', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({ read: false });
+    vi.mocked(AuthService.tokenController).mockResolvedValue({ read: false });
     const { req, res } = createMocks({
       method: 'GET',
       headers: { authorization: 'Bearer API_KEY' },

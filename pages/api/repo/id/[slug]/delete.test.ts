@@ -1,14 +1,9 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/delete';
 import { getServerSession } from 'next-auth/next';
-import { ConfigService, ShellService } from '~/services';
-import { tokenController } from '~/helpers/functions';
+import { ConfigService, ShellService, AuthService } from '~/services';
 
 vi.mock('next-auth/next');
-vi.mock('~/helpers/functions', () => ({
-  tokenController: vi.fn(),
-}));
-
 vi.mock('~/services');
 
 describe('DELETE /api/repo/id/[slug]/delete', () => {
@@ -143,7 +138,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
 
   it('should delete the repository and return 200 on success with an API key', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({
+    vi.mocked(AuthService.tokenController).mockResolvedValue({
       delete: true,
       read: true,
       create: true,
@@ -182,7 +177,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
 
   it('should return 401 if the API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(undefined);
+    vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'DELETE',
       query: { slug: '12345' },
@@ -200,7 +195,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
 
   it('should return 403 if the API key does not have delete permissions', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({
+    vi.mocked(AuthService.tokenController).mockResolvedValue({
       delete: false,
       read: true,
       create: true,

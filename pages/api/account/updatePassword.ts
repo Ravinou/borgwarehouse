@@ -1,6 +1,5 @@
-import { hashPassword, verifyPassword } from '~/helpers/functions';
 import { authOptions } from '../auth/[...nextauth]';
-import { ConfigService } from '~/services';
+import { ConfigService, AuthService } from '~/services';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse } from '~/types/api/error.types';
@@ -36,12 +35,12 @@ export default async function handler(
       });
     }
 
-    const isValidPassword = await verifyPassword(oldPassword, user.password);
+    const isValidPassword = await AuthService.verifyPassword(oldPassword, user.password);
     if (!isValidPassword) {
       return res.status(400).json({ message: 'Old password is incorrect.' });
     }
 
-    const newPasswordHash = await hashPassword(newPassword);
+    const newPasswordHash = await AuthService.hashPassword(newPassword);
     const updatedUsersList = usersList.map((user, index) =>
       index === userIndex ? { ...user, password: newPasswordHash } : user
     );

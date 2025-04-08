@@ -1,15 +1,10 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updatePassword';
 import { getServerSession } from 'next-auth/next';
-import { ConfigService } from '~/services';
-import { verifyPassword, hashPassword } from '~/helpers/functions';
+import { ConfigService, AuthService } from '~/services';
 
 vi.mock('next-auth/next');
 vi.mock('~/services');
-vi.mock('~/helpers/functions', () => ({
-  verifyPassword: vi.fn(),
-  hashPassword: vi.fn(),
-}));
 
 describe('PUT /api/account/updatePassword', () => {
   beforeEach(() => {
@@ -80,7 +75,7 @@ describe('PUT /api/account/updatePassword', () => {
       { id: 1, username: 'Lovelace', password: 'hashedpass', roles: [], email: 'love@example.com' },
     ]);
 
-    vi.mocked(verifyPassword).mockResolvedValue(false);
+    vi.mocked(AuthService.verifyPassword).mockResolvedValue(false);
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -108,8 +103,8 @@ describe('PUT /api/account/updatePassword', () => {
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([oldUser]);
 
-    vi.mocked(verifyPassword).mockResolvedValue(true);
-    vi.mocked(hashPassword).mockResolvedValue('newHashedPassword');
+    vi.mocked(AuthService.verifyPassword).mockResolvedValue(true);
+    vi.mocked(AuthService.hashPassword).mockResolvedValue('newHashedPassword');
     vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
@@ -119,8 +114,8 @@ describe('PUT /api/account/updatePassword', () => {
 
     await handler(req, res);
 
-    expect(verifyPassword).toHaveBeenCalledWith('oldpass', 'hashedpass');
-    expect(hashPassword).toHaveBeenCalledWith('newpass');
+    expect(AuthService.verifyPassword).toHaveBeenCalledWith('oldpass', 'hashedpass');
+    expect(AuthService.hashPassword).toHaveBeenCalledWith('newpass');
     expect(ConfigService.updateUsersList).toHaveBeenCalledWith([
       { ...oldUser, password: 'newHashedPassword' },
     ]);

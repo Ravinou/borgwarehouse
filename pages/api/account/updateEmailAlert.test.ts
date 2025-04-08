@@ -1,13 +1,10 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updateEmailAlert';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 
 vi.mock('next-auth/next');
-vi.mock('~/services', () => ({
-  getUsersList: vi.fn(),
-  updateUsersList: vi.fn(),
-}));
+vi.mock('~/services');
 
 describe('PUT /api/account/updateEmailAlert', () => {
   beforeEach(() => {
@@ -52,7 +49,7 @@ describe('PUT /api/account/updateEmailAlert', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 2,
         username: 'Ada',
@@ -90,8 +87,8 @@ describe('PUT /api/account/updateEmailAlert', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([user]);
-    vi.mocked(updateUsersList).mockResolvedValue();
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([user]);
+    vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -100,7 +97,7 @@ describe('PUT /api/account/updateEmailAlert', () => {
 
     await handler(req, res);
 
-    expect(updateUsersList).toHaveBeenCalledWith([{ ...user, emailAlert: true }]);
+    expect(ConfigService.updateUsersList).toHaveBeenCalledWith([{ ...user, emailAlert: true }]);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ message: 'Successful API send' });
   });
@@ -110,7 +107,7 @@ describe('PUT /api/account/updateEmailAlert', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockRejectedValue({ code: 'ENOENT' });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -131,7 +128,7 @@ describe('PUT /api/account/updateEmailAlert', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockRejectedValue({ code: 'UNKNOWN' });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'UNKNOWN' });
 
     const { req, res } = createMocks({
       method: 'PUT',

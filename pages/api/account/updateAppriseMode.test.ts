@@ -1,14 +1,11 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updateAppriseMode';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { AppriseModeEnum } from '~/types/domain/config.types';
 
 vi.mock('next-auth/next');
-vi.mock('~/services', () => ({
-  getUsersList: vi.fn(),
-  updateUsersList: vi.fn(),
-}));
+vi.mock('~/services');
 
 describe('Apprise Mode API', () => {
   it('should return 405 if method is not PUT', async () => {
@@ -40,7 +37,7 @@ describe('Apprise Mode API', () => {
 
   it('should return 400 if user does not exist', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'unknownuser' } });
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testuser',
@@ -62,7 +59,7 @@ describe('Apprise Mode API', () => {
 
   it('should update user settings and return 200', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testuser' } });
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testuser',
@@ -72,7 +69,7 @@ describe('Apprise Mode API', () => {
         appriseMode: AppriseModeEnum.PACKAGE,
       },
     ]);
-    vi.mocked(updateUsersList).mockResolvedValue();
+    vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -81,7 +78,7 @@ describe('Apprise Mode API', () => {
 
     await handler(req, res);
 
-    expect(updateUsersList).toHaveBeenCalledWith([
+    expect(ConfigService.updateUsersList).toHaveBeenCalledWith([
       {
         id: 1,
         username: 'testuser',

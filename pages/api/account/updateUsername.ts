@@ -1,4 +1,4 @@
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { UsernameSettingDTO } from '~/types/api/setting.types';
@@ -33,7 +33,7 @@ export default async function handler(
   }
 
   try {
-    const usersList = await getUsersList();
+    const usersList = await ConfigService.getUsersList();
     const userIndex = usersList.findIndex((user) => user.username === session.user?.name);
 
     if (userIndex === -1) {
@@ -49,7 +49,7 @@ export default async function handler(
     const updatedUsersList = usersList.map((user, index) =>
       index === userIndex ? { ...user, username } : user
     );
-    await updateUsersList(updatedUsersList);
+    await ConfigService.updateUsersList(updatedUsersList);
 
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error: any) {

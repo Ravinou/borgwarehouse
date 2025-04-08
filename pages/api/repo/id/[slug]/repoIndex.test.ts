@@ -2,7 +2,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]';
 import { getServerSession } from 'next-auth/next';
 import { tokenController } from '~/helpers/functions';
-import { getRepoList } from '~/services';
+import { ConfigService } from '~/services';
 import { Repository } from '~/types/domain/config.types';
 
 vi.mock('next-auth/next', () => ({
@@ -13,9 +13,7 @@ vi.mock('~/helpers/functions', () => ({
   tokenController: vi.fn(),
 }));
 
-vi.mock('~/services', () => ({
-  getRepoList: vi.fn(),
-}));
+vi.mock('~/services');
 
 const mockRepoList: Repository[] = [
   {
@@ -100,7 +98,7 @@ describe('GET /api/repo/id/[slug]', () => {
 
   it('should return 404 if repository is not found', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     const { req, res } = createMocks({ method: 'GET', query: { slug: '3' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(404);
@@ -108,7 +106,7 @@ describe('GET /api/repo/id/[slug]', () => {
 
   it('should return 200 and the repository data if found', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
     const { req, res } = createMocks({ method: 'GET', query: { slug: '1' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);

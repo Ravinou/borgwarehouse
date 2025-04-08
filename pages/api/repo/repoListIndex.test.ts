@@ -2,7 +2,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo';
 import { getServerSession } from 'next-auth/next';
 import { tokenController } from '~/helpers/functions';
-import { getRepoList } from '~/services';
+import { ConfigService } from '~/services';
 import { Repository } from '~/types/domain/config.types';
 
 vi.mock('next-auth/next', () => ({
@@ -13,9 +13,7 @@ vi.mock('~/helpers/functions', () => ({
   tokenController: vi.fn(),
 }));
 
-vi.mock('~/services', () => ({
-  getRepoList: vi.fn(),
-}));
+vi.mock('~/services');
 
 const mockRepoList: Repository[] = [
   {
@@ -93,7 +91,7 @@ describe('GET /api/repo/id/[slug]', () => {
 
   it('should return 200 and the repoList data if found', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);

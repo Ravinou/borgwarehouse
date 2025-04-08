@@ -1,6 +1,6 @@
 import { hashPassword, verifyPassword } from '~/helpers/functions';
 import { authOptions } from '../auth/[...nextauth]';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse } from '~/types/api/error.types';
@@ -26,7 +26,7 @@ export default async function handler(
   }
 
   try {
-    const usersList = await getUsersList();
+    const usersList = await ConfigService.getUsersList();
     const userIndex = usersList.findIndex((user) => user.username === session.user?.name);
     const user = usersList[userIndex];
 
@@ -46,7 +46,7 @@ export default async function handler(
       index === userIndex ? { ...user, password: newPasswordHash } : user
     );
 
-    await updateUsersList(updatedUsersList);
+    await ConfigService.updateUsersList(updatedUsersList);
 
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error: any) {

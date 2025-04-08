@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { AppriseServicesDTO } from '~/types/api/notification.types';
 import { ErrorResponse } from '~/types/api/error.types';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 
 export default async function handler(
   req: NextApiRequest & { body: AppriseServicesDTO },
@@ -22,7 +22,7 @@ export default async function handler(
   const { appriseURLs } = req.body;
 
   try {
-    const usersList = await getUsersList();
+    const usersList = await ConfigService.getUsersList();
     const userIndex = usersList.findIndex((user) => user.username === session.user?.name);
 
     if (userIndex === -1) {
@@ -41,7 +41,7 @@ export default async function handler(
       index === userIndex ? { ...user, appriseServices: appriseURLsArray } : user
     );
 
-    await updateUsersList(updatedUsersList);
+    await ConfigService.updateUsersList(updatedUsersList);
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error: any) {
     console.log(error);

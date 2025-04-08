@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getRepoList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 
@@ -20,7 +20,7 @@ export default async function handler(
 
   try {
     //Check the repoList
-    const repoList = await getRepoList();
+    const repoList = await ConfigService.getRepoList();
     if (repoList.length === 0) {
       return ApiResponse.success(res, 'Storage cron executed. No repository to check.');
     }
@@ -37,7 +37,7 @@ export default async function handler(
       };
     });
 
-    await updateRepoList(updatedRepoList);
+    await ConfigService.updateRepoList(updatedRepoList);
     return ApiResponse.success(res, 'Storage cron has been executed.');
   } catch (err) {
     console.log(err);

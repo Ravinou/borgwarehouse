@@ -1,7 +1,7 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/delete';
 import { getServerSession } from 'next-auth/next';
-import { getRepoList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 import { tokenController } from '~/helpers/functions';
 
 vi.mock('next-auth/next');
@@ -9,13 +9,7 @@ vi.mock('~/helpers/functions', () => ({
   tokenController: vi.fn(),
 }));
 
-vi.mock('~/services', () => ({
-  getRepoList: vi.fn(),
-  updateRepoList: vi.fn(),
-  ShellService: {
-    deleteRepo: vi.fn(),
-  },
-}));
+vi.mock('~/services');
 
 describe('DELETE /api/repo/id/[slug]/delete', () => {
   beforeEach(() => {
@@ -75,7 +69,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       method: 'DELETE',
       query: { slug: '123' },
     });
-    vi.mocked(getRepoList).mockResolvedValue([]);
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     await handler(req, res);
     expect(res._getStatusCode()).toBe(404);
     expect(res._getJSONData()).toEqual({
@@ -92,7 +86,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       method: 'DELETE',
       query: { slug: '123' },
     });
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
         repositoryName: 'test-repo',
@@ -112,7 +106,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       status: 500,
       message: 'API error, contact the administrator.',
     });
-    expect(updateRepoList).not.toHaveBeenCalled();
+    expect(ConfigService.updateRepoList).not.toHaveBeenCalled();
   });
 
   it('should delete the repository and return 200 on success with a session', async () => {
@@ -123,7 +117,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       method: 'DELETE',
       query: { slug: '1234' },
     });
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 1234,
         repositoryName: 'test-repo',
@@ -137,14 +131,14 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       },
     ]);
     vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: null });
-    vi.mocked(updateRepoList).mockResolvedValue();
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue();
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
       message: 'Repository test-repo deleted',
     });
-    expect(updateRepoList).toHaveBeenCalledWith([], true);
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([], true);
   });
 
   it('should delete the repository and return 200 on success with an API key', async () => {
@@ -162,7 +156,7 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
         authorization: 'Bearer API_KEY',
       },
     });
-    vi.mocked(getRepoList).mockResolvedValue([
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 12345,
         repositoryName: 'test-repo2',
@@ -176,14 +170,14 @@ describe('DELETE /api/repo/id/[slug]/delete', () => {
       },
     ]);
     vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stdout: 'delete' });
-    vi.mocked(updateRepoList).mockResolvedValue();
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue();
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
       message: 'Repository test-repo2 deleted',
     });
-    expect(updateRepoList).toHaveBeenCalledWith([], true);
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([], true);
   });
 
   it('should return 401 if the API key is invalid', async () => {

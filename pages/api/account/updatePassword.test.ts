@@ -1,14 +1,11 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/updatePassword';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { verifyPassword, hashPassword } from '~/helpers/functions';
 
 vi.mock('next-auth/next');
-vi.mock('~/services', () => ({
-  getUsersList: vi.fn(),
-  updateUsersList: vi.fn(),
-}));
+vi.mock('~/services');
 vi.mock('~/helpers/functions', () => ({
   verifyPassword: vi.fn(),
   hashPassword: vi.fn(),
@@ -57,7 +54,7 @@ describe('PUT /api/account/updatePassword', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       { id: 1, username: 'Ada', password: 'hashedpass', roles: [], email: 'ada@example.com' },
     ]);
 
@@ -79,7 +76,7 @@ describe('PUT /api/account/updatePassword', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       { id: 1, username: 'Lovelace', password: 'hashedpass', roles: [], email: 'love@example.com' },
     ]);
 
@@ -109,11 +106,11 @@ describe('PUT /api/account/updatePassword', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([oldUser]);
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([oldUser]);
 
     vi.mocked(verifyPassword).mockResolvedValue(true);
     vi.mocked(hashPassword).mockResolvedValue('newHashedPassword');
-    vi.mocked(updateUsersList).mockResolvedValue();
+    vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -124,7 +121,9 @@ describe('PUT /api/account/updatePassword', () => {
 
     expect(verifyPassword).toHaveBeenCalledWith('oldpass', 'hashedpass');
     expect(hashPassword).toHaveBeenCalledWith('newpass');
-    expect(updateUsersList).toHaveBeenCalledWith([{ ...oldUser, password: 'newHashedPassword' }]);
+    expect(ConfigService.updateUsersList).toHaveBeenCalledWith([
+      { ...oldUser, password: 'newHashedPassword' },
+    ]);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ message: 'Successful API send' });
   });
@@ -134,7 +133,7 @@ describe('PUT /api/account/updatePassword', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockRejectedValue({ code: 'ENOENT' });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -155,7 +154,7 @@ describe('PUT /api/account/updatePassword', () => {
       user: { name: 'Lovelace' },
     });
 
-    vi.mocked(getUsersList).mockRejectedValue({ code: 'SOMETHING_ELSE' });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'SOMETHING_ELSE' });
 
     const { req, res } = createMocks({
       method: 'PUT',

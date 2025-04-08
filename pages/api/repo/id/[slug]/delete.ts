@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { tokenController } from '~/helpers/functions';
-import { getRepoList, updateRepoList, ShellService } from '~/services';
+import { ConfigService, ShellService } from '~/services';
 
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
@@ -40,7 +40,7 @@ export default async function handler(
   }
 
   try {
-    const repoList = await getRepoList();
+    const repoList = await ConfigService.getRepoList();
 
     const slug = req.query.slug;
     if (!slug || Array.isArray(slug)) {
@@ -61,7 +61,7 @@ export default async function handler(
 
     const updatedRepoList = repoList.filter((repo) => repo.id !== parseInt(slug, 10));
 
-    await updateRepoList(updatedRepoList, true);
+    await ConfigService.updateRepoList(updatedRepoList, true);
     return ApiResponse.success(res, `Repository ${repoList[indexToDelete].repositoryName} deleted`);
   } catch (error) {
     console.log(error);

@@ -1,13 +1,11 @@
 import { getServerSession } from 'next-auth/next';
 import { createMocks } from 'node-mocks-http';
-import { getUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import handler from '~/pages/api/account/getAppriseMode';
 import { AppriseModeEnum } from '~/types/domain/config.types';
 
 vi.mock('next-auth/next');
-vi.mock('~/services', () => ({
-  getUsersList: vi.fn(),
-}));
+vi.mock('~/services');
 
 describe('Get Apprise Mode API', () => {
   beforeEach(() => {
@@ -34,7 +32,7 @@ describe('Get Apprise Mode API', () => {
       user: { name: 'nonexistent' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testuser',
@@ -60,7 +58,7 @@ describe('Get Apprise Mode API', () => {
       user: { name: 'testuser' },
     });
 
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testuser',
@@ -87,7 +85,7 @@ describe('Get Apprise Mode API', () => {
       user: { name: 'testuser' },
     });
 
-    vi.mocked(getUsersList).mockImplementation(() => {
+    vi.mocked(ConfigService.getUsersList).mockImplementation(() => {
       throw new Error();
     });
     const { req, res } = createMocks({ method: 'GET' });

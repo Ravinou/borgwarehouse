@@ -1,7 +1,7 @@
 //Lib
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { ErrorResponse } from '~/types/api/error.types';
 import { EmailAlertDTO } from '~/types/api/notification.types';
 import { authOptions } from '../auth/[...nextauth]';
@@ -23,7 +23,7 @@ export default async function handler(
   }
 
   try {
-    const usersList = await getUsersList();
+    const usersList = await ConfigService.getUsersList();
 
     //Verify that the user of the session exists
     const user = usersList.find((u) => u.username === session.user?.name);

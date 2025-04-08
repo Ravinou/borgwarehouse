@@ -2,7 +2,7 @@ import { exec } from 'child_process';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { promisify } from 'util';
-import { getUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { ErrorResponse, SuccessResponse } from '~/types/api/error.types';
 import { authOptions } from '../auth/[...nextauth]';
 
@@ -43,7 +43,7 @@ export default async function handler(
   if (!session) return res.status(401).json({ message: 'You must be logged in.' });
 
   try {
-    const usersList = await getUsersList();
+    const usersList = await ConfigService.getUsersList();
     const user = usersList.find((u) => u.username === session.user?.name);
     if (!user)
       return res.status(400).json({ message: 'Invalid user session. Please log out and retry.' });

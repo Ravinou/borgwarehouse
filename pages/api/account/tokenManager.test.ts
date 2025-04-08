@@ -1,7 +1,7 @@
 import handler from '~/pages/api/account/tokenManager';
 import { createMocks } from 'node-mocks-http';
 import { getServerSession } from 'next-auth/next';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import ApiResponse from '~/helpers/functions/apiResponse';
 
 vi.mock('next-auth/next', () => ({
@@ -9,10 +9,7 @@ vi.mock('next-auth/next', () => ({
   getServerSession: vi.fn(),
 }));
 
-vi.mock('~/services', () => ({
-  getUsersList: vi.fn(),
-  updateUsersList: vi.fn(),
-}));
+vi.mock('~/services');
 
 vi.mock('~/helpers/functions/apiResponse');
 
@@ -40,7 +37,7 @@ describe('Token Manager API', () => {
 
   it('should create a new token if valid data is provided', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testUser' } });
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testUser',
@@ -50,7 +47,7 @@ describe('Token Manager API', () => {
         tokens: [],
       },
     ]);
-    vi.mocked(updateUsersList).mockResolvedValue();
+    vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -65,12 +62,12 @@ describe('Token Manager API', () => {
     expect(res._getStatusCode()).toBe(200);
     const responseData = JSON.parse(res._getData());
     expect(responseData).toHaveProperty('token');
-    expect(updateUsersList).toHaveBeenCalled();
+    expect(ConfigService.updateUsersList).toHaveBeenCalled();
   });
 
   it('should return bad request if token name already exists', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testUser' } });
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testUser',
@@ -103,7 +100,7 @@ describe('Token Manager API', () => {
 
   it('should return token list for GET request', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testUser' } });
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testUser',
@@ -149,7 +146,7 @@ describe('Token Manager API', () => {
 
   it('should delete a token for DELETE request', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testUser' } });
-    vi.mocked(getUsersList).mockResolvedValue([
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
         username: 'testUser',
@@ -172,7 +169,7 @@ describe('Token Manager API', () => {
         ],
       },
     ]);
-    vi.mocked(updateUsersList).mockResolvedValue();
+    vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'DELETE',
@@ -182,7 +179,7 @@ describe('Token Manager API', () => {
     await handler(req, res);
 
     expect(ApiResponse.success).toHaveBeenCalledWith(res, 'Token deleted');
-    expect(updateUsersList).toHaveBeenCalled();
+    expect(ConfigService.updateUsersList).toHaveBeenCalled();
   });
 
   it('should return bad request if token name is missing in DELETE request', async () => {

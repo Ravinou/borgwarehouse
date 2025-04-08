@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { IntegrationTokenType, TokenPermissionsType } from '~/types/api/integration.types';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { getUsersList, updateUsersList } from '~/services';
+import { ConfigService } from '~/services';
 import { getUnixTime } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
@@ -33,7 +33,7 @@ export default async function handler(
     try {
       const { name, permissions } = req.body as IntegrationTokenType;
 
-      const usersList = await getUsersList();
+      const usersList = await ConfigService.getUsersList();
       const user = usersList.find((u) => u.username === session.user.name);
       if (!user) {
         return ApiResponse.unauthorized(res);
@@ -58,7 +58,7 @@ export default async function handler(
         return u;
       });
 
-      await updateUsersList(updatedUsersList);
+      await ConfigService.updateUsersList(updatedUsersList);
       return res.status(200).json({ token: newToken.token });
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ export default async function handler(
     }
   } else if (req.method == 'GET') {
     try {
-      const usersList = await getUsersList();
+      const usersList = await ConfigService.getUsersList();
       const user = usersList.find((u) => u.username === session.user.name);
       if (!user) {
         return ApiResponse.unauthorized(res);
@@ -86,7 +86,7 @@ export default async function handler(
     }
   } else if (req.method == 'DELETE') {
     try {
-      const usersList = await getUsersList();
+      const usersList = await ConfigService.getUsersList();
       const user = usersList.find((u) => u.username === session.user.name);
       if (!user) {
         return ApiResponse.unauthorized(res);
@@ -109,7 +109,7 @@ export default async function handler(
         return u;
       });
 
-      await updateUsersList(updatedUsersList);
+      await ConfigService.updateUsersList(updatedUsersList);
       return ApiResponse.success(res, 'Token deleted');
     } catch (error) {
       console.log(error);

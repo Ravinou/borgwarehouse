@@ -71,7 +71,7 @@ describe('GET /api/repo/id/[slug]', () => {
 
   it('should return 401 if API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'GET',
       headers: { authorization: 'Bearer INVALID_API_KEY' },

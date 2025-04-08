@@ -1,33 +1,27 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo/id/[slug]/edit';
 import { getServerSession } from 'next-auth/next';
-import { updateRepoShell } from '~/helpers/functions/shell.utils';
 import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
-import { getRepoList, updateRepoList } from '~/services';
+import { getRepoList, updateRepoList, ShellService } from '~/services';
 
-vi.mock('next-auth/next', () => ({
-  __esModule: true,
-  getServerSession: vi.fn(),
-}));
+vi.mock('next-auth/next');
 
 vi.mock('~/helpers/functions', () => ({
   tokenController: vi.fn(),
   isSshPubKeyDuplicate: vi.fn(),
 }));
 
-vi.mock('~/helpers/functions/shell.utils', () => ({
-  updateRepoShell: vi.fn(),
-}));
-
 vi.mock('~/services', () => ({
   getRepoList: vi.fn(),
   updateRepoList: vi.fn(),
+  ShellService: {
+    updateRepo: vi.fn(),
+  },
 }));
 
 describe('PATCH /api/repo/id/[slug]/edit', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.resetModules();
     vi.resetAllMocks();
     vi.spyOn(console, 'log').mockImplementation(() => {});
   });
@@ -46,7 +40,7 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should return 401 if API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'PATCH',
       headers: { authorization: 'Bearer INVALID_API_KEY' },
@@ -57,7 +51,12 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should return 403 if API key does not have update permissions', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({ update: false });
+    vi.mocked(tokenController).mockResolvedValue({
+      update: false,
+      create: false,
+      delete: false,
+      read: false,
+    });
     const { req, res } = createMocks({
       method: 'PATCH',
       headers: { authorization: 'Bearer API_KEY' },
@@ -83,8 +82,21 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should return 409 if SSH key is duplicated', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 123, repositoryName: 'test-repo' }]);
-    (isSshPubKeyDuplicate as vi.Mock).mockReturnValue(true);
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        id: 123,
+        repositoryName: 'test-repo',
+        alias: 'test-alias',
+        status: true,
+        lastSave: 0,
+        storageSize: 100,
+        storageUsed: 50,
+        lanCommand: false,
+        sshPublicKey: 'test-key',
+        comment: 'Test repository',
+      },
+    ]);
+    vi.mocked(isSshPubKeyDuplicate).mockReturnValue(true);
     const { req, res } = createMocks({
       method: 'PATCH',
       query: { slug: '123' },
@@ -96,8 +108,21 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should return 500 if updateRepoShell fails', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 123, repositoryName: 'test-repo' }]);
-    (updateRepoShell as vi.Mock).mockResolvedValue({ stderr: 'Error' });
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        id: 123,
+        repositoryName: 'test-repo',
+        alias: 'test-alias',
+        status: true,
+        lastSave: 0,
+        storageSize: 100,
+        storageUsed: 50,
+        lanCommand: false,
+        sshPublicKey: 'test-key',
+        comment: 'Test repository',
+      },
+    ]);
+    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: 'Error', stdout: '' });
     const { req, res } = createMocks({
       method: 'PATCH',
       query: { slug: '123' },
@@ -109,9 +134,22 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should successfully update repository with a session', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 123, repositoryName: 'test-repo' }]);
-    (updateRepoShell as vi.Mock).mockResolvedValue({ stderr: null });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        id: 123,
+        repositoryName: 'test-repo',
+        alias: 'test-alias',
+        status: true,
+        lastSave: 0,
+        storageSize: 100,
+        storageUsed: 50,
+        lanCommand: false,
+        sshPublicKey: 'test-key',
+        comment: 'Test repository',
+      },
+    ]);
+    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: '', stdout: '' });
+    vi.mocked(updateRepoList).mockResolvedValue();
     const { req, res } = createMocks({
       method: 'PATCH',
       query: { slug: '123' },
@@ -124,10 +162,28 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
 
   it('should successfully update repository with API key', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue({ update: true });
-    vi.mocked(getRepoList).mockResolvedValue([{ id: 456, repositoryName: 'repo-key' }]);
-    (updateRepoShell as vi.Mock).mockResolvedValue({ stderr: null });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(tokenController).mockResolvedValue({
+      update: true,
+      create: false,
+      delete: false,
+      read: false,
+    });
+    vi.mocked(getRepoList).mockResolvedValue([
+      {
+        id: 456,
+        repositoryName: 'repo-key',
+        alias: 'repo-alias',
+        status: true,
+        lastSave: 0,
+        storageSize: 100,
+        storageUsed: 50,
+        lanCommand: false,
+        sshPublicKey: 'ssh-key',
+        comment: 'Test repository',
+      },
+    ]);
+    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: null });
+    vi.mocked(updateRepoList).mockResolvedValue();
     const { req, res } = createMocks({
       method: 'PATCH',
       query: { slug: '456' },
@@ -149,10 +205,14 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
         sshPublicKey: 'old-key',
         storageSize: 100,
         lanCommand: false,
+        status: true,
+        lastSave: 0,
+        storageUsed: 50,
+        comment: 'Initial repository setup',
       },
     ]);
-    (updateRepoShell as vi.Mock).mockResolvedValue({ stderr: null });
-    vi.mocked(updateRepoList).mockResolvedValue(true);
+    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: null });
+    vi.mocked(updateRepoList).mockResolvedValue();
     const { req, res } = createMocks({
       method: 'PATCH',
       query: { slug: '123' },
@@ -172,16 +232,19 @@ describe('PATCH /api/repo/id/[slug]/edit', () => {
           repositoryName: 'test-repo',
           alias: 'new-alias',
           sshPublicKey: 'new-key',
-          comment: 'new-comment',
-          alert: 0,
-          appendOnlyMode: true,
           storageSize: 100,
           lanCommand: false,
+          comment: 'new-comment',
+          status: true,
+          lastSave: 0,
+          appendOnlyMode: true,
+          alert: 0,
+          storageUsed: 50,
         },
       ],
       true
     );
-    expect(updateRepoShell).toHaveBeenCalledWith('test-repo', 'new-key', 100, true);
+    expect(ShellService.updateRepo).toHaveBeenCalledWith('test-repo', 'new-key', 100, true);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ message: 'Repository test-repo has been edited' });
   });

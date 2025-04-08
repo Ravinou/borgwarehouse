@@ -1,7 +1,6 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/cronjob/checkStatus';
-import { getRepoList, getUsersList, updateRepoList } from '~/services';
-import { getLastSaveListShell } from '~/helpers/functions/shell.utils';
+import { getRepoList, getUsersList, updateRepoList, ShellService } from '~/services';
 import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
 import { AppriseModeEnum } from '~/types/domain/config.types';
 
@@ -9,10 +8,9 @@ vi.mock('~/services', () => ({
   getRepoList: vi.fn(),
   getUsersList: vi.fn(),
   updateRepoList: vi.fn(),
-}));
-
-vi.mock('~/helpers/functions/shell.utils', () => ({
-  getLastSaveListShell: vi.fn(),
+  ShellService: {
+    getLastSaveList: vi.fn(),
+  },
 }));
 
 vi.mock('~/helpers/functions/nodemailerSMTP', () => ({
@@ -73,7 +71,9 @@ describe('Cronjob API Handler', () => {
 
   it('should return 200 with message if no repository to check (empty repoList)', async () => {
     vi.mocked(getRepoList).mockResolvedValue([]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([{ repositoryName: 'repo1', lastSave: 123 }]);
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
+      { repositoryName: 'repo1', lastSave: 123 },
+    ]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -103,7 +103,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([]);
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([]);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -134,7 +134,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime },
     ]);
     vi.mocked(updateRepoList).mockResolvedValue(undefined);
@@ -187,7 +187,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled email alert but enabled Apprise alert
@@ -231,7 +231,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     // User has disabled Apprise alert but enabled email alert
@@ -278,7 +278,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 1000 },
     ]);
     vi.mocked(getUsersList).mockResolvedValue([
@@ -325,7 +325,7 @@ describe('Cronjob API Handler', () => {
       },
     ]);
     vi.mocked(updateRepoList).mockResolvedValue(undefined);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: Math.floor(Date.now() / 1000) },
     ]);
 
@@ -370,7 +370,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     vi.mocked(getUsersList).mockResolvedValue([
@@ -426,7 +426,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
 
@@ -473,7 +473,7 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    vi.mocked(getLastSaveListShell).mockResolvedValue([
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 200 },
     ]);
     vi.mocked(getUsersList).mockResolvedValue([

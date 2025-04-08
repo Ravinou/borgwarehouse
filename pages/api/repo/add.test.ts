@@ -1,9 +1,8 @@
-import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/repo/add';
 import { getServerSession } from 'next-auth/next';
-import { tokenController, isSshPubKeyDuplicate } from '~/helpers/functions';
-import { getRepoList, updateRepoList } from '~/services';
-import { createRepoShell } from '~/helpers/functions/shell.utils';
+import { createMocks } from 'node-mocks-http';
+import { isSshPubKeyDuplicate, tokenController } from '~/helpers/functions';
+import handler from '~/pages/api/repo/add';
+import { getRepoList, updateRepoList, ShellService } from '~/services';
 
 vi.mock('next-auth/next', () => ({
   getServerSession: vi.fn(),
@@ -17,10 +16,9 @@ vi.mock('~/helpers/functions', () => ({
 vi.mock('~/services', () => ({
   getRepoList: vi.fn(),
   updateRepoList: vi.fn(),
-}));
-
-vi.mock('~/helpers/functions/shell.utils', () => ({
-  createRepoShell: vi.fn(),
+  ShellService: {
+    createRepo: vi.fn(),
+  },
 }));
 
 describe('POST /api/repo/add', () => {
@@ -45,7 +43,7 @@ describe('POST /api/repo/add', () => {
 
   it('should return 401 if API key is invalid', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(tokenController).mockResolvedValue(null);
+    vi.mocked(tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer INVALID_API_KEY' },
@@ -68,7 +66,7 @@ describe('POST /api/repo/add', () => {
   it('should return 409 if SSH key is duplicated', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(getRepoList).mockResolvedValue([{ id: 1, sshPublicKey: 'duplicate-key' }]);
-    (isSshPubKeyDuplicate as vi.Mock).mockReturnValue(true);
+    vi.mocked(isSshPubKeyDuplicate).mockReturnValue(true);
     const { req, res } = createMocks({
       method: 'POST',
       body: { alias: 'repo1', sshPublicKey: 'duplicate-key', storageSize: 10 },
@@ -80,7 +78,7 @@ describe('POST /api/repo/add', () => {
   it('should return 500 if createRepoShell fails', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(getRepoList).mockResolvedValue([]);
-    (createRepoShell as vi.Mock).mockResolvedValue({ stderr: 'Error' });
+    vi.mocked(ShellService.createRepo).mockResolvedValue({ stderr: 'Error' });
     const { req, res } = createMocks({
       method: 'POST',
       body: { alias: 'repo1', sshPublicKey: 'valid-key', storageSize: 10 },
@@ -92,7 +90,7 @@ describe('POST /api/repo/add', () => {
   it('should successfully create a repository with a session', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(getRepoList).mockResolvedValue([]);
-    (createRepoShell as vi.Mock).mockResolvedValue({ stdout: 'new-repo' });
+    vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
     vi.mocked(updateRepoList).mockResolvedValue(true);
     const { req, res } = createMocks({
       method: 'POST',
@@ -106,7 +104,7 @@ describe('POST /api/repo/add', () => {
   it('should add missing optional properties with default values and update repo list correctly', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(getRepoList).mockResolvedValue([]);
-    (createRepoShell as vi.Mock).mockResolvedValue({ stdout: 'new-repo' });
+    vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
     vi.mocked(updateRepoList).mockResolvedValue(true);
 
     const { req, res } = createMocks({
@@ -145,12 +143,42 @@ describe('POST /api/repo/add', () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
 
     vi.mocked(getRepoList).mockResolvedValue([
-      { id: 0, alias: 'repo0', sshPublicKey: 'key0', storageSize: 10 },
-      { id: 1, alias: 'repo1', sshPublicKey: 'key1', storageSize: 20 },
-      { id: 3, alias: 'repo3', sshPublicKey: 'key3', storageSize: 30 },
+      {
+        id: 0,
+        alias: 'repo0',
+        sshPublicKey: 'key0',
+        storageSize: 10,
+        repositoryName: '',
+        status: false,
+        lastSave: 0,
+        storageUsed: 0,
+        comment: '',
+      },
+      {
+        id: 1,
+        alias: 'repo1',
+        sshPublicKey: 'key1',
+        storageSize: 20,
+        repositoryName: '',
+        status: false,
+        lastSave: 0,
+        storageUsed: 0,
+        comment: '',
+      },
+      {
+        id: 3,
+        alias: 'repo3',
+        sshPublicKey: 'key3',
+        storageSize: 30,
+        repositoryName: '',
+        status: false,
+        lastSave: 0,
+        storageUsed: 0,
+        comment: '',
+      },
     ]);
 
-    (createRepoShell as vi.Mock).mockResolvedValue({ stdout: 'new-repo' });
+    vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
     vi.mocked(updateRepoList).mockResolvedValue(true);
 
     const { req, res } = createMocks({
@@ -165,9 +193,39 @@ describe('POST /api/repo/add', () => {
 
     expect(updateRepoList).toHaveBeenCalledWith(
       [
-        { id: 0, alias: 'repo0', sshPublicKey: 'key0', storageSize: 10 },
-        { id: 1, alias: 'repo1', sshPublicKey: 'key1', storageSize: 20 },
-        { id: 3, alias: 'repo3', sshPublicKey: 'key3', storageSize: 30 },
+        {
+          id: 0,
+          alias: 'repo0',
+          sshPublicKey: 'key0',
+          storageSize: 10,
+          repositoryName: '',
+          status: false,
+          lastSave: 0,
+          storageUsed: 0,
+          comment: '',
+        },
+        {
+          id: 1,
+          alias: 'repo1',
+          sshPublicKey: 'key1',
+          storageSize: 20,
+          repositoryName: '',
+          status: false,
+          lastSave: 0,
+          storageUsed: 0,
+          comment: '',
+        },
+        {
+          id: 3,
+          alias: 'repo3',
+          sshPublicKey: 'key3',
+          storageSize: 30,
+          repositoryName: '',
+          status: false,
+          lastSave: 0,
+          storageUsed: 0,
+          comment: '',
+        },
         {
           id: 4,
           alias: 'repo-new',

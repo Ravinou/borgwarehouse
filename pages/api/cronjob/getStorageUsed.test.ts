@@ -1,15 +1,13 @@
 import handler from '~/pages/api/cronjob/getStorageUsed';
 import { createMocks } from 'node-mocks-http';
-import { getRepoList, updateRepoList } from '~/services';
-import { getStorageUsedShell } from '~/helpers/functions/shell.utils';
+import { getRepoList, updateRepoList, ShellService } from '~/services';
 
 vi.mock('~/services', () => ({
   getRepoList: vi.fn(),
   updateRepoList: vi.fn(),
-}));
-
-vi.mock('~/helpers/functions/shell.utils', () => ({
-  getStorageUsedShell: vi.fn(),
+  ShellService: {
+    getStorageUsed: vi.fn(),
+  },
 }));
 
 describe('GET /api/cronjob/getStorageUsed', () => {
@@ -71,7 +69,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     ];
 
     vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
-    vi.mocked(getStorageUsedShell).mockResolvedValue(mockStorageUsed);
+    vi.mocked(ShellService.getStorageUsed).mockResolvedValue(mockStorageUsed);
     vi.mocked(updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
@@ -114,7 +112,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     const mockStorageUsed = [{ name: 'repo1', size: 100 }];
 
     vi.mocked(getRepoList).mockResolvedValue(mockRepoList);
-    vi.mocked(getStorageUsedShell).mockResolvedValue(mockStorageUsed);
+    vi.mocked(ShellService.getStorageUsed).mockResolvedValue(mockStorageUsed);
     vi.mocked(updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({

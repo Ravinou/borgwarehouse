@@ -1,17 +1,23 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/cronjob/checkStatus';
-import { ConfigService, ShellService } from '~/services';
-import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
+import { ConfigService, NotifService, ShellService } from '~/services';
 import { AppriseModeEnum } from '~/types/domain/config.types';
 
-vi.mock('~/services');
-
-vi.mock('~/helpers/functions/nodemailerSMTP', () => ({
-  default: vi.fn(() => ({
-    sendMail: vi.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
-  })),
+vi.mock('~/services', () => ({
+  NotifService: {
+    nodemailerSMTP: vi.fn(() => ({
+      sendMail: vi.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
+    })),
+  },
+  ConfigService: {
+    getRepoList: vi.fn(),
+    updateRepoList: vi.fn(),
+    getUsersList: vi.fn(),
+  },
+  ShellService: {
+    getLastSaveList: vi.fn(),
+  },
 }));
-
 vi.mock('~/helpers/templates/emailAlertStatus', () => ({
   default: vi.fn(() => ({
     subject: 'Alert',
@@ -21,14 +27,17 @@ vi.mock('~/helpers/templates/emailAlertStatus', () => ({
 
 vi.mock('node:child_process', () => ({
   exec: vi.fn(
-    (
-      command: string,
-      callback: (err: Error | null, result: { stdout: string; stderr: string }) => void
-    ) => {
+    (callback: (err: Error | null, result: { stdout: string; stderr: string }) => void) => {
       callback(null, { stdout: 'mocked output', stderr: '' });
     }
   ),
 }));
+
+vi.mock('date-fns', () => {
+  return {
+    getUnixTime: vi.fn(() => 1741535661),
+  };
+});
 
 describe('Cronjob API Handler', () => {
   beforeEach(() => {
@@ -205,7 +214,7 @@ describe('Cronjob API Handler', () => {
     });
     await handler(req, res);
 
-    expect(nodemailerSMTP).not.toHaveBeenCalled();
+    expect(NotifService.nodemailerSMTP).not.toHaveBeenCalled();
   });
 
   it('should not send apprise alert if appriseAlert is false', async () => {
@@ -295,7 +304,7 @@ describe('Cronjob API Handler', () => {
     });
     await handler(req, res);
 
-    expect(nodemailerSMTP).not.toHaveBeenCalled();
+    expect(NotifService.nodemailerSMTP).not.toHaveBeenCalled();
 
     const childProcess = await import('node:child_process');
     expect(childProcess.exec).not.toHaveBeenCalled();
@@ -349,6 +358,7 @@ describe('Cronjob API Handler', () => {
 
   it('should update lastStatusAlertSend if repo is down and alert is enabled', async () => {
     const currentTime = 1741535661;
+
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
@@ -392,7 +402,7 @@ describe('Cronjob API Handler', () => {
         alert: 100,
         id: 1,
         lastSave: currentTime - 200,
-        lastStatusAlertSend: expect.any(Number),
+        lastStatusAlertSend: currentTime,
         storageSize: 0,
         storageUsed: 0,
         sshPublicKey: '',
@@ -403,7 +413,7 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should not update lastStatusAlertSend or send alerts if alert is disabled', async () => {
-    const currentTime = Math.floor(Date.now() / 1000);
+    const currentTime = 1741535661;
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
@@ -445,12 +455,12 @@ describe('Cronjob API Handler', () => {
         comment: '',
       },
     ]);
-    expect(nodemailerSMTP).not.toHaveBeenCalled();
+    expect(NotifService.nodemailerSMTP).not.toHaveBeenCalled();
     expect(res._getStatusCode()).toBe(200);
   });
 
   it('should update lastStatusAlertSend only if the last alert was sent more than 90000 seconds ago', async () => {
-    const currentTime = Math.floor(Date.now() / 1000);
+    const currentTime = 1741535661;
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',

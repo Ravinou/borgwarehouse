@@ -18,3 +18,9 @@ export const AuthService = {
   hashPassword: vi.fn(),
   tokenController: vi.fn(),
 };
+
+export const NotifService = {
+  nodemailerSMTP: vi.fn(() => ({
+    sendMail: vi.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
+  })),
+};

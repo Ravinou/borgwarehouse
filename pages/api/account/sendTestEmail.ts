@@ -1,8 +1,8 @@
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
 import emailTest from '~/helpers/templates/emailTest';
+import { NotifService } from '~/services';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const transporter = nodemailerSMTP();
+    const transporter = NotifService.nodemailerSMTP();
     if (!session.user?.email || !session.user?.name) {
       return res.status(400).json({ message: 'User email or name is missing' });
     }

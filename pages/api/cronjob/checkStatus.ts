@@ -3,8 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { exec as execCallback } from 'node:child_process';
 import { promisify } from 'util';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { ConfigService, ShellService } from '~/services';
-import nodemailerSMTP from '~/helpers/functions/nodemailerSMTP';
+import { ConfigService, NotifService, ShellService } from '~/services';
 import emailAlertStatus from '~/helpers/templates/emailAlertStatus';
 import { BorgWarehouseApiResponse } from '~/types/api/error.types';
 
@@ -45,7 +44,7 @@ export default async function handler(
       };
     });
 
-    const repoListToSendAlert: string[] = [];
+    const repoAliasListToSendAlert: string[] = [];
     updatedRepoList.forEach((repo) => {
       if (
         !repo.status &&
@@ -53,20 +52,20 @@ export default async function handler(
         (!repo.lastStatusAlertSend || date - repo.lastStatusAlertSend > 90000)
       ) {
         repo.lastStatusAlertSend = date;
-        repoListToSendAlert.push(repo.alias);
+        repoAliasListToSendAlert.push(repo.alias);
       }
     });
 
-    if (repoListToSendAlert.length > 0) {
+    if (repoAliasListToSendAlert.length > 0) {
       const usersList = await ConfigService.getUsersList();
 
       // Send Email Alert
       if (usersList[0].emailAlert) {
-        const transporter = nodemailerSMTP();
+        const transporter = NotifService.nodemailerSMTP();
         const mailData = emailAlertStatus(
           usersList[0].email,
           usersList[0].username,
-          repoListToSendAlert
+          repoAliasListToSendAlert
         );
         transporter.sendMail(mailData, (err) => {
           if (err) console.log(err);
@@ -76,7 +75,7 @@ export default async function handler(
       // Send Apprise Alert
       if (usersList[0].appriseAlert) {
         const appriseServicesURLs = usersList[0].appriseServices?.join(' ');
-        const message = `🔴 Some repositories on BorgWarehouse need attention !\nList of down repositories :\n ${repoListToSendAlert}`;
+        const message = `🔴 Some repositories on BorgWarehouse need attention !\nList of down repositories :\n ${repoAliasListToSendAlert}`;
         if (usersList[0].appriseMode === 'package') {
           await exec(`apprise -v -b '${message}' ${appriseServicesURLs}`);
         } else if (usersList[0].appriseMode === 'stateless') {

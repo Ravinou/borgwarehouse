@@ -2,20 +2,18 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/account/sendTestEmail';
 import { getServerSession } from 'next-auth/next';
 
-vi.mock('next-auth/next', () => ({
-  __esModule: true,
-  getServerSession: vi.fn(),
-}));
-
-vi.mock('~/helpers/functions/nodemailerSMTP', () => ({
-  __esModule: true,
-  default: vi.fn(() => ({
-    sendMail: vi.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
-  })),
+vi.mock('next-auth/next');
+vi.mock('~/services', () => ({
+  NotifService: {
+    nodemailerSMTP: vi.fn(() => ({
+      sendMail: vi.fn().mockResolvedValue({ messageId: 'fake-message-id' }),
+    })),
+  },
 }));
 
 describe('Email API', () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 

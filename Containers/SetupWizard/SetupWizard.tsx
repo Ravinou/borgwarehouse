@@ -1,13 +1,10 @@
-//Lib
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Select, { SingleValue } from 'react-select';
 import classes from './SetupWizard.module.css';
+import { Optional, SelectedRepoWizard, Repository, WizardEnvType } from '~/types';
 
 //Components
-import { SelectedRepoWizard } from '~/Components/WizardSteps/wizard.types';
-import { Repository, WizardEnvType } from '~/types/domain/config.types';
-import { Optional } from '~/types';
 import WizardStep1 from '../../Components/WizardSteps/WizardStep1/WizardStep1';
 import WizardStep2 from '../../Components/WizardSteps/WizardStep2/WizardStep2';
 import WizardStep3 from '../../Components/WizardSteps/WizardStep3/WizardStep3';
@@ -19,10 +16,8 @@ type SetupWizardProps = {
 };
 
 function SetupWizard(props: SetupWizardProps) {
-  ////Var
   const router = useRouter();
 
-  ////States
   const [repoList, setRepoList] = useState<Optional<Array<Repository>>>();
   const [repoListIsLoading, setRepoListIsLoading] = useState<boolean>(true);
   const [step, setStep] = useState<number>(1);
@@ -70,15 +65,13 @@ function SetupWizard(props: SetupWizardProps) {
     props.step && setStep(props.step);
   }, [props.step]);
 
-  ////Functions
-
   //Options for react-select
   const options: Optional<Array<SelectedRepoWizard>> = repoList?.map((repo) => ({
     label: `${repo.alias} - #${repo.id}`,
     value: `${repo.alias} - #${repo.id}`,
     id: repo.id.toString(),
     repositoryName: repo.repositoryName,
-    lanCommand: repo.lanCommand,
+    lanCommand: repo.lanCommand ? repo.lanCommand : false,
   }));
 
   //Step button (free selection of user)

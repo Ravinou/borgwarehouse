@@ -3,7 +3,7 @@ import { promises as fs } from 'fs';
 import { JSONFile } from 'lowdb/node';
 import path from 'path';
 import { Mutex } from 'async-mutex';
-import { BorgWarehouseUser, Repository } from '~/types/domain/config.types';
+import { BorgWarehouseUser, Repository } from '~/types';
 
 const jsonDirectory = path.join(process.cwd(), '/config');
 const usersDbPath = path.join(jsonDirectory, 'users.json');

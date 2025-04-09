@@ -2,8 +2,7 @@ import { ConfigService } from '~/services';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { EmailSettingDTO } from '~/types/api/setting.types';
-import { ErrorResponse } from '~/types/api/error.types';
+import { EmailSettingDTO, ErrorResponse } from '~/types';
 
 export default async function handler(
   req: NextApiRequest & { body: EmailSettingDTO },

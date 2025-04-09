@@ -1,19 +1,17 @@
-//Lib
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
+import { useFormStatus } from '~/hooks';
+import { UsernameSettingDTO } from '~/types';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
-import { useFormStatus } from '~/hooks/useFormStatus';
-import { UsernameSettingDTO } from '~/types/api/setting.types';
 
 export default function UsernameSettings(props: UsernameSettingDTO) {
-  //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 8000,

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { promisify } from 'util';
 import { ConfigService } from '~/services';
-import { ErrorResponse, SuccessResponse } from '~/types/api/error.types';
+import { ErrorResponse, SuccessResponse } from '~/types';
 import { authOptions } from '../auth/[...nextauth]';
 
 const execAsync = promisify(exec);

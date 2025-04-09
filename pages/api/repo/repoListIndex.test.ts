@@ -2,7 +2,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/repo';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService, AuthService } from '~/services';
-import { Repository } from '~/types/domain/config.types';
+import { Repository } from '~/types';
 
 vi.mock('next-auth/next', () => ({
   getServerSession: vi.fn(),

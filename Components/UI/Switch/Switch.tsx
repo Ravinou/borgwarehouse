@@ -1,4 +1,3 @@
-//Lib
 import { Optional } from '~/types';
 import classes from './Switch.module.css';
 import { SpinnerCircularFixed } from 'spinners-react';

@@ -1,11 +1,9 @@
-//Lib
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 export default function Error404() {
-  //Var
   const { status } = useSession();
   const router = useRouter();
 

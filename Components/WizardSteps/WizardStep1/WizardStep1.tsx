@@ -1,4 +1,3 @@
-//Lib
 import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconDeviceDesktopAnalytics, IconTerminal2 } from '@tabler/icons-react';

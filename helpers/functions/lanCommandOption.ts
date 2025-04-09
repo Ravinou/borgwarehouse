@@ -1,5 +1,4 @@
-import { WizardEnvType } from '~/types/domain/config.types';
-import { Optional } from '~/types';
+import { Optional, WizardEnvType } from '~/types';
 
 export default function lanCommandOption(
   wizardEnv?: WizardEnvType,
@@ -13,11 +12,9 @@ export default function lanCommandOption(
 
   const isPortHidden = HIDE_SSH_PORT === 'true';
 
-  // Sélection des valeurs en fonction de lanCommand
   const selectedFQDN = lanCommand && FQDN_LAN ? FQDN_LAN : FQDN;
   const selectedPort = lanCommand ? SSH_SERVER_PORT_LAN : SSH_SERVER_PORT;
 
-  // Construire le port final uniquement si disponible et non masqué
   const formattedPort = !isPortHidden && selectedPort ? `:${selectedPort}` : undefined;
 
   return {

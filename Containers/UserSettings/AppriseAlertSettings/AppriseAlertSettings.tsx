@@ -1,4 +1,3 @@
-//Lib
 import { IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -10,7 +9,7 @@ import classes from '../UserSettings.module.css';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import Switch from '~/Components/UI/Switch/Switch';
-import { useFormStatus } from '~/hooks/useFormStatus';
+import { useFormStatus } from '~/hooks';
 import { Optional } from '~/types';
 import AppriseMode from './AppriseMode/AppriseMode';
 import AppriseURLs from './AppriseURLs/AppriseURLs';
@@ -20,7 +19,6 @@ type AppriseAlertDataForm = {
 };
 
 export default function AppriseAlertSettings() {
-  //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,

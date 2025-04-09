@@ -1,7 +1,7 @@
 import path from 'path';
 import { promisify } from 'util';
 import { exec as execCallback } from 'node:child_process';
-import { LastSaveDTO, StorageUsedDTO } from '~/types/api/shell.types';
+import { LastSaveDTO, StorageUsedDTO } from '~/types';
 
 const exec = promisify(execCallback);
 const shellsDirectory = path.join(process.cwd(), '/helpers/shells');

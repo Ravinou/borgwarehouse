@@ -1,9 +1,7 @@
-//Lib
 import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import { WizardEnvEnum, WizardEnvType } from '~/types/domain/config.types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ErrorResponse } from '~/types/api/error.types';
+import { ErrorResponse, WizardEnvEnum, WizardEnvType } from '~/types';
 
 export default async function handler(
   req: NextApiRequest,

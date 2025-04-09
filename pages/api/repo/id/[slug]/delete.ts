@@ -1,10 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService, ShellService, AuthService } from '~/services';
-
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { BorgWarehouseApiResponse } from '~/types/api/error.types';
-import { authOptions } from '../../../auth/[...nextauth]';
+import { BorgWarehouseApiResponse } from '~/types';
+import { authOptions } from '~/pages/api/auth/[...nextauth]';
 
 export default async function handler(
   req: NextApiRequest,

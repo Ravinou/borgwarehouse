@@ -1,4 +1,3 @@
-//Lib
 import classes from './CopyButton.module.css';
 import { useState, ReactNode } from 'react';
 import { IconChecks, IconCopy } from '@tabler/icons-react';
@@ -12,10 +11,8 @@ type CopyButtonProps = {
 };
 
 export default function CopyButton(props: CopyButtonProps) {
-  //State
   const [isCopied, setIsCopied] = useState(false);
 
-  //Function
   const handleCopy = async (data: string) => {
     navigator.clipboard
       .writeText(data)

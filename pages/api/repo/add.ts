@@ -1,9 +1,9 @@
-import { authOptions } from '../auth/[...nextauth]';
+import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { isSshPubKeyDuplicate } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { Repository } from '~/types/domain/config.types';
+import { Repository } from '~/types';
 import { getUnixTime } from 'date-fns';
 import { ConfigService, ShellService, AuthService } from '~/services';
 

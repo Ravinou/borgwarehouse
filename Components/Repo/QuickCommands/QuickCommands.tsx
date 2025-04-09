@@ -1,9 +1,8 @@
-//Lib
 import React from 'react';
 import { useState } from 'react';
 import classes from './QuickCommands.module.css';
 import { IconSettingsAutomation, IconCopy } from '@tabler/icons-react';
-import lanCommandOption from '~/helpers/functions/lanCommandOption';
+import { lanCommandOption } from '~/helpers/functions';
 import { WizardEnvType } from '~/types/domain/config.types';
 
 type QuickCommandsProps = {
@@ -13,15 +12,12 @@ type QuickCommandsProps = {
 };
 
 export default function QuickCommands(props: QuickCommandsProps) {
-  ////Vars
   const wizardEnv = props.wizardEnv;
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
   const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.lanCommand);
 
-  //State
   const [isCopied, setIsCopied] = useState(false);
 
-  //Functions
   const handleCopy = async () => {
     // Asynchronously call copy to clipboard
     navigator.clipboard
@@ -29,7 +25,6 @@ export default function QuickCommands(props: QuickCommandsProps) {
         `ssh://${wizardEnv?.UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.repositoryName}`
       )
       .then(() => {
-        // If successful, update the isCopied state value
         setIsCopied(true);
         setTimeout(() => {
           setIsCopied(false);

@@ -1,4 +1,3 @@
-//Lib
 import { IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -6,16 +5,14 @@ import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SpinnerCircularFixed } from 'spinners-react';
 import classes from '../UserSettings.module.css';
+import { Optional, EmailAlertDTO } from '~/types';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
 import Switch from '~/Components/UI/Switch/Switch';
-import { useFormStatus } from '~/hooks/useFormStatus';
-import { Optional } from '~/types';
-import { EmailAlertDTO } from '~/types/api/notification.types';
+import { useFormStatus } from '~/hooks';
 
 export default function EmailAlertSettings() {
-  //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,

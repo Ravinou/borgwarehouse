@@ -1,4 +1,3 @@
-//Lib
 import { useState } from 'react';
 import classes from './Repo.module.css';
 import {
@@ -9,11 +8,10 @@ import {
   IconBellOff,
   IconLockPlus,
 } from '@tabler/icons-react';
-import { timestampConverter } from '~/helpers/functions/timestampConverter';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
-import { Repository, WizardEnvType } from '~/types/domain/config.types';
-import { Optional } from '~/types';
+import { Repository, WizardEnvType, Optional } from '~/types';
+import { fromUnixTime } from 'date-fns';
 
 type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
   repoManageEditHandler: () => void;
@@ -126,7 +124,7 @@ export default function Repo(props: RepoProps) {
                   </th>
                   <th>
                     <div className={classes.lastSave}>
-                      {props.lastSave === 0 ? '-' : timestampConverter(props.lastSave)}
+                      {props.lastSave === 0 ? '-' : fromUnixTime(props.lastSave).toLocaleString()}
                     </div>
                   </th>
                   <th>#{props.id}</th>
@@ -160,7 +158,7 @@ export default function Repo(props: RepoProps) {
               )}
             </div>
             <div className={classes.lastSave}>
-              {props.lastSave === 0 ? null : timestampConverter(props.lastSave)}
+              {props.lastSave === 0 ? null : fromUnixTime(props.lastSave).toLocaleString()}
               <span style={{ marginLeft: '20px', color: '#637381' }}>#{props.id}</span>
             </div>
           </div>

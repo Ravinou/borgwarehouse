@@ -1,10 +1,8 @@
-//Lib
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService } from '~/services';
-import { ErrorResponse } from '~/types/api/error.types';
-import { EmailAlertDTO } from '~/types/api/notification.types';
 import { authOptions } from '../auth/[...nextauth]';
+import { EmailAlertDTO, ErrorResponse } from '~/types';
 
 export default async function handler(
   req: NextApiRequest,

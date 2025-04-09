@@ -1,9 +1,8 @@
 import { ConfigService } from '~/services';
 import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import { UsernameSettingDTO } from '~/types/api/setting.types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ErrorResponse } from '~/types/api/error.types';
+import { ErrorResponse, UsernameSettingDTO } from '~/types';
 
 export default async function handler(
   req: NextApiRequest & { body: UsernameSettingDTO },

@@ -1,4 +1,3 @@
-//Lib
 import classes from './RepoList.module.css';
 import React, { useState, useEffect } from 'react';
 import { IconPlus } from '@tabler/icons-react';
@@ -9,11 +8,10 @@ import { ToastContainer, ToastOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 //Composants
-import Repo from '../../Components/Repo/Repo';
+import Repo from '~/Components/Repo/Repo';
 import RepoManage from '../RepoManage/RepoManage';
-import ShimmerRepoList from '../../Components/UI/ShimmerRepoList/ShimmerRepoList';
-import { Repository, WizardEnvType } from '~/types/domain/config.types';
-import { Optional } from '~/types';
+import ShimmerRepoList from '~/Components/UI/ShimmerRepoList/ShimmerRepoList';
+import { Repository, WizardEnvType, Optional } from '~/types';
 
 export default function RepoList() {
   ////Var

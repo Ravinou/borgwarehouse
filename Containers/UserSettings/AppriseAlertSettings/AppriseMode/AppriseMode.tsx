@@ -1,16 +1,13 @@
-//Lib
 import { useEffect } from 'react';
 import classes from '../../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
 import { useForm } from 'react-hook-form';
-import { AppriseModeEnum } from '~/types/domain/config.types';
+import { Optional, AppriseModeEnum, AppriseModeDTO } from '~/types';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
-import { Optional } from '~/types';
-import { AppriseModeDTO } from '~/types/api/notification.types';
-import { useFormStatus } from '~/hooks/useFormStatus';
+import { useFormStatus } from '~/hooks';
 
 type AppriseModeDataForm = {
   appriseMode: string;
@@ -18,7 +15,6 @@ type AppriseModeDataForm = {
 };
 
 export default function AppriseMode() {
-  //Var
   const {
     register,
     handleSubmit,
@@ -28,14 +24,12 @@ export default function AppriseMode() {
   const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
     useFormStatus();
 
-  ////State
   const [displayStatelessURL, setDisplayStatelessURL] = useState<boolean>(false);
   const [appriseMode, setAppriseMode] = useState<Optional<AppriseModeEnum>>(
     AppriseModeEnum.STATELESS
   );
   const [appriseStatelessURL, setAppriseStatelessURL] = useState<Optional<string>>();
 
-  ////LifeCycle
   //Component did mount
   useEffect(() => {
     //Initial fetch to get Apprise Mode enabled

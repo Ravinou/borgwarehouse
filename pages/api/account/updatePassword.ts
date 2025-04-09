@@ -2,8 +2,7 @@ import { authOptions } from '../auth/[...nextauth]';
 import { ConfigService, AuthService } from '~/services';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ErrorResponse } from '~/types/api/error.types';
-import { PasswordSettingDTO } from '~/types/api/setting.types';
+import { ErrorResponse, PasswordSettingDTO } from '~/types';
 
 export default async function handler(
   req: NextApiRequest & { body: PasswordSettingDTO },

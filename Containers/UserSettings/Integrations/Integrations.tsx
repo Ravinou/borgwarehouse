@@ -1,4 +1,3 @@
-//Lib
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
@@ -8,25 +7,19 @@ import { SpinnerDotted } from 'spinners-react';
 import { fromUnixTime } from 'date-fns';
 import { IconTrash, IconExternalLink } from '@tabler/icons-react';
 import Link from 'next/link';
+import { Optional, IntegrationTokenType, TokenPermissionEnum, TokenPermissionsType } from '~/types';
+import { useFormStatus } from '~/hooks';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
 import CopyButton from '~/Components/UI/CopyButton/CopyButton';
 import Info from '~/Components/UI/Info/Info';
-import {
-  IntegrationTokenType,
-  TokenPermissionEnum,
-  TokenPermissionsType,
-} from '~/types/api/integration.types';
-import { useFormStatus } from '~/hooks/useFormStatus';
-import { Optional } from '~/types';
 
 type IntegrationsDataForm = {
   tokenName: string;
 };
 
 export default function Integrations() {
-  //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,

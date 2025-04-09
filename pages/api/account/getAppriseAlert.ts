@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService } from '~/services';
-import { ErrorResponse } from '~/types/api/error.types';
-import { AppriseAlertResponse } from '~/types/api/notification.types';
+import { ErrorResponse, AppriseAlertResponse } from '~/types';
 import { authOptions } from '../auth/[...nextauth]';
 
 export default async function handler(

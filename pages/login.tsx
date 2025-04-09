@@ -1,16 +1,15 @@
-//Lib
-import { useForm } from 'react-hook-form';
-import { signIn, useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-import { SpinnerDotted } from 'spinners-react';
-import { useRouter } from 'next/router';
-import { authOptions } from './api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
-import { useFormStatus } from '~/hooks/useFormStatus';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { SpinnerDotted } from 'spinners-react';
+import { useFormStatus } from '~/hooks';
+import { authOptions } from './api/auth/[...nextauth]';
 
 //Components
-import Error from '../Components/UI/Error/Error';
 import { GetServerSidePropsContext } from 'next';
+import Error from '../Components/UI/Error/Error';
 
 type LoginForm = {
   username: string;
@@ -18,7 +17,6 @@ type LoginForm = {
 };
 
 export default function Login() {
-  //Var
   const { status } = useSession();
   const {
     register,
@@ -175,7 +173,6 @@ export default function Login() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  //Var
   const session = await getServerSession(context.req, context.res, authOptions);
 
   //Here, if I am connected, I redirect to the home page.

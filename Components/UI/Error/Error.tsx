@@ -1,4 +1,3 @@
-//Lib
 import classes from './Error.module.css';
 
 type ErrorProps = {

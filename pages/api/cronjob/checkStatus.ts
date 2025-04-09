@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService, NotifService, ShellService } from '~/services';
 import emailAlertStatus from '~/helpers/templates/emailAlertStatus';
-import { BorgWarehouseApiResponse } from '~/types/api/error.types';
+import { BorgWarehouseApiResponse } from '~/types';
 
 const exec = promisify(execCallback);
 

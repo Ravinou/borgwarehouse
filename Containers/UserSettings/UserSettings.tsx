@@ -1,7 +1,8 @@
-//Lib
 import 'react-toastify/dist/ReactToastify.css';
 import classes from './UserSettings.module.css';
 import { useState, useEffect } from 'react';
+import { Session } from 'next-auth';
+import { Optional, WizardEnvType, SessionStatus } from '~/types';
 
 //Components
 import EmailSettings from './EmailSettings/EmailSettings';
@@ -10,10 +11,6 @@ import UsernameSettings from './UsernameSettings/UsernameSettings';
 import EmailAlertSettings from './EmailAlertSettings/EmailAlertSettings';
 import AppriseAlertSettings from './AppriseAlertSettings/AppriseAlertSettings';
 import Integrations from './Integrations/Integrations';
-import { SessionStatus } from '~/types/api/next-auth.types';
-import { Session } from 'next-auth';
-import { WizardEnvType } from '~/types/domain/config.types';
-import { Optional } from '~/types';
 
 type UserSettingsProps = {
   status: SessionStatus;

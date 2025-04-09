@@ -1,5 +1,4 @@
-import { Optional } from '~/types';
-import { Repository } from '~/types/domain/config.types';
+import { Optional, Repository } from '~/types';
 
 /**
  * Checks if the given SSH public key is duplicated in the provided repository list by removing the comment part.
@@ -9,10 +8,10 @@ import { Repository } from '~/types/domain/config.types';
  * @returns {boolean} - Returns true if the SSH public key is duplicated, otherwise false.
  * @throws {Error} - Throws an error if required parameters are missing or invalid.
  */
-export const isSshPubKeyDuplicate = (
+export default function isSshPubKeyDuplicate(
   pubKey: string,
   repoList: Array<Optional<Repository>>
-): boolean => {
+): boolean {
   if (!pubKey || !repoList || !Array.isArray(repoList)) {
     throw new Error('Missing or invalid parameters for duplicate SSH public key check.');
   }
@@ -25,4 +24,4 @@ export const isSshPubKeyDuplicate = (
     const repoSshKeyWithoutComment = repo?.sshPublicKey.split(' ').slice(0, 2).join(' ');
     return repoSshKeyWithoutComment === pubKeyWithoutComment;
   });
-};
+}

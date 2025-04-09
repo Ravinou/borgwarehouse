@@ -1,4 +1,3 @@
-//Lib
 import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import NavSide from './NavSide/NavSide';
@@ -10,7 +9,6 @@ type LayoutProps = {
 };
 
 function Layout(props: LayoutProps) {
-  //Var
   const { status } = useSession();
 
   if (status === 'authenticated') {

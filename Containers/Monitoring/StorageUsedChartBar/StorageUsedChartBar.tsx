@@ -1,4 +1,3 @@
-//Lib
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,14 +9,11 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useState, useEffect } from 'react';
-import { Repository } from '~/types/domain/config.types';
-import { Optional } from '~/types';
+import { Repository, Optional } from '~/types';
 
 export default function StorageUsedChartBar() {
-  //States
   const [data, setData] = useState<Optional<Array<Repository>>>();
 
-  //LifeCycle
   useEffect(() => {
     const dataFetch = async () => {
       try {

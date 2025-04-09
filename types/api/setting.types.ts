@@ -1,9 +1,9 @@
 export type EmailSettingDTO = {
-  email: string;
+  email?: string;
 };
 
 export type UsernameSettingDTO = {
-  username: string;
+  username?: string;
 };
 
 export type PasswordSettingDTO = {

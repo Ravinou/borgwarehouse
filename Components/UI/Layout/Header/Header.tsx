@@ -1,7 +1,4 @@
-//Lib
 import classes from './Header.module.css';
-
-//Components
 import Nav from './Nav/Nav';
 
 function Header() {

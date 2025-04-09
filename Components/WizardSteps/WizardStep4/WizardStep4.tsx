@@ -1,13 +1,11 @@
-//Lib
 import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconWand } from '@tabler/icons-react';
 import CopyButton from '../../UI/CopyButton/CopyButton';
-import lanCommandOption from '../../../helpers/functions/lanCommandOption';
-import { WizardStepProps } from '../wizard.types';
+import { WizardStepProps } from '~/types';
+import { lanCommandOption } from '~/helpers/functions';
 
 function WizardStep4(props: WizardStepProps) {
-  ////Vars
   const wizardEnv = props.wizardEnv;
   const UNIX_USER = wizardEnv?.UNIX_USER;
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.

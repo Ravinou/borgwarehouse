@@ -1,4 +1,3 @@
-//Lib
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
@@ -9,11 +8,10 @@ import { SpinnerDotted } from 'spinners-react';
 //Components
 import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
-import { useFormStatus } from '~/hooks/useFormStatus';
+import { useFormStatus } from '~/hooks';
 import { EmailSettingDTO } from '~/types/api/setting.types';
 
 export default function EmailSettings(props: EmailSettingDTO) {
-  //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 8000,

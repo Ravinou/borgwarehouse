@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ConfigService, ShellService } from '~/services';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { BorgWarehouseApiResponse } from '~/types/api/error.types';
+import { BorgWarehouseApiResponse } from '~/types';
 
 export default async function handler(
   req: NextApiRequest,

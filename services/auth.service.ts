@@ -1,8 +1,7 @@
-import { hash, compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { IncomingHttpHeaders } from 'http2';
-import { Optional } from '~/types';
-import { TokenPermissionsType } from '~/types/api/integration.types';
 import { ConfigService } from '~/services';
+import { Optional, TokenPermissionsType } from '~/types';
 
 export const AuthService = {
   hashPassword: async (password: string): Promise<string> => {

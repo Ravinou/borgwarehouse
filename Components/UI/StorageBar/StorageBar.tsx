@@ -1,4 +1,3 @@
-//Lib
 import classes from './StorageBar.module.css';
 
 type StorageBarProps = {
@@ -7,7 +6,6 @@ type StorageBarProps = {
 };
 
 export default function StorageBar(props: StorageBarProps) {
-  //Var
   //storageUsed is in kB, storageSize is in GB. Round to 1 decimal for %.
   const storageUsedPercent = (((props.storageUsed / 1024 ** 2) * 100) / props.storageSize).toFixed(
     1

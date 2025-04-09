@@ -1,14 +1,9 @@
-//Lib
 import classes from './NavSide.module.css';
 import { IconServer, IconSettingsAutomation, IconActivityHeartbeat } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-//Composants
-
 export default function NavSide() {
-  ////Var
-  //Get the current route to light the right Item
   const router = useRouter();
   const currentRoute = router.pathname;
 

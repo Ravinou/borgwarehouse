@@ -1,4 +1,3 @@
-//Lib
 import classes from './Footer.module.css';
 import packageInfo from '~/package.json';
 

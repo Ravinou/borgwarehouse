@@ -1,4 +1,3 @@
-//Lib
 import classes from './Nav.module.css';
 import { IconUser, IconLogout } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -6,13 +5,10 @@ import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/react';
 
 export default function Nav() {
-  ////Var
-  //Get the current route to light the right Item
   const router = useRouter();
   const currentRoute = router.pathname;
   const { status, data } = useSession();
 
-  //Function
   const onLogoutClickedHandler = async () => {
     //This bug is open : https://github.com/nextauthjs/next-auth/issues/1542
     //I put redirect to false and redirect with router.

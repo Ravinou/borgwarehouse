@@ -1,4 +1,3 @@
-//Lib
 import classes from './RepoManage.module.css';
 import { IconAlertCircle, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -10,9 +9,7 @@ import { SpinnerDotted } from 'spinners-react';
 import Select from 'react-select';
 import Link from 'next/link';
 import { IconExternalLink } from '@tabler/icons-react';
-import { alertOptions } from '../../types/domain/constants';
-import { Repository } from '~/types/domain/config.types';
-import { Optional } from '~/types';
+import { alertOptions, Repository, Optional } from '~/types';
 
 type RepoManageProps = {
   mode: 'add' | 'edit';
@@ -31,7 +28,6 @@ type DataForm = {
 };
 
 export default function RepoManage(props: RepoManageProps) {
-  ////Var
   const router = useRouter();
   const targetRepo =
     props.mode === 'edit' && router.query.slug
@@ -55,11 +51,9 @@ export default function RepoManage(props: RepoManageProps) {
     progress: undefined,
   };
 
-  ////State
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  ////Functions
   //router.query.slug is undefined for few milliseconds on first render for a direct URL access (https://github.com/vercel/next.js/discussions/11484).
   //If I call repoManage with edit mode (props), i'm firstly waiting that router.query.slug being available before rendering.
   if (props.mode === 'edit') {

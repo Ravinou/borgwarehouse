@@ -1,4 +1,3 @@
-//Lib
 import React from 'react';
 import classes from './WizardStepBar.module.css';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
@@ -11,7 +10,6 @@ type WizardStepBarProps = {
 };
 
 function WizardStepBar(props: WizardStepBarProps) {
-  ////Functions
   //Color onClick on a step
   const colorHandler = (step: number) => {
     if (step <= props.step) {

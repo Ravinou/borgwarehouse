@@ -1,22 +1,19 @@
-//Lib
 import { useEffect } from 'react';
 import classes from '../../UserSettings.module.css';
 import { useState } from 'react';
 import { SpinnerCircularFixed } from 'spinners-react';
 import { useForm } from 'react-hook-form';
+import { Optional, AppriseServicesDTO } from '~/types';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
-import { Optional } from '~/types';
-import { AppriseServicesDTO } from '~/types/api/notification.types';
-import { useFormStatus } from '~/hooks/useFormStatus';
+import { useFormStatus } from '~/hooks';
 
 type AppriseURLsDataForm = {
   appriseURLs: string;
 };
 
 export default function AppriseURLs() {
-  //Var
   const {
     register,
     handleSubmit,
@@ -26,11 +23,9 @@ export default function AppriseURLs() {
   const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
     useFormStatus();
 
-  ////State
   const [appriseServicesList, setAppriseServicesList] = useState<Optional<string>>();
   const [fetchError, setFetchError] = useState<Optional<boolean>>();
 
-  ////LifeCycle
   //Component did mount
   useEffect(() => {
     //Initial fetch to build the list of Apprise Services enabled
@@ -55,7 +50,6 @@ export default function AppriseURLs() {
     getAppriseServices();
   }, []);
 
-  ////Functions
   //Form submit handler to modify Apprise services
   const urlsFormSubmitHandler = async (data: AppriseURLsDataForm) => {
     clearError();

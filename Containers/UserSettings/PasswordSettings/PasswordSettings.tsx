@@ -1,17 +1,15 @@
-//Lib
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
 import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
+import { useFormStatus } from '~/hooks';
+import { PasswordSettingDTO } from '~/types';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
-import { useFormStatus } from '~/hooks/useFormStatus';
-import { PasswordSettingDTO } from '~/types/api/setting.types';
 
 export default function PasswordSettings() {
-  //Var
   const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 5000,

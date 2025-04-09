@@ -1,5 +1,10 @@
-//Lib
 import classes from './ShimmerRepoList.module.css';
+
+const LOADING_REPO_COUNT = 5;
+
+function ShimmerRepoItem() {
+  return <div className={classes.repoIsLoading} />;
+}
 
 export default function ShimmerRepoList() {
   return (
@@ -8,11 +13,9 @@ export default function ShimmerRepoList() {
         <div className={classes.buttonIsLoading} />
       </div>
       <div className={classes.loadingRepoContainer}>
-        <div className={classes.repoIsLoading} />
-        <div className={classes.repoIsLoading} />
-        <div className={classes.repoIsLoading} />
-        <div className={classes.repoIsLoading} />
-        <div className={classes.repoIsLoading} />
+        {Array.from({ length: LOADING_REPO_COUNT }, (_, i) => (
+          <ShimmerRepoItem key={i} />
+        ))}
       </div>
     </div>
   );

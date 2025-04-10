@@ -52,7 +52,7 @@ export default function RepoList() {
             'Content-type': 'application/json',
           },
         });
-        const data = await response.json();
+        const data: WizardEnvType = await response.json();
         setWizardEnv(data);
       } catch (error) {
         console.log('Fetching datas error');

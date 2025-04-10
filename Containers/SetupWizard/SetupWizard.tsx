@@ -52,7 +52,8 @@ function SetupWizard(props: SetupWizardProps) {
             'Content-type': 'application/json',
           },
         });
-        setWizardEnv((await response.json()).wizardEnv);
+        const data: WizardEnvType = await response.json();
+        setWizardEnv(data);
       } catch (error) {
         console.log('Fetching datas error');
       }

@@ -32,8 +32,8 @@ export default function UserSettings(props: UserSettingsProps) {
             'Content-type': 'application/json',
           },
         });
-        const data: { wizardEnv: WizardEnvType } = await response.json();
-        setWizardEnv(data.wizardEnv);
+        const data: WizardEnvType = await response.json();
+        setWizardEnv(data);
       } catch (error) {
         console.log('Fetching datas error');
       }

@@ -11,7 +11,7 @@
 .modale {
   position: fixed;
   top: 10%;
-  width: 1000px;
+  width: 800px;
   height: auto;
   max-width: 75%;
   max-height: 85%;
@@ -22,6 +22,10 @@
   box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.4);
   margin: 0 auto;
   animation: append-animate 0.3s linear;
+}
+
+.modale h2 {
+  margin-top: 0;
 }
 
 @keyframes append-animate {
@@ -47,89 +51,98 @@
 
 .repoManageForm {
   margin: auto;
-  width: 80%;
-  padding: 15px 30px 30px 30px;
-  border-radius: 5px;
-  text-align: left;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-family: Inter, sans-serif;
+  color: #1f2937;
 }
 
 .formWrapper {
   text-align: center;
-  margin: auto;
   width: 100%;
-  height: auto;
-  color: #494b7a;
+  margin: 0 auto;
+  color: inherit;
 }
 
 .repoManageForm label {
   display: block;
-  margin-bottom: 8px;
-  text-align: center;
-  margin-top: 20px;
-  color: #494b7a;
+  margin-top: 0.9rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #374151;
+  text-align: left;
 }
 
 .repoManageForm input,
 .repoManageForm textarea,
 .repoManageForm select {
-  border: 1px solid #6d4aff21;
-  font-size: 16px;
-  height: auto;
-  margin: 0;
-  margin-bottom: 0px;
-  outline: 0;
-  padding: 15px;
   width: 100%;
-  background-color: #f5f5f5;
-  border-radius: 5px;
-  /* color: #1b1340; */
-  color: #494b7a;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: #f9fafb;
+  color: #111827;
+  font-family: Inter;
 }
 
 .repoManageForm textarea {
   resize: vertical;
+  min-height: 80px;
 }
 
-.repoManageForm textarea:focus,
 .repoManageForm input:focus,
+.repoManageForm textarea:focus,
 .repoManageForm select:focus {
-  outline: 1px solid #6d4aff;
-  box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
+  border-color: #6d4aff;
+  background-color: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(109, 74, 255, 0.3);
 }
 
 .repoManageForm .invalid {
-  background: #f3c7c7;
-  border: 1px solid #e45454;
-  outline: 1px solid #ff4a4a;
+  background-color: #fef2f2;
+  border-color: #ef4444;
 }
 
 .repoManageForm .invalid:focus {
-  background: #f3c7c7;
-  border: 1px solid #e45454;
-  outline: 1px solid #ff4a4a;
-  box-shadow: 0 0 10px 3px rgba(255, 74, 74, 0.605);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
 }
 
 .repoManageForm button {
   display: block;
-  margin: 15px auto;
+  margin: 2rem auto 0 auto;
+  background-color: #6d4aff;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
+
 .repoManageForm button:hover {
-  display: block;
-  margin: 15px auto;
+  background-color: #5c3dff;
 }
 
 .errorMessage {
-  color: red;
-  display: block;
-  margin-top: 3px;
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.3rem;
 }
 
 .optionCommandWrapper {
   display: flex;
-  margin-top: 20px;
-  color: #494b7a;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #374151;
 }
 
 .optionCommandWrapper label {
@@ -137,15 +150,33 @@
 }
 
 .optionCommandWrapper input[type='checkbox'] {
-  width: auto;
-  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  accent-color: #6d4aff;
   cursor: pointer;
-  accent-color: #6d4aff;
 }
+
 .optionCommandWrapper input[type='checkbox']:focus {
-  outline: 0;
-  box-shadow: none;
-  accent-color: #6d4aff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(109, 74, 255, 0.4);
+}
+
+.selectAlert {
+  max-width: 160px;
+}
+.selectAlertWrapper label {
+  margin: 0;
+}
+
+.selectAlertWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  margin-top: 1.5rem;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #374151;
 }
 
 /* DELETE DIALOG */
@@ -254,15 +285,11 @@
 }
 
 .littleDeleteButton {
+  margin-top: 10px;
   border: none;
   font-weight: 300;
   color: red;
   text-decoration: underline;
   background: none;
   cursor: pointer;
-}
-
-.selectAlert {
-  margin: auto auto 35px auto;
-  max-width: 160px;
 }

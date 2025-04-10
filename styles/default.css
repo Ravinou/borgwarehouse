@@ -26,45 +26,35 @@ code {
 
 .defaultButton {
   border: 0;
-  padding: 10px 15px;
+  padding: 10px 16px;
   background-color: #6d4aff;
   color: white;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
 }
 
 .defaultButton:hover {
-  border: 0;
-  padding: 10px 15px;
-  background-color: #4f31ce;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
+  background-color: #5a3de0;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
 .defaultButton:active {
-  border: 0;
-  padding: 10px 15px;
   background-color: #4f31ce;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
-  transform: scale(0.9);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  /* Pas de scale */
 }
 
 .defaultButton:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
+  transform: none;
+  box-shadow: none;
 }
 
 /* signIn */

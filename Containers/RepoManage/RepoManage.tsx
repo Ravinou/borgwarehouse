@@ -270,7 +270,7 @@ export default function RepoManage(props: RepoManageProps) {
         ) : (
           <div className={classes.formWrapper}>
             {props.mode == 'edit' && (
-              <h1>
+              <h2>
                 Edit the repository{' '}
                 <span
                   style={{
@@ -279,9 +279,9 @@ export default function RepoManage(props: RepoManageProps) {
                 >
                   #{targetRepo?.id}
                 </span>
-              </h1>
+              </h2>
             )}
-            {props.mode == 'add' && <h1>Add a repository</h1>}
+            {props.mode == 'add' && <h2>Add a repository</h2>}
             <form className={classes.repoManageForm} onSubmit={handleSubmit(formSubmitHandler)}>
               {/* ALIAS */}
               <label htmlFor='alias'>Alias</label>
@@ -314,7 +314,7 @@ export default function RepoManage(props: RepoManageProps) {
                     value:
                       /^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?$/,
                     message:
-                      'Invalid public key. The SSH key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)',
+                      'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)',
                   },
                 })}
               />
@@ -325,6 +325,7 @@ export default function RepoManage(props: RepoManageProps) {
               <label htmlFor='storageSize'>Storage Size (GB)</label>
               <input
                 type='number'
+                placeholder='1000'
                 min='1'
                 defaultValue={props.mode == 'edit' ? targetRepo?.storageSize : undefined}
                 {...register('storageSize', {
@@ -337,7 +338,6 @@ export default function RepoManage(props: RepoManageProps) {
               {/* COMMENT */}
               <label htmlFor='comment'>Comment</label>
               <textarea
-                placeholder='Little comment for your repository...'
                 defaultValue={props.mode == 'edit' ? targetRepo?.comment : undefined}
                 {...register('comment', {
                   required: false,
@@ -357,12 +357,8 @@ export default function RepoManage(props: RepoManageProps) {
                   defaultChecked={props.mode == 'edit' ? targetRepo?.lanCommand : false}
                   {...register('lanCommand')}
                 />
-                <label htmlFor='lanCommand'>Generates commands for use over LAN.</label>
+                <label htmlFor='lanCommand'>Generates commands for use over LAN</label>
                 <Link
-                  style={{
-                    alignSelf: 'baseline',
-                    marginLeft: '5px',
-                  }}
                   href='https://borgwarehouse.com/docs/user-manual/repositories/#generates-commands-for-use-over-lan'
                   rel='noreferrer'
                   target='_blank'
@@ -377,12 +373,8 @@ export default function RepoManage(props: RepoManageProps) {
                   defaultChecked={props.mode == 'edit' ? targetRepo?.appendOnlyMode : false}
                   {...register('appendOnlyMode')}
                 />
-                <label htmlFor='appendOnlyMode'>Enable append-only mode.</label>
+                <label htmlFor='appendOnlyMode'>Enable append-only mode</label>
                 <Link
-                  style={{
-                    alignSelf: 'baseline',
-                    marginLeft: '5px',
-                  }}
                   href='https://borgwarehouse.com/docs/user-manual/repositories/#append-only-mode'
                   rel='noreferrer'
                   target='_blank'
@@ -391,50 +383,74 @@ export default function RepoManage(props: RepoManageProps) {
                 </Link>
               </div>
               {/* ALERT */}
-              <label style={{ margin: '25px auto 10px auto' }} htmlFor='alert'>
-                Alert if there is no backup since :
-              </label>
-              <div className={classes.selectAlert}>
-                <Controller
-                  name='alert'
-                  defaultValue={
-                    props.mode == 'edit'
-                      ? alertOptions.find((x) => x.value === targetRepo?.alert) || {
-                          value: targetRepo?.alert,
-                          label: `Custom value (${targetRepo?.alert} seconds)`,
-                        }
-                      : alertOptions[4]
-                  }
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <Select
-                      onChange={onChange}
-                      value={value}
-                      options={alertOptions}
-                      isSearchable={false}
-                      maxMenuHeight={150}
-                      menuPlacement='top'
-                      theme={(theme) => ({
-                        ...theme,
-                        borderRadius: 5,
-                        colors: {
-                          ...theme.colors,
-                          primary25: '#c3b6fa',
-                          primary: '#6d4aff',
-                        },
-                      })}
-                    />
-                  )}
-                />
+              <div className={classes.selectAlertWrapper}>
+                <label htmlFor='alert'>Alert if there is no backup since :</label>
+                <div className={classes.selectAlert}>
+                  <Controller
+                    name='alert'
+                    defaultValue={
+                      props.mode == 'edit'
+                        ? alertOptions.find((x) => x.value === targetRepo?.alert) || {
+                            value: targetRepo?.alert,
+                            label: `Custom value (${targetRepo?.alert} seconds)`,
+                          }
+                        : alertOptions[4]
+                    }
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        onChange={onChange}
+                        value={value}
+                        options={alertOptions}
+                        isSearchable={false}
+                        maxMenuHeight={300}
+                        menuPlacement='top'
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            minHeight: '35px',
+                            height: '35px',
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            height: '35px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            padding: '0 8px',
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            margin: 0,
+                          }),
+                          indicatorsContainer: (base) => ({
+                            ...base,
+                            height: '35px',
+                          }),
+                        }}
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: 5,
+                          colors: {
+                            ...theme.colors,
+                            primary25: '#c3b6fa',
+                            primary: '#6d4aff',
+                          },
+                        })}
+                      />
+                    )}
+                  />
+                </div>
               </div>
               {isLoading ? (
                 <div
                   style={{
                     textAlign: 'center',
-                    marginTop: '8px',
+                    marginTop: '2rem',
                   }}
                 >
-                  <SpinnerDotted size={30} thickness={150} speed={100} color='#6d4aff' />
+                  <SpinnerDotted size={40} thickness={150} speed={100} color='#6d4aff' />
                 </div>
               ) : (
                 <button type='submit' className='defaultButton' disabled={!isValid || isSubmitting}>

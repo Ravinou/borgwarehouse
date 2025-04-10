@@ -67,13 +67,13 @@ export default function RepoManage(props: RepoManageProps) {
   //Delete a repo
   const deleteHandler = async () => {
     //API Call for delete
-    fetch('/api/repo/id/' + router.query.slug + '/delete', {
+    await fetch('/api/repo/id/' + router.query.slug + '/delete', {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json',
       },
     })
-      .then((response) => {
+      .then(async (response) => {
         if (response.ok) {
           toast.success(
             '🗑 The repository #' + router.query.slug + ' has been successfully deleted',
@@ -86,9 +86,12 @@ export default function RepoManage(props: RepoManageProps) {
               '🔒 The server is currently protected against repository deletion.',
               toastOptions
             );
-          else toast.error('An error has occurred', toastOptions);
-          router.replace('/');
-          console.log('Fail to delete');
+          else {
+            const errorMessage = await response.json();
+            toast.error(`An error has occurred : ${errorMessage.message.stdout}`, toastOptions);
+            router.replace('/');
+            console.log('Fail to delete');
+          }
         }
       })
       .catch((error) => {
@@ -163,7 +166,7 @@ export default function RepoManage(props: RepoManageProps) {
             router.replace('/');
           } else {
             const errorMessage = await response.json();
-            toast.error(`An error has occurred : ${errorMessage.message}`, toastOptions);
+            toast.error(`An error has occurred : ${errorMessage.message.stdout}`, toastOptions);
             router.replace('/');
             console.log(`Fail to ${props.mode}`);
           }
@@ -200,7 +203,7 @@ export default function RepoManage(props: RepoManageProps) {
             router.replace('/');
           } else {
             const errorMessage = await response.json();
-            toast.error(`An error has occurred : ${errorMessage.message}`, toastOptions);
+            toast.error(`An error has occurred : ${errorMessage.message.stdout}`, toastOptions);
             router.replace('/');
             console.log(`Fail to ${props.mode}`);
           }

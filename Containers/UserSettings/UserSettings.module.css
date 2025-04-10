@@ -117,7 +117,7 @@
   align-content: baseline;
 }
 
-.tokenCardBody p {
+.tokenInfo {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -387,7 +387,7 @@
 .headerFormAppriseUrls {
   font-weight: 500;
   color: #494b7a;
-  margin: 40px 0px 10px 0px;
+  margin-bottom: 10px;
   display: flex;
   padding-right: 5px;
 }

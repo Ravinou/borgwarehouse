@@ -20,7 +20,7 @@ COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
 
-RUN sed -i "s/images:/output: 'standalone',images:/" next.config.js
+RUN sed -i "s/images:/output: 'standalone',images:/" next.config.ts
 
 RUN npm run build
 

@@ -9,7 +9,8 @@ import { authOptions } from './api/auth/[...nextauth]';
 
 //Components
 import { GetServerSidePropsContext } from 'next';
-import Error from '../Components/UI/Error/Error';
+import Image from 'next/image';
+import { ToastOptions, toast } from 'react-toastify';
 
 type LoginForm = {
   username: string;
@@ -18,15 +19,24 @@ type LoginForm = {
 
 export default function Login() {
   const { status } = useSession();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<LoginForm>();
+  const { register, handleSubmit, reset, setFocus, watch } = useForm<LoginForm>();
   const router = useRouter();
+  const toastOptions: ToastOptions = {
+    position: 'top-center',
+    autoClose: 5000,
+    theme: 'dark',
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    style: {
+      backgroundColor: '#212942',
+      fontSize: '1.1rem',
+    },
+  };
 
-  const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
+  const { isLoading, setIsLoading, handleError, clearError } = useFormStatus();
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -39,6 +49,8 @@ export default function Login() {
     return;
   }
 
+  const isFormComplete = watch('username') && watch('password');
+
   //Functions
   const formSubmitHandler = async (data: LoginForm) => {
     setIsLoading(true);
@@ -50,7 +62,9 @@ export default function Login() {
     });
 
     if (resultat?.error) {
+      setFocus('username');
       reset();
+      toast.info('Incorrect credentials', toastOptions);
       handleError(resultat.error);
     } else {
       setIsLoading(false);
@@ -80,19 +94,19 @@ export default function Login() {
             borderTop: '10px solid #704dff',
             animation: 'ease-in 0.3s 1 normal none',
             width: '310px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          <h1
-            style={{
-              fontSize: '1.8em',
-              fontWeight: 'bold',
-              color: '#6d4aff',
-              textShadow: '#6d4aff 0px 0px 18px',
-              textAlign: 'center',
-            }}
-          >
-            BorgWarehouse
-          </h1>
+          <Image
+            src='/borgwarehouse-logo-violet.svg'
+            alt='BorgWarehouse'
+            width={225}
+            height={40}
+            priority
+          />
           <h5
             style={{
               color: '#a1a4ad',
@@ -103,7 +117,6 @@ export default function Login() {
           >
             Sign in to your account.
           </h5>
-          {error && <Error message={error} />}
           <form onSubmit={handleSubmit(formSubmitHandler)}>
             <p>
               <input
@@ -118,17 +131,6 @@ export default function Login() {
                   },
                 })}
               />
-              {errors.username && (
-                <small
-                  style={{
-                    color: 'red',
-                    display: 'block',
-                    marginTop: '3px',
-                  }}
-                >
-                  {errors.username.message}
-                </small>
-              )}
             </p>
             <p>
               <input
@@ -139,17 +141,6 @@ export default function Login() {
                   required: 'This field is required.',
                 })}
               />
-              {errors.password && (
-                <small
-                  style={{
-                    color: 'red',
-                    display: 'block',
-                    marginTop: '3px',
-                  }}
-                >
-                  {errors.password.message}
-                </small>
-              )}
             </p>
             <div
               style={{
@@ -157,7 +148,7 @@ export default function Login() {
                 justifyContent: 'center',
               }}
             >
-              <button className='signInButton' disabled={isLoading}>
+              <button className='signInButton' disabled={isLoading || !isFormComplete}>
                 {isLoading ? (
                   <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
                 ) : (

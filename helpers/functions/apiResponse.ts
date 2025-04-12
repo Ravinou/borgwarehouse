@@ -29,6 +29,10 @@ export default class ApiResponse {
     res.status(422).json({ status: 422, message });
   }
 
+  static conflict(res: NextApiResponse, message = 'Conflict') {
+    res.status(409).json({ status: 409, message });
+  }
+
   static serverError(
     res: NextApiResponse,
     message: string = 'API error, contact the administrator.'

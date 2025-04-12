@@ -1,4 +1,4 @@
-import handler from '~/pages/api/cronjob/getStorageUsed';
+import handler from '~/pages/api/cronjob/check-storage';
 import { createMocks } from 'node-mocks-http';
 import { ConfigService, ShellService } from '~/services';
 

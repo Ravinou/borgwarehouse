@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/account/getWizardEnv';
+import handler from '~/pages/api/account/wizard-env';
 import { getServerSession } from 'next-auth/next';
 
 vi.mock('next-auth/next');

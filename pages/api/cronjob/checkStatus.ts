@@ -76,16 +76,21 @@ export default async function handler(
       if (usersList[0].appriseAlert) {
         const appriseServicesURLs = usersList[0].appriseServices?.join(' ');
         const message = `🔴 Some repositories on BorgWarehouse need attention !\nList of down repositories :\n ${repoAliasListToSendAlert}`;
-        if (usersList[0].appriseMode === 'package') {
-          await exec(`apprise -v -b '${message}' ${appriseServicesURLs}`);
-        } else if (usersList[0].appriseMode === 'stateless') {
-          await fetch(`${usersList[0].appriseStatelessURL}/notify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ urls: appriseServicesURLs, body: message }),
-          });
-        } else {
-          return ApiResponse.validationError(res, 'No Apprise Mode selected or supported.');
+
+        try {
+          if (usersList[0].appriseMode === 'package') {
+            await exec(`apprise -v -b '${message}' ${appriseServicesURLs}`);
+          } else if (usersList[0].appriseMode === 'stateless') {
+            await fetch(`${usersList[0].appriseStatelessURL}/notify`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ urls: appriseServicesURLs, body: message }),
+            });
+          } else {
+            console.warn('No Apprise Mode selected or supported.');
+          }
+        } catch (notifErr) {
+          console.error('Apprise notification failed:', notifErr);
         }
       }
     }

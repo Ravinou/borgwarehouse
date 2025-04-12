@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/cronjob/checkStatus';
+import handler from '~/pages/api/cronjob/check-status';
 import { ConfigService, NotifService, ShellService } from '~/services';
 import { AppriseModeEnum } from '~/types/domain/config.types';
 

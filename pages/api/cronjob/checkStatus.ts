@@ -99,6 +99,10 @@ export default async function handler(
     return ApiResponse.success(res, 'Status cron executed successfully.');
   } catch (error) {
     console.log(error);
-    return ApiResponse.serverError(res);
+    if (error instanceof Error && error.message === 'The check status service is already running') {
+      return ApiResponse.conflict(res, error.message);
+    } else {
+      return ApiResponse.serverError(res);
+    }
   }
 }

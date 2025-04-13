@@ -1,4 +1,4 @@
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
+import { authOptions } from '~/pages/api/v1/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';

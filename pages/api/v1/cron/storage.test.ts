@@ -1,4 +1,4 @@
-import handler from '~/pages/api/cron/storage';
+import handler from '~/pages/api/v1/cron/storage';
 import { createMocks } from 'node-mocks-http';
 import { ConfigService, ShellService } from '~/services';
 

@@ -1,14 +1,16 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/account/email';
+import handler from '~/pages/api/v1/account/username';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService } from '~/services';
 
 vi.mock('next-auth/next');
 vi.mock('~/services');
 
-describe('PUT /api/account/updateEmail', () => {
+describe('PUT /api/account/updateUsername', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
+    vi.resetAllMocks();
     vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
@@ -28,14 +30,12 @@ describe('PUT /api/account/updateEmail', () => {
     expect(res._getStatusCode()).toBe(405);
   });
 
-  it('should return 422 if email is not provided', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
-    });
+  it('should return 422 if username is not a string', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: {},
+      body: { username: 12345 },
     });
 
     await handler(req, res);
@@ -44,18 +44,32 @@ describe('PUT /api/account/updateEmail', () => {
     expect(res._getJSONData()).toEqual({ message: 'Unexpected data' });
   });
 
-  it('should return 400 if user is not found in the users list', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+  it('should return 422 if username format is invalid', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+
+    const { req, res } = createMocks({
+      method: 'PUT',
+      body: { username: 'Too$hort!' },
     });
 
+    await handler(req, res);
+
+    expect(res._getStatusCode()).toBe(422);
+    expect(res._getJSONData()).toEqual({
+      message: 'Only a-z characters are allowed (5 to 15 char.)',
+    });
+  });
+
+  it('should return 400 if user is not found', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
-      { id: 1, username: 'Ada', email: 'ada@example.com', password: '', roles: [] },
+      { username: 'Ada', email: 'ada@example.com', password: 'xxx', id: 1, roles: ['user'] },
     ]);
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { email: 'new@example.com' },
+      body: { username: 'newname' },
     });
 
     await handler(req, res);
@@ -66,63 +80,66 @@ describe('PUT /api/account/updateEmail', () => {
     });
   });
 
-  it('should return 400 if email already exists', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
-    });
+  it('should return 400 if new username already exists', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
-      { id: 1, username: 'Lovelace', email: 'lovelace@example.com', password: '', roles: [] },
-      { id: 2, username: 'Ada', email: 'new@example.com', password: '', roles: [] },
+      { username: 'Lovelace', email: 'love@example.com', password: 'xxx', id: 1, roles: ['user'] },
+      {
+        username: 'newname',
+        email: 'someone@example.com',
+        password: 'xxx',
+        id: 2,
+        roles: ['user'],
+      },
     ]);
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { email: 'new@example.com' },
+      body: { username: 'newname' },
     });
 
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(400);
-    expect(res._getJSONData()).toEqual({ message: 'Email already exists' });
+    expect(res._getJSONData()).toEqual({ message: 'Username already exists' });
   });
 
-  it('should update the email and return 200 on success', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
-    });
+  it('should return 200 and update the username', async () => {
+    const originalUser = {
+      username: 'Lovelace',
+      email: 'love@example.com',
+      password: 'xxx',
+      id: 1,
+      roles: ['user'],
+    };
 
-    const users = [
-      { id: 1, username: 'Lovelace', email: 'lovelace@example.com', password: '', roles: [] },
-    ];
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
 
-    vi.mocked(ConfigService.getUsersList).mockResolvedValue(users);
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([originalUser]);
     vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { email: 'new@example.com' },
+      body: { username: 'newusername' },
     });
 
     await handler(req, res);
 
     expect(ConfigService.updateUsersList).toHaveBeenCalledWith([
-      { ...users[0], email: 'new@example.com' },
+      { ...originalUser, username: 'newusername' },
     ]);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ message: 'Successful API send' });
   });
 
-  it('should return 500 if there is a file system error', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
-    });
-
+  it('should return 500 if file not found (ENOENT)', async () => {
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { email: 'new@example.com' },
+      body: { username: 'newname' },
     });
 
     await handler(req, res);
@@ -135,15 +152,12 @@ describe('PUT /api/account/updateEmail', () => {
   });
 
   it('should return 500 on unknown error', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
-    });
-
-    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'UNKNOWN_ERROR' });
+    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Lovelace' } });
+    vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'SOMETHING_ELSE' });
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { email: 'new@example.com' },
+      body: { username: 'newname' },
     });
 
     await handler(req, res);

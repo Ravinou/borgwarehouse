@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/repositories';
+import handler from '~/pages/api/v1/repositories';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService, AuthService, ShellService } from '~/services';
 import { Repository } from '~/types';

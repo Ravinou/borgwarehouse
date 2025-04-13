@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from 'next';
 import RepoList from '~/Containers/RepoList/RepoList';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
+import { authOptions } from '~/pages/api/v1/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 
 export default function Add() {

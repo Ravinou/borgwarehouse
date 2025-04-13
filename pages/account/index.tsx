@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSession } from 'next-auth/react';
-import { authOptions } from '../api/auth/[...nextauth]';
+import { authOptions } from '../api/v1/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { GetServerSidePropsContext } from 'next';
 import { SessionStatus } from '~/types';

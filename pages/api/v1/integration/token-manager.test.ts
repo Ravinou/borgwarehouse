@@ -1,4 +1,4 @@
-import handler from '~/pages/api/integration/token-manager';
+import handler from '~/pages/api/v1/integration/token-manager';
 import { createMocks } from 'node-mocks-http';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService } from '~/services';

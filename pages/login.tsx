@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { SpinnerDotted } from 'spinners-react';
 import { useFormStatus } from '~/hooks';
-import { authOptions } from './api/auth/[...nextauth]';
+import { authOptions } from './api/v1/auth/[...nextauth]';
 
 //Components
 import { GetServerSidePropsContext } from 'next';

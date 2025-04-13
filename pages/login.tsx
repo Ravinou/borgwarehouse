@@ -148,11 +148,25 @@ export default function Login() {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
+                flexDirection: "column"
               }}
             >
               <button className='signInButton' disabled={isLoading}>
                 Sign in
               </button>
+              {props.OAUTH_DISPLAY_NAME && (<button className='signInButton' disabled={isLoading} onClick={(e) => {
+                e.preventDefault()
+                signIn("authelia", {
+                  callbackUrl: "/",
+                  redirect: false
+                })
+              }}>
+                {isLoading ? (
+                  <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
+                ) : (
+                  props.OAUTH_DISPLAY_NAME
+                )}
+              </button>)}
             </div>
           </form>
         </main>
@@ -175,6 +189,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   return {
-    props: { session },
+    props: { session, OAUTH_DISPLAY_NAME: process.env.ENABLE_OAUTH === "true" ? process.env.OAUTH_DISPLAY_NAME ?? null : null },
   };
 }

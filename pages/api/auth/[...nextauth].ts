@@ -81,6 +81,7 @@ export const authOptions: NextAuthOptions = {
         return account;
       },
     }),
+    ...extraProviders
   ],
   callbacks: {
     async jwt({ token, user }) {

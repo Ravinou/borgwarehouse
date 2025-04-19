@@ -21,7 +21,7 @@ export default function isSshPubKeyDuplicate(
 
   // Check if the normalized key is already in the repository list
   return repoList.some((repo) => {
-    const repoSshKeyWithoutComment = repo?.sshPublicKey.split(' ').slice(0, 2).join(' ');
+    const repoSshKeyWithoutComment = repo?.sshPublicKey?.split(' ').slice(0, 2).join(' ');
     return repoSshKeyWithoutComment === pubKeyWithoutComment;
   });
 }

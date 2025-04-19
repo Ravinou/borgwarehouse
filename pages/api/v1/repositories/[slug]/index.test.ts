@@ -17,7 +17,7 @@ const mockRepoList: Repository[] = [
   {
     id: 1,
     alias: 'repo1',
-    repositoryName: 'Test Repository 1',
+    repositoryName: 'abcd1234',
     status: true,
     lastSave: 1678901234,
     alert: 1,
@@ -34,7 +34,7 @@ const mockRepoList: Repository[] = [
   {
     id: 2,
     alias: 'repo2',
-    repositoryName: 'Test Repository 2',
+    repositoryName: 'cdef5678',
     status: false,
     lastSave: 1678905678,
     storageSize: 200,
@@ -46,7 +46,7 @@ const mockRepoList: Repository[] = [
   },
 ];
 
-describe('Repository GET by id', () => {
+describe('Repository GET by repositoryName', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.resetModules();
@@ -55,13 +55,13 @@ describe('Repository GET by id', () => {
 
   it('should return 405 if method is not handling', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    const { req, res } = createMocks({ method: 'POST' });
+    const { req, res } = createMocks({ method: 'POST', query: { slug: '1234abcd' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
   });
 
   it('should return 401 if no session or authorization header is provided', async () => {
-    const { req, res } = createMocks({ method: 'GET' });
+    const { req, res } = createMocks({ method: 'GET', query: { slug: '1234abcd' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
   });
@@ -71,6 +71,7 @@ describe('Repository GET by id', () => {
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'GET',
+      query: { slug: '1234abcd' },
       headers: { authorization: 'Bearer INVALID_API_KEY' },
     });
     await handler(req, res);
@@ -79,9 +80,15 @@ describe('Repository GET by id', () => {
 
   it('should return 403 if API key does not have read permissions', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null);
-    vi.mocked(AuthService.tokenController).mockResolvedValue({ read: false });
+    vi.mocked(AuthService.tokenController).mockResolvedValue({
+      read: false,
+      update: true,
+      create: true,
+      delete: true,
+    });
     const { req, res } = createMocks({
       method: 'GET',
+      query: { slug: '1234abcd' },
       headers: { authorization: 'Bearer API_KEY' },
     });
     await handler(req, res);
@@ -98,7 +105,7 @@ describe('Repository GET by id', () => {
   it('should return 404 if repository is not found', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
-    const { req, res } = createMocks({ method: 'GET', query: { slug: '3' } });
+    const { req, res } = createMocks({ method: 'GET', query: { slug: 'def1234a' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(404);
   });
@@ -106,14 +113,14 @@ describe('Repository GET by id', () => {
   it('should return 200 and the repository data if found', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
-    const { req, res } = createMocks({ method: 'GET', query: { slug: '1' } });
+    const { req, res } = createMocks({ method: 'GET', query: { slug: 'abcd1234' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({ repo: mockRepoList[0] });
   });
 });
 
-describe('Repository PATCH by id', () => {
+describe('Repository PATCH by repositoryName', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetAllMocks();
@@ -122,13 +129,13 @@ describe('Repository PATCH by id', () => {
 
   it('should return 405 if method is not handling', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    const { req, res } = createMocks({ method: 'POST' });
+    const { req, res } = createMocks({ method: 'POST', query: { slug: 'abcd1234' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
   });
 
   it('should return 401 if no session or authorization header is provided', async () => {
-    const { req, res } = createMocks({ method: 'PATCH' });
+    const { req, res } = createMocks({ method: 'PATCH', query: { slug: 'abcd1234' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
   });
@@ -138,6 +145,7 @@ describe('Repository PATCH by id', () => {
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'PATCH',
+      query: { slug: 'abcd1234' },
       headers: { authorization: 'Bearer INVALID_API_KEY' },
     });
     await handler(req, res);
@@ -154,6 +162,7 @@ describe('Repository PATCH by id', () => {
     });
     const { req, res } = createMocks({
       method: 'PATCH',
+      query: { slug: 'abcd1234' },
       headers: { authorization: 'Bearer API_KEY' },
     });
     await handler(req, res);
@@ -170,34 +179,24 @@ describe('Repository PATCH by id', () => {
   it('should return 404 if repository is not found', async () => {
     vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
-    const { req, res } = createMocks({ method: 'PATCH', query: { slug: '123' } });
+    const { req, res } = createMocks({ method: 'PATCH', query: { slug: '1234edfe' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(404);
   });
 
   it('should return 409 if SSH key is duplicated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
-      {
-        id: 123,
-        repositoryName: 'test-repo',
-        alias: 'test-alias',
-        status: true,
-        lastSave: 0,
-        storageSize: 100,
-        storageUsed: 50,
-        lanCommand: false,
-        sshPublicKey: 'test-key',
-        comment: 'Test repository',
-      },
-    ]);
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'USER' },
+    });
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
     vi.mocked(isSshPubKeyDuplicate).mockReturnValue(true);
     const { req, res } = createMocks({
       method: 'PATCH',
-      query: { slug: '123' },
+      query: { slug: 'abcd1234' },
       body: { sshPublicKey: 'duplicate-key' },
     });
     await handler(req, res);
+
     expect(res._getStatusCode()).toBe(409);
   });
 
@@ -206,7 +205,7 @@ describe('Repository PATCH by id', () => {
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
-        repositoryName: 'test-repo',
+        repositoryName: 'a43928f3',
         alias: 'test-alias',
         status: true,
         lastSave: 0,
@@ -220,7 +219,7 @@ describe('Repository PATCH by id', () => {
     vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: 'Error', stdout: '' });
     const { req, res } = createMocks({
       method: 'PATCH',
-      query: { slug: '123' },
+      query: { slug: 'a43928f3' },
       body: { alias: 'new-alias' },
     });
     await handler(req, res);
@@ -232,7 +231,7 @@ describe('Repository PATCH by id', () => {
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
-        repositoryName: 'test-repo',
+        repositoryName: '345f6789',
         alias: 'test-alias',
         status: true,
         lastSave: 0,
@@ -247,14 +246,14 @@ describe('Repository PATCH by id', () => {
     vi.mocked(ConfigService.updateRepoList).mockResolvedValue();
     const { req, res } = createMocks({
       method: 'PATCH',
-      query: { slug: '123' },
+      query: { slug: '345f6789' },
       body: { alias: 'new-alias' },
     });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
-      message: 'Repository test-repo has been edited',
+      message: 'Repository 345f6789 has been edited',
     });
   });
 
@@ -269,7 +268,7 @@ describe('Repository PATCH by id', () => {
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 456,
-        repositoryName: 'repo-key',
+        repositoryName: '345f6789',
         alias: 'repo-alias',
         status: true,
         lastSave: 0,
@@ -280,11 +279,11 @@ describe('Repository PATCH by id', () => {
         comment: 'Test repository',
       },
     ]);
-    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: null });
+    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: '', stdout: '' });
     vi.mocked(ConfigService.updateRepoList).mockResolvedValue();
     const { req, res } = createMocks({
       method: 'PATCH',
-      query: { slug: '456' },
+      query: { slug: '345f6789' },
       headers: { authorization: 'Bearer API_KEY' },
       body: { alias: 'updated-repo' },
     });
@@ -292,7 +291,7 @@ describe('Repository PATCH by id', () => {
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
-      message: 'Repository repo-key has been edited',
+      message: 'Repository 345f6789 has been edited',
     });
   });
 
@@ -301,7 +300,7 @@ describe('Repository PATCH by id', () => {
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
-        repositoryName: 'test-repo',
+        repositoryName: '345f6e89',
         alias: 'old-alias',
         sshPublicKey: 'old-key',
         storageSize: 100,
@@ -312,11 +311,11 @@ describe('Repository PATCH by id', () => {
         comment: 'Initial repository setup',
       },
     ]);
-    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: null });
+    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: '', stdout: '' });
     vi.mocked(ConfigService.updateRepoList).mockResolvedValue();
     const { req, res } = createMocks({
       method: 'PATCH',
-      query: { slug: '123' },
+      query: { slug: '345f6e89' },
       body: {
         alias: 'new-alias',
         sshPublicKey: 'new-key',
@@ -330,7 +329,7 @@ describe('Repository PATCH by id', () => {
       [
         {
           id: 123,
-          repositoryName: 'test-repo',
+          repositoryName: '345f6e89',
           alias: 'new-alias',
           sshPublicKey: 'new-key',
           storageSize: 100,
@@ -345,16 +344,16 @@ describe('Repository PATCH by id', () => {
       ],
       true
     );
-    expect(ShellService.updateRepo).toHaveBeenCalledWith('test-repo', 'new-key', 100, true);
+    expect(ShellService.updateRepo).toHaveBeenCalledWith('345f6e89', 'new-key', 100, true);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
-      message: 'Repository test-repo has been edited',
+      message: 'Repository 345f6e89 has been edited',
     });
   });
 });
 
-describe('Repository DELETE by id', () => {
+describe('Repository DELETE by repositoryName', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.resetModules();
@@ -362,8 +361,10 @@ describe('Repository DELETE by id', () => {
   });
 
   it('should return 405 if method is not handling', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
-    const { req, res } = createMocks({ method: 'POST' });
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { name: 'USER' },
+    });
+    const { req, res } = createMocks({ method: 'POST', query: { slug: 'abcd1234' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
   });
@@ -379,7 +380,7 @@ describe('Repository DELETE by id', () => {
     vi.mocked(getServerSession).mockResolvedValue({
       user: { name: 'USER' },
     });
-    const { req, res } = createMocks({ method: 'DELETE' });
+    const { req, res } = createMocks({ method: 'DELETE', query: { slug: 'abcd1234' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(403);
     expect(res._getJSONData()).toEqual({
@@ -401,7 +402,7 @@ describe('Repository DELETE by id', () => {
     expect(res._getStatusCode()).toBe(400);
     expect(res._getJSONData()).toEqual({
       status: 400,
-      message: 'Missing slug or slug is malformed',
+      message: 'Slug must be a valid repository name (8-character hexadecimal string)',
     });
   });
 
@@ -411,14 +412,14 @@ describe('Repository DELETE by id', () => {
     });
     const { req, res } = createMocks({
       method: 'DELETE',
-      query: { slug: '123' },
+      query: { slug: 'abcd1234' },
     });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     await handler(req, res);
     expect(res._getStatusCode()).toBe(404);
     expect(res._getJSONData()).toEqual({
       status: 404,
-      message: 'Repository not found',
+      message: 'Repository with name abcd1234 not found',
     });
   });
 
@@ -428,12 +429,12 @@ describe('Repository DELETE by id', () => {
     });
     const { req, res } = createMocks({
       method: 'DELETE',
-      query: { slug: '123' },
+      query: { slug: 'abde3421' },
     });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
-        repositoryName: 'test-repo',
+        repositoryName: 'abde3421',
         alias: 'test-alias',
         status: true,
         lastSave: 0,
@@ -443,7 +444,7 @@ describe('Repository DELETE by id', () => {
         comment: 'Test repository',
       },
     ]);
-    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: 'Error' });
+    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: 'Error', stdout: '' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(500);
     expect(res._getJSONData()).toEqual({
@@ -459,12 +460,12 @@ describe('Repository DELETE by id', () => {
     });
     const { req, res } = createMocks({
       method: 'DELETE',
-      query: { slug: '1234' },
+      query: { slug: 'abde3421' },
     });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 1234,
-        repositoryName: 'test-repo',
+        repositoryName: 'abde3421',
         alias: 'test-alias',
         status: true,
         lastSave: 0,
@@ -474,13 +475,13 @@ describe('Repository DELETE by id', () => {
         comment: 'Test repository',
       },
     ]);
-    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: null });
+    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: '', stdout: '' });
     vi.mocked(ConfigService.updateRepoList).mockResolvedValue();
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
-      message: 'Repository test-repo deleted',
+      message: 'Repository abde3421 deleted',
     });
     expect(ConfigService.updateRepoList).toHaveBeenCalledWith([], true);
   });
@@ -495,7 +496,7 @@ describe('Repository DELETE by id', () => {
     });
     const { req, res } = createMocks({
       method: 'DELETE',
-      query: { slug: '12345' },
+      query: { slug: 'abde3421' },
       headers: {
         authorization: 'Bearer API_KEY',
       },
@@ -503,7 +504,7 @@ describe('Repository DELETE by id', () => {
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 12345,
-        repositoryName: 'test-repo2',
+        repositoryName: 'abde3421',
         alias: 'test-alias',
         status: true,
         lastSave: 0,
@@ -513,13 +514,13 @@ describe('Repository DELETE by id', () => {
         comment: 'Test repository',
       },
     ]);
-    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stdout: 'delete' });
+    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stdout: 'delete', stderr: '' });
     vi.mocked(ConfigService.updateRepoList).mockResolvedValue();
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
-      message: 'Repository test-repo2 deleted',
+      message: 'Repository abde3421 deleted',
     });
     expect(ConfigService.updateRepoList).toHaveBeenCalledWith([], true);
   });
@@ -529,7 +530,7 @@ describe('Repository DELETE by id', () => {
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'DELETE',
-      query: { slug: '12345' },
+      query: { slug: 'abde3421' },
       headers: {
         authorization: 'Bearer API_KEY',
       },
@@ -552,7 +553,7 @@ describe('Repository DELETE by id', () => {
     });
     const { req, res } = createMocks({
       method: 'DELETE',
-      query: { slug: '12345' },
+      query: { slug: 'abde3421' },
       headers: {
         authorization: 'Bearer API_KEY',
       },

@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { promisify } from 'util';
 import { ConfigService } from '~/services';
 import { ErrorResponse, SuccessResponse } from '~/types';
-import { authOptions } from '../../auth/[...nextauth]';
+import { authOptions } from '~/pages/api/auth/[...nextauth]';
 
 const execAsync = promisify(exec);
 

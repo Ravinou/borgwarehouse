@@ -1,5 +1,5 @@
 import { ConfigService } from '~/services';
-import { authOptions } from '../auth/[...nextauth]';
+import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { EmailSettingDTO, ErrorResponse } from '~/types';

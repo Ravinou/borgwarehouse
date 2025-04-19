@@ -1,4 +1,4 @@
-import { authOptions } from '../auth/[...nextauth]';
+import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { ConfigService, AuthService } from '~/services';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';

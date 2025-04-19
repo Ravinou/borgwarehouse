@@ -1,7 +1,7 @@
 import SetupWizard from '../../Containers/SetupWizard/SetupWizard';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { authOptions } from '~/pages/api/v1/auth/[...nextauth]';
+import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { GetServerSidePropsContext } from 'next';
 

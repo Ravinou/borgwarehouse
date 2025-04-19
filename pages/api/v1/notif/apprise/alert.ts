@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ConfigService } from '~/services';
 import { ErrorResponse, AppriseAlertResponse } from '~/types';
-import { authOptions } from '../../auth/[...nextauth]';
+import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import ApiResponse from '~/helpers/functions/apiResponse';
 
 export default async function handler(

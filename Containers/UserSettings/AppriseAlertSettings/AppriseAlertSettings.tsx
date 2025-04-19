@@ -43,7 +43,7 @@ export default function AppriseAlertSettings() {
     //Initial fetch to get the status of Apprise Alert
     const getAppriseAlert = async () => {
       try {
-        const response = await fetch('/api/account/getAppriseAlert', {
+        const response = await fetch('/api/v1/notif/apprise/alert', {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -67,7 +67,7 @@ export default function AppriseAlertSettings() {
   const onChangeSwitchHandler = async (data: AppriseAlertDataForm) => {
     clearError();
     setIsSwitchDisabled(true);
-    await fetch('/api/account/updateAppriseAlert', {
+    await fetch('/api/v1/notif/apprise/alert', {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
@@ -98,7 +98,7 @@ export default function AppriseAlertSettings() {
     clearError();
     setIsSendingTestNotification(true);
     try {
-      const response = await fetch('/api/account/sendTestApprise', {
+      const response = await fetch('/api/v1/notif/apprise/test', {
         method: 'POST',
       });
       const result = await response.json();

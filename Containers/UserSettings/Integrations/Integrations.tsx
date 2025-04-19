@@ -64,7 +64,7 @@ export default function Integrations() {
 
   const fetchTokenList = async () => {
     try {
-      const response = await fetch('/api/account/tokenManager', {
+      const response = await fetch('/api/v1/integration/token-manager', {
         method: 'GET',
         headers: {
           'Content-type': 'application/json',
@@ -109,7 +109,7 @@ export default function Integrations() {
 
     // Post API to send the new token integration
     try {
-      const response = await fetch('/api/account/tokenManager', {
+      const response = await fetch('/api/v1/integration/token-manager', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -146,7 +146,7 @@ export default function Integrations() {
   const deleteTokenHandler = async (tokenName: string) => {
     setIsDeleteLoading(true);
     try {
-      const response = await fetch('/api/account/tokenManager', {
+      const response = await fetch('/api/v1/integration/token-manager', {
         method: 'DELETE',
         headers: {
           'Content-type': 'application/json',

@@ -40,7 +40,7 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/account/updateUsername', {
+      const response = await fetch('/api/v1/account/username', {
         method: 'PUT',
         headers: {
           'Content-type': 'application/json',

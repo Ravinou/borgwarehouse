@@ -31,7 +31,7 @@ export default function AppriseURLs() {
     //Initial fetch to build the list of Apprise Services enabled
     const getAppriseServices = async () => {
       try {
-        const response = await fetch('/api/account/getAppriseServices', {
+        const response = await fetch('/api/v1/notif/apprise/services', {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -60,7 +60,7 @@ export default function AppriseURLs() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/account/updateAppriseServices', {
+      const response = await fetch('/api/v1/notif/apprise/services', {
         method: 'PUT',
         headers: {
           'Content-type': 'application/json',

@@ -40,7 +40,7 @@ export default function EmailSettings(props: EmailSettingDTO) {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/account/updateEmail', {
+      const response = await fetch('/api/v1/account/email', {
         method: 'PUT',
         headers: {
           'Content-type': 'application/json',

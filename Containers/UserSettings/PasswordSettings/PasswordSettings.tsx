@@ -35,7 +35,7 @@ export default function PasswordSettings() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/account/updatePassword', {
+      const response = await fetch('/api/v1/account/password', {
         method: 'PUT',
         headers: {
           'Content-type': 'application/json',

@@ -17,7 +17,7 @@ export default function StorageUsedChartBar() {
   useEffect(() => {
     const dataFetch = async () => {
       try {
-        const response = await fetch('/api/repo', {
+        const response = await fetch('/api/v1/repositories', {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',

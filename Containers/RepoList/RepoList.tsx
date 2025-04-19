@@ -30,7 +30,7 @@ export default function RepoList() {
   ////Datas
   //Write a fetcher function to wrap the native fetch function and return the result of a call to url in json format
   const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
-  const { data, error } = useSWR('/api/repo', fetcher);
+  const { data, error } = useSWR('/api/v1/repositories', fetcher);
 
   ////LifeCycle
   //Component did mount
@@ -46,7 +46,7 @@ export default function RepoList() {
     //Fetch wizardEnv to hydrate Repo components
     const fetchWizardEnv = async () => {
       try {
-        const response = await fetch('/api/account/getWizardEnv', {
+        const response = await fetch('/api/v1/account/wizard-env', {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -70,8 +70,8 @@ export default function RepoList() {
 
   //Firstly, check the availability of data and condition it.
   if (!data) {
-    //Force mutate after login (force a API GET on /api/repo to load repoList)
-    mutate('/api/repo');
+    //Force mutate after login (force a API GET on /api/v1/repositories to load repoList)
+    mutate('/api/v1/repositories');
     return <ShimmerRepoList />;
   }
   if (error) {

@@ -26,7 +26,7 @@ export default function UserSettings(props: UserSettingsProps) {
   useEffect(() => {
     const fetchWizardEnv = async () => {
       try {
-        const response = await fetch('/api/account/getWizardEnv', {
+        const response = await fetch('/api/v1/account/wizard-env', {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',

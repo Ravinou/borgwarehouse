@@ -67,7 +67,7 @@ export default function RepoManage(props: RepoManageProps) {
   //Delete a repo
   const deleteHandler = async () => {
     //API Call for delete
-    await fetch('/api/repo/id/' + router.query.slug + '/delete', {
+    await fetch('/api/v1/repositories/' + router.query.slug, {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json',
@@ -106,7 +106,7 @@ export default function RepoManage(props: RepoManageProps) {
       // Extract the first two columns of the SSH key in the form
       const publicKeyPrefix = sshPublicKey.split(' ').slice(0, 2).join(' ');
 
-      const response = await fetch('/api/repo', { method: 'GET' });
+      const response = await fetch('/api/v1/repositories', { method: 'GET' });
       const data = await response.json();
 
       const conflictingRepo = data.repoList.find((repo: { sshPublicKey: string; id: number }) => {
@@ -153,7 +153,7 @@ export default function RepoManage(props: RepoManageProps) {
         appendOnlyMode: dataForm.appendOnlyMode,
       };
       //POST API to send new repo
-      await fetch('/api/repo/add', {
+      await fetch('/api/v1/repositories', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -187,7 +187,7 @@ export default function RepoManage(props: RepoManageProps) {
         lanCommand: dataForm.lanCommand,
         appendOnlyMode: dataForm.appendOnlyMode,
       };
-      await fetch('/api/repo/id/' + router.query.slug + '/edit', {
+      await fetch('/api/v1/repositories/' + router.query.slug, {
         method: 'PATCH',
         headers: {
           'Content-type': 'application/json',

@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '~/pages/api/v1/notif/email/send-test';
+import handler from '~/pages/api/v1/notif/email/test';
 import { getServerSession } from 'next-auth/next';
 
 vi.mock('next-auth/next');

@@ -35,7 +35,7 @@ export default function AppriseMode() {
     //Initial fetch to get Apprise Mode enabled
     const getAppriseMode = async () => {
       try {
-        const response = await fetch('/api/account/getAppriseMode', {
+        const response = await fetch('/api/v1/notif/apprise/mode', {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -63,7 +63,7 @@ export default function AppriseMode() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/account/updateAppriseMode', {
+      const response = await fetch('/api/v1/notif/apprise/mode', {
         method: 'PUT',
         headers: {
           'Content-type': 'application/json',

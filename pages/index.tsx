@@ -15,7 +15,7 @@ export default function Index() {
           <Head>
             {/* <link
                             rel='preload'
-                            href='/api/repo'
+                            href='/api/v1/repositories'
                             as='fetch'
                             crossorigin='anonymous'
                         ></link> */}

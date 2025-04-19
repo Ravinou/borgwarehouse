@@ -38,7 +38,7 @@ export default function EmailAlertSettings() {
   useEffect(() => {
     const dataFetch = async () => {
       try {
-        const response = await fetch('/api/account/getEmailAlert', {
+        const response = await fetch('/api/v1/notif/email/alert', {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -62,7 +62,7 @@ export default function EmailAlertSettings() {
   const onChangeSwitchHandler = async (data: EmailAlertDTO) => {
     clearError();
     setIsSwitchDisabled(true);
-    await fetch('/api/account/updateEmailAlert', {
+    await fetch('/api/v1/notif/email/alert', {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
@@ -93,7 +93,7 @@ export default function EmailAlertSettings() {
     clearError();
     setIsSendingTestNotification(true);
     try {
-      const response = await fetch('/api/account/sendTestEmail', {
+      const response = await fetch('/api/v1/notif/email/test', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',

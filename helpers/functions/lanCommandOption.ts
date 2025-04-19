@@ -1,7 +1,7 @@
 import { Optional, WizardEnvType } from '~/types';
 
 export default function lanCommandOption(
-  wizardEnv?: WizardEnvType,
+  wizardEnv?: Partial<WizardEnvType>,
   lanCommand?: boolean
 ): { FQDN: Optional<string>; SSH_SERVER_PORT: Optional<string> } {
   if (!wizardEnv) {

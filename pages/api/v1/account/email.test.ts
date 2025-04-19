@@ -6,7 +6,7 @@ import { ConfigService } from '~/services';
 vi.mock('next-auth/next');
 vi.mock('~/services');
 
-describe('PUT /api/account/updateEmail', () => {
+describe('PUT on email API', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(console, 'log').mockImplementation(() => {});

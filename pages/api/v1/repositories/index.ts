@@ -31,7 +31,7 @@ export default async function handler(
         }
       }
     } catch (error) {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
 
     try {
@@ -39,7 +39,7 @@ export default async function handler(
 
       return res.status(200).json({ repoList });
     } catch (error) {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
   } else if (req.method == 'POST') {
     try {
@@ -53,7 +53,7 @@ export default async function handler(
         }
       }
     } catch (error) {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
 
     try {

@@ -2,6 +2,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/cron/status';
 import { ConfigService, NotifService, ShellService } from '~/services';
 import { AppriseModeEnum } from '~/types/domain/config.types';
+import * as childProcess from 'node:child_process';
 
 vi.mock('~/services', () => ({
   NotifService: {
@@ -157,7 +158,9 @@ describe('Cronjob API Handler', () => {
   });
 
   it('should return 500 if an error occurs', async () => {
-    vi.mocked(ConfigService.getRepoList).mockRejectedValue(new Error('Test error'));
+    vi.mocked(ConfigService.getRepoList).mockRejectedValue(
+      new Error('Repo list could not be fetched')
+    );
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -168,7 +171,7 @@ describe('Cronjob API Handler', () => {
     expect(res._getStatusCode()).toBe(500);
     expect(res._getJSONData()).toEqual({
       status: 500,
-      message: 'API error, contact the administrator.',
+      message: 'Repo list could not be fetched',
     });
   });
 
@@ -253,7 +256,7 @@ describe('Cronjob API Handler', () => {
     ]);
 
     // Spy on exec to check if it is called
-    const execSpy = vi.spyOn(require('node:child_process'), 'exec');
+    const execSpy = vi.spyOn(childProcess, 'exec');
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer test-key' },

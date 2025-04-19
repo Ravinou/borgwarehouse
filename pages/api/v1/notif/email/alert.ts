@@ -26,14 +26,8 @@ export default async function handler(
         return;
       }
       res.status(200).json({ emailAlert: user.emailAlert });
-    } catch (error: any) {
-      console.log(error);
-      const errorMessage =
-        error.code === 'ENOENT'
-          ? 'No such file or directory'
-          : 'API error, contact the administrator';
-
-      res.status(500).json({ status: 500, message: errorMessage });
+    } catch (error) {
+      return ApiResponse.serverError(res, error);
     }
   } else if (req.method == 'PUT') {
     const { emailAlert } = req.body;
@@ -58,15 +52,8 @@ export default async function handler(
 
       await ConfigService.updateUsersList(updatedUsersList);
       return res.status(200).json({ message: 'Successful API send' });
-    } catch (error: any) {
-      console.log(error);
-      return res.status(500).json({
-        status: 500,
-        message:
-          error.code === 'ENOENT'
-            ? 'No such file or directory'
-            : 'API error, contact the administrator',
-      });
+    } catch (error) {
+      return ApiResponse.serverError(res, error);
     }
   } else {
     return ApiResponse.methodNotAllowed(res);

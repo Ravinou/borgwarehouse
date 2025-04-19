@@ -3,6 +3,7 @@ import { ConfigService, AuthService } from '~/services';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, PasswordSettingDTO } from '~/types';
+import ApiResponse from '~/helpers/functions/apiResponse';
 
 export default async function handler(
   req: NextApiRequest & { body: PasswordSettingDTO },
@@ -47,14 +48,7 @@ export default async function handler(
     await ConfigService.updateUsersList(updatedUsersList);
 
     return res.status(200).json({ message: 'Successful API send' });
-  } catch (error: any) {
-    console.log(error);
-    return res.status(500).json({
-      status: 500,
-      message:
-        error.code === 'ENOENT'
-          ? 'No such file or directory'
-          : 'API error, contact the administrator',
-    });
+  } catch (error) {
+    return ApiResponse.serverError(res, error);
   }
 }

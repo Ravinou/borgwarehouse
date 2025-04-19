@@ -102,7 +102,7 @@ export default async function handler(
     if (error instanceof Error && error.message === 'The check status service is already running') {
       return ApiResponse.conflict(res, error.message);
     } else {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
   }
 }

@@ -449,7 +449,7 @@ describe('Repository DELETE by repositoryName', () => {
     expect(res._getStatusCode()).toBe(500);
     expect(res._getJSONData()).toEqual({
       status: 500,
-      message: 'API error, contact the administrator.',
+      message: 'API error, contact the administrator',
     });
     expect(ConfigService.updateRepoList).not.toHaveBeenCalled();
   });

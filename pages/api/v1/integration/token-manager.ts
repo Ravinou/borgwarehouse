@@ -61,7 +61,7 @@ export default async function handler(
       return res.status(200).json({ token: newToken.token });
     } catch (error) {
       console.log(error);
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
   } else if (req.method == 'GET') {
     try {
@@ -81,7 +81,7 @@ export default async function handler(
       return res.status(200).json(tokenList);
     } catch (error) {
       console.log(error);
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
   } else if (req.method == 'DELETE') {
     try {
@@ -91,7 +91,7 @@ export default async function handler(
         return ApiResponse.unauthorized(res);
       }
 
-      let { name } = req.body;
+      const { name } = req.body;
       if (!name) {
         return ApiResponse.badRequest(res, 'Missing token name');
       }

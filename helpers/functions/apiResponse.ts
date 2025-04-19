@@ -1,5 +1,20 @@
 import { NextApiResponse } from 'next';
 
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'object' && error !== null && 'code' in error) {
+    const err = error as { code?: string };
+    if (err.code === 'ENOENT') {
+      return 'No such file or directory';
+    }
+  }
+
+  return 'API error, contact the administrator';
+};
+
 export default class ApiResponse {
   static success<T>(res: NextApiResponse, message = 'Success', data?: T) {
     res.status(200).json({ status: 200, message, data });
@@ -35,8 +50,10 @@ export default class ApiResponse {
 
   static serverError(
     res: NextApiResponse,
-    message: string = 'API error, contact the administrator.'
+    error: unknown,
+    fallbackMessage = 'API error, contact the administrator'
   ) {
+    const message = getErrorMessage(error) || fallbackMessage;
     res.status(500).json({ status: 500, message });
   }
 }

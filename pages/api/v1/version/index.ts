@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import ApiResponse from '~/helpers/functions/apiResponse';
 import packageInfo from '~/package.json';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -7,9 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   try {
     return res.status(200).json({ version: packageInfo.version });
-  } catch (error: any) {
-    return res.status(500).json({
-      status: 500,
-    });
+  } catch (error) {
+    return ApiResponse.serverError(res, error);
   }
 }

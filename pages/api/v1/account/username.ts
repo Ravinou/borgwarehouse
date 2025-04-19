@@ -3,6 +3,7 @@ import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, UsernameSettingDTO } from '~/types';
+import ApiResponse from '~/helpers/functions/apiResponse';
 
 export default async function handler(
   req: NextApiRequest & { body: UsernameSettingDTO },
@@ -18,7 +19,7 @@ export default async function handler(
   }
 
   //The data we expect to receive
-  let { username } = req.body;
+  const { username } = req.body;
 
   if (typeof username !== 'string') {
     return res.status(422).json({ message: 'Unexpected data' });
@@ -51,14 +52,7 @@ export default async function handler(
     await ConfigService.updateUsersList(updatedUsersList);
 
     return res.status(200).json({ message: 'Successful API send' });
-  } catch (error: any) {
-    console.log(error);
-    return res.status(500).json({
-      status: 500,
-      message:
-        error.code === 'ENOENT'
-          ? 'No such file or directory'
-          : 'API error, contact the administrator',
-    });
+  } catch (error) {
+    return ApiResponse.serverError(res, error);
   }
 }

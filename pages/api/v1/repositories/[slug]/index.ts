@@ -38,7 +38,7 @@ export default async function handler(
         }
       }
     } catch (error) {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
 
     try {
@@ -51,7 +51,7 @@ export default async function handler(
 
       return res.status(200).json({ repo });
     } catch (error) {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
   } else if (req.method == 'PATCH') {
     try {
@@ -65,7 +65,7 @@ export default async function handler(
         }
       }
     } catch (error) {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
 
     try {
@@ -139,7 +139,7 @@ export default async function handler(
         }
       }
     } catch (error) {
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
 
     if (process.env.DISABLE_DELETE_REPO === 'true') {
@@ -158,7 +158,7 @@ export default async function handler(
 
       if (stderr) {
         console.log('Delete repository error: ', stderr);
-        return ApiResponse.serverError(res);
+        return ApiResponse.serverError(res, undefined, 'Error deleting repository');
       }
 
       const updatedRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
@@ -170,7 +170,7 @@ export default async function handler(
       );
     } catch (error) {
       console.log(error);
-      return ApiResponse.serverError(res);
+      return ApiResponse.serverError(res, error);
     }
   } else {
     return ApiResponse.methodNotAllowed(res);

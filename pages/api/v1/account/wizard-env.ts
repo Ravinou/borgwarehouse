@@ -2,6 +2,7 @@ import { authOptions } from '~/pages/api/v1/auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, WizardEnvEnum, WizardEnvType } from '~/types';
+import ApiResponse from '~/helpers/functions/apiResponse';
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,7 +38,6 @@ export default async function handler(
     res.status(200).json(wizardEnv);
     return;
   } catch (error) {
-    console.log(error);
-    return res.status(500);
+    return ApiResponse.serverError(res, error);
   }
 }

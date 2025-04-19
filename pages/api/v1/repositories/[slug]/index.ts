@@ -5,6 +5,7 @@ import { BorgWarehouseApiResponse, Repository } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService, AuthService, ShellService } from '~/services';
 import { isSshPubKeyDuplicate } from '~/helpers/functions';
+import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -34,14 +35,10 @@ export default async function handler(
     try {
       const repoList = await ConfigService.getRepoList();
 
-      const slug = req.query.slug;
-      if (!slug || Array.isArray(slug)) {
-        return ApiResponse.badRequest(res, 'Missing slug or slug is malformed');
-      }
-
-      const repo = repoList.find((repo) => repo.id === parseInt(slug as string, 10));
+      const slug = validateSlug(req);
+      const repo = repoList.find((repo) => repo.repositoryName === slug);
       if (!repo) {
-        return ApiResponse.notFound(res, 'No repository with id #' + req.query.slug);
+        return ApiResponse.notFound(res, 'No repository with name ' + slug);
       }
 
       return res.status(200).json({ repo });
@@ -75,15 +72,14 @@ export default async function handler(
     try {
       const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } =
         req.body;
-      const slug = req.query.slug;
+      const slug = validateSlug(req);
       const repoList = await ConfigService.getRepoList();
-      const repoId = parseInt(slug as string, 10);
-      const repo = repoList.find((repo) => repo.id === repoId);
+      const repo = repoList.find((repo) => repo.repositoryName === slug);
       if (!repo) {
         return ApiResponse.notFound(res, 'Repository not found');
       }
 
-      const filteredRepoList = repoList.filter((repo) => repo.id !== repoId);
+      const filteredRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
       if (sshPublicKey && isSshPubKeyDuplicate(sshPublicKey, filteredRepoList)) {
         return res.status(409).json({
           status: 409,
@@ -144,16 +140,12 @@ export default async function handler(
     }
 
     try {
+      const slug = validateSlug(req);
       const repoList = await ConfigService.getRepoList();
 
-      const slug = req.query.slug;
-      if (!slug || Array.isArray(slug)) {
-        return ApiResponse.badRequest(res, 'Missing slug or slug is malformed');
-      }
-      const indexToDelete = repoList.map((repo) => repo.id).indexOf(parseInt(slug, 10));
-
+      const indexToDelete = repoList.map((repo) => repo.repositoryName).indexOf(slug);
       if (indexToDelete === -1) {
-        return ApiResponse.notFound(res, 'Repository not found');
+        return ApiResponse.notFound(res, 'Repository with name ' + slug + ' not found');
       }
 
       const { stderr } = await ShellService.deleteRepo(repoList[indexToDelete].repositoryName);
@@ -163,7 +155,7 @@ export default async function handler(
         return ApiResponse.serverError(res);
       }
 
-      const updatedRepoList = repoList.filter((repo) => repo.id !== parseInt(slug, 10));
+      const updatedRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
 
       await ConfigService.updateRepoList(updatedRepoList, true);
       return ApiResponse.success(
@@ -181,8 +173,8 @@ export default async function handler(
 
 const validatePatchRequestBody = (req: NextApiRequest) => {
   const slug = req.query.slug;
-  if (!slug || Array.isArray(slug)) {
-    throw new Error('Missing slug or slug is malformed');
+  if (!slug || !repositoryNameCheck(slug)) {
+    throw new Error('Slug must be a valid repository name (8-character hexadecimal string)');
   }
   if (req.body.alias !== undefined && typeof req.body.alias !== 'string') {
     throw new Error('Alias must be a string');
@@ -205,4 +197,12 @@ const validatePatchRequestBody = (req: NextApiRequest) => {
   if (req.body.appendOnlyMode !== undefined && typeof req.body.appendOnlyMode !== 'boolean') {
     throw new Error('Append Only Mode must be a boolean');
   }
+};
+
+const validateSlug = (req: NextApiRequest) => {
+  const slug = Array.isArray(req.query.slug) ? req.query.slug[0] : req.query.slug;
+  if (!slug || !repositoryNameCheck(slug)) {
+    throw new Error('Slug must be a valid repository name (8-character hexadecimal string)');
+  }
+  return slug;
 };

@@ -216,7 +216,7 @@ describe('Repository PATCH by repositoryName', () => {
         comment: 'Test repository',
       },
     ]);
-    vi.mocked(ShellService.updateRepo).mockResolvedValue({ stderr: 'Error', stdout: '' });
+    vi.mocked(ShellService.updateRepo).mockRejectedValue(new Error('Failed to update repository'));
     const { req, res } = createMocks({
       method: 'PATCH',
       query: { slug: 'a43928f3' },
@@ -224,6 +224,11 @@ describe('Repository PATCH by repositoryName', () => {
     });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(500);
+    expect(res._getJSONData()).toEqual({
+      status: 500,
+      message: 'Failed to update repository',
+    });
+    expect(ConfigService.updateRepoList).not.toHaveBeenCalled();
   });
 
   it('should successfully update repository with a session', async () => {
@@ -444,12 +449,12 @@ describe('Repository DELETE by repositoryName', () => {
         comment: 'Test repository',
       },
     ]);
-    vi.mocked(ShellService.deleteRepo).mockResolvedValue({ stderr: 'Error', stdout: '' });
+    vi.mocked(ShellService.deleteRepo).mockRejectedValue(new Error('Failed to delete repository'));
     await handler(req, res);
     expect(res._getStatusCode()).toBe(500);
     expect(res._getJSONData()).toEqual({
       status: 500,
-      message: 'API error, contact the administrator',
+      message: 'Failed to delete repository',
     });
     expect(ConfigService.updateRepoList).not.toHaveBeenCalled();
   });

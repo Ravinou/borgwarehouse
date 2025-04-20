@@ -93,7 +93,7 @@ export default function RepoManage(props: RepoManageProps) {
             );
           else {
             const errorMessage = await response.json();
-            toast.error(`An error has occurred : ${errorMessage.message.stdout}`, toastOptions);
+            toast.error(`An error has occurred : ${errorMessage.message.stderr}`, toastOptions);
             router.replace('/');
             console.log('Fail to delete');
           }
@@ -171,7 +171,7 @@ export default function RepoManage(props: RepoManageProps) {
             router.replace('/');
           } else {
             const errorMessage = await response.json();
-            toast.error(`An error has occurred : ${errorMessage.message.stdout}`, toastOptions);
+            toast.error(`An error has occurred : ${errorMessage.message.stderr}`, toastOptions);
             router.replace('/');
             console.log(`Fail to ${props.mode}`);
           }
@@ -208,7 +208,7 @@ export default function RepoManage(props: RepoManageProps) {
             router.replace('/');
           } else {
             const errorMessage = await response.json();
-            toast.error(`An error has occurred : ${errorMessage.message.stdout}`, toastOptions);
+            toast.error(`An error has occurred : ${errorMessage.message.stderr}`, toastOptions);
             router.replace('/');
             console.log(`Fail to ${props.mode}`);
           }

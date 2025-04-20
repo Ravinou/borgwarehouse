@@ -94,14 +94,13 @@ export default async function handler(
         appendOnlyMode: appendOnlyMode ?? false,
       };
 
-      const { stdout, stderr } = await ShellService.createRepo(
+      const { stdout } = await ShellService.createRepo(
         newRepo.sshPublicKey,
         newRepo.storageSize,
         newRepo.appendOnlyMode ?? false
       );
-      if (stderr || !stdout) {
-        console.log('Create repository error: ', stderr);
-        throw new Error(stderr || 'Unknown error occurred while creating the repository');
+      if (!stdout) {
+        return ApiResponse.serverError(res, 'Error creating repository');
       }
 
       newRepo.repositoryName = stdout.trim();

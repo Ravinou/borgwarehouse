@@ -17,7 +17,7 @@ fi
 
 # Check args
 if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ] || [ "$4" != "true" ] && [ "$4" != "false" ]; then
-    echo -n "This shell takes 4 args: [repositoryName] [new SSH pub key] [quota] [Append only mode [true|false]]"
+    echo -n "This shell takes 4 args: [repositoryName] [new SSH pub key] [quota] [Append only mode [true|false]]" >&2
     exit 1
 fi
 
@@ -26,7 +26,7 @@ fi
 pattern='(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?'
 if [[ ! "$2" =~ $pattern ]]
 then
-    echo -n "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)"
+    echo -n "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)" >&2
     exit 2
 fi
 
@@ -34,13 +34,13 @@ fi
 # If we receive another pattern there is necessarily a problem.
 repositoryName=$1
 if ! [[ "$repositoryName" =~ ^[a-f0-9]{8}$ ]]; then
-    echo "Invalid repository name. Must be an 8-character hex string."
+    echo "Invalid repository name. Must be an 8-character hex string." >&2
     exit 3
 fi
 
 # Check if a line in authorized_keys contains repository_name
 if ! grep -q "command=\".*${repositoryName}.*\",restrict" "$home/.ssh/authorized_keys"; then
-    echo -n "No line containing $repositoryName found in authorized_keys"
+    echo -n "No line containing $repositoryName found in authorized_keys" >&2
     exit 4
 fi
 
@@ -64,7 +64,7 @@ while IFS= read -r line; do
     fi
 done < "$home/.ssh/authorized_keys"
 if [ "$found" = true ]; then
-    echo -n "This SSH pub key is already present in authorized_keys on a different line."
+    echo -n "This SSH pub key is already present in authorized_keys on a different line." >&2
     exit 5
 fi
 

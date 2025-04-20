@@ -106,16 +106,12 @@ export default async function handler(
         appendOnlyMode: appendOnlyMode ?? repo.appendOnlyMode,
       };
 
-      const { stderr } = await ShellService.updateRepo(
+      await ShellService.updateRepo(
         updatedRepo.repositoryName,
         updatedRepo.sshPublicKey,
         updatedRepo.storageSize,
         updatedRepo.appendOnlyMode ?? false
       );
-      if (stderr) {
-        console.log('Update repository error: ', stderr);
-        throw new Error();
-      }
 
       const updatedRepoList = [...filteredRepoList, updatedRepo];
       await ConfigService.updateRepoList(updatedRepoList, true);
@@ -154,12 +150,7 @@ export default async function handler(
         return ApiResponse.notFound(res, 'Repository with name ' + slug + ' not found');
       }
 
-      const { stderr } = await ShellService.deleteRepo(repoList[indexToDelete].repositoryName);
-
-      if (stderr) {
-        console.log('Delete repository error: ', stderr);
-        return ApiResponse.serverError(res, undefined, 'Error deleting repository');
-      }
+      await ShellService.deleteRepo(repoList[indexToDelete].repositoryName);
 
       const updatedRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
 

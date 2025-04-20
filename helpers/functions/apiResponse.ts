@@ -1,7 +1,19 @@
 import { NextApiResponse } from 'next';
 
-const getErrorMessage = (error: unknown): string => {
+const getErrorMessage = (error: unknown): any => {
   if (error instanceof Error) {
+    const shellError = error as any;
+
+    // Handle shell errors
+    if ('code' in shellError || 'stderr' in shellError || 'stdout' in shellError) {
+      return {
+        code: shellError.code ?? null,
+        cmd: shellError.cmd ?? null,
+        stderr: shellError.stderr ?? null,
+        stdout: shellError.stdout ?? null,
+      };
+    }
+
     return error.message;
   }
 

@@ -1,6 +1,7 @@
 import handler from '~/pages/api/v1/cron/storage';
 import { createMocks } from 'node-mocks-http';
 import { ConfigService, ShellService } from '~/services';
+import { Repository } from '~/types';
 
 vi.mock('~/services');
 
@@ -56,7 +57,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     const mockRepoList = [
       { repositoryName: 'repo1', storageUsed: 0 },
       { repositoryName: 'repo2', storageUsed: 0 },
-    ];
+    ] as Repository[];
     const mockStorageUsed = [
       { name: 'repo1', size: 100 },
       { name: 'repo2', size: 200 },
@@ -76,7 +77,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(200);
-    expect(res._getData()).toContain('Storage cron has been executed');
+    expect(res._getData()).toContain('Storage cron executed successfully');
     expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
       { repositoryName: 'repo1', storageUsed: 100 },
       { repositoryName: 'repo2', storageUsed: 200 },
@@ -102,7 +103,7 @@ describe('GET /api/cronjob/getStorageUsed', () => {
     const mockRepoList = [
       { repositoryName: 'repo1', storageUsed: 0 },
       { repositoryName: 'repo2', storageUsed: 0 },
-    ];
+    ] as Repository[];
     const mockStorageUsed = [{ name: 'repo1', size: 100 }];
 
     vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);

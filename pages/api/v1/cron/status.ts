@@ -96,7 +96,7 @@ export default async function handler(
     }
 
     await ConfigService.updateRepoList(updatedRepoList);
-    return ApiResponse.success(res, 'Status cron executed successfully.');
+    return ApiResponse.success(res, 'Status cron executed successfully');
   } catch (error) {
     console.log(error);
     if (error instanceof Error && error.message === 'The check status service is already running') {

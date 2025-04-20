@@ -152,7 +152,7 @@ describe('Cronjob API Handler', () => {
     expect(res._getStatusCode()).toBe(200);
     expect(res._getJSONData()).toEqual({
       status: 200,
-      message: 'Status cron executed successfully.',
+      message: 'Status cron executed successfully',
     });
     expect(ConfigService.updateRepoList).toHaveBeenCalled();
   });

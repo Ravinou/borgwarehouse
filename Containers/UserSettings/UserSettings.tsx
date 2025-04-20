@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Session } from 'next-auth';
 import { Optional, WizardEnvType, SessionStatus } from '~/types';
 
-//Components
+// Components
 import EmailSettings from './EmailSettings/EmailSettings';
 import PasswordSettings from './PasswordSettings/PasswordSettings';
 import UsernameSettings from './UsernameSettings/UsernameSettings';
@@ -17,81 +17,81 @@ type UserSettingsProps = {
   data: Session;
 };
 
-export default function UserSettings(props: UserSettingsProps) {
-  //States
-  const [tab, setTab] = useState('General');
-  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
+export default function UserSettings({ data }: UserSettingsProps) {
+  const [tab, setTab] = useState<'General' | 'Notifications' | 'Integrations'>('General');
+  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>(undefined);
 
-  //ComponentDidMount
+  // Fetch wizard environment on mount
   useEffect(() => {
     const fetchWizardEnv = async () => {
       try {
-        const response = await fetch('/api/v1/account/wizard-env', {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        });
+        const response = await fetch('/api/v1/account/wizard-env');
         const data: WizardEnvType = await response.json();
         setWizardEnv(data);
       } catch (error) {
-        console.log('Fetching datas error');
+        console.error('Failed to fetch wizard environment:', error);
       }
     };
+
     fetchWizardEnv();
   }, []);
 
+  // If Integrations tab is selected but disabled, fallback to General
+  useEffect(() => {
+    if (tab === 'Integrations' && wizardEnv?.DISABLE_INTEGRATIONS === 'true') {
+      setTab('General');
+    }
+  }, [wizardEnv, tab]);
+
   return (
     <div className={classes.containerSettings}>
-      <div>
-        <h1
-          style={{
-            color: '#494b7a',
-            textAlign: 'left',
-            marginLeft: '30px',
-          }}
-        >
-          Account{' '}
-        </h1>
-      </div>
-      <div className={classes.tabList}>
-        <button
-          className={tab === 'General' ? classes.tabListButtonActive : classes.tabListButton}
-          onClick={() => setTab('General')}
-        >
-          General
-        </button>
-        <button
-          className={tab === 'Notifications' ? classes.tabListButtonActive : classes.tabListButton}
-          onClick={() => setTab('Notifications')}
-        >
-          Notifications
-        </button>
-        {wizardEnv?.DISABLE_INTEGRATIONS !== 'true' && (
-          <button
-            className={tab === 'Integrations' ? classes.tabListButtonActive : classes.tabListButton}
-            onClick={() => setTab('Integrations')}
-          >
-            Integrations
-          </button>
-        )}
-      </div>
-      {tab === 'General' && (
+      <h1 style={{ color: '#494b7a', textAlign: 'left', marginLeft: '30px' }}>Account</h1>
+
+      {wizardEnv != undefined && (
         <>
-          <PasswordSettings />
-          <EmailSettings email={props.data.user?.email ?? undefined} />
-          <UsernameSettings username={props.data.user?.name ?? undefined} />{' '}
-        </>
-      )}
-      {tab === 'Notifications' && (
-        <>
-          <EmailAlertSettings />
-          <AppriseAlertSettings />
-        </>
-      )}
-      {tab === 'Integrations' && (
-        <>
-          <Integrations />
+          <div className={classes.tabList}>
+            <button
+              className={tab === 'General' ? classes.tabListButtonActive : classes.tabListButton}
+              onClick={() => setTab('General')}
+            >
+              General
+            </button>
+            <button
+              className={
+                tab === 'Notifications' ? classes.tabListButtonActive : classes.tabListButton
+              }
+              onClick={() => setTab('Notifications')}
+            >
+              Notifications
+            </button>
+            {wizardEnv.DISABLE_INTEGRATIONS !== 'true' && (
+              <button
+                className={
+                  tab === 'Integrations' ? classes.tabListButtonActive : classes.tabListButton
+                }
+                onClick={() => setTab('Integrations')}
+              >
+                Integrations
+              </button>
+            )}
+          </div>
+
+          {tab === 'General' && (
+            <>
+              <PasswordSettings />
+              <EmailSettings email={data.user?.email ?? undefined} />
+              <UsernameSettings username={data.user?.name ?? undefined} />
+            </>
+          )}
+
+          {tab === 'Notifications' && (
+            <>
+              <EmailAlertSettings />
+              <AppriseAlertSettings />
+            </>
+          )}
+
+          {tab === 'Integrations' && wizardEnv.DISABLE_INTEGRATIONS !== 'true' && <Integrations />}
         </>
       )}
     </div>

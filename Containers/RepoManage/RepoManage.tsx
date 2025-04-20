@@ -86,12 +86,14 @@ export default function RepoManage(props: RepoManageProps) {
           );
           router.replace('/');
         } else {
-          if (response.status == 403)
+          if (response.status == 403) {
             toast.warning(
               '🔒 The server is currently protected against repository deletion.',
               toastOptions
             );
-          else {
+            setIsLoading(false);
+            router.replace('/');
+          } else {
             const errorMessage = await response.json();
             toast.error(`An error has occurred : ${errorMessage.message.stderr}`, toastOptions);
             router.replace('/');

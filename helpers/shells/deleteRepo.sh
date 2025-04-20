@@ -21,7 +21,7 @@ authorized_keys="${home}/.ssh/authorized_keys"
 
 # Check arg
 if [[ $# -ne 1 || $1 = "" ]]; then
-    echo -n "You must provide a repositoryName in argument."
+    echo -n "You must provide a repositoryName in argument." >&2
     exit 1
 fi
 
@@ -29,7 +29,7 @@ fi
 # If we receive another pattern there is necessarily a problem.
 repositoryName=$1
 if ! [[ "$repositoryName" =~ ^[a-f0-9]{8}$ ]]; then
-  echo "Invalid repository name. Must be an 8-character hex string."
+  echo "Invalid repository name. Must be an 8-character hex string." >&2
   exit 2
 fi
 

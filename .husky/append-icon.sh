@@ -23,41 +23,43 @@ function checkBreakingChangeInBody() {
 }
 
 function findTypeIcon() {
-  # get message from 1st param
   message="$1"
 
-  # declare an icons for each authorized enum-type from `.commitlintrc.js`
-  declare -A icons
-  icons[build]='🤖'
-  icons[chore]='🧹'
-  icons["chore(deps)"]='🧹'
-  icons[config]='🔧'
-  icons[deploy]='🚀'
-  icons[doc]='📚'
-  icons[feat]='✨'
-  icons[fix]='🐛'
-  icons[hotfix]='🚑'
-  icons[i18n]='💬'
-  icons[publish]='📦'
-  icons[refactor]='⚡'
-  icons[revert]='⏪'
-  icons[test]='✅'
-  icons[ui]='🎨'
-  icons[wip]='🚧'
-  icons[WIP]='🚧'
+  if [[ "$message" =~ ^.*!:\ .* ]]; then
+    echo "$boomIcon"
+    return 0
+  fi
 
-  for type in "${!icons[@]}"; do
-    # check if message subject contains breaking change pattern
-    if [[ "$message" =~ ^(.*)(!:){1}(.*)$ ]]; then
-      echo "$boomIcon"
-      return 0
-    # else find corresponding type icon
-    elif [[ "$message" == "$type"* ]]; then
-      echo "${icons[$type]}"
-      return 0
-    fi
-  done
-  return 1
+  declare -A icons=(
+    [build]='🤖'
+    [chore]='🧹'
+    ["chore(deps)"]='🧹'
+    [config]='🔧'
+    [deploy]='🚀'
+    [doc]='📚'
+    [feat]='✨'
+    [fix]='🐛'
+    [hotfix]='🚑'
+    [i18n]='💬'
+    [publish]='📦'
+    [refactor]='⚡'
+    [revert]='⏪'
+    [test]='✅'
+    [ui]='🎨'
+    [wip]='🚧'
+    [WIP]='🚧'
+    [docker]='🐳'
+  )
+
+  commit_type="${message%%:*}"
+
+  icon="${icons[$commit_type]}"
+  if [[ -n "$icon" ]]; then
+    echo "$icon"
+    return 0
+  else
+    return 1
+  fi
 }
 
 # extract original message from the first line of file

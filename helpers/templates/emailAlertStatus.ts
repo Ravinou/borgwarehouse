@@ -1,3 +1,5 @@
+import path from 'path';
+
 export default function emailTest(mailTo: string, username: string, aliasList: string[]) {
   const aliasTemplate = (x: string[]) => {
     let str = '';
@@ -126,7 +128,7 @@ export default function emailTest(mailTo: string, username: string, aliasList: s
         `,
     attachments: [
       {
-        path: 'helpers/templates/attachments/alert-icon.png',
+        path: path.join(process.cwd(), 'helpers/templates/attachments/alert-icon.png'),
         cid: 'alert-icon',
       },
     ],

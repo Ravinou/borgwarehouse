@@ -1,3 +1,5 @@
+import path from 'path';
+
 export default function emailTest(mailTo: string, username: string) {
   const template = {
     from: 'BorgWarehouse' + '<' + process.env.MAIL_SMTP_FROM + '>',
@@ -94,7 +96,7 @@ export default function emailTest(mailTo: string, username: string) {
         `,
     attachments: [
       {
-        path: 'helpers/templates/attachments/valid-icon.png',
+        path: path.join(process.cwd(), 'helpers/templates/attachments/valid-icon.png'),
         cid: 'valid-icon',
       },
     ],

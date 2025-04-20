@@ -65,9 +65,14 @@ export default function RepoManage(props: RepoManageProps) {
   }
 
   //Delete a repo
-  const deleteHandler = async () => {
+  const deleteHandler = async (repositoryName?: string) => {
+    if (!repositoryName) {
+      toast.error('Repository name not found', toastOptions);
+      router.replace('/');
+      return;
+    }
     //API Call for delete
-    await fetch('/api/v1/repositories/' + router.query.slug, {
+    await fetch('/api/v1/repositories/' + repositoryName, {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json',
@@ -76,7 +81,7 @@ export default function RepoManage(props: RepoManageProps) {
       .then(async (response) => {
         if (response.ok) {
           toast.success(
-            '🗑 The repository #' + router.query.slug + ' has been successfully deleted',
+            '🗑 The repository ' + repositoryName + ' has been successfully deleted',
             toastOptions
           );
           router.replace('/');
@@ -187,7 +192,7 @@ export default function RepoManage(props: RepoManageProps) {
         lanCommand: dataForm.lanCommand,
         appendOnlyMode: dataForm.appendOnlyMode,
       };
-      await fetch('/api/v1/repositories/' + router.query.slug, {
+      await fetch('/api/v1/repositories/' + targetRepo?.repositoryName, {
         method: 'PATCH',
         headers: {
           'Content-type': 'application/json',
@@ -197,7 +202,7 @@ export default function RepoManage(props: RepoManageProps) {
         .then(async (response) => {
           if (response.ok) {
             toast.success(
-              'The repository #' + targetRepo?.id + ' has been successfully edited !',
+              'The repository ' + targetRepo?.repositoryName + ' has been successfully edited !',
               toastOptions
             );
             router.replace('/');
@@ -256,7 +261,7 @@ export default function RepoManage(props: RepoManageProps) {
                   </button>
                   <button
                     onClick={() => {
-                      deleteHandler();
+                      deleteHandler(targetRepo?.repositoryName);
                       setIsLoading(true);
                     }}
                     className={classes.deleteButton}

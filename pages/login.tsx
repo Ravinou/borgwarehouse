@@ -19,7 +19,7 @@ type LoginForm = {
 
 export default function Login() {
   const { status } = useSession();
-  const { register, handleSubmit, reset, setFocus, watch } = useForm<LoginForm>();
+  const { register, handleSubmit, reset, setFocus } = useForm<LoginForm>();
   const router = useRouter();
   const toastOptions: ToastOptions = {
     position: 'top-center',
@@ -49,8 +49,6 @@ export default function Login() {
   if (status === 'loading' || status === 'authenticated') {
     return;
   }
-
-  const isFormComplete = watch('username') && watch('password');
 
   //Functions
   const formSubmitHandler = async (data: LoginForm) => {

@@ -172,7 +172,7 @@
 .selectAlertWrapper {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 1.5rem;
   gap: 0.5rem;

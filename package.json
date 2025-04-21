@@ -29,7 +29,6 @@
     "react-hook-form": "^7.54.2",
     "react-select": "^5.10.1",
     "react-toastify": "^10.0.6",
-    "spinners-react": "^1.0.10",
     "swr": "^2.3.3",
     "uuid": "^11.0.5"
   },

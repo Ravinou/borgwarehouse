@@ -13,39 +13,39 @@
     "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
-    "@tabler/icons-react": "^3.30.0",
+    "@tabler/icons-react": "^3.31.0",
     "async-mutex": "^0.5.0",
     "bcryptjs": "^3.0.2",
-    "chart.js": "^4.4.7",
+    "chart.js": "^4.4.9",
     "date-fns": "^4.1.0",
     "lowdb": "^7.0.1",
-    "next": "^15.2.5",
+    "next": "^15.3.1",
     "next-auth": "^4.24.10",
-    "nodemailer": "^6.10.0",
+    "nodemailer": "^6.10.1",
     "nprogress": "^0.2.0",
-    "react": "^18.3.1",
+    "react": "^19.1.0",
     "react-chartjs-2": "^5.3.0",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.54.2",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.56.0",
     "react-select": "^5.10.1",
     "react-toastify": "^10.0.6",
     "swr": "^2.3.3",
-    "uuid": "^11.0.5"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.14.1",
     "@types/nodemailer": "^6.4.17",
     "@types/nprogress": "^0.2.3",
-    "@types/react": "^18.3.18",
-    "@types/supertest": "^6.0.2",
+    "@types/react": "^19.1.2",
+    "@types/supertest": "^6.0.3",
     "eslint-config-next": "^15.3.1",
     "husky": "^9.1.7",
     "node-mocks-http": "^1.16.2",
     "prettier": "^3.5.3",
-    "typescript": "^5.7.2",
-    "vitest": "^3.1.1"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
   }
 }

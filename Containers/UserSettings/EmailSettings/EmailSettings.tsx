@@ -1,13 +1,13 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { SpinnerDotted } from 'spinners-react';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
+import { useLoader } from '~/contexts/LoaderContext';
 import { useFormStatus } from '~/hooks';
 import { EmailSettingDTO } from '~/types/api/setting.types';
 
@@ -26,16 +26,18 @@ export default function EmailSettings(props: EmailSettingDTO) {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<EmailSettingDTO>({ mode: 'onChange' });
 
   const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
+  const { start, stop } = useLoader();
 
   ////State
   const [info, setInfo] = useState(false);
 
   ////Functions
   const formSubmitHandler = async (data: EmailSettingDTO) => {
+    start();
     clearError();
     setIsLoading(true);
 
@@ -61,6 +63,9 @@ export default function EmailSettings(props: EmailSettingDTO) {
     } catch (error) {
       reset();
       handleError('Updating your email failed.');
+    } finally {
+      stop();
+      setIsLoading(false);
     }
   };
   return (
@@ -102,13 +107,9 @@ export default function EmailSettings(props: EmailSettingDTO) {
                 </p>
                 <button
                   className={classes.AccountSettingsButton}
-                  disabled={!isValid || isSubmitting}
+                  disabled={isSubmitting || isLoading}
                 >
-                  {isLoading ? (
-                    <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
-                  ) : (
-                    'Update your email'
-                  )}
+                  Update your email
                 </button>
               </form>
             )}

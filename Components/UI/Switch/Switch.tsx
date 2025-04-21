@@ -1,6 +1,7 @@
 import { Optional } from '~/types';
 import classes from './Switch.module.css';
-import { SpinnerCircularFixed } from 'spinners-react';
+import { useLoader } from '~/contexts/LoaderContext';
+import { useEffect } from 'react';
 
 type SwitchProps = {
   switchName: string;
@@ -12,29 +13,29 @@ type SwitchProps = {
 };
 
 export default function Switch(props: SwitchProps) {
+  const { start, stop } = useLoader();
+
+  useEffect(() => {
+    if (props.loading) {
+      start();
+    } else {
+      stop();
+    }
+  }, [props.loading, start, stop]);
+
   return (
     <div className={classes.switchWrapper}>
       <div className={classes.switch}>
         <label className={classes.switchLabel}>
-          {props.loading ? (
-            <SpinnerCircularFixed
-              size={24}
-              thickness={120}
-              speed={100}
-              color='#704dff'
-              secondaryColor='#e0dcfc'
+          <>
+            <input
+              type='checkbox'
+              checked={props.checked || false}
+              disabled={props.disabled}
+              onChange={(e) => props.onChange(e.target.checked)}
             />
-          ) : (
-            <>
-              <input
-                type='checkbox'
-                checked={props.checked || false}
-                disabled={props.disabled}
-                onChange={(e) => props.onChange(e.target.checked)}
-              />
-              <span className={classes.switchSlider}></span>
-            </>
-          )}
+            <span className={classes.switchSlider}></span>
+          </>
           <span className={classes.switchText}>{props.switchName}</span>
         </label>
       </div>

@@ -1,15 +1,14 @@
-import { toast, ToastOptions } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import classes from '../UserSettings.module.css';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { SpinnerDotted } from 'spinners-react';
+import { toast, ToastOptions } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useFormStatus } from '~/hooks';
 import { UsernameSettingDTO } from '~/types';
+import classes from '../UserSettings.module.css';
 
 //Components
-import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
+import { useLoader } from '~/contexts/LoaderContext';
 
 export default function UsernameSettings(props: UsernameSettingDTO) {
   const toastOptions: ToastOptions = {
@@ -26,17 +25,18 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<UsernameSettingDTO>({ mode: 'onChange' });
+  const { start, stop } = useLoader();
 
-  const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
+  const { isLoading, setIsLoading } = useFormStatus();
 
   ////State
   const [info, setInfo] = useState(false);
 
   ////Functions
   const formSubmitHandler = async (data: UsernameSettingDTO) => {
-    clearError();
+    start();
     setIsLoading(true);
 
     try {
@@ -50,19 +50,17 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
       const result = await response.json();
 
       if (!response.ok) {
-        setIsLoading(false);
-        reset();
-        handleError(result.message);
+        toast.error(result.message, toastOptions);
       } else {
-        reset();
-        setIsLoading(false);
         setInfo(true);
         toast.success('Username edited !', toastOptions);
       }
     } catch (error) {
+      toast.error('Failed to update username. Please try again.', toastOptions);
+    } finally {
       reset();
+      stop();
       setIsLoading(false);
-      handleError('Failed to update username. Please try again.');
     }
   };
   return (
@@ -86,7 +84,6 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
                 className={classes.bwForm + ' ' + classes.currentSetting}
               >
                 <p>
-                  {error && <Error message={error} />}
                   <input
                     type='text'
                     placeholder={props.username}
@@ -112,13 +109,9 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
                 </p>
                 <button
                   className={classes.AccountSettingsButton}
-                  disabled={!isValid || isSubmitting}
+                  disabled={isLoading || isSubmitting}
                 >
-                  {isLoading ? (
-                    <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
-                  ) : (
-                    'Update your username'
-                  )}
+                  Update your username
                 </button>
               </form>
             )}

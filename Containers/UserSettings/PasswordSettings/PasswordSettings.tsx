@@ -1,13 +1,12 @@
+import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import classes from '../UserSettings.module.css';
-import { useForm } from 'react-hook-form';
-import { SpinnerDotted } from 'spinners-react';
 import { useFormStatus } from '~/hooks';
 import { PasswordSettingDTO } from '~/types';
+import classes from '../UserSettings.module.css';
 
 //Components
-import Error from '~/Components/UI/Error/Error';
+import { useLoader } from '~/contexts/LoaderContext';
 
 export default function PasswordSettings() {
   const toastOptions: ToastOptions = {
@@ -24,14 +23,15 @@ export default function PasswordSettings() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { isSubmitting },
   } = useForm<PasswordSettingDTO>({ mode: 'onChange' });
+  const { start, stop } = useLoader();
 
-  const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
+  const { isLoading, setIsLoading } = useFormStatus();
 
   ////Functions
   const formSubmitHandler = async (data: PasswordSettingDTO) => {
-    clearError();
+    start();
     setIsLoading(true);
 
     try {
@@ -45,18 +45,16 @@ export default function PasswordSettings() {
       const result = await response.json();
 
       if (!response.ok) {
-        setIsLoading(false);
-        reset();
-        handleError(result.message);
+        toast.error(result.message, toastOptions);
       } else {
-        reset();
-        setIsLoading(false);
         toast.success('🔑 Password edited !', toastOptions);
       }
     } catch (error) {
+      toast.error('Failed to update password. Please try again.', toastOptions);
+    } finally {
+      stop();
       reset();
       setIsLoading(false);
-      handleError('Failed to update password. Please try again.');
     }
   };
   return (
@@ -69,7 +67,6 @@ export default function PasswordSettings() {
         <div className={classes.setting}>
           <div className={classes.bwFormWrapper}>
             <form onSubmit={handleSubmit(formSubmitHandler)} className={classes.bwForm}>
-              {error && <Error message={error} />}
               <p>
                 <input
                   type='password'
@@ -78,9 +75,6 @@ export default function PasswordSettings() {
                     required: true,
                   })}
                 />
-                {errors.oldPassword && errors.oldPassword.type === 'required' && (
-                  <small className={classes.errorMessage}>This field is required.</small>
-                )}
               </p>
               <p>
                 <input
@@ -90,16 +84,12 @@ export default function PasswordSettings() {
                     required: true,
                   })}
                 />
-                {errors.newPassword && (
-                  <small className={classes.errorMessage}>This field is required.</small>
-                )}
               </p>
-              <button className={classes.AccountSettingsButton} disabled={!isValid || isSubmitting}>
-                {isLoading ? (
-                  <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
-                ) : (
-                  'Update your password'
-                )}
+              <button
+                className={classes.AccountSettingsButton}
+                disabled={isLoading || isSubmitting}
+              >
+                Update your password
               </button>
             </form>
           </div>

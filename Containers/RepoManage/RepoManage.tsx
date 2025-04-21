@@ -1,15 +1,14 @@
-import classes from './RepoManage.module.css';
-import { IconAlertCircle, IconX } from '@tabler/icons-react';
-import { useState } from 'react';
+import { IconAlertCircle, IconExternalLink, IconX } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import Select from 'react-select';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useForm, Controller } from 'react-hook-form';
-import { SpinnerDotted } from 'spinners-react';
-import Select from 'react-select';
-import Link from 'next/link';
-import { IconExternalLink } from '@tabler/icons-react';
-import { alertOptions, Repository, Optional } from '~/types';
+import { useLoader } from '~/contexts/LoaderContext';
+import { alertOptions, Optional, Repository } from '~/types';
+import classes from './RepoManage.module.css';
 
 type RepoManageProps = {
   mode: 'add' | 'edit';
@@ -53,20 +52,25 @@ export default function RepoManage(props: RepoManageProps) {
 
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { start, stop } = useLoader();
 
   //router.query.slug is undefined for few milliseconds on first render for a direct URL access (https://github.com/vercel/next.js/discussions/11484).
   //If I call repoManage with edit mode (props), i'm firstly waiting that router.query.slug being available before rendering.
   if (props.mode === 'edit') {
     if (!router.query.slug) {
-      return <SpinnerDotted size={30} thickness={100} speed={180} color='rgba(109, 74, 255, 1)' />;
+      start();
+      return;
     } else if (!targetRepo) {
+      stop();
       router.push('/404');
     }
   }
 
   //Delete a repo
   const deleteHandler = async (repositoryName?: string) => {
+    start();
     if (!repositoryName) {
+      stop();
       toast.error('Repository name not found', toastOptions);
       router.replace('/');
       return;
@@ -105,6 +109,9 @@ export default function RepoManage(props: RepoManageProps) {
         toast.error('An error has occurred', toastOptions);
         router.replace('/');
         console.log(error);
+      })
+      .finally(() => {
+        stop();
       });
   };
 
@@ -141,10 +148,11 @@ export default function RepoManage(props: RepoManageProps) {
 
   //Form submit Handler for ADD or EDIT a repo
   const formSubmitHandler = async (dataForm: DataForm) => {
-    //Loading button on submit to avoid multiple send.
     setIsLoading(true);
+    start();
     //Verify that the SSH key is unique
     if (!(await isSSHKeyUnique(dataForm.sshkey))) {
+      stop();
       setIsLoading(false);
       return;
     }
@@ -182,6 +190,10 @@ export default function RepoManage(props: RepoManageProps) {
           toast.error('An error has occurred', toastOptions);
           router.replace('/');
           console.log(error);
+        })
+        .finally(() => {
+          stop();
+          setIsLoading(false);
         });
       //EDIT a repo
     } else if (props.mode == 'edit') {
@@ -219,6 +231,10 @@ export default function RepoManage(props: RepoManageProps) {
           toast.error('An error has occurred', toastOptions);
           router.replace('/');
           console.log(error);
+        })
+        .finally(() => {
+          stop();
+          setIsLoading(false);
         });
     }
   };
@@ -254,24 +270,24 @@ export default function RepoManage(props: RepoManageProps) {
               <div>The data will not be recoverable and it will not be possible to go back.</div>
             </div>
             <div className={classes.deleteDialogButtonWrapper}>
-              {isLoading ? (
-                <SpinnerDotted size={30} thickness={150} speed={100} color='#6d4aff' />
-              ) : (
-                <>
-                  <button onClick={props.closeHandler} className={classes.cancelButton}>
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => {
-                      deleteHandler(targetRepo?.repositoryName);
-                      setIsLoading(true);
-                    }}
-                    className={classes.deleteButton}
-                  >
-                    Yes, delete it !
-                  </button>
-                </>
-              )}
+              <>
+                <button
+                  onClick={props.closeHandler}
+                  disabled={isLoading}
+                  className={classes.cancelButton}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    deleteHandler(targetRepo?.repositoryName);
+                    setIsLoading(true);
+                  }}
+                  className={classes.deleteButton}
+                >
+                  Yes, delete it !
+                </button>
+              </>
             </div>
           </div>
         ) : (
@@ -450,21 +466,15 @@ export default function RepoManage(props: RepoManageProps) {
                   />
                 </div>
               </div>
-              {isLoading ? (
-                <div
-                  style={{
-                    textAlign: 'center',
-                    marginTop: '2rem',
-                  }}
-                >
-                  <SpinnerDotted size={40} thickness={150} speed={100} color='#6d4aff' />
-                </div>
-              ) : (
-                <button type='submit' className='defaultButton' disabled={!isValid || isSubmitting}>
-                  {props.mode == 'edit' && 'Edit'}
-                  {props.mode == 'add' && 'Add'}
-                </button>
-              )}
+
+              <button
+                type='submit'
+                className='defaultButton'
+                disabled={!isValid || isSubmitting || isLoading}
+              >
+                {props.mode == 'edit' && 'Edit'}
+                {props.mode == 'add' && 'Add'}
+              </button>
             </form>
             {props.mode == 'edit' ? (
               <button className={classes.littleDeleteButton} onClick={() => setDeleteDialog(true)}>

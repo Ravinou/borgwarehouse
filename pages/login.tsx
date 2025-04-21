@@ -3,7 +3,6 @@ import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { SpinnerDotted } from 'spinners-react';
 import { useFormStatus } from '~/hooks';
 import { authOptions } from '~/pages/api/auth/[...nextauth]';
 
@@ -11,6 +10,7 @@ import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { GetServerSidePropsContext } from 'next';
 import Image from 'next/image';
 import { ToastOptions, toast } from 'react-toastify';
+import { useLoader } from '~/contexts/LoaderContext';
 
 type LoginForm = {
   username: string;
@@ -37,6 +37,7 @@ export default function Login() {
   };
 
   const { isLoading, setIsLoading, handleError, clearError } = useFormStatus();
+  const { start, stop } = useLoader();
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -53,6 +54,7 @@ export default function Login() {
 
   //Functions
   const formSubmitHandler = async (data: LoginForm) => {
+    start();
     setIsLoading(true);
     clearError();
     const resultat = await signIn('credentials', {
@@ -62,11 +64,13 @@ export default function Login() {
     });
 
     if (resultat?.error) {
+      stop();
       setFocus('username');
       reset();
       toast.info('Incorrect credentials', toastOptions);
       handleError(resultat.error);
     } else {
+      stop();
       setIsLoading(false);
       router.replace('/');
     }
@@ -148,12 +152,8 @@ export default function Login() {
                 justifyContent: 'center',
               }}
             >
-              <button className='signInButton' disabled={isLoading || !isFormComplete}>
-                {isLoading ? (
-                  <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
-                ) : (
-                  'Sign in'
-                )}
+              <button className='signInButton' disabled={isLoading}>
+                Sign in
               </button>
             </div>
           </form>

@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { SpinnerCircularFixed } from 'spinners-react';
+import { useLoader } from '~/contexts/LoaderContext';
+import { EmailAlertDTO, Optional } from '~/types';
 import classes from '../UserSettings.module.css';
-import { Optional, EmailAlertDTO } from '~/types';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
@@ -26,6 +26,7 @@ export default function EmailAlertSettings() {
   };
 
   const { error, handleError, clearError } = useFormStatus();
+  const { start, stop } = useLoader();
 
   ////State
   const [isSendingTestNotification, setIsSendingTestNotification] = useState(false);
@@ -61,6 +62,7 @@ export default function EmailAlertSettings() {
   //Switch to enable/disable Email notifications
   const onChangeSwitchHandler = async (data: EmailAlertDTO) => {
     clearError();
+    start();
     setIsSwitchDisabled(true);
     await fetch('/api/v1/notif/email/alert', {
       method: 'PUT',
@@ -84,6 +86,7 @@ export default function EmailAlertSettings() {
         handleError('Update email alert setting failed.');
       })
       .finally(() => {
+        stop();
         setIsSwitchDisabled(false);
       });
   };
@@ -91,6 +94,7 @@ export default function EmailAlertSettings() {
   //Send a test notification by email
   const onSendTestMailHandler = async () => {
     clearError();
+    start();
     setIsSendingTestNotification(true);
     try {
       const response = await fetch('/api/v1/notif/email/test', {
@@ -114,6 +118,8 @@ export default function EmailAlertSettings() {
     } catch (error) {
       setIsSendingTestNotification(false);
       handleError('Send notification failed');
+    } finally {
+      stop();
     }
   };
 
@@ -142,19 +148,14 @@ export default function EmailAlertSettings() {
               switchDescription='You will receive an alert every 24H if you have a down status.'
               onChange={(e) => onChangeSwitchHandler({ emailAlert: e })}
             />
-            {isSendingTestNotification ? (
-              <SpinnerCircularFixed
-                size={30}
-                thickness={150}
-                speed={150}
-                color='#704dff'
-                secondaryColor='#c3b6fa'
-              />
-            ) : (
-              <button className='defaultButton' onClick={onSendTestMailHandler}>
-                Send a test mail
-              </button>
-            )}
+
+            <button
+              className='defaultButton'
+              disabled={isSendingTestNotification}
+              onClick={onSendTestMailHandler}
+            >
+              Send a test mail
+            </button>
             {info && (
               <span style={{ marginLeft: '10px', color: '#119300' }}>Mail successfully sent.</span>
             )}

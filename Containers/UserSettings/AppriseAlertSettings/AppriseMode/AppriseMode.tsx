@@ -1,12 +1,11 @@
-import { useEffect } from 'react';
-import classes from '../../UserSettings.module.css';
-import { useState } from 'react';
-import { SpinnerCircularFixed } from 'spinners-react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Optional, AppriseModeEnum, AppriseModeDTO } from '~/types';
+import { AppriseModeDTO, AppriseModeEnum, Optional } from '~/types';
+import classes from '../../UserSettings.module.css';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
+import { useLoader } from '~/contexts/LoaderContext';
 import { useFormStatus } from '~/hooks';
 
 type AppriseModeDataForm = {
@@ -19,10 +18,10 @@ export default function AppriseMode() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AppriseModeDataForm>({ mode: 'onBlur' });
+  } = useForm<AppriseModeDataForm>({ mode: 'onChange' });
 
-  const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
-    useFormStatus();
+  const { error, setIsLoading, handleSuccess, handleError, clearError } = useFormStatus();
+  const { start, stop } = useLoader();
 
   const [displayStatelessURL, setDisplayStatelessURL] = useState<boolean>(false);
   const [appriseMode, setAppriseMode] = useState<Optional<AppriseModeEnum>>(
@@ -61,6 +60,7 @@ export default function AppriseMode() {
   const modeFormSubmitHandler = async (data: AppriseModeDataForm) => {
     clearError();
     setIsLoading(true);
+    start();
 
     try {
       const response = await fetch('/api/v1/notif/apprise/mode', {
@@ -79,6 +79,9 @@ export default function AppriseMode() {
       }
     } catch (error) {
       handleError('The Apprise mode change has failed');
+    } finally {
+      stop();
+      setIsLoading(false);
     }
   };
 
@@ -87,23 +90,9 @@ export default function AppriseMode() {
       {/* APPRISE MODE SELECTION */}
       <div className={classes.headerFormAppriseUrls}>
         <div style={{ margin: '0px 10px 0px 0px' }}>Apprise mode</div>
-        <div style={{ display: 'flex' }}>
-          {isLoading && (
-            <SpinnerCircularFixed
-              size={18}
-              thickness={150}
-              speed={150}
-              color='#704dff'
-              secondaryColor='#c3b6fa'
-            />
-          )}
-          {isSaved && (
-            <div className={classes.formIsSavedMessage}>✅ Apprise mode has been saved.</div>
-          )}
-        </div>
       </div>
       {error && <Error message={error} />}
-      <form className={classes.bwForm} onBlur={handleSubmit(modeFormSubmitHandler)}>
+      <form className={classes.bwForm} onChange={handleSubmit(modeFormSubmitHandler)}>
         <div className='radio-group'>
           <label style={{ marginRight: '50px' }}>
             <div style={{ display: 'flex' }}>

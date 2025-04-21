@@ -1,12 +1,11 @@
-import { useEffect } from 'react';
-import classes from '../../UserSettings.module.css';
-import { useState } from 'react';
-import { SpinnerCircularFixed } from 'spinners-react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Optional, AppriseServicesDTO } from '~/types';
+import { AppriseServicesDTO, Optional } from '~/types';
+import classes from '../../UserSettings.module.css';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
+import { useLoader } from '~/contexts/LoaderContext';
 import { useFormStatus } from '~/hooks';
 
 type AppriseURLsDataForm = {
@@ -20,8 +19,8 @@ export default function AppriseURLs() {
     formState: { errors },
   } = useForm<AppriseURLsDataForm>({ mode: 'onBlur' });
 
-  const { isLoading, isSaved, error, setIsLoading, handleSuccess, handleError, clearError } =
-    useFormStatus();
+  const { isSaved, error, handleSuccess, handleError, clearError } = useFormStatus();
+  const { start, stop } = useLoader();
 
   const [appriseServicesList, setAppriseServicesList] = useState<Optional<string>>();
   const [fetchError, setFetchError] = useState<Optional<boolean>>();
@@ -53,11 +52,12 @@ export default function AppriseURLs() {
   //Form submit handler to modify Apprise services
   const urlsFormSubmitHandler = async (data: AppriseURLsDataForm) => {
     clearError();
+    start();
     if (fetchError) {
       handleError('Cannot update Apprise services. Failed to fetch the initial list.');
+      stop();
       return;
     }
-    setIsLoading(true);
 
     try {
       const response = await fetch('/api/v1/notif/apprise/services', {
@@ -76,6 +76,8 @@ export default function AppriseURLs() {
       }
     } catch (error) {
       handleError('Failed to update your Apprise services.');
+    } finally {
+      stop();
     }
   };
 
@@ -85,15 +87,6 @@ export default function AppriseURLs() {
       <div className={classes.headerFormAppriseUrls}>
         <div style={{ marginRight: '10px' }}>Apprise URLs</div>
         <div style={{ display: 'flex' }}>
-          {isLoading && (
-            <SpinnerCircularFixed
-              size={18}
-              thickness={150}
-              speed={150}
-              color='#704dff'
-              secondaryColor='#c3b6fa'
-            />
-          )}
           {isSaved && (
             <div className={classes.formIsSavedMessage}>
               ✅ Apprise configuration has been saved.

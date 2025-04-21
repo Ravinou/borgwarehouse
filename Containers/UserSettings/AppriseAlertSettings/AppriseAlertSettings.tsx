@@ -3,13 +3,11 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { SpinnerCircularFixed } from 'spinners-react';
 import classes from '../UserSettings.module.css';
 
 //Components
-import Error from '~/Components/UI/Error/Error';
 import Switch from '~/Components/UI/Switch/Switch';
-import { useFormStatus } from '~/hooks';
+import { useLoader } from '~/contexts/LoaderContext';
 import { Optional } from '~/types';
 import AppriseMode from './AppriseMode/AppriseMode';
 import AppriseURLs from './AppriseURLs/AppriseURLs';
@@ -29,7 +27,7 @@ export default function AppriseAlertSettings() {
     progress: undefined,
   };
 
-  const { error, handleError, clearError } = useFormStatus();
+  const { start, stop } = useLoader();
 
   ////State
   const [isSendingTestNotification, setIsSendingTestNotification] = useState(false);
@@ -56,7 +54,7 @@ export default function AppriseAlertSettings() {
       } catch (error) {
         setIsSwitchDisabled(true);
         setIsAlertEnabled(false);
-        handleError('Fetching apprise alert setting failed.');
+        toast.error('Fetching Apprise alert setting failed', toastOptions);
       }
     };
     getAppriseAlert();
@@ -65,7 +63,7 @@ export default function AppriseAlertSettings() {
   ////Functions
   //Switch to enable/disable Apprise notifications
   const onChangeSwitchHandler = async (data: AppriseAlertDataForm) => {
-    clearError();
+    start();
     setIsSwitchDisabled(true);
     await fetch('/api/v1/notif/apprise/alert', {
       method: 'PUT',
@@ -82,20 +80,21 @@ export default function AppriseAlertSettings() {
             toastOptions
           );
         } else {
-          handleError('Update apprise alert setting failed.');
+          toast.error('Update Apprise failed', toastOptions);
         }
       })
-      .catch((error) => {
-        handleError('Update Apprise failed. Contact your administrator.');
+      .catch(() => {
+        toast.error('Update Apprise failed', toastOptions);
       })
       .finally(() => {
+        stop();
         setIsSwitchDisabled(false);
       });
   };
 
   //Send Apprise test notification to services
   const onSendTestAppriseHandler = async () => {
-    clearError();
+    start();
     setIsSendingTestNotification(true);
     try {
       const response = await fetch('/api/v1/notif/apprise/test', {
@@ -104,18 +103,18 @@ export default function AppriseAlertSettings() {
       const result = await response.json();
 
       if (!response.ok) {
-        setIsSendingTestNotification(false);
-        handleError(result.message);
+        toast.error(result.message, toastOptions);
       } else {
-        setIsSendingTestNotification(false);
         setInfo(true);
         setTimeout(() => {
           setInfo(false);
         }, 4000);
       }
     } catch (error) {
+      toast.error('Sending test notification failed', toastOptions);
+    } finally {
+      stop();
       setIsSendingTestNotification(false);
-      handleError('Send notification failed');
     }
   };
 
@@ -148,24 +147,14 @@ export default function AppriseAlertSettings() {
               <>
                 <AppriseURLs />
                 <AppriseMode />
-                {isSendingTestNotification ? (
-                  <SpinnerCircularFixed
-                    style={{ marginTop: '20px' }}
-                    size={30}
-                    thickness={150}
-                    speed={150}
-                    color='#704dff'
-                    secondaryColor='#c3b6fa'
-                  />
-                ) : (
-                  <button
-                    style={{ marginTop: '20px' }}
-                    className='defaultButton'
-                    onClick={() => onSendTestAppriseHandler()}
-                  >
-                    Send a test notification
-                  </button>
-                )}
+                <button
+                  disabled={isSendingTestNotification}
+                  style={{ marginTop: '20px' }}
+                  className='defaultButton'
+                  onClick={() => onSendTestAppriseHandler()}
+                >
+                  Send a test notification
+                </button>
                 {info && (
                   <span style={{ marginLeft: '10px', color: '#119300' }}>
                     Notification successfully sent.
@@ -173,7 +162,6 @@ export default function AppriseAlertSettings() {
                 )}
               </>
             )}
-            {error && <Error message={error} />}
           </div>
         </div>
       </div>

@@ -1,19 +1,19 @@
-import { toast, ToastOptions } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import classes from '../UserSettings.module.css';
+import { IconExternalLink, IconTrash } from '@tabler/icons-react';
+import { fromUnixTime } from 'date-fns';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { SpinnerDotted } from 'spinners-react';
-import { fromUnixTime } from 'date-fns';
-import { IconTrash, IconExternalLink } from '@tabler/icons-react';
-import Link from 'next/link';
-import { Optional, IntegrationTokenType, TokenPermissionEnum, TokenPermissionsType } from '~/types';
+import { toast, ToastOptions } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useFormStatus } from '~/hooks';
+import { IntegrationTokenType, Optional, TokenPermissionEnum, TokenPermissionsType } from '~/types';
+import classes from '../UserSettings.module.css';
 
 //Components
-import Error from '~/Components/UI/Error/Error';
 import CopyButton from '~/Components/UI/CopyButton/CopyButton';
+import Error from '~/Components/UI/Error/Error';
 import Info from '~/Components/UI/Info/Info';
+import { useLoader } from '~/contexts/LoaderContext';
 
 type IntegrationsDataForm = {
   tokenName: string;
@@ -36,6 +36,7 @@ export default function Integrations() {
     reset,
     formState: { errors, isSubmitting, isValid },
   } = useForm<IntegrationsDataForm>({ mode: 'onChange' });
+  const { start, stop } = useLoader();
 
   const { error, handleError, clearError, setIsLoading, isLoading } = useFormStatus();
 
@@ -63,6 +64,7 @@ export default function Integrations() {
   });
 
   const fetchTokenList = async () => {
+    start();
     try {
       const response = await fetch('/api/v1/integration/token-manager', {
         method: 'GET',
@@ -74,6 +76,8 @@ export default function Integrations() {
       setTokenList(data);
     } catch (error) {
       handleError('Fetching token list failed.');
+    } finally {
+      stop();
     }
   };
 
@@ -104,6 +108,7 @@ export default function Integrations() {
 
   //Form submit handler to ADD a new token
   const formSubmitHandler = async (data: IntegrationsDataForm) => {
+    start();
     clearError();
     setIsLoading(true);
 
@@ -123,22 +128,18 @@ export default function Integrations() {
       setLastGeneratedToken({ name: data.tokenName, value: result.token });
 
       if (!response.ok) {
-        setIsLoading(false);
-        reset();
-        resetPermissions();
         toast.error(result.message, toastOptions);
       } else {
-        reset();
-        resetPermissions();
         fetchTokenList();
-        setIsLoading(false);
         toast.success('🔑 Token generated !', toastOptions);
       }
     } catch (error) {
-      reset();
-      resetPermissions();
-      setIsLoading(false);
       toast.error('Failed to generate a new token', toastOptions);
+    } finally {
+      setIsLoading(false);
+      resetPermissions();
+      reset();
+      stop();
     }
   };
 
@@ -237,11 +238,7 @@ export default function Integrations() {
               className={classes.AccountSettingsButton}
               disabled={!isValid || isSubmitting || hasNoPermissionSelected()}
             >
-              {isLoading ? (
-                <SpinnerDotted size={15} thickness={150} speed={100} color='#fff' />
-              ) : (
-                'Generate'
-              )}
+              Generate
             </button>
           </form>
           {errors.tokenName && errors.tokenName.type === 'maxLength' && (
@@ -311,9 +308,6 @@ export default function Integrations() {
                             disabled={isDeleteLoading}
                           >
                             Confirm
-                            {isDeleteLoading && (
-                              <SpinnerDotted size={15} thickness={150} speed={100} color='#fff' />
-                            )}{' '}
                           </button>
                           {!isDeleteLoading && (
                             <button

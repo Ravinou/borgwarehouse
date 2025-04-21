@@ -1,12 +1,15 @@
 <div align="center">
 
+[![TypeScript][typescript.js]][typescript-url]
 [![Next][Next.js]][Next-url]
 [![React][React.js]][React-url]
 
 </div>
 <div align="center">
 
-[![Docker](https://img.shields.io/badge/Docker-borgwarehouse-blue?style=for-the-badge&logo=docker)](https://hub.docker.com/r/borgwarehouse/borgwarehouse)
+[![Docker Pulls](https://img.shields.io/docker/pulls/borgwarehouse/borgwarehouse?label=borgwarehouse&style=for-the-badge&logo=docker)](https://hub.docker.com/r/borgwarehouse/borgwarehouse)
+
+
 
 </div>
 
@@ -47,7 +50,8 @@ With BorgWarehouse, you have an interface that allows you to do all this simply 
 - be **alerted** if there are no recent backups
 - **monitor** the volume of data
 - **flexibly manage quotas** for each repository
-- ...
+- manage everything you want through the **REST API**
+- ... 
 
 The whole system part is automatically managed by BorgWarehouse and **you don't have to touch your terminal anymore** while enjoying a visual feedback on the status of your repositories.
 
@@ -81,6 +85,8 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 <a href="https://github.com/shad-lp"><img src="https://avatars.githubusercontent.com/shad-lp" style="width:25px; border-radius:50%;"/></a>
 <a href="https://github.com/Magneticdud"><img src="https://avatars.githubusercontent.com/Magneticdud" style="width:25px; border-radius:50%;"/></a>
 
+[typescript.js]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[typescript-url]: https://www.typescriptlang.org/
 [next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [next-url]: https://nextjs.org/
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB

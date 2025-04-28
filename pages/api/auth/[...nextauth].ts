@@ -4,6 +4,34 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import path from 'path';
 import { ConfigService, AuthService } from '~/services';
 
+const extraProviders: NextAuthOptions["providers"] = []
+
+const ENABLE_OAUTH = process.env.ENABLE_OAUTH === "true";
+if (ENABLE_OAUTH) {
+  extraProviders.push({
+    // FIXME: Need to validate properly
+    id: process.env.OAUTH_PROVIDER_ID!,
+    name: process.env.OAUTH_PROVIDER_NAME!,
+    type: "oauth",
+    wellKnown: process.env.OPENID_PROVIDER_URL,
+    clientId: process.env.OAUTH_CLIENT_ID,
+    clientSecret: process.env.OAUTH_CLIENT_SECRET,
+    authorization: { params: { scope: process.env.OAUTH_SCOPES } },
+    idToken: true,
+    profile(profile) {
+      console.log("------------------")
+      console.log(profile)
+      console.log("------------------")
+      return {
+        id: profile.sub,
+        name: profile?.name,
+        email: profile?.email,
+        roles: profile?.groups
+      }
+    },
+  })
+}
+
 const logLogin = async (message: string, req: Partial<RequestInternal>, success = false) => {
   const ipAddress = req.headers?.['x-forwarded-for'] || 'unknown';
   const timestamp = new Date().toISOString();

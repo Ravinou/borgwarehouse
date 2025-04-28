@@ -17,7 +17,12 @@ type LoginForm = {
   password: string;
 };
 
-export default function Login() {
+type LoginProps = {
+  OAUTH_DISPLAY_NAME: string | null
+  OAUTH_PROVIDER_ID: string | null
+}
+
+export default function Login(props: LoginProps) {
   const { status } = useSession();
   const { register, handleSubmit, reset, setFocus } = useForm<LoginForm>();
   const router = useRouter();
@@ -148,7 +153,6 @@ export default function Login() {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                flexDirection: "column"
               }}
             >
               <button className='signInButton' disabled={isLoading}>
@@ -156,16 +160,13 @@ export default function Login() {
               </button>
               {props.OAUTH_DISPLAY_NAME && (<button className='signInButton' disabled={isLoading} onClick={(e) => {
                 e.preventDefault()
-                signIn("authelia", {
+                // FIXME: validate instead of having !
+                signIn(props.OAUTH_PROVIDER_ID!, {
                   callbackUrl: "/",
                   redirect: false
                 })
               }}>
-                {isLoading ? (
-                  <SpinnerDotted size={20} thickness={150} speed={100} color='#fff' />
-                ) : (
-                  props.OAUTH_DISPLAY_NAME
-                )}
+                {props.OAUTH_DISPLAY_NAME}
               </button>)}
             </div>
           </form>
@@ -174,6 +175,7 @@ export default function Login() {
     </div>
   );
 }
+
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -189,6 +191,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   return {
-    props: { session, OAUTH_DISPLAY_NAME: process.env.ENABLE_OAUTH === "true" ? process.env.OAUTH_DISPLAY_NAME ?? null : null },
+    props: {
+      session,
+      OAUTH_DISPLAY_NAME: process.env.ENABLE_OAUTH === "true" ? process.env.OAUTH_DISPLAY_NAME ?? null : null,
+      OAUTH_PROVIDER_ID: process.env.ENABLE_OAUTH === "true" ? process.env.OAUTH_PROVIDER_ID ?? null : null,
+    },
   };
 }

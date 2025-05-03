@@ -23,7 +23,8 @@ export type BorgWarehouseUser = {
   username: string;
   password: string;
   roles: string[];
-  email: string;
+  email?: string;
+  oauth_emails?: string[];
   emailAlert?: boolean;
   appriseAlert?: boolean;
   appriseMode?: AppriseModeEnum;

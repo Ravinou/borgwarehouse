@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import classes from './Repo.module.css';
 import {
-  IconSettings,
+  IconPencil,
+  IconArrowsMinimize,
   IconInfoCircle,
   IconChevronDown,
   IconChevronUp,
@@ -15,6 +16,7 @@ import { fromUnixTime } from 'date-fns';
 
 type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
   repoManageEditHandler: () => void;
+  repoManageCompactHandler: () => void;
   wizardEnv: Optional<WizardEnvType>;
 };
 
@@ -130,10 +132,17 @@ export default function Repo(props: RepoProps) {
                   <th>#{props.id}</th>
                   <th>
                     <div className={classes.editButton}>
-                      <IconSettings
+                      <IconPencil
+                        title="Edit repository"
                         width={24}
                         color='#6d4aff'
                         onClick={() => props.repoManageEditHandler()}
+                      />
+                      <IconArrowsMinimize
+                        title="Compact repository"
+                        width={24}
+                        color='#6d4aff'
+                        onClick={() => props.repoManageCompactHandler()}
                       />
                     </div>
                   </th>

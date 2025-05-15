@@ -111,13 +111,12 @@ export default function Repo(props: RepoProps) {
                   <th style={{ width: '10%' }}>Storage Size</th>
                   <th style={{ width: '30%' }}>Storage Used</th>
                   <th style={{ width: '15%' }}>Last change</th>
-                  <th style={{ width: '5%' }}>ID</th>
-                  <th style={{ width: '5%' }}>Edit</th>
+                  <th style={{ width: '10%' }}>Edit</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th>{props.repositoryName}</th>
+                  <th>{props.repositoryName} #{props.id}</th>
                   <th>{props.storageSize} GB</th>
                   <th style={{ padding: '0 4% 0 4%' }}>
                     <StorageBar storageUsed={props.storageUsed} storageSize={props.storageSize} />
@@ -127,7 +126,6 @@ export default function Repo(props: RepoProps) {
                       {props.lastSave === 0 ? '-' : fromUnixTime(props.lastSave).toLocaleString()}
                     </div>
                   </th>
-                  <th>#{props.id}</th>
                   <th>
                     <div className={classes.editButton}>
                       <IconSettings
@@ -159,7 +157,6 @@ export default function Repo(props: RepoProps) {
             </div>
             <div className={classes.lastSave}>
               {props.lastSave === 0 ? null : fromUnixTime(props.lastSave).toLocaleString()}
-              <span style={{ marginLeft: '20px', color: '#637381' }}>#{props.id}</span>
             </div>
           </div>
         </>

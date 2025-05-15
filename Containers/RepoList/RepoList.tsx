@@ -93,6 +93,37 @@ export default function RepoList() {
     router.replace('/manage-repo/edit/' + id);
   };
 
+  //BUTTON : Start compacting
+  const manageRepoCompactHandler = async (name: string) => {
+    await fetch('/api/v1/repositories/' + name + '/compact', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+    }})
+    .then(async (response) => {
+      if (response.ok) {
+        toast.success(
+          'Compacting repository ' + name + '. This might take a while.',
+          toastOptions
+        );
+      } else {
+        if (response.status == 403) {
+          toast.warning(
+            '🔒 The server is currently protected against compaction on append-only repositories.',
+            toastOptions
+          );
+          return;
+        }
+        const errorMessage = await response.json();
+        toast.error(`An error has occurred : ${errorMessage.message.stderr}`, toastOptions);
+      }
+    })
+    .catch((error) => {
+      toast.error('An error has occurred', toastOptions);
+      console.log(error);
+    })
+  };
+
   //BUTTON : Close RepoManage component box (when cross is clicked)
   const closeRepoManageBoxHandler = () => {
     router.replace('/');
@@ -126,6 +157,9 @@ export default function RepoList() {
           lanCommand={repo.lanCommand}
           appendOnlyMode={repo.appendOnlyMode}
           repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
+          repoManageCompactHandler={async () => {
+            await manageRepoCompactHandler(repo.repositoryName);
+          }}
           wizardEnv={wizardEnv}
         ></Repo>
       </React.Fragment>

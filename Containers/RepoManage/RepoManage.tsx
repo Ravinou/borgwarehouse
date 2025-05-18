@@ -121,7 +121,7 @@ export default function RepoManage(props: RepoManageProps) {
       const publicKeyPrefix = sshPublicKey.split(' ').slice(0, 2).join(' ');
 
       const response = await fetch('/api/v1/repositories', { method: 'GET' });
-      const data = await response.json();
+      const data: { repoList: Repository[] } = await response.json();
 
       const conflictingRepo = data.repoList.find((repo: { sshPublicKey: string; id: number }) => {
         const repoPublicKeyPrefix = repo.sshPublicKey.split(' ').slice(0, 2).join(' ');
@@ -132,7 +132,7 @@ export default function RepoManage(props: RepoManageProps) {
 
       if (conflictingRepo) {
         toast.error(
-          `The SSH key is already used in repository #${conflictingRepo.id}. Please use another key or delete the key from the other repository.`,
+          `The SSH key is already used in repository ${conflictingRepo.repositoryName}. Please use another key or delete the key from the other repository.`,
           toastOptions
         );
         return false;
@@ -257,15 +257,15 @@ export default function RepoManage(props: RepoManageProps) {
                     color: 'rgba(99, 115, 129, 0.38)',
                   }}
                 >
-                  #{targetRepo?.id}
+                  {targetRepo?.repositoryName}
                 </span>{' '}
                 ?
               </h1>
             </div>
             <div className={classes.deleteDialogMessage}>
               <div style={{ marginBottom: '5px' }}>
-                You are about to permanently delete the repository <b>#{targetRepo?.id}</b> and all
-                the backups it contains.
+                You are about to permanently delete the repository{' '}
+                <b>{targetRepo?.repositoryName}</b> and all the backups it contains.
               </div>
               <div>The data will not be recoverable and it will not be possible to go back.</div>
             </div>
@@ -300,7 +300,7 @@ export default function RepoManage(props: RepoManageProps) {
                     color: 'rgba(99, 115, 129, 0.38)',
                   }}
                 >
-                  #{targetRepo?.id}
+                  {targetRepo?.repositoryName}
                 </span>
               </h2>
             )}

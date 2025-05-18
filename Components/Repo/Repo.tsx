@@ -111,8 +111,7 @@ export default function Repo(props: RepoProps) {
                   <th style={{ width: '10%' }}>Storage Size</th>
                   <th style={{ width: '30%' }}>Storage Used</th>
                   <th style={{ width: '15%' }}>Last change</th>
-                  <th style={{ width: '5%' }}>ID</th>
-                  <th style={{ width: '5%' }}>Edit</th>
+                  <th style={{ width: '10%' }}>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,7 +137,6 @@ export default function Repo(props: RepoProps) {
                           })}
                     </div>
                   </th>
-                  <th>#{props.id}</th>
                   <th>
                     <div className={classes.editButton}>
                       <IconSettings
@@ -180,7 +178,6 @@ export default function Repo(props: RepoProps) {
                       addSuffix: true,
                     })}
               </span>
-              <span style={{ marginLeft: '20px', color: '#637381' }}>#{props.id}</span>
             </div>
           </div>
         </>

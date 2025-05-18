@@ -68,8 +68,8 @@ function SetupWizard(props: SetupWizardProps) {
 
   //Options for react-select
   const options: Optional<Array<SelectedRepoWizard>> = repoList?.map((repo) => ({
-    label: `${repo.alias} - #${repo.id}`,
-    value: `${repo.alias} - #${repo.id}`,
+    label: `${repo.alias} - ${repo.repositoryName}`,
+    value: `${repo.alias} - ${repo.repositoryName}`,
     id: repo.id.toString(),
     repositoryName: repo.repositoryName,
     lanCommand: repo.lanCommand ? repo.lanCommand : false,

@@ -11,7 +11,7 @@ import {
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
 import { Repository, WizardEnvType, Optional } from '~/types';
-import { fromUnixTime } from 'date-fns';
+import { fromUnixTime, formatDistanceStrict } from 'date-fns';
 
 type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
   repoManageEditHandler: () => void;
@@ -122,8 +122,19 @@ export default function Repo(props: RepoProps) {
                     <StorageBar storageUsed={props.storageUsed} storageSize={props.storageSize} />
                   </th>
                   <th>
-                    <div className={classes.lastSave}>
-                      {props.lastSave === 0 ? '-' : fromUnixTime(props.lastSave).toLocaleString()}
+                    <div
+                      className={classes.lastSave}
+                      title={
+                        props.lastSave === 0
+                          ? undefined
+                          : fromUnixTime(props.lastSave).toLocaleString()
+                      }
+                    >
+                      {props.lastSave === 0
+                        ? '-'
+                        : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
+                            addSuffix: true,
+                          })}
                     </div>
                   </th>
                   <th>
@@ -156,7 +167,17 @@ export default function Repo(props: RepoProps) {
               )}
             </div>
             <div className={classes.lastSave}>
-              {props.lastSave === 0 ? null : fromUnixTime(props.lastSave).toLocaleString()}
+              <span
+                title={
+                  props.lastSave === 0 ? undefined : fromUnixTime(props.lastSave).toLocaleString()
+                }
+              >
+                {props.lastSave === 0
+                  ? '-'
+                  : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
+                      addSuffix: true,
+                    })}
+              </span>
             </div>
           </div>
         </>

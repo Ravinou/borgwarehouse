@@ -1,3 +1,5 @@
 ## BATS tests against bash scripts
 
 From `tests/bats`, launch `docker compose up --build`
+
+If using Podman, you can use the command `podman build -t bats -f ./bats/Dockerfile ../.` and then `podman run --rm bats`

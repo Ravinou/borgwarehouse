@@ -44,6 +44,11 @@ export const ShellService = {
     const { stdout, stderr } = await exec(`${shellsDirectory}/deleteRepo.sh ${repositoryName}`);
     return { stdout, stderr };
   },
+  
+  compactRepo: async (repositoryName: string) => {
+    const { stdout, stderr } = await exec(`${shellsDirectory}/compactRepo.sh ${repositoryName}`);
+    return { stdout, stderr };
+  },
 
   updateRepo: async (
     repositoryName: string,

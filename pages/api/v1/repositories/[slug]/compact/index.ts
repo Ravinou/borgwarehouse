@@ -64,7 +64,7 @@ export default async function handler(
 
       const repo = repoList.find((repo) => repo.repositoryName === slug);
       if (!repo) {
-        return ApiResponse.notFound(res, 'No repository with name ' + slug);
+        return res.status(404).json({ status: 404, message: `No repository with name ${slug}`});
       }
       
       if (repo.appendOnlyMode && process.env.DISABLE_COMPACT_APPEND_ONLY === 'true') {
@@ -72,7 +72,7 @@ export default async function handler(
       }
 
       if (req.body.await !== undefined && typeof req.body.await !== 'boolean') {
-       throw new Error('await must be a boolean');
+        return res.status(400).json({ status: 400, message: `await must be a boolean` });
       }
       if (req.body.await) {
         await ShellService.compactRepo(slug);

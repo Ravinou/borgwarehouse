@@ -8,6 +8,7 @@ RUN apk add --no-cache \
     coreutils 
 
 COPY helpers/shells/ /test/scripts/
+COPY tests/bats/compactRepo.bats /test/tests/compactRepo.bats
 COPY tests/bats/createRepo.bats /test/tests/createRepo.bats
 COPY tests/bats/deleteRepo.bats /test/tests/deleteRepo.bats
 COPY tests/bats/updateRepo.bats /test/tests/updateRepo.bats

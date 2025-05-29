@@ -1,14 +1,19 @@
 import path from 'path';
 import { promisify } from 'util';
-import { exec as execCallback } from 'node:child_process';
+import { execFile as execFileCallback } from 'node:child_process';
 import { LastSaveDTO, StorageUsedDTO } from '~/types';
+import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
 
-const exec = promisify(execCallback);
+const execFile = promisify(execFileCallback);
 const shellsDirectory = path.join(process.cwd(), '/helpers/shells');
 
 // This is to prevent the cronjob from being executed multiple times
 let isLastSaveListRunning = false;
 let isStorageUsedRunning = false;
+
+function isValidSshKey(key: string): boolean {
+  return /^ssh-(rsa|ed25519|ed25519-sk) [A-Za-z0-9+/=]+(\s.+)?$/.test(key.trim());
+}
 
 export const ShellService = {
   getLastSaveList: async (): Promise<LastSaveDTO[]> => {
@@ -19,7 +24,7 @@ export const ShellService = {
     }
 
     try {
-      const { stdout } = await exec(`${shellsDirectory}/getLastSave.sh`);
+      const { stdout } = await execFile(`${shellsDirectory}/getLastSave.sh`);
       return JSON.parse(stdout || '[]');
     } finally {
       isLastSaveListRunning = false;
@@ -33,7 +38,7 @@ export const ShellService = {
       isStorageUsedRunning = true;
     }
     try {
-      const { stdout } = await exec(`${shellsDirectory}/getStorageUsed.sh`);
+      const { stdout } = await execFile(`${shellsDirectory}/getStorageUsed.sh`);
       return JSON.parse(stdout || '[]');
     } finally {
       isStorageUsedRunning = false;
@@ -41,7 +46,7 @@ export const ShellService = {
   },
 
   deleteRepo: async (repositoryName: string) => {
-    const { stdout, stderr } = await exec(`${shellsDirectory}/deleteRepo.sh ${repositoryName}`);
+    const { stdout, stderr } = await execFile(`${shellsDirectory}/deleteRepo.sh`, [repositoryName]);
     return { stdout, stderr };
   },
 
@@ -51,9 +56,19 @@ export const ShellService = {
     storageSize: number,
     appendOnlyMode: boolean
   ) => {
-    const { stdout, stderr } = await exec(
-      `${shellsDirectory}/updateRepo.sh ${repositoryName} "${sshPublicKey}" ${storageSize} ${appendOnlyMode}`
-    );
+    if (!isValidSshKey(sshPublicKey)) {
+      throw new Error('Invalid SSH key format');
+    }
+    if (!repositoryNameCheck(repositoryName)) {
+      throw new Error('Invalid repository name format');
+    }
+
+    const { stdout, stderr } = await execFile(`${shellsDirectory}/updateRepo.sh`, [
+      repositoryName,
+      sshPublicKey,
+      storageSize.toString(),
+      appendOnlyMode.toString(),
+    ]);
     return { stdout, stderr };
   },
 
@@ -62,9 +77,15 @@ export const ShellService = {
     storageSize: number,
     appendOnlyMode: boolean
   ): Promise<{ stdout?: string; stderr?: string }> => {
-    const { stdout, stderr } = await exec(
-      `${shellsDirectory}/createRepo.sh "${sshPublicKey}" ${storageSize} ${appendOnlyMode}`
-    );
+    if (!isValidSshKey(sshPublicKey)) {
+      throw new Error('Invalid SSH key format');
+    }
+
+    const { stdout, stderr } = await execFile(`${shellsDirectory}/createRepo.sh`, [
+      sshPublicKey,
+      storageSize.toString(),
+      appendOnlyMode.toString(),
+    ]);
     return { stdout, stderr };
   },
 };

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+### DEPRECATED ### NodeJS will handle this in the future.
+
 # Shell created by Raven for BorgWarehouse.
 # Get the size of all repositories in a JSON output.
 # stdout will be an array like :

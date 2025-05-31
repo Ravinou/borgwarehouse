@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+### DEPRECATED ### NodeJS will handle this in the future.
+
 # Shell created by Raven for BorgWarehouse.
 # This shell takes 4 args: [repositoryName] [new SSH pub key] [quota] [append-only mode (boolean)]
 # This shell updates the SSH key and the quota for a repository.

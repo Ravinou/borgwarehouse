@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+### DEPRECATED ### NodeJS will handle this in the future.
+
 # Shell created by Raven for BorgWarehouse.
 # This shell takes 1 arg : [repositoryName] with 8 char. length only.
 # This shell **delete the repository** in arg and **all his data** and the line associated in the authorized_keys file.

@@ -316,12 +316,12 @@ export default function RepoManage(props: RepoManageProps) {
                 {...register('alias', {
                   required: 'An alias is required.',
                   minLength: {
-                    value: 2,
-                    message: '2 characters min',
+                    value: 1,
+                    message: '1 character min',
                   },
                   maxLength: {
-                    value: 40,
-                    message: '40 characters max',
+                    value: 100,
+                    message: '100 characters max',
                   },
                 })}
               />
@@ -365,8 +365,8 @@ export default function RepoManage(props: RepoManageProps) {
                 {...register('comment', {
                   required: false,
                   maxLength: {
-                    value: 200,
-                    message: '200 characters maximum.',
+                    value: 500,
+                    message: '500 characters maximum.',
                   },
                 })}
               />

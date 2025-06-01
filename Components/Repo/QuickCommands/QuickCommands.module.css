@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   align-self: flex-start;
-  margin: auto 47px auto auto;
+  margin: auto 25px auto auto;
 }
 
 .icons {
@@ -31,7 +31,7 @@
   width: 100%;
   height: 100%;
   border: 1px solid #6d4aff21;
-  background-color: #f5f5f5;
+  background-color: #fafafa;
   border-radius: 5px;
   box-shadow: 0 0px 1px rgba(0, 0, 0, 0.1) inset;
   color: #65748b;
@@ -50,6 +50,7 @@
 
 .copyValid {
   margin: auto 8px auto auto;
+  padding: 6px 6px;
   font-size: 0.95rem;
   color: #6d4aff;
   animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -76,7 +77,7 @@
   width: 100%;
   height: 100%;
   border: 1px solid #6d4aff21;
-  background-color: #f5f5f5;
+  background-color: #fafafa;
   border-radius: 5px;
   box-shadow: 0 0px 1px rgba(0, 0, 0, 0.1) inset;
   color: #65748b;

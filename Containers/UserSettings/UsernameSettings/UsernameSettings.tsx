@@ -90,16 +90,16 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
                     {...register('username', {
                       required: 'A username is required.',
                       pattern: {
-                        value: /^[a-z]{5,15}$/,
+                        value: /^[a-z]{1,40}$/,
                         message: 'Only a-z characters are allowed',
                       },
                       maxLength: {
-                        value: 10,
-                        message: '15 characters max.',
+                        value: 40,
+                        message: '40 characters max.',
                       },
                       minLength: {
-                        value: 5,
-                        message: '5 characters min.',
+                        value: 1,
+                        message: '1 characters min.',
                       },
                     })}
                   />

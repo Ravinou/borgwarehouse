@@ -13,16 +13,39 @@
   overflow: visible;
   /* Need to display comment on hover (which is position : absolute) */
   position: relative;
+  background: #fff;
 }
 
 .closeFlex {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   padding: 15px;
+  gap: 10px;
 }
 
 .RepoClose .lastSave {
-  padding: 15px;
+  white-space: nowrap;
+}
+
+.RepoClose .leftGroup {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 10px;
+}
+
+.RepoClose .alias {
+  font-weight: bold;
+  color: #111827;
+  font-size: 1.05em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
 
 /* REPO OPEN */
@@ -35,7 +58,6 @@
     0 1px 3px rgba(0, 0, 0, 0.12),
     0 1px 2px rgba(0, 0, 0, 0.24);
   width: auto;
-  max-height: 200px;
   margin: 20px 0px 0px 0px;
   padding: 15px;
   border-radius: 5px;
@@ -43,13 +65,27 @@
   overflow: visible;
   /* Need to display comment on hover (which is position : absolute) */
   position: relative;
+  background: #fff;
 }
 
 .openFlex {
-  display: flex;
-  align-items: center;
-  align-self: flex-start;
+  display: block;
   width: 100%;
+}
+
+.aliasFlex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+.indicatorsFlex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 15px;
 }
 
 .tabInfo {
@@ -59,7 +95,7 @@
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
-  margin: 25px auto;
+  margin: 15px auto;
   table-layout: fixed;
 }
 
@@ -73,7 +109,7 @@
   font-size: 1em;
   color: #fff;
   line-height: 1.2;
-  font-weight: normal;
+  font-weight: 500;
 }
 
 .tabInfo tbody tr {
@@ -88,80 +124,52 @@
 }
 
 /*STATUS*/
-
-.statusIndicatorGreen {
-  background: rgb(9, 255, 0);
+.statusIndicatorGreen,
+.statusIndicatorRed {
   border-radius: 50%;
-  margin: 10px;
-  height: 15px;
-  width: 15px;
-  box-shadow: 0 0 0 0 rgb(9, 255, 0);
-  transform: scale(1);
-  animation: pulseGreen 5s infinite;
-  animation-delay: 1s;
+  height: 16px;
+  width: 16px;
+  flex-shrink: 0;
+  animation: pulse 5s infinite;
 }
 
-@keyframes pulseGreen {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(17, 255, 0, 0.7);
-  }
-
-  10% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(17, 255, 0, 0);
-  }
-
-  90% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(17, 255, 0, 0);
-  }
+.statusIndicatorGreen {
+  background: #00d26a;
+  box-shadow: 0 0 0 0 rgba(0, 210, 106, 0.7);
 }
 
 .statusIndicatorRed {
-  background: rgb(255, 0, 0);
-  border-radius: 50%;
-  margin: 10px;
-  height: 15px;
-  width: 15px;
-
-  box-shadow: 0 0 0 0 rgb(255, 0, 0);
-  transform: scale(1);
-  animation: pulseRed 5s infinite;
+  background: #ff3d3d;
+  box-shadow: 0 0 0 0 rgba(255, 61, 61, 0.7);
   animation-delay: 0.5s;
 }
 
-@keyframes pulseRed {
+@keyframes pulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
   }
-
   10% {
     transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
   }
-
   90% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
   }
 }
 
 /* Alert icon */
-
 .alertIcon {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 10px;
 }
 
 .appendOnlyModeIcon {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 10px;
 }
 
 /* GENERAL */
@@ -169,6 +177,13 @@
   font-weight: bold;
   color: #111827;
   font-size: 1.05em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.RepoOpen .alias {
+  margin-top: 5px;
 }
 
 .lastSave {
@@ -184,7 +199,6 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 10px;
 }
 
 .toolTip {
@@ -227,23 +241,69 @@
 
 /* MOBILE */
 @media all and (max-width: 1000px) {
-  .tabInfo {
-    display: none;
+  .openFlex,
+  .tabInfo,
+  .toolTip,
+  .comment,
+  .chevron {
+    display: none !important;
   }
-  .toolTip {
-    display: none;
+
+  .RepoOpen,
+  .RepoClose {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    max-height: 65px !important;
+    padding: 15px !important;
+    margin: 20px 0 0 0 !important;
   }
-  .comment {
-    display: none;
-  }
-  .lastSave {
-    display: none;
-  }
+
   .closeFlex {
-    margin: auto;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
   }
-  .openFlex {
-    margin: auto;
-    width: auto;
+
+  .alias {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .leftGroup {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .rightGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .lastSave {
+    display: block !important;
+    color: #65748b;
+    white-space: nowrap;
+    font-size: 0.85em;
+    flex-shrink: 0;
+    margin-left: 10px;
+  }
+
+  .appendOnlyModeIcon,
+  .alertIcon {
+    display: flex;
+    align-items: center;
   }
 }

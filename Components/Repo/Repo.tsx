@@ -12,6 +12,7 @@ import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
 import { Repository, WizardEnvType, Optional } from '~/types';
 import { fromUnixTime, formatDistanceStrict } from 'date-fns';
+import useMedia from 'use-media';
 
 type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
   repoManageEditHandler: () => void;
@@ -19,6 +20,8 @@ type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
 };
 
 export default function Repo(props: RepoProps) {
+  const isMobile = useMedia({ maxWidth: 1000 });
+
   //Load displayDetails from LocalStorage
   const displayDetailsFromLS = (): boolean => {
     const key = `displayDetailsRepo${props.id}`;
@@ -81,91 +84,24 @@ export default function Repo(props: RepoProps) {
     }
   };
 
-  return (
-    <>
-      {displayDetails ? (
-        <>
-          <div className={classes.RepoOpen}>
-            <div className={classes.openFlex}>
+  const mobileView = () => {
+    return (
+      <>
+        <div className={classes.RepoClose}>
+          <div className={classes.closeFlex}>
+            <div className={classes.leftGroup}>
               <div className={statusIndicator()} />
               <div className={classes.alias}>{props.alias}</div>
-              {appendOnlyModeIndicator()}
-              {alertIndicator()}
-              {props.comment && (
-                <div className={classes.comment}>
-                  <IconInfoCircle size={16} color='grey' />
-                  <div className={classes.toolTip}>{props.comment}</div>
-                </div>
-              )}
-              <QuickCommands
-                repositoryName={props.repositoryName}
-                lanCommand={props.lanCommand}
-                wizardEnv={props.wizardEnv}
-              />
             </div>
+            {appendOnlyModeIndicator()}
+            {alertIndicator()}
+            {props.comment && (
+              <div className={classes.comment}>
+                <IconInfoCircle size={16} color='#637381' />
+                <div className={classes.toolTip}>{props.comment}</div>
+              </div>
+            )}
 
-            <table className={classes.tabInfo}>
-              <thead>
-                <tr>
-                  <th style={{ width: '15%' }}>Repository</th>
-                  <th style={{ width: '10%' }}>Storage Size</th>
-                  <th style={{ width: '30%' }}>Storage Used</th>
-                  <th style={{ width: '15%' }}>Last change</th>
-                  <th style={{ width: '10%' }}>Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>{props.repositoryName}</th>
-                  <th>{props.storageSize} GB</th>
-                  <th style={{ padding: '0 4% 0 4%' }}>
-                    <StorageBar storageUsed={props.storageUsed} storageSize={props.storageSize} />
-                  </th>
-                  <th>
-                    <div
-                      className={classes.lastSave}
-                      title={
-                        props.lastSave === 0
-                          ? undefined
-                          : fromUnixTime(props.lastSave).toLocaleString()
-                      }
-                    >
-                      {props.lastSave === 0
-                        ? '-'
-                        : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
-                            addSuffix: true,
-                          })}
-                    </div>
-                  </th>
-                  <th>
-                    <div className={classes.editButton}>
-                      <IconSettings
-                        width={24}
-                        color='#6d4aff'
-                        onClick={() => props.repoManageEditHandler()}
-                      />
-                    </div>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className={classes.RepoClose}>
-            <div className={classes.closeFlex}>
-              <div className={statusIndicator()} />
-              <div className={classes.alias}>{props.alias}</div>
-              {appendOnlyModeIndicator()}
-              {alertIndicator()}
-              {props.comment && (
-                <div className={classes.comment}>
-                  <IconInfoCircle size={16} color='#637381' />
-                  <div className={classes.toolTip}>{props.comment}</div>
-                </div>
-              )}
-            </div>
             <div className={classes.lastSave}>
               <span
                 title={
@@ -180,29 +116,144 @@ export default function Repo(props: RepoProps) {
               </span>
             </div>
           </div>
-        </>
-      )}
-      {displayDetails ? (
-        <div className={classes.chevron}>
-          <IconChevronUp
-            color='#494b7a'
-            size={28}
-            onClick={() => {
-              displayDetailsForOneHandler(false);
-            }}
-          />
         </div>
-      ) : (
-        <div className={classes.chevron}>
-          <IconChevronDown
-            color='#494b7a'
-            size={28}
-            onClick={() => {
-              displayDetailsForOneHandler(true);
-            }}
-          />
-        </div>
-      )}
-    </>
-  );
+      </>
+    );
+  };
+
+  if (isMobile) {
+    return mobileView();
+  } else {
+    return (
+      <>
+        {displayDetails ? (
+          <>
+            <div className={classes.RepoOpen}>
+              <div className={classes.indicatorsFlex}>
+                <div className={statusIndicator()} />
+                {props.comment && (
+                  <div className={classes.comment}>
+                    <IconInfoCircle size={16} color='grey' />
+                    <div className={classes.toolTip}>{props.comment}</div>
+                  </div>
+                )}
+                {appendOnlyModeIndicator()}
+                {alertIndicator()}
+                <QuickCommands
+                  repositoryName={props.repositoryName}
+                  lanCommand={props.lanCommand}
+                  wizardEnv={props.wizardEnv}
+                />
+              </div>
+              <div className={classes.aliasFlex}>
+                <div className={classes.alias}>{props.alias}</div>
+              </div>
+
+              <table className={classes.tabInfo}>
+                <thead>
+                  <tr>
+                    <th style={{ width: '15%' }}>Repository</th>
+                    <th style={{ width: '10%' }}>Storage Size</th>
+                    <th style={{ width: '30%' }}>Storage Used</th>
+                    <th style={{ width: '15%' }}>Last change</th>
+                    <th style={{ width: '10%' }}>Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>{props.repositoryName}</th>
+                    <th>{props.storageSize} GB</th>
+                    <th style={{ padding: '0 4% 0 4%' }}>
+                      <StorageBar storageUsed={props.storageUsed} storageSize={props.storageSize} />
+                    </th>
+                    <th>
+                      <div
+                        className={classes.lastSave}
+                        title={
+                          props.lastSave === 0
+                            ? undefined
+                            : fromUnixTime(props.lastSave).toLocaleString()
+                        }
+                      >
+                        {props.lastSave === 0
+                          ? '-'
+                          : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
+                              addSuffix: true,
+                            })}
+                      </div>
+                    </th>
+                    <th>
+                      <div className={classes.editButton}>
+                        <IconSettings
+                          width={24}
+                          color='#6d4aff'
+                          onClick={() => props.repoManageEditHandler()}
+                        />
+                      </div>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={classes.RepoClose}>
+              <div className={classes.closeFlex}>
+                <div className={classes.leftGroup}>
+                  <div className={statusIndicator()} />
+                  <div className={classes.alias}>{props.alias}</div>
+                </div>
+                {appendOnlyModeIndicator()}
+                {alertIndicator()}
+                {props.comment && (
+                  <div className={classes.comment}>
+                    <IconInfoCircle size={16} color='#637381' />
+                    <div className={classes.toolTip}>{props.comment}</div>
+                  </div>
+                )}
+
+                <div className={classes.lastSave}>
+                  <span
+                    title={
+                      props.lastSave === 0
+                        ? undefined
+                        : fromUnixTime(props.lastSave).toLocaleString()
+                    }
+                  >
+                    {props.lastSave === 0
+                      ? '-'
+                      : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
+                          addSuffix: true,
+                        })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+        {displayDetails ? (
+          <div className={classes.chevron}>
+            <IconChevronUp
+              color='#494b7a'
+              size={28}
+              onClick={() => {
+                displayDetailsForOneHandler(false);
+              }}
+            />
+          </div>
+        ) : (
+          <div className={classes.chevron}>
+            <IconChevronDown
+              color='#494b7a'
+              size={28}
+              onClick={() => {
+                displayDetailsForOneHandler(true);
+              }}
+            />
+          </div>
+        )}
+      </>
+    );
+  }
 }

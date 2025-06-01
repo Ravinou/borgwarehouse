@@ -24,10 +24,10 @@ export default async function handler(
   if (typeof username !== 'string') {
     return res.status(422).json({ message: 'Unexpected data' });
   }
-  const usernameRegex = new RegExp(/^[a-z]{5,15}$/);
+  const usernameRegex = new RegExp(/^[a-z]{1,40}$/);
   if (!usernameRegex.test(username)) {
     res.status(422).json({
-      message: 'Only a-z characters are allowed (5 to 15 char.)',
+      message: 'Only a-z characters are allowed (1 to 40 char.)',
     });
     return;
   }

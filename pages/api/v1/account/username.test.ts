@@ -49,14 +49,14 @@ describe('PUT /api/account/updateUsername', () => {
 
     const { req, res } = createMocks({
       method: 'PUT',
-      body: { username: 'Too$hort!' },
+      body: { username: '' },
     });
 
     await handler(req, res);
 
     expect(res._getStatusCode()).toBe(422);
     expect(res._getJSONData()).toEqual({
-      message: 'Only a-z characters are allowed (5 to 15 char.)',
+      message: 'Only a-z characters are allowed (1 to 40 char.)',
     });
   });
 

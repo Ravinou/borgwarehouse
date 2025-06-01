@@ -86,7 +86,6 @@
   flex-direction: column;
   width: 90%;
   margin: 5px auto;
-  padding: 15px;
 }
 
 .unfoldButton {
@@ -122,4 +121,78 @@
   .containerAddRepo {
     display: none;
   }
+}
+
+/* Toolbar */
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin: 20px auto 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.searchInput {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.sortIcons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.icon {
+  cursor: pointer;
+  color: #a6a6b8;
+  transition: transform 0.2s ease;
+}
+
+.icon:hover {
+  transform: scale(1.1);
+  color: #6d4aff;
+}
+
+.iconActive {
+  color: #6d4aff;
+  transform: scale(1.2);
+}
+
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 32px 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  background-color: white;
+}
+
+.clearButton {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #999;
+}
+
+.clearButton:hover {
+  color: #333;
 }

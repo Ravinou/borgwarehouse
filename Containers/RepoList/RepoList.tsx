@@ -1,22 +1,50 @@
 import classes from './RepoList.module.css';
 import React, { useState, useEffect } from 'react';
-import { IconPlus } from '@tabler/icons-react';
+import {
+  IconPlus,
+  IconSortAscendingLetters,
+  IconSortDescendingLetters,
+  IconSortAscending2,
+  IconSortDescending2,
+  IconDatabase,
+  IconX,
+  IconClock,
+  IconCalendarUp,
+  IconCalendarDown,
+  IconSortAscendingSmallBig,
+  IconSortDescendingSmallBig,
+  IconSortDescending2Filled,
+} from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import useSWR, { useSWRConfig } from 'swr';
 import { ToastContainer, ToastOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-//Composants
 import Repo from '~/Components/Repo/Repo';
 import RepoManage from '../RepoManage/RepoManage';
 import ShimmerRepoList from '~/Components/UI/ShimmerRepoList/ShimmerRepoList';
 import { Repository, WizardEnvType, Optional } from '~/types';
 
+type SortOption =
+  | 'alias-asc'
+  | 'alias-desc'
+  | 'status-true'
+  | 'status-false'
+  | 'storage-used-asc'
+  | 'storage-used-desc'
+  | 'last-save-asc'
+  | 'last-save-desc';
+
 export default function RepoList() {
-  ////Var
   const router = useRouter();
   const { mutate } = useSWRConfig();
+  const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
+  const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
+  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
+  const [sortOption, setSortOption] = useState<SortOption>('alias-asc');
+  const [searchQuery, setSearchQuery] = useState('');
+
   const toastOptions: ToastOptions = {
     position: 'top-right',
     autoClose: 8000,
@@ -27,110 +55,134 @@ export default function RepoList() {
     progress: undefined,
   };
 
-  ////Datas
-  //Write a fetcher function to wrap the native fetch function and return the result of a call to url in json format
-  const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
-  const { data, error } = useSWR('/api/v1/repositories', fetcher);
-
-  ////LifeCycle
-  //Component did mount
+  // Load filters from localStorage
   useEffect(() => {
-    //If the route is home/manage-repo/add, open the RepoAdd box.
+    const savedSort = localStorage.getItem('repoSort');
+    const savedSearch = localStorage.getItem('repoSearch');
+    if (savedSort) setSortOption(savedSort as SortOption);
+    if (savedSearch) setSearchQuery(savedSearch);
+  }, []);
+
+  useEffect(() => {
     if (router.pathname === '/manage-repo/add') {
       setDisplayRepoAdd(!displayRepoAdd);
     }
-    //If the route is home/manage-repo/edit, open the RepoAdd box.
     if (router.pathname.startsWith('/manage-repo/edit')) {
       setDisplayRepoEdit(!displayRepoEdit);
     }
-    //Fetch wizardEnv to hydrate Repo components
+
     const fetchWizardEnv = async () => {
       try {
-        const response = await fetch('/api/v1/account/wizard-env', {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        });
+        const response = await fetch('/api/v1/account/wizard-env');
         const data: WizardEnvType = await response.json();
         setWizardEnv(data);
       } catch (error) {
-        console.log('Fetching datas error');
+        console.log('Fetching wizard env error');
       }
     };
     fetchWizardEnv();
   }, []);
 
-  ////States
-  const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
-  const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
-  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
+  const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
+  const { data, error } = useSWR('/api/v1/repositories', fetcher);
 
-  ////Functions
-
-  //Firstly, check the availability of data and condition it.
   if (!data) {
-    //Force mutate after login (force a API GET on /api/v1/repositories to load repoList)
     mutate('/api/v1/repositories');
     return <ShimmerRepoList />;
   }
-  if (error) {
-    toast.error('An error has occurred.', toastOptions);
-    return <ToastContainer />;
-  }
-  if (data.status == 500) {
-    toast.error('API Error !', toastOptions);
+
+  if (error || data.status == 500) {
+    toast.error('Error loading repositories.', toastOptions);
     return <ToastContainer />;
   }
 
-  //BUTTON : Display RepoManage component box for ADD
-  const manageRepoAddHandler = () => {
-    router.replace('/manage-repo/add');
+  const handleSortChange = (option: SortOption) => {
+    setSortOption(option);
+    localStorage.setItem('repoSort', option);
   };
 
-  //BUTTON : Display RepoManage component box for EDIT
-  const manageRepoEditHandler = (id: number) => {
-    router.replace('/manage-repo/edit/' + id);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    localStorage.setItem('repoSearch', query);
   };
 
-  //BUTTON : Close RepoManage component box (when cross is clicked)
-  const closeRepoManageBoxHandler = () => {
-    router.replace('/');
-  };
+  const getSortedRepoList = () => {
+    let repoList = [...data.repoList];
 
-  // UI EFFECT : Display blur when display add repo modale
-  const displayBlur = () => {
-    if (displayRepoAdd || displayRepoEdit) {
-      return classes.containerBlur;
-    } else {
-      return classes.container;
+    // Filter
+    if (searchQuery) {
+      repoList = repoList.filter((repo) =>
+        `${repo.alias} ${repo.comment} ${repo.repositoryName}`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Sort
+    switch (sortOption) {
+      case 'alias-asc':
+        return repoList.sort((a, b) => a.alias.localeCompare(b.alias));
+      case 'alias-desc':
+        return repoList.sort((a, b) => b.alias.localeCompare(a.alias));
+      case 'status-true':
+        return repoList.sort((a, b) => Number(b.status) - Number(a.status));
+      case 'status-false':
+        return repoList.sort((a, b) => Number(a.status) - Number(b.status));
+      case 'storage-used-asc':
+        return repoList.sort((a, b) => {
+          const aRatio = a.storageSize ? a.storageUsed / a.storageSize : 0;
+          const bRatio = b.storageSize ? b.storageUsed / b.storageSize : 0;
+          return aRatio - bRatio;
+        });
+      case 'storage-used-desc':
+        return repoList.sort((a, b) => {
+          const aRatio = a.storageSize ? a.storageUsed / a.storageSize : 0;
+          const bRatio = b.storageSize ? b.storageUsed / b.storageSize : 0;
+          return bRatio - aRatio;
+        });
+      case 'last-save-asc':
+        return repoList.sort((a, b) => {
+          const aDate = a.lastSave ? new Date(a.lastSave).getTime() : 0;
+          const bDate = b.lastSave ? new Date(b.lastSave).getTime() : 0;
+          return aDate - bDate;
+        });
+      case 'last-save-desc':
+        return repoList.sort((a, b) => {
+          const aDate = a.lastSave ? new Date(a.lastSave).getTime() : 0;
+          const bDate = b.lastSave ? new Date(b.lastSave).getTime() : 0;
+          return bDate - aDate;
+        });
+      default:
+        return repoList;
     }
   };
 
-  //Dynamic list of repositories (with a map of Repo components)
-  const renderRepoList = data.repoList.map((repo: Repository) => {
-    return (
-      <React.Fragment key={repo.id}>
-        <Repo
-          key={repo.id}
-          id={repo.id}
-          alias={repo.alias}
-          status={repo.status}
-          lastSave={repo.lastSave}
-          alert={repo.alert}
-          repositoryName={repo.repositoryName}
-          storageSize={repo.storageSize}
-          storageUsed={repo.storageUsed}
-          sshPublicKey={repo.sshPublicKey}
-          comment={repo.comment}
-          lanCommand={repo.lanCommand}
-          appendOnlyMode={repo.appendOnlyMode}
-          repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
-          wizardEnv={wizardEnv}
-        ></Repo>
-      </React.Fragment>
-    );
-  });
+  const manageRepoAddHandler = () => router.replace('/manage-repo/add');
+  const manageRepoEditHandler = (id: number) => router.replace('/manage-repo/edit/' + id);
+  const closeRepoManageBoxHandler = () => router.replace('/');
+  const displayBlur = () =>
+    displayRepoAdd || displayRepoEdit ? classes.containerBlur : classes.container;
+
+  const renderRepoList = getSortedRepoList().map((repo: Repository) => (
+    <Repo
+      key={repo.id}
+      id={repo.id}
+      alias={repo.alias}
+      status={repo.status}
+      lastSave={repo.lastSave}
+      alert={repo.alert}
+      repositoryName={repo.repositoryName}
+      storageUsed={repo.storageUsed}
+      storageSize={repo.storageSize}
+      sshPublicKey={repo.sshPublicKey}
+      comment={repo.comment}
+      lanCommand={repo.lanCommand}
+      appendOnlyMode={repo.appendOnlyMode}
+      repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
+      wizardEnv={wizardEnv}
+    />
+  ));
 
   return (
     <>
@@ -145,10 +197,80 @@ export default function RepoList() {
             <span>Add a repository</span>
           </Link>
         </div>
+
+        <div className={classes.toolbar}>
+          <div className={classes.searchContainer}>
+            <input
+              type='text'
+              placeholder='Alias, comment, repository name...'
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className={classes.searchInput}
+            />
+            {searchQuery && (
+              <button
+                onClick={() =>
+                  handleSearchChange({
+                    target: { value: '' },
+                  } as React.ChangeEvent<HTMLInputElement>)
+                }
+                className={classes.clearButton}
+                title='Clear search'
+              >
+                <IconX size={16} stroke={2} />
+              </button>
+            )}
+          </div>
+
+          <div className={classes.sortIcons}>
+            <IconSortAscendingLetters
+              className={sortOption === 'alias-asc' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('alias-asc')}
+              title='Alias A-Z'
+            />
+            <IconSortDescendingLetters
+              className={sortOption === 'alias-desc' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('alias-desc')}
+              title='Alias Z-A'
+            />
+            <IconSortDescending2Filled
+              className={sortOption === 'status-true' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('status-true')}
+              title='Status OK → KO'
+            />
+            <IconSortDescending2
+              className={sortOption === 'status-false' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('status-false')}
+              title='Status KO → OK'
+            />
+            <IconCalendarDown
+              className={sortOption === 'last-save-desc' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('last-save-desc')}
+              title='Last save (recent → old)'
+            />
+            <IconCalendarUp
+              className={sortOption === 'last-save-asc' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('last-save-asc')}
+              title='Last save (old → recent)'
+            />
+            <IconSortAscendingSmallBig
+              className={sortOption === 'storage-used-asc' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('storage-used-asc')}
+              title='Storage usage % low → high'
+            />
+            <IconSortDescendingSmallBig
+              className={sortOption === 'storage-used-desc' ? classes.iconActive : classes.icon}
+              onClick={() => handleSortChange('storage-used-desc')}
+              title='Storage usage % high → low'
+            />
+          </div>
+        </div>
+
         <div className={classes.containerRepoList}>
           <div className={classes.RepoList}>{renderRepoList}</div>
         </div>
       </div>
+
       {displayRepoAdd && (
         <RepoManage mode='add' repoList={data.repoList} closeHandler={closeRepoManageBoxHandler} />
       )}

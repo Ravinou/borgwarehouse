@@ -22,7 +22,7 @@ export default function QuickCommands(props: QuickCommandsProps) {
     // Asynchronously call copy to clipboard
     navigator.clipboard
       .writeText(
-        `ssh://${wizardEnv?.UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.repositoryName}`
+        `ssh://${wizardEnv?.UNIX_USER}@${FQDN}${SSH_SERVER_PORT ? SSH_SERVER_PORT : ''}/./${props.repositoryName}`
       )
       .then(() => {
         setIsCopied(true);
@@ -42,7 +42,7 @@ export default function QuickCommands(props: QuickCommandsProps) {
       ) : (
         <div className={classes.tooltip}>
           ssh://{wizardEnv?.UNIX_USER}@{FQDN}
-          {SSH_SERVER_PORT}/./
+          {SSH_SERVER_PORT ? SSH_SERVER_PORT : ''}/./
           {props.repositoryName}
         </div>
       )}

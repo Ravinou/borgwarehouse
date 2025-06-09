@@ -40,7 +40,7 @@
     "@types/node": "^22.15.30",
     "@types/nodemailer": "^6.4.17",
     "@types/nprogress": "^0.2.3",
-    "@types/react": "^19.1.5",
+    "@types/react": "^19.1.7",
     "@types/supertest": "^6.0.3",
     "eslint-config-next": "^15.3.3",
     "husky": "^9.1.7",

@@ -19,7 +19,7 @@
     "chart.js": "^4.4.9",
     "date-fns": "^4.1.0",
     "lowdb": "^7.0.1",
-    "next": "^15.3.3",
+    "next": "^15.3.4",
     "next-auth": "^4.24.10",
     "nodemailer": "^6.10.1",
     "nprogress": "^0.2.0",

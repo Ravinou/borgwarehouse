@@ -45,7 +45,7 @@
     "eslint-config-next": "^15.3.4",
     "husky": "^9.1.7",
     "node-mocks-http": "^1.17.2",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
   }

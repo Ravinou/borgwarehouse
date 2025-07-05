@@ -297,7 +297,7 @@ export default function RepoManage(props: RepoManageProps) {
                 Edit the repository{' '}
                 <span
                   style={{
-                    color: 'rgba(99, 115, 129, 0.38)',
+                    color: '#6d4aff',
                   }}
                 >
                   {targetRepo?.repositoryName}
@@ -472,8 +472,8 @@ export default function RepoManage(props: RepoManageProps) {
                 className='defaultButton'
                 disabled={!isValid || isSubmitting || isLoading}
               >
-                {props.mode == 'edit' && 'Edit'}
-                {props.mode == 'add' && 'Add'}
+                {props.mode == 'edit' && 'Save'}
+                {props.mode == 'add' && 'Add repository'}
               </button>
             </form>
             {props.mode == 'edit' ? (

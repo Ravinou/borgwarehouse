@@ -1,7 +1,7 @@
 ARG UID=1001
 ARG GID=1001
 
-FROM node:22-bookworm-slim as base
+FROM node:24-bookworm-slim as base
 
 # build stage
 FROM base AS deps

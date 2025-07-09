@@ -37,7 +37,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.0.12",
     "@types/nodemailer": "^6.4.17",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^19.1.8",

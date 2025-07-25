@@ -19,7 +19,7 @@ function WizardStep4(props: WizardStepProps) {
 
 repositories:
     # Paths of local or remote repositories to backup to.
-    - path ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}
+    - path: ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}
 
 archive_name_format: '{FQDN}-documents-{now}'
 encryption_passphrase: "YOUR PASSPHRASE"

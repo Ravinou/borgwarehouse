@@ -48,15 +48,7 @@ function WizardStep1() {
           Vorta
         </a>
         .
-        <br />
-        Vorta runs on Linux, MacOS and Windows (via Windows’ Linux Subsystem (WSL)). Find the right
-        way to install it{' '}
-        <a href='https://vorta.borgbase.com/install/' target='_blank' rel='noreferrer'>
-          just here
-        </a>
-        .
       </div>
-      <img src='/vorta-demo.gif' alt='Vorta GIF' />
     </div>
   );
 }

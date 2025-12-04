@@ -69,8 +69,8 @@ function WizardStep2(props: WizardStepProps) {
 
       <h2>Pika, Vorta...</h2>
       <div className={classes.description}>
-        To "Initialize a new repository" or "Add existing repository", copy this into the field
-        "Repository URL" of your graphical client :
+        To &quot;Initialize a new repository&quot; or &quot;Add existing repository&quot;, copy this
+        into the field &quot;Repository URL&quot; of your graphical client :
         <br />
         <div
           style={{
@@ -98,7 +98,7 @@ function WizardStep2(props: WizardStepProps) {
           <b>Check the fingerprint of server</b>
         </div>
         To check that you are talking to the right server, please make sure to validate one of the
-        following key's fingerprint when you first connect :
+        following key&apos;s fingerprint when you first connect :
         <li>
           <span className={classes.sshPublicKey}>
             ECDSA : {wizardEnv?.SSH_SERVER_FINGERPRINT_ECDSA}

@@ -58,6 +58,7 @@ export default function AppriseAlertSettings() {
       }
     };
     getAppriseAlert();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   ////Functions

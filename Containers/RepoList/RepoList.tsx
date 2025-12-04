@@ -42,8 +42,16 @@ export default function RepoList() {
   const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
   const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
   const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
-  const [sortOption, setSortOption] = useState<SortOption>('alias-asc');
-  const [searchQuery, setSearchQuery] = useState('');
+
+  const [sortOption, setSortOption] = useState<SortOption>(() => {
+    const savedSort = localStorage.getItem('repoSort');
+    return (savedSort as SortOption) || 'alias-asc';
+  });
+
+  const [searchQuery, setSearchQuery] = useState(() => {
+    const savedSearch = localStorage.getItem('repoSearch');
+    return savedSearch || '';
+  });
 
   const toastOptions: ToastOptions = {
     position: 'top-right',
@@ -55,21 +63,10 @@ export default function RepoList() {
     progress: undefined,
   };
 
-  // Load filters from localStorage
   useEffect(() => {
-    const savedSort = localStorage.getItem('repoSort');
-    const savedSearch = localStorage.getItem('repoSearch');
-    if (savedSort) setSortOption(savedSort as SortOption);
-    if (savedSearch) setSearchQuery(savedSearch);
-  }, []);
-
-  useEffect(() => {
-    if (router.pathname === '/manage-repo/add') {
-      setDisplayRepoAdd(!displayRepoAdd);
-    }
-    if (router.pathname.startsWith('/manage-repo/edit')) {
-      setDisplayRepoEdit(!displayRepoEdit);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDisplayRepoAdd(router.pathname === '/manage-repo/add');
+    setDisplayRepoEdit(router.pathname.startsWith('/manage-repo/edit'));
 
     const fetchWizardEnv = async () => {
       try {
@@ -81,7 +78,7 @@ export default function RepoList() {
       }
     };
     fetchWizardEnv();
-  }, []);
+  }, [router.pathname]);
 
   const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
   const { data, error } = useSWR('/api/v1/repositories', fetcher);

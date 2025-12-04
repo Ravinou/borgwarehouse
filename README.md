@@ -80,6 +80,7 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 <a href="https://github.com/dhenry123"><img src="https://avatars.githubusercontent.com/dhenry123" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/fphammerle"><img src="https://avatars.githubusercontent.com/fphammerle" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/MacH59-cos"><img src="https://avatars.githubusercontent.com/MacH59-cos" style="width:50px; border-radius:50%;"/></a>
+<a href="https://github.com/shrippen"><img src="https://avatars.githubusercontent.com/shrippen" style="width:50px; border-radius:50%;"/></a>
 
 #### Past sponsors
 

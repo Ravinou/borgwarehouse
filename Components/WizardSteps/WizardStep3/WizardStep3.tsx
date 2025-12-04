@@ -102,7 +102,7 @@ function WizardStep3(props: WizardStepProps) {
           }}
         >
           <div className={classes.code}>
-            borg export-tar --tar-filter="gzip -9" ssh://
+            borg export-tar --tar-filter=&quot;gzip -9&quot; ssh://
             {UNIX_USER}@{FQDN}
             {SSH_SERVER_PORT}/./
             {props.selectedRepo?.repositoryName}

@@ -41,7 +41,8 @@ export default function UserSettings({ data }: UserSettingsProps) {
     if (tab === 'Integrations' && wizardEnv?.DISABLE_INTEGRATIONS === 'true') {
       setTab('General');
     }
-  }, [wizardEnv, tab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wizardEnv?.DISABLE_INTEGRATIONS]);
 
   return (
     <div className={classes.containerSettings}>

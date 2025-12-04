@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import classes from './Repo.module.css';
 import {
   IconSettings,
@@ -21,6 +21,8 @@ type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
 
 export default function Repo(props: RepoProps) {
   const isMobile = useMedia({ maxWidth: 1000 });
+
+  const currentDate = useMemo(() => new Date(), []);
 
   //Load displayDetails from LocalStorage
   const displayDetailsFromLS = (): boolean => {
@@ -110,7 +112,7 @@ export default function Repo(props: RepoProps) {
               >
                 {props.lastSave === 0
                   ? '-'
-                  : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
+                  : formatDistanceStrict(fromUnixTime(props.lastSave), currentDate, {
                       addSuffix: true,
                     })}
               </span>
@@ -177,7 +179,7 @@ export default function Repo(props: RepoProps) {
                       >
                         {props.lastSave === 0
                           ? '-'
-                          : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
+                          : formatDistanceStrict(fromUnixTime(props.lastSave), currentDate, {
                               addSuffix: true,
                             })}
                       </div>
@@ -223,7 +225,7 @@ export default function Repo(props: RepoProps) {
                   >
                     {props.lastSave === 0
                       ? '-'
-                      : formatDistanceStrict(fromUnixTime(props.lastSave), Date.now(), {
+                      : formatDistanceStrict(fromUnixTime(props.lastSave), currentDate, {
                           addSuffix: true,
                         })}
                   </span>

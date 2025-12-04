@@ -47,6 +47,7 @@ export default function AppriseURLs() {
       }
     };
     getAppriseServices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //Form submit handler to modify Apprise services

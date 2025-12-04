@@ -84,6 +84,7 @@ export default function Integrations() {
   ////LifeCycle
   useEffect(() => {
     fetchTokenList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Permissions handler

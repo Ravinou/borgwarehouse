@@ -1,4 +1,4 @@
-export default {
+const config = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
@@ -26,3 +26,5 @@ export default {
   },
   ignores: [(message) => message.includes('WIP'), (message) => message.includes('wip')],
 };
+
+export default config;

@@ -11,7 +11,7 @@ function WizardStep4(props: WizardStepProps) {
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
   const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedRepo?.lanCommand);
 
-  const configBorgmatic = `location:
+  const configBorgmatic = `
     # List of source directories to backup.
     source_directories:
         - /your-repo-to-backup
@@ -19,24 +19,21 @@ function WizardStep4(props: WizardStepProps) {
 
 repositories:
     # Paths of local or remote repositories to backup to.
-    - ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}
+    - path: ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}
 
-storage:
-    archive_name_format: '{FQDN}-documents-{now}'
-    encryption_passphrase: "YOUR PASSPHRASE"
+archive_name_format: '{FQDN}-documents-{now}'
+encryption_passphrase: "YOUR PASSPHRASE"
 
-retention:
-    # Retention policy for how many backups to keep.
-    keep_daily: 7
-    keep_weekly: 4
-    keep_monthly: 6
+# Retention policy for how many backups to keep.
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 6
 
-consistency:
-    # List of checks to run to validate your backups.
-    checks:
-        - name: repository
-        - name: archives
-          frequency: 2 weeks
+# List of checks to run to validate your backups.
+checks:
+  - name: repository
+  - name: archives
+    frequency: 2 weeks
 
 #hooks:
     # Custom preparation scripts to run.

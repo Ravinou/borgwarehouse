@@ -14,14 +14,11 @@ print_red() {
 }
 
 init_ssh_server() {
-  if [ -z "$(ls -A /etc/ssh)" ]; then
-    print_green "/etc/ssh is empty, generating SSH host keys..."
-    ssh-keygen -A
-    cp /home/borgwarehouse/moduli /etc/ssh/
-  fi
-  if [ ! -f "/etc/ssh/sshd_config" ]; then
-    print_green "sshd_config not found in your volume, copying the default one..."
-    cp /home/borgwarehouse/app/sshd_config /etc/ssh/
+  if [ -z "$(ls -A $SSH_DIR)" ]; then
+    print_green "$SSH_DIR is empty, generating SSH host keys..."
+    dropbearkey -t rsa -f $SSH_DIR/ssh_host_rsa_key
+    dropbearkey -t ed25519 -f $SSH_DIR/ssh_host_ed25519_key
+    dropbearkey -t ecdsa -f  $SSH_DIR/ssh_host_ecdsa_key
   fi
 }
 
@@ -53,9 +50,9 @@ check_repos_directory() {
 
 get_SSH_fingerprints() {
   print_green "Getting SSH fingerprints..."
-  RSA_FINGERPRINT=$(ssh-keygen -lf /etc/ssh/ssh_host_rsa_key | awk '{print $2}')
-  ED25519_FINGERPRINT=$(ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key | awk '{print $2}')
-  ECDSA_FINGERPRINT=$(ssh-keygen -lf /etc/ssh/ssh_host_ecdsa_key | awk '{print $2}')
+  RSA_FINGERPRINT=$(dropbearkey -y -f $SSH_DIR/ssh_host_rsa_key | awk 'END{print $2}')
+  ED25519_FINGERPRINT=$(dropbearkey -y -f $SSH_DIR/ssh_host_ed25519_key | awk 'END{print $2}')
+  ECDSA_FINGERPRINT=$(dropbearkey -y -f $SSH_DIR/ssh_host_ecdsa_key | awk 'END{print $2}')
   export SSH_SERVER_FINGERPRINT_RSA="$RSA_FINGERPRINT"
   export SSH_SERVER_FINGERPRINT_ED25519="$ED25519_FINGERPRINT"
   export SSH_SERVER_FINGERPRINT_ECDSA="$ECDSA_FINGERPRINT"
@@ -76,7 +73,6 @@ check_env() {
 }
 
 check_env
-init_ssh_server
 check_ssh_directory
 create_authorized_keys_file
 check_repos_directory

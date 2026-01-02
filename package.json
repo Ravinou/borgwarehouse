@@ -34,7 +34,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.2.0",
+    "@commitlint/cli": "^20.3.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^24.10.2",

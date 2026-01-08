@@ -50,6 +50,10 @@ typings/
 # Optional npm cache directory
 .npm
 
+# pnpm
+.pnpm-store/
+pnpm-debug.log*
+
 # Optional eslint cache
 .eslintcache
 

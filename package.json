@@ -42,7 +42,7 @@
     "@types/react": "^19.2.7",
     "@types/supertest": "^6.0.3",
     "eslint": "^9.39.2",
-    "eslint-config-next": "^16.0.10",
+    "eslint-config-next": "^16.1.1",
     "husky": "^9.1.7",
     "node-mocks-http": "^1.17.2",
     "prettier": "^3.7.4",

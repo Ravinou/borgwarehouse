@@ -81,9 +81,11 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 <a href="https://github.com/fphammerle"><img src="https://avatars.githubusercontent.com/fphammerle" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/MacH59-cos"><img src="https://avatars.githubusercontent.com/MacH59-cos" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/shrippen"><img src="https://avatars.githubusercontent.com/shrippen" style="width:50px; border-radius:50%;"/></a>
+<a href="https://github.com/daschmidt1994"><img src="https://avatars.githubusercontent.com/daschmidt1994" style="width:50px; border-radius:50%;"/></a>
 
 #### Past sponsors
 
+<a href="https://github.com/Drallibor"><img src="https://avatars.githubusercontent.com/Drallibor" style="width:25px; border-radius:50%;"/></a>
 <a href="https://github.com/shad-lp"><img src="https://avatars.githubusercontent.com/shad-lp" style="width:25px; border-radius:50%;"/></a>
 <a href="https://github.com/Magneticdud"><img src="https://avatars.githubusercontent.com/Magneticdud" style="width:25px; border-radius:50%;"/></a>
 

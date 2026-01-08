@@ -9,6 +9,10 @@ on:
     branches:
       - main
       - develop
+
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Run Vitest

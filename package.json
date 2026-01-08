@@ -36,7 +36,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.3.0",
     "@commitlint/config-conventional": "^20.2.0",
-    "@types/bcryptjs": "^2.4.6",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^25.0.3",
     "@types/nodemailer": "^7.0.4",
     "@types/nprogress": "^0.2.3",

@@ -34,7 +34,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.3.0",
+    "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.2.0",
     "@types/node": "^25.0.3",
     "@types/nodemailer": "^7.0.4",

@@ -6,10 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "npx eslint",
+    "lint": "pnpm exec eslint",
     "test": "vitest",
-    "setup": "npm install && npm run setup:hooks",
-    "setup:hooks": "npx husky install",
+    "setup": "pnpm install && pnpm run setup:hooks",
+    "setup:hooks": "pnpm exec husky install",
     "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
@@ -36,7 +36,6 @@
   "devDependencies": {
     "@commitlint/cli": "^20.3.0",
     "@commitlint/config-conventional": "^20.2.0",
-    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^25.0.3",
     "@types/nodemailer": "^7.0.4",
     "@types/nprogress": "^0.2.3",

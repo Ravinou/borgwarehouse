@@ -57,7 +57,7 @@ importers:
         specifier: ^11.0.5
         version: 11.0.5(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       swr:
-        specifier: ^2.3.7
+        specifier: ^2.3.8
         version: 2.3.8(react@19.2.3)
       use-media:
         specifier: ^1.5.0

@@ -29,7 +29,7 @@
     "react-hook-form": "^7.68.0",
     "react-select": "^5.10.2",
     "react-toastify": "^11.0.5",
-    "swr": "^2.3.7",
+    "swr": "^2.3.8",
     "use-media": "^1.5.0",
     "uuid": "^13.0.0"
   },

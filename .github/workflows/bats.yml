@@ -1,5 +1,8 @@
 name: Bats
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:

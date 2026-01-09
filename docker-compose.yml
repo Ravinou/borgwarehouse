@@ -20,8 +20,6 @@ services:
       - ${SSH_PATH:?SSH_PATH variable missing}:/home/borgwarehouse/.ssh
       - ${SSH_HOST:?SSH_HOST variable missing}:/etc/ssh
       - ${BORG_REPOSITORY_PATH:?BORG_REPOSITORY_PATH variable missing}:/home/borgwarehouse/repos
-      - ${TMP_PATH:?TMP_PATH variable missing}:/home/borgwarehouse/tmp
-      - ${LOGS_PATH:?LOGS_PATH variable missing}:/home/borgwarehouse/logs
   # Apprise is used to send notifications, it's optional. http://apprise:8000 is the URL to use in BorgWarehouse.
   apprise:
     container_name: apprise

@@ -41,7 +41,7 @@ ENV HOSTNAME=
 
 RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \
-    supervisor curl jq jc borgbackup/bookworm-backports openssh-server rsyslog && \
+    supervisor curl jq jc borgbackup/bookworm-backports openssh-server && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse
@@ -56,7 +56,6 @@ COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/standalone ./
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/public ./public
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/static ./.next/static
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.conf ./
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/rsyslog.conf /etc/rsyslog.conf
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/sshd_config ./
 
 USER borgwarehouse

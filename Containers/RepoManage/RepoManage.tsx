@@ -150,8 +150,12 @@ export default function RepoManage(props: RepoManageProps) {
   const formSubmitHandler = async (dataForm: DataForm) => {
     setIsLoading(true);
     start();
+
+    // Clean SSH key by removing leading/trailing whitespace and line breaks
+    const cleanedSSHKey = dataForm.sshkey.trim();
+
     //Verify that the SSH key is unique
-    if (!(await isSSHKeyUnique(dataForm.sshkey))) {
+    if (!(await isSSHKeyUnique(cleanedSSHKey))) {
       stop();
       setIsLoading(false);
       return;
@@ -161,7 +165,7 @@ export default function RepoManage(props: RepoManageProps) {
       const newRepo = {
         alias: dataForm.alias,
         storageSize: parseInt(dataForm.storageSize),
-        sshPublicKey: dataForm.sshkey,
+        sshPublicKey: cleanedSSHKey,
         comment: dataForm.comment,
         alert: dataForm.alert.value,
         lanCommand: dataForm.lanCommand,
@@ -200,7 +204,7 @@ export default function RepoManage(props: RepoManageProps) {
       const dataEdited = {
         alias: dataForm.alias,
         storageSize: parseInt(dataForm.storageSize),
-        sshPublicKey: dataForm.sshkey,
+        sshPublicKey: cleanedSSHKey,
         comment: dataForm.comment,
         alert: dataForm.alert.value,
         lanCommand: dataForm.lanCommand,
@@ -333,11 +337,14 @@ export default function RepoManage(props: RepoManageProps) {
                 defaultValue={props.mode == 'edit' ? targetRepo?.sshPublicKey : undefined}
                 {...register('sshkey', {
                   required: 'SSH public key is required.',
-                  pattern: {
-                    value:
-                      /^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?$/,
-                    message:
-                      'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)',
+                  validate: (value) => {
+                    const trimmedValue = value.trim();
+                    const pattern =
+                      /^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?$/;
+                    return (
+                      pattern.test(trimmedValue) ||
+                      'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)'
+                    );
                   },
                 })}
               />

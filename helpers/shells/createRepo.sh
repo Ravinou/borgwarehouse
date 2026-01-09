@@ -77,7 +77,7 @@ else
 fi
 
 ## Add ssh public key in authorized_keys with borg restriction for only 1 repository and storage quota
-restricted_authkeys="command=\"cd ${pool};borg serve${appendOnlyMode} --restrict-to-path ${pool}/${repositoryName} --storage-quota $2G\",restrict $1"
+restricted_authkeys="command=\"cd ${pool};borg serve${appendOnlyMode} --restrict-to-repository ${pool}/${repositoryName} --storage-quota $2G\",restrict $1"
 echo "$restricted_authkeys" | tee -a "${authorized_keys}" >/dev/null
 
 ## Return the repositoryName

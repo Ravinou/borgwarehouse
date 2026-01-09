@@ -81,24 +81,24 @@ teardown() {
 
 @test "Test createRepo.sh key ED25519 insertion in authorized_keys" {
   run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false
-  expected_line="command=\"cd ${home}/repos;borg serve --restrict-to-path ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519"
+  expected_line="command=\"cd ${home}/repos;borg serve --restrict-to-repository ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519"
   grep -qF "$expected_line" /tmp/borgwarehouse/.ssh/authorized_keys
 }
 
 @test "Test createRepo.sh key ED25519-SK insertion in authorized_keys" {
   run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519_SK" 10 false
-  expected_line="command=\"cd ${home}/repos;borg serve --restrict-to-path ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519_SK"
+  expected_line="command=\"cd ${home}/repos;borg serve --restrict-to-repository ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519_SK"
   grep -qF "$expected_line" /tmp/borgwarehouse/.ssh/authorized_keys
 }
 
 @test "Test createRepo.sh key RSA insertion in authorized_keys" {
   run bash /test/scripts/createRepo.sh "$SSH_KEY_RSA" 10 false
-  expected_line="command=\"cd ${home}/repos;borg serve --restrict-to-path ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_RSA"
+  expected_line="command=\"cd ${home}/repos;borg serve --restrict-to-repository ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_RSA"
   grep -qF "$expected_line" /tmp/borgwarehouse/.ssh/authorized_keys
 }
 
 @test "Test createRepo.sh key ED25519 insertion in authorized_keys with append only mode" {
   run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 true
-  expected_line="command=\"cd ${home}/repos;borg serve --append-only --restrict-to-path ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519"
+  expected_line="command=\"cd ${home}/repos;borg serve --append-only --restrict-to-repository ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519"
   grep -qF "$expected_line" /tmp/borgwarehouse/.ssh/authorized_keys
 }

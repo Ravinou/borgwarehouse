@@ -119,3 +119,7 @@ docker-compose.yml
 
 # Commit tests docker-compose
 !tests/bats/docker-compose.yml
+
+# Docker dev environment
+tests/docker/dev/.env
+tests/docker/dev/volumes/

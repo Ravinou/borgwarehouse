@@ -10,7 +10,9 @@
     "test": "vitest",
     "setup": "pnpm install && pnpm run setup:hooks",
     "setup:hooks": "pnpm exec husky install",
-    "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+    "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "docker-dev:start": "bash tests/docker/dev/docker-dev-start.sh",
+    "docker-dev:clean": "bash tests/docker/dev/docker-dev-clean.sh"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.36.1",

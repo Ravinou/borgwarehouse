@@ -1,0 +1,10 @@
+services:
+  borgwarehouse:
+    # Override for local development - always build locally
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - UID=${UID}
+        - GID=${GID}
+    image: borgwarehouse-dev:local

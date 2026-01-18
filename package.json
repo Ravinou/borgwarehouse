@@ -39,7 +39,7 @@
     "@types/node": "^25.0.6",
     "@types/nodemailer": "^7.0.4",
     "@types/nprogress": "^0.2.3",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.8",
     "@types/supertest": "^6.0.3",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",

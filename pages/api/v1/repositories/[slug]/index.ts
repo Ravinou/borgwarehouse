@@ -94,6 +94,15 @@ export default async function handler(
             'The SSH key is already used in another repository. Please use another key or delete the key from the other repository.',
         });
       }
+      if (repo.appendOnlyMode && appendOnlyMode === false) {
+	  if (process.env.DISABLE_REVERT_APPEND_ONLY === "true") {
+	    res.status(403).json({
+	    status: 403,
+	    message: 'Reverting Append-Only mode is disabled on this server',
+	    });
+	  return;
+	}
+      }
 
       const updatedRepo: Repository = {
         ...repo,

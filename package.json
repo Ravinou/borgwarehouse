@@ -47,6 +47,6 @@
     "node-mocks-http": "^1.17.2",
     "prettier": "^3.8.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.17"
+    "vitest": "^4.0.18"
   }
 }

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Select, { SingleValue } from 'react-select';
 import classes from './SetupWizard.module.css';
 import { Optional, SelectedRepoWizard, Repository, WizardEnvType } from '~/types';
@@ -36,8 +36,21 @@ function SetupWizard(props: SetupWizardProps) {
             'Content-type': 'application/json',
           },
         });
-        setRepoList((await response.json()).repoList);
+        const data = await response.json();
+        const repos = data.repoList;
+        setRepoList(repos);
         setRepoListIsLoading(false);
+
+        // Auto-select first repository if available
+        if (repos && repos.length > 0) {
+          setSelectedItem({
+            label: `${repos[0].alias} - ${repos[0].repositoryName}`,
+            value: `${repos[0].alias} - ${repos[0].repositoryName}`,
+            id: repos[0].id.toString(),
+            repositoryName: repos[0].repositoryName,
+            lanCommand: repos[0].lanCommand ? repos[0].lanCommand : false,
+          });
+        }
       } catch (error) {
         console.log('Fetching datas error');
       }
@@ -70,13 +83,17 @@ function SetupWizard(props: SetupWizardProps) {
   }, [props.step]);
 
   //Options for react-select
-  const options: Optional<Array<SelectedRepoWizard>> = repoList?.map((repo) => ({
-    label: `${repo.alias} - ${repo.repositoryName}`,
-    value: `${repo.alias} - ${repo.repositoryName}`,
-    id: repo.id.toString(),
-    repositoryName: repo.repositoryName,
-    lanCommand: repo.lanCommand ? repo.lanCommand : false,
-  }));
+  const options: Optional<Array<SelectedRepoWizard>> = useMemo(
+    () =>
+      repoList?.map((repo) => ({
+        label: `${repo.alias} - ${repo.repositoryName}`,
+        value: `${repo.alias} - ${repo.repositoryName}`,
+        id: repo.id.toString(),
+        repositoryName: repo.repositoryName,
+        lanCommand: repo.lanCommand ? repo.lanCommand : false,
+      })),
+    [repoList]
+  );
 
   //Step button (free selection of user)
   const changeStepHandler = (x: number) => router.push('/setup-wizard/' + x.toString());
@@ -131,6 +148,7 @@ function SetupWizard(props: SetupWizardProps) {
           isDisabled={repoListIsLoading}
           options={options}
           isSearchable
+          value={selectedItem}
           placeholder='Select your repository...'
           theme={(theme) => ({
             ...theme,

@@ -10,6 +10,15 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
     },
     globals: true,
+    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.{idea,git,cache,output,temp}/**',
+      '**/.next/**',
+      '**/build/**',
+      '**/repos/**',
+    ],
   },
   resolve: {
     alias: {

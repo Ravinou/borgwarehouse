@@ -54,6 +54,10 @@ typings/
 .pnpm-store/
 pnpm-debug.log*
 
+# Lock files (pnpm-lock.yaml is used)
+package-lock.json
+yarn.lock
+
 # Optional eslint cache
 .eslintcache
 

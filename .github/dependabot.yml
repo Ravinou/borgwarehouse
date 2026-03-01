@@ -1,16 +1,18 @@
 version: 2
 updates:
-  - package-ecosystem: "docker"
-    directory: "/"
+  - package-ecosystem: 'docker'
+    directory: '/'
     schedule:
-      interval: "daily"
-  - package-ecosystem: "npm"
-    directory: "/"
+      interval: 'daily'
+  # Note: Dependabot uses "npm" ecosystem but automatically detects pnpm-lock.yaml
+  # Make sure package-lock.json is gitignored to prevent confusion
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "daily"
+      interval: 'daily'
   # Maintain dependencies for GitHub Actions
   # src: https://github.com/marketplace/actions/build-and-push-docker-images#keep-up-to-date-with-github-dependabot
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "daily"
+      interval: 'daily'

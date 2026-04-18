@@ -46,7 +46,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse
 
-RUN cp /etc/ssh/moduli /home/borgwarehouse/
+RUN rm -fr /etc/ssh/*
+# Unconfigure SSH so that we regenerate configuration at first launch
+# of the container.
 
 WORKDIR /home/borgwarehouse/app
 

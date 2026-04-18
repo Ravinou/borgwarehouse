@@ -83,4 +83,5 @@ check_repos_directory
 get_SSH_fingerprints
 
 print_green "Successful initialization. BorgWarehouse is ready !"
-exec supervisord -c /home/borgwarehouse/app/supervisord.conf 
+rm -f /home/borgwarehouse/tmp/supervisord.pid
+exec supervisord -c /home/borgwarehouse/app/supervisord.conf

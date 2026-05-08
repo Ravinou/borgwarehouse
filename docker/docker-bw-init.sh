@@ -2,16 +2,54 @@
 
 set -e
 
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
 SSH_DIR="/home/borgwarehouse/.ssh"
 AUTHORIZED_KEYS_FILE="$SSH_DIR/authorized_keys"
 REPOS_DIR="/home/borgwarehouse/repos"
+CONFIG_DIR="/home/borgwarehouse/app/config"
 
-print_green() {
-  echo -e "\e[92m$1\e[0m";
+print_green() { echo -e "\e[92m$1\e[0m"; }
+print_red()   { echo -e "\e[91m$1\e[0m"; }
+
+# 1. Remap borgwarehouse to PUID:PGID
+
+remap_user() {
+  if [ "$PUID" -eq 0 ] || [ "$PGID" -eq 0 ]; then
+    print_red "[ERROR] PUID and PGID cannot be 0. Running the app as root is not allowed."
+    exit 1
+  fi
+
+  print_green "Mapping borgwarehouse to UID=$PUID GID=$PGID"
+  groupmod -o -g "$PGID" borgwarehouse
+  usermod -o -u "$PUID" -p '*' borgwarehouse
+
+  # Chown the application directory only (never the user's volume mounts)
+  chown -R borgwarehouse:borgwarehouse /home/borgwarehouse/app
+  chown borgwarehouse:borgwarehouse /home/borgwarehouse /home/borgwarehouse/moduli
 }
-print_red() { 
-  echo -e "\e[91m$1\e[0m";
+
+# 2. Check volume is mounted and writable
+
+check_volume() {
+  local dir=$1
+  local name=$2
+
+  if [ ! -d "$dir" ]; then
+    print_red "[ERROR] Volume '$name' is not mounted. Expected path: $dir"
+    print_red "        Check the volumes section in your docker-compose.yml."
+    exit 1
+  fi
+
+  if ! gosu borgwarehouse test -w "$dir" 2>/dev/null; then
+    print_red "[ERROR] Volume '$name' ($dir) is not writable by UID=$PUID GID=$PGID."
+    print_red "        Fix on the host: chown -R $PUID:$PGID <your-host-path-for-$name>"
+    exit 1
+  fi
 }
+
+# 3. Generate SSH host keys if needed
 
 init_ssh_server() {
   if [ -z "$(ls -A /etc/ssh)" ]; then
@@ -25,31 +63,19 @@ init_ssh_server() {
   fi
 }
 
-check_ssh_directory() {
-  if [ ! -d "$SSH_DIR" ]; then
-    print_red "The .ssh directory does not exist, you need to mount it as docker volume."
-    exit 1
-  else 
-    chmod 700 "$SSH_DIR"
-  fi
-}
+# 4. Setup authorized_keys
 
-create_authorized_keys_file() {
+setup_authorized_keys() {
   if [ ! -f "$AUTHORIZED_KEYS_FILE" ]; then
-    print_green "The authorized_keys file does not exist, creating..."
+    print_green "Creating authorized_keys file..."
     touch "$AUTHORIZED_KEYS_FILE"
   fi
-    chmod 600 "$AUTHORIZED_KEYS_FILE"
+  chown borgwarehouse:borgwarehouse "$SSH_DIR" "$AUTHORIZED_KEYS_FILE"
+  chmod 700 "$SSH_DIR"
+  chmod 600 "$AUTHORIZED_KEYS_FILE"
 }
 
-check_repos_directory() {
-  if [ ! -d "$REPOS_DIR" ]; then
-    print_red "The repos directory does not exist, you need to mount it as docker volume."
-    exit 2
-  else 
-    chmod 700 "$REPOS_DIR"
-  fi
-}
+# 5. Read SSH fingerprints
 
 get_SSH_fingerprints() {
   print_green "Getting SSH fingerprints..."
@@ -60,6 +86,8 @@ get_SSH_fingerprints() {
   export SSH_SERVER_FINGERPRINT_ED25519="$ED25519_FINGERPRINT"
   export SSH_SERVER_FINGERPRINT_ECDSA="$ECDSA_FINGERPRINT"
 }
+
+# 6. Check secrets
 
 check_env() {
   if [ -z "$CRONJOB_KEY" ]; then
@@ -75,11 +103,16 @@ check_env() {
   fi
 }
 
+# Run
+
+remap_user
 check_env
+mkdir -p /run/sshd
 init_ssh_server
-check_ssh_directory
-create_authorized_keys_file
-check_repos_directory
+check_volume "$SSH_DIR"    ".ssh"
+check_volume "$REPOS_DIR"  "repos"
+check_volume "$CONFIG_DIR" "config"
+setup_authorized_keys
 get_SSH_fingerprints
 
 print_green "Successful initialization. BorgWarehouse is ready !"

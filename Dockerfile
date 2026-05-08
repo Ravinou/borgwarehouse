@@ -1,7 +1,4 @@
-ARG UID=1001
-ARG GID=1001
-
-FROM node:22-bookworm-slim as base
+FROM node:22-bookworm-slim AS base
 
 # build stage
 FROM base AS deps
@@ -33,18 +30,18 @@ RUN pnpm run build
 # run stage
 FROM base AS runner
 
-ARG UID
-ARG GID
-
-ENV NODE_ENV production
+ENV NODE_ENV=production
 ENV HOSTNAME=
 
 RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \
-    supervisor curl jq jc borgbackup/bookworm-backports openssh-server && \
+    supervisor curl jq jc borgbackup/bookworm-backports openssh-server gosu && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -g ${GID} borgwarehouse && useradd -m -u ${UID} -g ${GID} borgwarehouse
+# Remove the default 'node' user (UID 1000) to avoid conflicts with PUID=1000
+RUN userdel -r node 2>/dev/null || true
+
+RUN groupadd -g 1001 borgwarehouse && useradd -m -u 1001 -g 1001 borgwarehouse
 
 RUN cp /etc/ssh/moduli /home/borgwarehouse/
 
@@ -58,7 +55,8 @@ COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/static ./.nex
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.conf ./
 COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/sshd_config ./
 
-USER borgwarehouse
+# Container starts as root to handle PUID/PGID remapping at runtime.
+# The entrypoint drops to borgwarehouse before starting the app.
 
 EXPOSE 3000 22
 

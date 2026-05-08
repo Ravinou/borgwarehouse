@@ -1,5 +1,5 @@
 Port 22
-PidFile /home/borgwarehouse/tmp/sshd.pid
+PidFile /run/sshd.pid
 AllowUsers borgwarehouse
 LogLevel INFO
 SyslogFacility AUTH

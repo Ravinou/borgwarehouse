@@ -22,12 +22,14 @@ remap_user() {
   fi
 
   print_green "Mapping borgwarehouse to UID=$PUID GID=$PGID"
-  groupmod -o -g "$PGID" borgwarehouse
-  usermod -o -u "$PUID" -p '*' borgwarehouse
+  # Edit passwd/group directly to avoid usermod scanning and chowning mounted volumes
+  sed -i "s/^borgwarehouse:x:[0-9]*:[0-9]*:/borgwarehouse:x:$PUID:$PGID:/" /etc/passwd
+  sed -i "s/^borgwarehouse:x:[0-9]*:/borgwarehouse:x:$PGID:/" /etc/group
 
-  # Chown the application directory only (never the user's volume mounts)
-  chown -R borgwarehouse:borgwarehouse /home/borgwarehouse/app
-  chown borgwarehouse:borgwarehouse /home/borgwarehouse /home/borgwarehouse/moduli
+  # App files stay root:root (set in Dockerfile) so the running app cannot
+  # modify its own code. Only chown the home dir itself; volume mounts
+  # (.ssh, repos, app/config) are checked separately by check_volume.
+  chown borgwarehouse:borgwarehouse /home/borgwarehouse
 }
 
 # 2. Check volume is mounted and writable

@@ -41,19 +41,24 @@ RUN apt-get update && apt-get install -y \
 # Remove the default 'node' user (UID 1000) to avoid conflicts with PUID=1000
 RUN userdel -r node 2>/dev/null || true
 
-RUN groupadd -g 1001 borgwarehouse && useradd -m -u 1001 -g 1001 borgwarehouse
+RUN groupadd -g 1001 borgwarehouse && useradd -m -u 1001 -g 1001 -p '*' borgwarehouse
 
 RUN cp /etc/ssh/moduli /home/borgwarehouse/
 
 WORKDIR /home/borgwarehouse/app
 
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/docker-bw-init.sh /app/LICENSE ./
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/helpers/shells ./helpers/shells
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/standalone ./
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/public ./public
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/.next/static ./.next/static
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/supervisord.conf ./
-COPY --from=builder --chown=borgwarehouse:borgwarehouse /app/docker/sshd_config ./
+# App files stay root:root (world-readable). Node runs as borgwarehouse and
+# only needs read/execute access. Keeping the code root-owned makes it
+# immutable from the running process: a compromised app cannot rewrite its
+# own binaries to persist. Writable paths (volumes + $HOME) are chowned at
+# runtime by the entrypoint.
+COPY --from=builder /app/docker/docker-bw-init.sh /app/LICENSE ./
+COPY --from=builder /app/helpers/shells ./helpers/shells
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/docker/supervisord.conf ./
+COPY --from=builder /app/docker/sshd_config ./
 
 # Container starts as root to handle PUID/PGID remapping at runtime.
 # The entrypoint drops to borgwarehouse before starting the app.

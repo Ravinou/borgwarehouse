@@ -57,7 +57,11 @@ The whole system part is automatically managed by BorgWarehouse and **you don't 
 
 ## 📖 Get started
 
-You can find the documentation here : [borgwarehouse.com](https://borgwarehouse.com/docs/prologue/introduction/)
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ravinou/borgwarehouse/main/docker/install.sh | bash
+```
+
+Full documentation : [borgwarehouse.com](https://borgwarehouse.com/docs/prologue/introduction/)
 
 ## 🔑 Environment Variables
 

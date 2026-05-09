@@ -36,13 +36,9 @@ export default function UserSettings({ data }: UserSettingsProps) {
     fetchWizardEnv();
   }, []);
 
-  // If Integrations tab is selected but disabled, fallback to General
-  useEffect(() => {
-    if (tab === 'Integrations' && wizardEnv?.DISABLE_INTEGRATIONS === 'true') {
-      setTab('General');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wizardEnv?.DISABLE_INTEGRATIONS]);
+  // Derive active tab: fallback to General if Integrations is disabled
+  const activeTab =
+    tab === 'Integrations' && wizardEnv?.DISABLE_INTEGRATIONS === 'true' ? 'General' : tab;
 
   return (
     <div className={classes.containerSettings}>
@@ -52,14 +48,14 @@ export default function UserSettings({ data }: UserSettingsProps) {
         <>
           <div className={classes.tabList}>
             <button
-              className={tab === 'General' ? classes.tabListButtonActive : classes.tabListButton}
+              className={activeTab === 'General' ? classes.tabListButtonActive : classes.tabListButton}
               onClick={() => setTab('General')}
             >
               General
             </button>
             <button
               className={
-                tab === 'Notifications' ? classes.tabListButtonActive : classes.tabListButton
+                activeTab === 'Notifications' ? classes.tabListButtonActive : classes.tabListButton
               }
               onClick={() => setTab('Notifications')}
             >
@@ -68,7 +64,7 @@ export default function UserSettings({ data }: UserSettingsProps) {
             {wizardEnv.DISABLE_INTEGRATIONS !== 'true' && (
               <button
                 className={
-                  tab === 'Integrations' ? classes.tabListButtonActive : classes.tabListButton
+                  activeTab === 'Integrations' ? classes.tabListButtonActive : classes.tabListButton
                 }
                 onClick={() => setTab('Integrations')}
               >
@@ -77,7 +73,7 @@ export default function UserSettings({ data }: UserSettingsProps) {
             )}
           </div>
 
-          {tab === 'General' && (
+          {activeTab === 'General' && (
             <>
               <PasswordSettings />
               <EmailSettings email={data.user?.email ?? undefined} />
@@ -85,14 +81,14 @@ export default function UserSettings({ data }: UserSettingsProps) {
             </>
           )}
 
-          {tab === 'Notifications' && (
+          {activeTab === 'Notifications' && (
             <>
               <EmailAlertSettings />
               <AppriseAlertSettings />
             </>
           )}
 
-          {tab === 'Integrations' && wizardEnv.DISABLE_INTEGRATIONS !== 'true' && <Integrations />}
+          {activeTab === 'Integrations' && wizardEnv.DISABLE_INTEGRATIONS !== 'true' && <Integrations />}
         </>
       )}
     </div>

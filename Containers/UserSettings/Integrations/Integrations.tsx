@@ -83,7 +83,15 @@ export default function Integrations() {
 
   ////LifeCycle
   useEffect(() => {
-    fetchTokenList();
+    start();
+    fetch('/api/v1/integration/token-manager', {
+      method: 'GET',
+      headers: { 'Content-type': 'application/json' },
+    })
+      .then((res) => res.json() as Promise<Array<IntegrationTokenType>>)
+      .then((data) => setTokenList(data))
+      .catch(() => handleError('Fetching token list failed.'))
+      .finally(() => stop());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

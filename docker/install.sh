@@ -39,7 +39,7 @@ echo ""
 if [ "$(id -u)" -eq 0 ]; then
   print_yellow "You are running this script as root. BorgWarehouse must not run as root."
   echo ""
-  read -rp "Username that will run BorgWarehouse: " BW_USER
+  read -rp "Username that will run BorgWarehouse: " BW_USER </dev/tty
 
   if ! id "$BW_USER" &>/dev/null; then
     print_red "[ERROR] User '$BW_USER' does not exist."
@@ -57,7 +57,7 @@ fi
 
 # Install directory
 echo ""
-read -rp "Install directory [$SUGGESTED_DIR]: " INSTALL_PATH
+read -rp "Install directory [$SUGGESTED_DIR]: " INSTALL_PATH </dev/tty
 INSTALL_PATH="${INSTALL_PATH:-$SUGGESTED_DIR}"
 INSTALL_PATH="${INSTALL_PATH/#\~/$HOME}"
 
@@ -66,22 +66,22 @@ echo ""
 print_bold "-- Configuration --"
 echo ""
 
-read -rp "Your domain or IP (FQDN, e.g. borgwarehouse.example.com): " FQDN
+read -rp "Your domain or IP (FQDN, e.g. borgwarehouse.example.com): " FQDN </dev/tty
 while [ -z "$FQDN" ]; do
   print_red "FQDN is required."
-  read -rp "Your domain or IP (FQDN): " FQDN
+  read -rp "Your domain or IP (FQDN): " FQDN </dev/tty
 done
 
-read -rp "Full URL of your BorgWarehouse instance (e.g. https://borgwarehouse.example.com): " NEXTAUTH_URL
+read -rp "Full URL of your BorgWarehouse instance (e.g. https://borgwarehouse.example.com): " NEXTAUTH_URL </dev/tty
 while [ -z "$NEXTAUTH_URL" ]; do
   print_red "NEXTAUTH_URL is required."
-  read -rp "Full URL: " NEXTAUTH_URL
+  read -rp "Full URL: " NEXTAUTH_URL </dev/tty
 done
 
-read -rp "Web port to expose [3000]: " WEB_SERVER_PORT
+read -rp "Web port to expose [3000]: " WEB_SERVER_PORT </dev/tty
 WEB_SERVER_PORT="${WEB_SERVER_PORT:-3000}"
 
-read -rp "SSH port to expose [2222]: " SSH_SERVER_PORT
+read -rp "SSH port to expose [2222]: " SSH_SERVER_PORT </dev/tty
 SSH_SERVER_PORT="${SSH_SERVER_PORT:-2222}"
 
 # Auto-generate secrets
@@ -107,14 +107,14 @@ mkdir config ssh ssh_host repos
 chown -R "$PUID:$PGID" config ssh ssh_host repos .env docker-compose.yml
 
 # Fill .env
-sed -i "s/^PUID=.*/PUID=$PUID/" .env
-sed -i "s/^PGID=.*/PGID=$PGID/" .env
-sed -i "s/^FQDN=.*/FQDN=$FQDN/" .env
+sed -i "s|^PUID=.*|PUID=$PUID|" .env
+sed -i "s|^PGID=.*|PGID=$PGID|" .env
+sed -i "s|^FQDN=.*|FQDN=$FQDN|" .env
 sed -i "s|^NEXTAUTH_URL=.*|NEXTAUTH_URL=$NEXTAUTH_URL|" .env
-sed -i "s/^NEXTAUTH_SECRET=.*/NEXTAUTH_SECRET=$NEXTAUTH_SECRET/" .env
-sed -i "s/^CRONJOB_KEY=.*/CRONJOB_KEY=$CRONJOB_KEY/" .env
-sed -i "s/^WEB_SERVER_PORT=.*/WEB_SERVER_PORT=$WEB_SERVER_PORT/" .env
-sed -i "s/^SSH_SERVER_PORT=.*/SSH_SERVER_PORT=$SSH_SERVER_PORT/" .env
+sed -i "s|^NEXTAUTH_SECRET=.*|NEXTAUTH_SECRET=$NEXTAUTH_SECRET|" .env
+sed -i "s|^CRONJOB_KEY=.*|CRONJOB_KEY=$CRONJOB_KEY|" .env
+sed -i "s|^WEB_SERVER_PORT=.*|WEB_SERVER_PORT=$WEB_SERVER_PORT|" .env
+sed -i "s|^SSH_SERVER_PORT=.*|SSH_SERVER_PORT=$SSH_SERVER_PORT|" .env
 
 echo ""
 print_green "BorgWarehouse $LATEST is ready in '$INSTALL_PATH'."

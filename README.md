@@ -9,8 +9,6 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/borgwarehouse/borgwarehouse?label=borgwarehouse&style=for-the-badge&logo=docker)](https://hub.docker.com/r/borgwarehouse/borgwarehouse)
 
-
-
 </div>
 
   <img src="public/borgwarehouse-logo-violet.svg" alt="BorgWarehouse" style="margin: 30px 0">
@@ -51,7 +49,7 @@ With BorgWarehouse, you have an interface that allows you to do all this simply 
 - **monitor** the volume of data
 - **flexibly manage quotas** for each repository
 - manage everything you want through the **REST API**
-- ... 
+- ...
 
 The whole system part is automatically managed by BorgWarehouse and **you don't have to touch your terminal anymore** while enjoying a visual feedback on the status of your repositories.
 
@@ -86,6 +84,7 @@ Check the online documentation [just here](https://borgwarehouse.com/docs/admin-
 <a href="https://github.com/MacH59-cos"><img src="https://avatars.githubusercontent.com/MacH59-cos" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/shrippen"><img src="https://avatars.githubusercontent.com/shrippen" style="width:50px; border-radius:50%;"/></a>
 <a href="https://github.com/daschmidt1994"><img src="https://avatars.githubusercontent.com/daschmidt1994" style="width:50px; border-radius:50%;"/></a>
+<a href="https://github.com/katekyonni"><img src="https://avatars.githubusercontent.com/katekyonni" style="width:50px; border-radius:50%;"/></a>
 
 #### Past sponsors
 

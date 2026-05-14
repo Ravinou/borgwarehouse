@@ -149,6 +149,34 @@ export const auth = betterAuth({
     },
   },
   databaseHooks: {
+    account: {
+      delete: {
+        // When an OAuth account is unlinked and no more OAuth accounts remain,
+        // clear the OAuth name/image from the user record and restore the borgwarehouse username.
+        after: async (account) => {
+          if (account.providerId === 'credential') return;
+          const db = new Database(dbPath);
+          try {
+            const remaining = db
+              .prepare("SELECT id FROM account WHERE userId = ? AND providerId != 'credential'")
+              .all(account.userId) as { id: string }[];
+            if (remaining.length === 0) {
+              const bwUser = db
+                .prepare('SELECT username FROM user WHERE id = ?')
+                .get(account.userId) as { username: string } | undefined;
+              if (bwUser?.username) {
+                db.prepare('UPDATE user SET image = NULL, name = ? WHERE id = ?').run(
+                  bwUser.username,
+                  account.userId
+                );
+              }
+            }
+          } finally {
+            db.close();
+          }
+        },
+      },
+    },
     user: {
       create: {
         // Prevent OAuth from creating new users — only allow sign-in to existing accounts

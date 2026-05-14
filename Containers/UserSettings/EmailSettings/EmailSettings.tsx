@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +10,8 @@ import Error from '~/Components/UI/Error/Error';
 import { useLoader } from '~/contexts/LoaderContext';
 import { useFormStatus } from '~/hooks';
 import { EmailSettingDTO } from '~/types/api/setting.types';
+
+type OAuthProvider = { id: string; name: string };
 
 export default function EmailSettings(props: EmailSettingDTO) {
   const toastOptions: ToastOptions = {
@@ -32,6 +34,15 @@ export default function EmailSettings(props: EmailSettingDTO) {
   const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
   const { start, stop } = useLoader();
   const { refetch: refetchSession, data: session } = useAuthSession();
+  const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>([]);
+
+  // Fetch enabled OAuth providers
+  useEffect(() => {
+    fetch('/api/v1/auth/providers')
+      .then((r) => r.json())
+      .then((data) => setOauthProviders(data.providers || []))
+      .catch(() => {});
+  }, []);
 
   // Sync input when session refreshes after a successful save
   useEffect(() => {
@@ -68,6 +79,9 @@ export default function EmailSettings(props: EmailSettingDTO) {
     }
   };
 
+  const emailNeedsUpdate =
+    oauthProviders.length > 0 && (!props.email || props.email.endsWith('@borgwarehouse.local'));
+
   return (
     <>
       {/* EMAIL */}
@@ -76,6 +90,28 @@ export default function EmailSettings(props: EmailSettingDTO) {
           <h2>Email</h2>
         </div>
         <div className={classes.setting}>
+          {oauthProviders.length > 0 && emailNeedsUpdate && (
+            <p className={classes.oauthNotice}>
+              ⚠️ Set your real email address to enable OAuth sign-in.
+              <br />
+              Your OAuth provider (
+              {oauthProviders
+                .map((p) => <strong key={p.id}>{p.name}</strong>)
+                .reduce((prev, curr, i) => (i === 0 ? [curr] : [...prev, ', ', curr]), [] as any)}
+              ) must use the same email.
+            </p>
+          )}
+          {oauthProviders.length > 0 && !emailNeedsUpdate && (
+            <p className={classes.oauthNoticeInfo}>
+              OAuth active:{' '}
+              {oauthProviders
+                .map((p) => <strong key={p.id}>{p.name}</strong>)
+                .reduce((prev, curr, i) => (i === 0 ? [curr] : [...prev, ', ', curr]), [] as any)}
+              .
+              <br />
+              Your OAuth account must match this email.
+            </p>
+          )}
           <div className={classes.bwFormWrapper}>
             <form onSubmit={handleSubmit(formSubmitHandler)} className={classes.bwForm}>
               <p>

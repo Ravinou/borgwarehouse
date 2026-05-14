@@ -27,11 +27,20 @@ const extraTrustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS
   ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(',').map((o) => o.trim())
   : [];
 
+// Session expiry in seconds. Defaults to 3600 (1 hour).
+// Override with SESSION_EXPIRY_SECONDS env var, e.g. SESSION_EXPIRY_SECONDS=28800 for 8 hours.
+const sessionExpiresIn = process.env.SESSION_EXPIRY_SECONDS
+  ? parseInt(process.env.SESSION_EXPIRY_SECONDS, 10)
+  : 3600;
+
 export const auth = betterAuth({
   database: new Database(dbPath),
   secret: process.env.BETTER_AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL ?? process.env.NEXTAUTH_URL,
   trustedOrigins: [...devTrustedOrigins, ...extraTrustedOrigins],
+  session: {
+    expiresIn: sessionExpiresIn,
+  },
   emailAndPassword: {
     enabled: true,
     // Use bcrypt to stay compatible with existing password hashes from users.json

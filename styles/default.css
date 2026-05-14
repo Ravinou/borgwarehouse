@@ -151,6 +151,21 @@ code {
   pointer-events: none;
 }
 
+.signInButton.oauthButton {
+  background-color: transparent;
+  border: 1px solid #6d4aff;
+  color: #d4d4d4;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.signInButton.oauthButton:hover {
+  background-color: #6d4aff;
+  color: #fff;
+}
+
 .heart {
   color: #6d4aff;
 }

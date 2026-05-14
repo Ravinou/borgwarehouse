@@ -118,6 +118,7 @@ dist
 config/repo.json
 config/users.json
 config/better_auth.sqlite
+config/.setup_complete
 
 # docker files
 docker-compose.yml

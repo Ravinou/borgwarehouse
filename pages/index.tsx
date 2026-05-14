@@ -1,12 +1,11 @@
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
-import { useSession } from 'next-auth/react';
+import { getSession } from '~/helpers/getServerSession';
+import { useAuthSession } from '~/lib/auth-client';
 import Head from 'next/head';
 import RepoList from '../Containers/RepoList/RepoList';
 import { GetServerSidePropsContext } from 'next';
 
 export default function Index() {
-  const { status } = useSession();
+  const { status } = useAuthSession();
 
   return (
     <>
@@ -29,7 +28,7 @@ export default function Index() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getSession(context.req, context.res);
 
   if (!session) {
     return {

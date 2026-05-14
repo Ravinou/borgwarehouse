@@ -1,10 +1,11 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/account/password';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { ConfigService, AuthService } from '~/services';
 
-vi.mock('next-auth/next');
+vi.mock('~/helpers/getServerSession');
 vi.mock('~/services');
+vi.mock('~/lib/auth-db-sync');
 
 describe('PUT /api/account/updatePassword', () => {
   beforeEach(() => {
@@ -13,7 +14,7 @@ describe('PUT /api/account/updatePassword', () => {
   });
 
   it('should return 401 if not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT' });
     await handler(req, res);
@@ -29,7 +30,7 @@ describe('PUT /api/account/updatePassword', () => {
   });
 
   it('should return 422 if oldPassword or newPassword are missing or not strings', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -45,7 +46,7 @@ describe('PUT /api/account/updatePassword', () => {
   });
 
   it('should return 400 if user is not found', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -67,7 +68,7 @@ describe('PUT /api/account/updatePassword', () => {
   });
 
   it('should return 400 if old password is incorrect', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -97,7 +98,7 @@ describe('PUT /api/account/updatePassword', () => {
       email: 'love@example.com',
     };
 
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -124,7 +125,7 @@ describe('PUT /api/account/updatePassword', () => {
   });
 
   it('should return 500 if there is a file system error (ENOENT)', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -145,7 +146,7 @@ describe('PUT /api/account/updatePassword', () => {
   });
 
   it('should return 500 on unknown error', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 

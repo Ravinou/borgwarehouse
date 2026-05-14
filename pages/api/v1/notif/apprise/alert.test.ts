@@ -1,9 +1,9 @@
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { createMocks } from 'node-mocks-http';
 import { ConfigService } from '~/services';
 import handler from '~/pages/api/v1/notif/apprise/alert';
 
-vi.mock('next-auth/next');
+vi.mock('~/helpers/getServerSession');
 vi.mock('~/services');
 
 describe('Get Apprise Alert API', () => {
@@ -13,7 +13,7 @@ describe('Get Apprise Alert API', () => {
   });
 
   it('should return 405 if the method is not GET', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
     const { req, res } = createMocks({ method: 'POST' });
@@ -22,14 +22,14 @@ describe('Get Apprise Alert API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
   });
 
   it('should return 400 if the user does not exist', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'nonexistent' },
     });
 
@@ -54,7 +54,7 @@ describe('Get Apprise Alert API', () => {
   });
 
   it('should return appriseAlert value if the user exists', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -76,7 +76,7 @@ describe('Get Apprise Alert API', () => {
   });
 
   it('should return 500 if there is an error reading the file', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -104,7 +104,7 @@ describe('Update Apprise Alert API', () => {
   });
 
   it('should return 405 if the method is not allowed', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
     const { req, res } = createMocks({ method: 'POST' });
@@ -113,7 +113,7 @@ describe('Update Apprise Alert API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: true } });
     await handler(req, res);
@@ -121,7 +121,7 @@ describe('Update Apprise Alert API', () => {
   });
 
   it('should return 422 if the request body is invalid', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -132,7 +132,7 @@ describe('Update Apprise Alert API', () => {
   });
 
   it('should return 400 if the user does not exist', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'nonexistent' },
     });
 
@@ -156,7 +156,7 @@ describe('Update Apprise Alert API', () => {
   });
 
   it('should update appriseAlert and return 200 if everything is correct', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -189,7 +189,7 @@ describe('Update Apprise Alert API', () => {
   });
 
   it('should return 500 if there is an error reading users file', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 

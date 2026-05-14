@@ -1,5 +1,4 @@
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BorgWarehouseApiResponse, Repository } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
@@ -11,7 +10,7 @@ export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
   res: NextApiResponse<BorgWarehouseApiResponse | { repo: Repository }>
 ) {
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   const { authorization } = req.headers;
   if (!session && !authorization) {
     return ApiResponse.unauthorized(res);

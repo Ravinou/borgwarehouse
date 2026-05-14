@@ -1,7 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
 import classes from './UserSettings.module.css';
 import { useState, useEffect } from 'react';
-import { Session } from 'next-auth';
+import type { BwAuthSession } from '~/lib/auth-client';
 import { Optional, WizardEnvType, SessionStatus } from '~/types';
 
 // Components
@@ -14,7 +14,7 @@ import Integrations from './Integrations/Integrations';
 
 type UserSettingsProps = {
   status: SessionStatus;
-  data: Session;
+  data: BwAuthSession;
 };
 
 export default function UserSettings({ data }: UserSettingsProps) {
@@ -76,8 +76,8 @@ export default function UserSettings({ data }: UserSettingsProps) {
           {activeTab === 'General' && (
             <>
               <PasswordSettings />
-              <EmailSettings email={data.user?.email ?? undefined} />
-              <UsernameSettings username={data.user?.name ?? undefined} />
+              <EmailSettings email={data?.user?.email ?? undefined} />
+              <UsernameSettings username={data?.user?.name ?? undefined} />
             </>
           )}
 

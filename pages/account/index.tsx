@@ -1,8 +1,7 @@
 import Head from 'next/head';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSession } from 'next-auth/react';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+import { useAuthSession } from '~/lib/auth-client';
+import { getSession } from '~/helpers/getServerSession';
 import { GetServerSidePropsContext } from 'next';
 import { SessionStatus } from '~/types';
 
@@ -10,7 +9,7 @@ import { SessionStatus } from '~/types';
 import UserSettings from '~/Containers/UserSettings/UserSettings';
 
 export default function Account() {
-  const { status, data } = useSession();
+  const { status, data } = useAuthSession();
 
   if (status == 'unauthenticated' || status == 'loading' || !data) {
     return <p>Loading...</p>;
@@ -27,7 +26,7 @@ export default function Account() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getSession(context.req, context.res);
 
   if (!session) {
     return {

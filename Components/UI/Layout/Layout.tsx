@@ -2,14 +2,14 @@ import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import NavSide from './NavSide/NavSide';
 import classes from './Layout.module.css';
-import { useSession } from 'next-auth/react';
+import { useAuthSession } from '~/lib/auth-client';
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
 function Layout(props: LayoutProps) {
-  const { status } = useSession();
+  const { status } = useAuthSession();
 
   if (status === 'authenticated') {
     return (

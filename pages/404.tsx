@@ -1,10 +1,10 @@
 import Head from 'next/head';
-import { useSession } from 'next-auth/react';
+import { useAuthSession } from '~/lib/auth-client';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 export default function Error404() {
-  const { status } = useSession();
+  const { status } = useAuthSession();
   const router = useRouter();
 
   if (status === 'authenticated') {

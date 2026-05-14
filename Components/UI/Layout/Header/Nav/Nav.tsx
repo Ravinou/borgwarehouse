@@ -2,19 +2,15 @@ import classes from './Nav.module.css';
 import { IconUser, IconLogout } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSession, signOut } from 'next-auth/react';
+import { authClient, useAuthSession } from '~/lib/auth-client';
 
 export default function Nav() {
   const router = useRouter();
   const currentRoute = router.pathname;
-  const { status, data } = useSession();
+  const { status, data } = useAuthSession();
 
   const onLogoutClickedHandler = async () => {
-    //This bug is open : https://github.com/nextauthjs/next-auth/issues/1542
-    //I put redirect to false and redirect with router.
-    //The result on logout click is an ugly piece of page for a few milliseconds before returning to the login page.
-    //It's ugly if you are perfectionist but functional and invisible for most of users while waiting for a next-auth fix.
-    await signOut({ redirect: false });
+    await authClient.signOut();
     router.replace('/login');
   };
 
@@ -26,7 +22,7 @@ export default function Nav() {
             <div>
               <IconUser size={28} />
             </div>
-            <div className={classes.username}>{status === 'authenticated' && data.user?.name}</div>
+            <div className={classes.username}>{status === 'authenticated' && data?.user?.name}</div>
           </div>
         </Link>
       </li>

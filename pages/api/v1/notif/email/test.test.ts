@@ -1,8 +1,8 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/notif/email/test';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 
-vi.mock('next-auth/next');
+vi.mock('~/helpers/getServerSession');
 vi.mock('~/services', () => ({
   NotifService: {
     nodemailerSMTP: vi.fn(() => ({
@@ -19,7 +19,7 @@ describe('Email API', () => {
 
   it('should return 401 if not authenticated', async () => {
     // Mock unauthenticated session
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
 
     // Simulate a POST request
     const { req, res } = createMocks({ method: 'POST' });
@@ -31,7 +31,7 @@ describe('Email API', () => {
 
   it('should send an email if authenticated', async () => {
     // Mock unauthenticated session
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { email: 'ada-lovelace@example.com', name: 'Lovelace' },
     });
 

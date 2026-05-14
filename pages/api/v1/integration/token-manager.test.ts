@@ -36,7 +36,7 @@ describe('Token Manager API', () => {
   });
 
   it('should create a new token if valid data is provided', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser', email: 'testUser@example.com' } });
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
@@ -66,7 +66,7 @@ describe('Token Manager API', () => {
   });
 
   it('should return bad request if token name already exists', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser', email: 'testUser@example.com' } });
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
@@ -99,7 +99,7 @@ describe('Token Manager API', () => {
   });
 
   it('should return token list for GET request', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser', email: 'testUser@example.com' } });
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
@@ -145,7 +145,7 @@ describe('Token Manager API', () => {
   });
 
   it('should delete a token for DELETE request', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser', email: 'testUser@example.com' } });
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
@@ -183,7 +183,7 @@ describe('Token Manager API', () => {
   });
 
   it('should return bad request if token name is missing in DELETE request', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testUser', email: 'testUser@example.com' } });
 
     const { req, res } = createMocks({
       method: 'DELETE',

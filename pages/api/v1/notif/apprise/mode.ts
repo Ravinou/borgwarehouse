@@ -18,7 +18,7 @@ export default async function handler(
       const usersList = await ConfigService.getUsersList();
 
       //Verify that the user of the session exists
-      const user = usersList.find((u) => u.username === session.user?.name);
+      const user = usersList.find((u) => u.email === session.user?.email);
       if (!user) {
         res.status(400).json({
           message: 'User is incorrect. Please, logout to update your session.',
@@ -41,7 +41,7 @@ export default async function handler(
 
     try {
       const usersList = await ConfigService.getUsersList();
-      const userIndex = usersList.findIndex((user) => user.username === session.user?.name);
+      const userIndex = usersList.findIndex((user) => user.email === session.user?.email);
 
       if (userIndex === -1) {
         return res.status(400).json({

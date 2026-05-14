@@ -31,7 +31,7 @@ describe('PUT on email API', () => {
 
   it('should return 422 if email is not provided', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
 
     const { req, res } = createMocks({
@@ -47,7 +47,7 @@ describe('PUT on email API', () => {
 
   it('should return 400 if user is not found in the users list', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -69,7 +69,7 @@ describe('PUT on email API', () => {
 
   it('should return 400 if email already exists', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -90,7 +90,7 @@ describe('PUT on email API', () => {
 
   it('should update the email and return 200 on success', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
 
     const users = [
@@ -116,7 +116,7 @@ describe('PUT on email API', () => {
 
   it('should return 500 if there is a file system error', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
@@ -137,7 +137,7 @@ describe('PUT on email API', () => {
 
   it('should return 500 on unknown error', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'UNKNOWN_ERROR' });

@@ -26,7 +26,7 @@ export default async function handler(
 
   try {
     const usersList = await ConfigService.getUsersList();
-    const userIndex = usersList.findIndex((user) => user.username === session.user?.name);
+    const userIndex = usersList.findIndex((user) => user.email === session.user?.email);
     const user = usersList[userIndex];
 
     if (userIndex === -1 || !user) {

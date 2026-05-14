@@ -32,7 +32,7 @@ export default async function handler(
       const { name, permissions } = req.body as IntegrationTokenType;
 
       const usersList = await ConfigService.getUsersList();
-      const user = usersList.find((u) => u.username === session.user.name);
+      const user = usersList.find((u) => u.email === session.user?.email);
       if (!user) {
         return ApiResponse.unauthorized(res);
       }
@@ -65,7 +65,7 @@ export default async function handler(
   } else if (req.method == 'GET') {
     try {
       const usersList = await ConfigService.getUsersList();
-      const user = usersList.find((u) => u.username === session.user.name);
+      const user = usersList.find((u) => u.email === session.user?.email);
       if (!user) {
         return ApiResponse.unauthorized(res);
       }
@@ -85,7 +85,7 @@ export default async function handler(
   } else if (req.method == 'DELETE') {
     try {
       const usersList = await ConfigService.getUsersList();
-      const user = usersList.find((u) => u.username === session.user.name);
+      const user = usersList.find((u) => u.email === session.user?.email);
       if (!user) {
         return ApiResponse.unauthorized(res);
       }

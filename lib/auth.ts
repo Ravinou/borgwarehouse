@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { username } from 'better-auth/plugins';
 import Database from 'better-sqlite3';
+import { compare, hash } from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
 
@@ -33,6 +34,11 @@ export const auth = betterAuth({
   trustedOrigins: [...devTrustedOrigins, ...extraTrustedOrigins],
   emailAndPassword: {
     enabled: true,
+    // Use bcrypt to stay compatible with existing password hashes from users.json
+    password: {
+      hash: (password) => hash(password, 10),
+      verify: ({ hash: storedHash, password }) => compare(password, storedHash),
+    },
   },
   plugins: [
     username({

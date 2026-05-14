@@ -11,6 +11,7 @@ import UsernameSettings from './UsernameSettings/UsernameSettings';
 import EmailAlertSettings from './EmailAlertSettings/EmailAlertSettings';
 import AppriseAlertSettings from './AppriseAlertSettings/AppriseAlertSettings';
 import Integrations from './Integrations/Integrations';
+import LinkedAccounts from './LinkedAccounts/LinkedAccounts';
 
 type UserSettingsProps = {
   status: SessionStatus;
@@ -20,6 +21,7 @@ type UserSettingsProps = {
 export default function UserSettings({ data }: UserSettingsProps) {
   const [tab, setTab] = useState<'General' | 'Notifications' | 'Integrations'>('General');
   const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>(undefined);
+  const [passwordLoginEnabled, setPasswordLoginEnabled] = useState(true);
 
   // Fetch wizard environment on mount
   useEffect(() => {
@@ -33,7 +35,16 @@ export default function UserSettings({ data }: UserSettingsProps) {
       }
     };
 
+    const fetchAuthConfig = async () => {
+      try {
+        const response = await fetch('/api/v1/auth/providers');
+        const data = await response.json();
+        setPasswordLoginEnabled(data.passwordLoginEnabled ?? true);
+      } catch {}
+    };
+
     fetchWizardEnv();
+    fetchAuthConfig();
   }, []);
 
   // Derive active tab: fallback to General if Integrations is disabled
@@ -48,7 +59,9 @@ export default function UserSettings({ data }: UserSettingsProps) {
         <>
           <div className={classes.tabList}>
             <button
-              className={activeTab === 'General' ? classes.tabListButtonActive : classes.tabListButton}
+              className={
+                activeTab === 'General' ? classes.tabListButtonActive : classes.tabListButton
+              }
               onClick={() => setTab('General')}
             >
               General
@@ -75,9 +88,12 @@ export default function UserSettings({ data }: UserSettingsProps) {
 
           {activeTab === 'General' && (
             <>
-              <PasswordSettings />
+              {passwordLoginEnabled && (
+                <UsernameSettings username={data?.user?.name ?? undefined} />
+              )}
+              {passwordLoginEnabled && <PasswordSettings />}
               <EmailSettings email={data?.user?.email ?? undefined} />
-              <UsernameSettings username={data?.user?.name ?? undefined} />
+              <LinkedAccounts />
             </>
           )}
 
@@ -88,7 +104,9 @@ export default function UserSettings({ data }: UserSettingsProps) {
             </>
           )}
 
-          {activeTab === 'Integrations' && wizardEnv.DISABLE_INTEGRATIONS !== 'true' && <Integrations />}
+          {activeTab === 'Integrations' && wizardEnv.DISABLE_INTEGRATIONS !== 'true' && (
+            <Integrations />
+          )}
         </>
       )}
     </div>

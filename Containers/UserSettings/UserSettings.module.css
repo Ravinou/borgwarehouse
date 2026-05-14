@@ -380,37 +380,6 @@
   margin-top: 3px;
 }
 
-.currentValueRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  font-size: 0.85em;
-  color: #9798b2;
-}
-
-.currentValueChip {
-  display: inline-flex;
-  align-items: center;
-  background-color: #f0eeff;
-  color: #494b7a;
-  border: 1px solid #6d4aff33;
-  border-radius: 20px;
-  padding: 3px 12px;
-  font-size: 0.95em;
-  font-weight: 500;
-}
-
-.inputLabel {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 0.85em;
-  font-weight: 500;
-  color: #9798b2;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
 
 .headerFormAppriseUrls {
   font-weight: 500;

@@ -19,7 +19,7 @@ importers:
         version: 3.0.3
       better-auth:
         specifier: ^1.6.11
-        version: 1.6.11(better-sqlite3@12.10.0)(next@16.2.6(@babel/core@7.29.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)))
+        version: 1.6.11(better-sqlite3@12.10.0)(next@16.2.6(@babel/core@7.29.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1)))
       better-sqlite3:
         specifier: ^12.10.0
         version: 12.10.0
@@ -108,12 +108,15 @@ importers:
       prettier:
         specifier: ^3.8.3
         version: 3.8.3
+      tsx:
+        specifier: ^4.21.1
+        version: 4.21.1
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
       vitest:
         specifier: ^4.1.5
-        version: 4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1))
+        version: 4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1))
 
 packages:
 
@@ -2907,6 +2910,11 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
+  tsx@4.21.1:
+    resolution: {integrity: sha512-5QE2Q04cN1u0993w0LT5rPw3faZqZU1fFn1mGE0pV53N1Dn7c+QFFxQu1mBeSgeOXwFyTicZw02wVgp3Tb5cAQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
@@ -4133,13 +4141,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.5(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1))':
+  '@vitest/mocker@4.1.5(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1))':
     dependencies:
       '@vitest/spy': 4.1.5
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)
+      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1)
 
   '@vitest/pretty-format@4.1.5':
     dependencies:
@@ -4307,7 +4315,7 @@ snapshots:
 
   bcryptjs@3.0.3: {}
 
-  better-auth@1.6.11(better-sqlite3@12.10.0)(next@16.2.6(@babel/core@7.29.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1))):
+  better-auth@1.6.11(better-sqlite3@12.10.0)(next@16.2.6(@babel/core@7.29.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1))):
     dependencies:
       '@better-auth/core': 1.6.11(@better-auth/utils@0.4.0)(@better-fetch/fetch@1.1.21)(better-call@1.3.5(zod@4.4.3))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0)
       '@better-auth/drizzle-adapter': 1.6.11(@better-auth/core@1.6.11(@better-auth/utils@0.4.0)(@better-fetch/fetch@1.1.21)(better-call@1.3.5(zod@4.4.3))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0))(@better-auth/utils@0.4.0)
@@ -4331,7 +4339,7 @@ snapshots:
       next: 16.2.6(@babel/core@7.29.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
-      vitest: 4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1))
+      vitest: 4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1))
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@opentelemetry/api'
@@ -6046,6 +6054,12 @@ snapshots:
 
   tslib@2.8.1: {}
 
+  tsx@4.21.1:
+    dependencies:
+      esbuild: 0.27.7
+    optionalDependencies:
+      fsevents: 2.3.3
+
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -6166,7 +6180,7 @@ snapshots:
 
   uuid@14.0.0: {}
 
-  vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1):
+  vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1):
     dependencies:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.4)
@@ -6178,11 +6192,12 @@ snapshots:
       '@types/node': 25.6.2
       fsevents: 2.3.3
       jiti: 2.6.1
+      tsx: 4.21.1
 
-  vitest@4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)):
+  vitest@4.1.5(@types/node@25.6.2)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1)):
     dependencies:
       '@vitest/expect': 4.1.5
-      '@vitest/mocker': 4.1.5(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1))
+      '@vitest/mocker': 4.1.5(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1))
       '@vitest/pretty-format': 4.1.5
       '@vitest/runner': 4.1.5
       '@vitest/snapshot': 4.1.5
@@ -6199,7 +6214,7 @@ snapshots:
       tinyexec: 1.1.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
-      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)
+      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)(tsx@4.21.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.6.2

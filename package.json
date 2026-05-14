@@ -10,6 +10,7 @@
     "test": "vitest",
     "migrate:auth": "tsx scripts/migrate-users.ts",
     "reset:password": "tsx scripts/reset-password.ts",
+    "revoke:sessions": "tsx scripts/revoke-sessions.ts",
     "setup": "pnpm install && pnpm run setup:hooks",
     "setup:hooks": "pnpm exec husky install",
     "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""

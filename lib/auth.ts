@@ -12,10 +12,25 @@ if (!fs.existsSync(configDir)) {
   fs.mkdirSync(configDir, { recursive: true });
 }
 
+// In development, trust all localhost origins regardless of port so that
+// NEXTAUTH_URL=https://localhost (legacy) doesn't break the dev server.
+const devTrustedOrigins =
+  process.env.NODE_ENV === 'development'
+    ? ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000']
+    : [];
+
+// Additional trusted origins from env var (comma-separated), for production
+// reverse-proxy / multi-domain setups:
+//   BETTER_AUTH_TRUSTED_ORIGINS=https://borgwarehouse.example.com,https://bw.local
+const extraTrustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS
+  ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(',').map((o) => o.trim())
+  : [];
+
 export const auth = betterAuth({
   database: new Database(dbPath),
   secret: process.env.BETTER_AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL ?? process.env.NEXTAUTH_URL,
+  trustedOrigins: [...devTrustedOrigins, ...extraTrustedOrigins],
   emailAndPassword: {
     enabled: true,
   },

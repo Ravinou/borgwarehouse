@@ -37,7 +37,7 @@ const sessionExpiresIn = process.env.SESSION_EXPIRY_SECONDS
 // --- Social providers (conditional on env vars) ---
 type SocialProvidersConfig = Record<
   string,
-  { clientId: string; clientSecret: string; tenantId?: string }
+  { clientId: string; clientSecret: string; tenantId?: string; overrideUserInfoOnSignIn?: boolean }
 >;
 const socialProviders: SocialProvidersConfig = {};
 
@@ -45,6 +45,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   socialProviders.github = {
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    overrideUserInfoOnSignIn: true,
   };
 }
 
@@ -52,6 +53,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   socialProviders.google = {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    overrideUserInfoOnSignIn: true,
   };
 }
 
@@ -60,6 +62,7 @@ if (process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET) {
     clientId: process.env.MICROSOFT_CLIENT_ID,
     clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
     tenantId: process.env.MICROSOFT_TENANT_ID,
+    overrideUserInfoOnSignIn: true,
   };
 }
 
@@ -67,6 +70,7 @@ if (process.env.GITLAB_CLIENT_ID && process.env.GITLAB_CLIENT_SECRET) {
   socialProviders.gitlab = {
     clientId: process.env.GITLAB_CLIENT_ID,
     clientSecret: process.env.GITLAB_CLIENT_SECRET,
+    overrideUserInfoOnSignIn: true,
   };
 }
 

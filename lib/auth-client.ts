@@ -12,6 +12,7 @@ export type BwAuthSession = {
     email?: string;
     id?: string;
     roles?: string[];
+    image?: string;
   };
 } | null;
 
@@ -37,6 +38,7 @@ export function useAuthSession(): { status: SessionStatus; data: BwAuthSession; 
           name: data.user.name ?? undefined,
           email: data.user.email ?? undefined,
           id: data.user.id ?? undefined,
+          image: data.user.image ?? undefined,
           roles: userWithExtra?.roles ? (JSON.parse(userWithExtra.roles) as string[]) : [],
         },
       }

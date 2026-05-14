@@ -117,6 +117,7 @@ dist
 # config file for BorgWarehouse
 config/repo.json
 config/users.json
+config/better_auth.sqlite
 
 # docker files
 docker-compose.yml

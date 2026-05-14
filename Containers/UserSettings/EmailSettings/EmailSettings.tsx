@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
+import { useAuthSession } from '~/lib/auth-client';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
-import Info from '~/Components/UI/Info/Info';
 import { useLoader } from '~/contexts/LoaderContext';
 import { useFormStatus } from '~/hooks';
 import { EmailSettingDTO } from '~/types/api/setting.types';
@@ -26,14 +26,19 @@ export default function EmailSettings(props: EmailSettingDTO) {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<EmailSettingDTO>({ mode: 'onChange' });
+    formState: { errors, isSubmitting, isDirty },
+  } = useForm<EmailSettingDTO>({ mode: 'onChange', defaultValues: { email: props.email } });
 
   const { isLoading, error, setIsLoading, handleError, clearError } = useFormStatus();
   const { start, stop } = useLoader();
+  const { refetch: refetchSession, data: session } = useAuthSession();
 
-  ////State
-  const [info, setInfo] = useState(false);
+  // Sync input when session refreshes after a successful save
+  useEffect(() => {
+    if (session?.user?.email) {
+      reset({ email: session.user.email });
+    }
+  }, [session?.user?.email, reset]);
 
   ////Functions
   const formSubmitHandler = async (data: EmailSettingDTO) => {
@@ -44,30 +49,25 @@ export default function EmailSettings(props: EmailSettingDTO) {
     try {
       const response = await fetch('/api/v1/account/email', {
         method: 'PUT',
-        headers: {
-          'Content-type': 'application/json',
-        },
+        headers: { 'Content-type': 'application/json' },
         body: JSON.stringify(data),
       });
       const result = await response.json();
 
       if (!response.ok) {
-        reset();
         handleError(result.message);
       } else {
-        reset();
-        setIsLoading(false);
-        setInfo(true);
-        toast.success('Email edited !', toastOptions);
+        toast.success('Email updated!', toastOptions);
+        await refetchSession();
       }
     } catch (error) {
-      reset();
       handleError('Updating your email failed.');
     } finally {
       stop();
       setIsLoading(false);
     }
   };
+
   return (
     <>
       {/* EMAIL */}
@@ -77,42 +77,31 @@ export default function EmailSettings(props: EmailSettingDTO) {
         </div>
         <div className={classes.setting}>
           <div className={classes.bwFormWrapper}>
-            {info ? ( //For local JWTs (cookie) without an OAuth provider, Next-Auth does not allow
-              //at the time this code is written to refresh client-side session information
-              //without triggering a logout.
-              //I chose to inform the user to reconnect rather than force logout.
-              <Info message='Please, logout to update your session.' />
-            ) : (
-              <form
-                onSubmit={handleSubmit(formSubmitHandler)}
-                className={classes.bwForm + ' ' + classes.currentSetting}
+            <form onSubmit={handleSubmit(formSubmitHandler)} className={classes.bwForm}>
+              <p>
+                {error && <Error message={error} />}
+                <input
+                  type='email'
+                  {...register('email', {
+                    required: true,
+                    pattern: {
+                      value:
+                        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                      message: 'Your email is not valid.',
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <small className={classes.errorMessage}>{errors.email.message}</small>
+                )}
+              </p>
+              <button
+                className={classes.AccountSettingsButton}
+                disabled={isSubmitting || isLoading || !isDirty}
               >
-                <p>
-                  {error && <Error message={error} />}
-                  <input
-                    type='email'
-                    placeholder={props.email}
-                    {...register('email', {
-                      required: true,
-                      pattern: {
-                        value:
-                          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message: 'Your email is not valid.',
-                      },
-                    })}
-                  />
-                  {errors.email && (
-                    <small className={classes.errorMessage}>{errors.email.message}</small>
-                  )}
-                </p>
-                <button
-                  className={classes.AccountSettingsButton}
-                  disabled={isSubmitting || isLoading}
-                >
-                  Update your email
-                </button>
-              </form>
-            )}
+                Update email
+              </button>
+            </form>
           </div>
         </div>
       </div>

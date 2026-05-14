@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormStatus } from '~/hooks';
 import { UsernameSettingDTO } from '~/types';
 import classes from '../UserSettings.module.css';
+import { useAuthSession } from '~/lib/auth-client';
 
 //Components
-import Info from '~/Components/UI/Info/Info';
 import { useLoader } from '~/contexts/LoaderContext';
 
 export default function UsernameSettings(props: UsernameSettingDTO) {
@@ -25,14 +25,19 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<UsernameSettingDTO>({ mode: 'onChange' });
+    formState: { errors, isSubmitting, isDirty },
+  } = useForm<UsernameSettingDTO>({ mode: 'onChange', defaultValues: { username: props.username } });
   const { start, stop } = useLoader();
+  const { refetch: refetchSession, data: session } = useAuthSession();
 
   const { isLoading, setIsLoading } = useFormStatus();
 
-  ////State
-  const [info, setInfo] = useState(false);
+  // Sync input when session refreshes after a successful save
+  useEffect(() => {
+    if (session?.user?.name) {
+      reset({ username: session.user.name });
+    }
+  }, [session?.user?.name, reset]);
 
   ////Functions
   const formSubmitHandler = async (data: UsernameSettingDTO) => {
@@ -42,9 +47,7 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
     try {
       const response = await fetch('/api/v1/account/username', {
         method: 'PUT',
-        headers: {
-          'Content-type': 'application/json',
-        },
+        headers: { 'Content-type': 'application/json' },
         body: JSON.stringify(data),
       });
       const result = await response.json();
@@ -52,17 +55,17 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
       if (!response.ok) {
         toast.error(result.message, toastOptions);
       } else {
-        setInfo(true);
-        toast.success('Username edited !', toastOptions);
+        toast.success('Username updated!', toastOptions);
+        await refetchSession();
       }
     } catch (error) {
       toast.error('Failed to update username. Please try again.', toastOptions);
     } finally {
-      reset();
       stop();
       setIsLoading(false);
     }
   };
+
   return (
     <>
       {/* Username */}
@@ -72,49 +75,31 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
         </div>
         <div className={classes.setting}>
           <div className={classes.bwFormWrapper}>
-            {info ? (
-              //For local JWTs (cookie) without an OAuth provider, Next-Auth does not allow
-              //at the time this code is written to refresh client-side session information
-              //without triggering a logout.
-              //I chose to inform the user to reconnect rather than force logout.
-              <Info message='Please, logout to update your session' />
-            ) : (
-              <form
-                onSubmit={handleSubmit(formSubmitHandler)}
-                className={classes.bwForm + ' ' + classes.currentSetting}
+            <form onSubmit={handleSubmit(formSubmitHandler)} className={classes.bwForm}>
+              <p>
+                <input
+                  type='text'
+                  {...register('username', {
+                    required: 'A username is required.',
+                    pattern: {
+                      value: /^[a-z]{1,40}$/,
+                      message: 'Only a-z characters are allowed',
+                    },
+                    maxLength: { value: 40, message: '40 characters max.' },
+                    minLength: { value: 1, message: '1 characters min.' },
+                  })}
+                />
+                {errors.username && (
+                  <small className={classes.errorMessage}>{errors.username.message}</small>
+                )}
+              </p>
+              <button
+                className={classes.AccountSettingsButton}
+                disabled={isLoading || isSubmitting || !isDirty}
               >
-                <p>
-                  <input
-                    type='text'
-                    placeholder={props.username}
-                    {...register('username', {
-                      required: 'A username is required.',
-                      pattern: {
-                        value: /^[a-z]{1,40}$/,
-                        message: 'Only a-z characters are allowed',
-                      },
-                      maxLength: {
-                        value: 40,
-                        message: '40 characters max.',
-                      },
-                      minLength: {
-                        value: 1,
-                        message: '1 characters min.',
-                      },
-                    })}
-                  />
-                  {errors.username && (
-                    <small className={classes.errorMessage}>{errors.username.message}</small>
-                  )}
-                </p>
-                <button
-                  className={classes.AccountSettingsButton}
-                  disabled={isLoading || isSubmitting}
-                >
-                  Update your username
-                </button>
-              </form>
-            )}
+                Update username
+              </button>
+            </form>
           </div>
         </div>
       </div>

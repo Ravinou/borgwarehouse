@@ -83,7 +83,7 @@ export default function RepoList() {
   const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
   const { data, error } = useSWR('/api/v1/repositories', fetcher);
 
-  if (!data) {
+  if (!data || !data.repoList) {
     mutate('/api/v1/repositories');
     return <ShimmerRepoList />;
   }

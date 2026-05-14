@@ -5,50 +5,102 @@
   display: flex;
 }
 
-.user {
+/* User dropdown trigger */
+.userMenu {
+  position: relative;
+}
+
+.userTrigger {
   display: flex;
   align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #494b7a;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.userTrigger:hover {
+  background: rgba(109, 74, 255, 0.08);
+  color: #6d4aff;
+}
+
+.username {
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .username::first-letter {
   text-transform: capitalize;
 }
 
-.account {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #494b7a;
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-.account a {
+.chevron {
+  opacity: 0.6;
+  transition: transform 0.2s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background: #fff;
+  border: 1px solid #e8e8f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(73, 75, 122, 0.12);
+  min-width: 170px;
+  z-index: 100;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 1rem;
   color: #494b7a;
   text-decoration: none;
-}
-
-.account :focus,
-.account .active,
-.account :hover {
-  color: #6d4aff;
-  text-shadow: #6d4aff 0px 0px 18px;
-}
-
-.logout {
   background: none;
   border: none;
   cursor: pointer;
-  color: #494b7a;
+  width: 100%;
+  text-align: left;
+  transition: background 0.12s;
 }
 
-.logout :focus,
-.logout .active,
-.logout :hover {
+.dropdownItem:hover {
+  background: rgba(109, 74, 255, 0.07);
   color: #6d4aff;
-  text-shadow: #6d4aff 0px 0px 18px;
+}
+
+.dropdownLogout {
+  border-top: 1px solid #e8e8f0;
+  color: #e03e3e;
+}
+
+.dropdownLogout:hover {
+  background: rgba(224, 62, 62, 0.07);
+  color: #e03e3e;
 }
 
 @media all and (max-width: 1000px) {
-  .account {
+  .username {
     display: none;
   }
 }
+

@@ -1,37 +1,78 @@
 import classes from './Nav.module.css';
-import { IconUser, IconLogout } from '@tabler/icons-react';
+import { IconUser, IconLogout, IconSettings, IconChevronDown } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { authClient, useAuthSession } from '~/lib/auth-client';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Nav() {
   const router = useRouter();
-  const currentRoute = router.pathname;
   const { status, data } = useAuthSession();
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const onLogoutClickedHandler = async () => {
     await authClient.signOut();
     router.replace('/login');
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const avatarUrl = data?.user?.image;
+
   return (
     <ul className={classes.Nav}>
-      <li style={{ margin: '0px 15px 0px 0px' }} className={classes.account}>
-        <Link href='/account' className={currentRoute === '/account' ? classes.active : undefined}>
-          <div className={classes.user}>
-            <div>
+      <li style={{ margin: '0px 15px 0px 0px' }}>
+        <div className={classes.userMenu} ref={dropdownRef}>
+          <button
+            className={classes.userTrigger}
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+          >
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl}
+                alt={data?.user?.name ?? 'avatar'}
+                width={36}
+                height={36}
+                className={classes.avatar}
+              />
+            ) : (
               <IconUser size={28} />
-            </div>
-            <div className={classes.username}>{status === 'authenticated' && data?.user?.name}</div>
-          </div>
-        </Link>
-      </li>
+            )}
+            {status === 'authenticated' && (
+              <span className={classes.username}>{data?.user?.name}</span>
+            )}
+            <IconChevronDown
+              size={16}
+              className={`${classes.chevron} ${open ? classes.chevronOpen : ''}`}
+            />
+          </button>
 
-      <li>
-        <div className={classes.logout}>
-          <a onClick={onLogoutClickedHandler}>
-            <IconLogout size={28} />
-          </a>
+          {open && (
+            <div className={classes.dropdown}>
+              <Link href='/account' className={classes.dropdownItem} onClick={() => setOpen(false)}>
+                <IconSettings size={16} />
+                Mon compte
+              </Link>
+              <button
+                className={`${classes.dropdownItem} ${classes.dropdownLogout}`}
+                onClick={onLogoutClickedHandler}
+              >
+                <IconLogout size={16} />
+                Déconnexion
+              </button>
+            </div>
+          )}
         </div>
       </li>
     </ul>

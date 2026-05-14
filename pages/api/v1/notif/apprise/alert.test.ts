@@ -14,7 +14,7 @@ describe('Get Apprise Alert API', () => {
 
   it('should return 405 if the method is not GET', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
     const { req, res } = createMocks({ method: 'POST' });
     await handler(req, res);
@@ -30,7 +30,7 @@ describe('Get Apprise Alert API', () => {
 
   it('should return 400 if the user does not exist', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'nonexistent' },
+      user: { name: 'nonexistent', email: 'nonexistent@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -55,7 +55,7 @@ describe('Get Apprise Alert API', () => {
 
   it('should return appriseAlert value if the user exists', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'testuser' },
+      user: { name: 'testuser', email: 'testuser@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -77,7 +77,7 @@ describe('Get Apprise Alert API', () => {
 
   it('should return 500 if there is an error reading the file', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'testuser' },
+      user: { name: 'testuser', email: 'testuser@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockImplementation(() => {
@@ -105,7 +105,7 @@ describe('Update Apprise Alert API', () => {
 
   it('should return 405 if the method is not allowed', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace' },
+      user: { name: 'Lovelace', email: 'lovelace@example.com' },
     });
     const { req, res } = createMocks({ method: 'POST' });
     await handler(req, res);
@@ -122,7 +122,7 @@ describe('Update Apprise Alert API', () => {
 
   it('should return 422 if the request body is invalid', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'testuser' },
+      user: { name: 'testuser', email: 'testuser@example.com' },
     });
 
     const { req, res } = createMocks({ method: 'PUT', body: { appriseAlert: 'not-boolean' } });
@@ -133,7 +133,7 @@ describe('Update Apprise Alert API', () => {
 
   it('should return 400 if the user does not exist', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'nonexistent' },
+      user: { name: 'nonexistent', email: 'nonexistent@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -157,7 +157,7 @@ describe('Update Apprise Alert API', () => {
 
   it('should update appriseAlert and return 200 if everything is correct', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'testuser' },
+      user: { name: 'testuser', email: 'testuser@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -190,7 +190,7 @@ describe('Update Apprise Alert API', () => {
 
   it('should return 500 if there is an error reading users file', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'testuser' },
+      user: { name: 'testuser', email: 'testuser@example.com' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });

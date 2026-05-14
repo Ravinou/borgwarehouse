@@ -160,6 +160,12 @@ export default function Login() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  // First-run: redirect to setup only when users.json and SQLite are empty and lockfile does not exist
+  const { isFirstRun } = await import('~/helpers/isFirstRun');
+  if (await isFirstRun()) {
+    return { redirect: { destination: '/setup', permanent: false } };
+  }
+
   const session = await getSession(context.req, context.res);
 
   //Here, if I am connected, I redirect to the home page.

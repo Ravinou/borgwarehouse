@@ -9,6 +9,7 @@
     "lint": "pnpm exec eslint",
     "test": "vitest",
     "migrate:auth": "tsx scripts/migrate-users.ts",
+    "reset:password": "tsx scripts/reset-password.ts",
     "setup": "pnpm install && pnpm run setup:hooks",
     "setup:hooks": "pnpm exec husky install",
     "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
@@ -49,6 +50,7 @@
     "husky": "^9.1.7",
     "node-mocks-http": "^1.17.2",
     "prettier": "^3.8.3",
+    "tsx": "^4.21.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   }

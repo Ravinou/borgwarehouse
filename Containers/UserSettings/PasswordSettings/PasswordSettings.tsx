@@ -23,7 +23,7 @@ export default function PasswordSettings() {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = useForm<PasswordSettingDTO>({ mode: 'onChange' });
   const { start, stop } = useLoader();
 
@@ -87,7 +87,7 @@ export default function PasswordSettings() {
               </p>
               <button
                 className={classes.AccountSettingsButton}
-                disabled={isLoading || isSubmitting}
+                disabled={isLoading || isSubmitting || !isValid}
               >
                 Update your password
               </button>

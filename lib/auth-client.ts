@@ -23,8 +23,8 @@ type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated';
  * Drop-in replacement for next-auth's useSession().
  * Returns { status, data } with the same shape used throughout the codebase.
  */
-export function useAuthSession(): { status: SessionStatus; data: BwAuthSession } {
-  const { data, isPending } = authClient.useSession();
+export function useAuthSession(): { status: SessionStatus; data: BwAuthSession; refetch: () => Promise<void> } {
+  const { data, isPending, refetch } = authClient.useSession();
 
   const status: SessionStatus = isPending ? 'loading' : data ? 'authenticated' : 'unauthenticated';
 
@@ -41,5 +41,5 @@ export function useAuthSession(): { status: SessionStatus; data: BwAuthSession }
       }
     : null;
 
-  return { status, data: session };
+  return { status, data: session, refetch };
 }

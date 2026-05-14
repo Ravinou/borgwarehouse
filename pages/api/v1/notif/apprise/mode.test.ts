@@ -1,10 +1,10 @@
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { createMocks } from 'node-mocks-http';
 import { ConfigService } from '~/services';
 import handler from '~/pages/api/v1/notif/apprise/mode';
 import { AppriseModeEnum } from '~/types/domain/config.types';
 
-vi.mock('next-auth/next');
+vi.mock('~/helpers/getServerSession');
 vi.mock('~/services');
 
 describe('Get Apprise Mode API', () => {
@@ -14,7 +14,7 @@ describe('Get Apprise Mode API', () => {
   });
 
   it('should return 405 if the method is not GET', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
     const { req, res } = createMocks({ method: 'POST' });
@@ -23,14 +23,14 @@ describe('Get Apprise Mode API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
   });
 
   it('should return 400 if the user does not exist', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'nonexistent' },
     });
 
@@ -56,7 +56,7 @@ describe('Get Apprise Mode API', () => {
   });
 
   it('should return appriseMode and appriseStatelessURL if the user exists', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -83,7 +83,7 @@ describe('Get Apprise Mode API', () => {
   });
 
   it('should return 500 if there is an error reading the file', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -103,7 +103,7 @@ describe('Get Apprise Mode API', () => {
 
 describe('Apprise Mode Update API', () => {
   it('should return 405 if method is not allowed', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
     const { req, res } = createMocks({ method: 'POST' });
@@ -112,7 +112,7 @@ describe('Apprise Mode Update API', () => {
   });
 
   it('should return 401 if not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT' });
     await handler(req, res);
@@ -121,7 +121,7 @@ describe('Apprise Mode Update API', () => {
   });
 
   it('should return 422 if invalid data is provided', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testuser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testuser' } });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -133,7 +133,7 @@ describe('Apprise Mode Update API', () => {
   });
 
   it('should return 400 if user does not exist', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'unknownuser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'unknownuser' } });
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
@@ -155,7 +155,7 @@ describe('Apprise Mode Update API', () => {
   });
 
   it('should update user settings and return 200', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testuser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testuser' } });
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,

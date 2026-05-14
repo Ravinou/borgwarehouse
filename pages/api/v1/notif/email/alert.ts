@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { ConfigService } from '~/services';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { EmailAlertDTO, ErrorResponse } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 
@@ -9,7 +8,7 @@ export default async function handler(
   req: NextApiRequest & { body: EmailAlertDTO },
   res: NextApiResponse<EmailAlertDTO | ErrorResponse>
 ) {
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) {
     return ApiResponse.unauthorized(res);
   }

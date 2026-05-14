@@ -1,10 +1,11 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/account/email';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { ConfigService } from '~/services';
 
-vi.mock('next-auth/next');
+vi.mock('~/helpers/getServerSession');
 vi.mock('~/services');
+vi.mock('~/lib/auth-db-sync');
 
 describe('PUT on email API', () => {
   beforeEach(() => {
@@ -13,7 +14,7 @@ describe('PUT on email API', () => {
   });
 
   it('should return 401 if not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT' });
     await handler(req, res);
@@ -29,7 +30,7 @@ describe('PUT on email API', () => {
   });
 
   it('should return 422 if email is not provided', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -45,7 +46,7 @@ describe('PUT on email API', () => {
   });
 
   it('should return 400 if user is not found in the users list', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -67,7 +68,7 @@ describe('PUT on email API', () => {
   });
 
   it('should return 400 if email already exists', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -88,7 +89,7 @@ describe('PUT on email API', () => {
   });
 
   it('should update the email and return 200 on success', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -114,7 +115,7 @@ describe('PUT on email API', () => {
   });
 
   it('should return 500 if there is a file system error', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -135,7 +136,7 @@ describe('PUT on email API', () => {
   });
 
   it('should return 500 on unknown error', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 

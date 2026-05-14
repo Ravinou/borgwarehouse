@@ -1,8 +1,8 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/account/wizard-env';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 
-vi.mock('next-auth/next');
+vi.mock('~/helpers/getServerSession');
 
 describe('Get Wizard Env API', () => {
   it('should return 405 if the method is not GET', async () => {
@@ -12,14 +12,14 @@ describe('Get Wizard Env API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
   });
 
   it('should return 200 with wizardEnv if the user is authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'testuser' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'testuser' } });
 
     process.env.UNIX_USER = 'borgwarehouse';
     process.env.FQDN = 'localhost';

@@ -1,15 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { ConfigService } from '~/services';
 import { ErrorResponse, AppriseAlertResponse } from '~/types';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import ApiResponse from '~/helpers/functions/apiResponse';
 
 export default async function handler(
   req: NextApiRequest & { body: { appriseAlert: boolean } },
   res: NextApiResponse<AppriseAlertResponse | ErrorResponse>
 ) {
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) {
     return ApiResponse.unauthorized(res);
   }

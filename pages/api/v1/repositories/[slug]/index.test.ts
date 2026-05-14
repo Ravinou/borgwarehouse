@@ -1,12 +1,12 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/repositories/[slug]';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { ConfigService, AuthService, ShellService } from '~/services';
 import { isSshPubKeyDuplicate } from '~/helpers/functions';
 import { Repository } from '~/types/domain/config.types';
 
-vi.mock('next-auth/next', () => ({
-  getServerSession: vi.fn(),
+vi.mock('~/helpers/getServerSession', () => ({
+  getSession: vi.fn(),
 }));
 vi.mock('~/helpers/functions', () => ({
   isSshPubKeyDuplicate: vi.fn(),
@@ -54,7 +54,7 @@ describe('Repository GET by repositoryName', () => {
   });
 
   it('should return 405 if method is not handling', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     const { req, res } = createMocks({ method: 'POST', query: { slug: '1234abcd' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
@@ -67,7 +67,7 @@ describe('Repository GET by repositoryName', () => {
   });
 
   it('should return 401 if API key is invalid', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'GET',
@@ -79,7 +79,7 @@ describe('Repository GET by repositoryName', () => {
   });
 
   it('should return 403 if API key does not have read permissions', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue({
       read: false,
       update: true,
@@ -96,14 +96,14 @@ describe('Repository GET by repositoryName', () => {
   });
 
   it('should return 400 if slug is missing or malformed', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     const { req, res } = createMocks({ method: 'GET', query: { slug: undefined } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(400);
   });
 
   it('should return 404 if repository is not found', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     const { req, res } = createMocks({ method: 'GET', query: { slug: 'def1234a' } });
     await handler(req, res);
@@ -111,7 +111,7 @@ describe('Repository GET by repositoryName', () => {
   });
 
   it('should return 200 and the repository data if found', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
     const { req, res } = createMocks({ method: 'GET', query: { slug: 'abcd1234' } });
     await handler(req, res);
@@ -128,7 +128,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should return 405 if method is not handling', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     const { req, res } = createMocks({ method: 'POST', query: { slug: 'abcd1234' } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
@@ -141,7 +141,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should return 401 if API key is invalid', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'PATCH',
@@ -153,7 +153,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should return 403 if API key does not have update permissions', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue({
       update: false,
       create: false,
@@ -170,14 +170,14 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should return 400 if slug is missing or malformed', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     const { req, res } = createMocks({ method: 'PATCH', query: { slug: undefined } });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(400);
   });
 
   it('should return 404 if repository is not found', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     const { req, res } = createMocks({ method: 'PATCH', query: { slug: '1234edfe' } });
     await handler(req, res);
@@ -185,7 +185,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should return 409 if SSH key is duplicated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
@@ -201,7 +201,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should return 500 if updateRepoShell fails', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
@@ -232,7 +232,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should successfully update repository with a session', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
@@ -263,7 +263,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should successfully update repository with API key', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue({
       update: true,
       create: false,
@@ -301,7 +301,7 @@ describe('Repository PATCH by repositoryName', () => {
   });
 
   it('should only update the provided fields, keep the rest unchanged and history the modification.', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         id: 123,
@@ -366,7 +366,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should return 405 if method is not handling', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({ method: 'POST', query: { slug: 'abcd1234' } });
@@ -382,7 +382,7 @@ describe('Repository DELETE by repositoryName', () => {
 
   it('should return 403 if deletion is disabled via environment variable', async () => {
     process.env.DISABLE_DELETE_REPO = 'true';
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({ method: 'DELETE', query: { slug: 'abcd1234' } });
@@ -396,7 +396,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should return 400 if slug is missing or malformed', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
@@ -412,7 +412,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should return 404 if repository is not found', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
@@ -429,7 +429,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should return 500 if deleteRepo fails', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
@@ -460,7 +460,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should delete the repository and return 200 on success with a session', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'USER' },
     });
     const { req, res } = createMocks({
@@ -492,7 +492,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should delete the repository and return 200 on success with an API key', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue({
       delete: true,
       read: true,
@@ -531,7 +531,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should return 401 if the API key is invalid', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'DELETE',
@@ -549,7 +549,7 @@ describe('Repository DELETE by repositoryName', () => {
   });
 
   it('should return 403 if the API key does not have delete permissions', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue({
       delete: false,
       read: true,

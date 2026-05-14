@@ -1,12 +1,12 @@
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/repositories';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { ConfigService, AuthService, ShellService } from '~/services';
 import { Repository } from '~/types';
 import { isSshPubKeyDuplicate } from '~/helpers/functions';
 
-vi.mock('next-auth/next', () => ({
-  getServerSession: vi.fn(),
+vi.mock('~/helpers/getServerSession', () => ({
+  getSession: vi.fn(),
 }));
 vi.mock('~/helpers/functions', () => ({
   isSshPubKeyDuplicate: vi.fn(),
@@ -54,7 +54,7 @@ describe('Repository GET info', () => {
   });
 
   it('should return 405 if method is not handling', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     const { req, res } = createMocks({ method: 'DELETE' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
@@ -67,7 +67,7 @@ describe('Repository GET info', () => {
   });
 
   it('should return 401 if API key is invalid', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'GET',
@@ -78,7 +78,7 @@ describe('Repository GET info', () => {
   });
 
   it('should return 403 if API key does not have read permissions', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue({ read: false });
     const { req, res } = createMocks({
       method: 'GET',
@@ -89,7 +89,7 @@ describe('Repository GET info', () => {
   });
 
   it('should return 200 and the repoList data if found', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue(mockRepoList);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
@@ -106,7 +106,7 @@ describe('Add a new repository', () => {
   });
 
   it('should return 405 if method is not handling', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     const { req, res } = createMocks({ method: 'DELETE' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
@@ -119,7 +119,7 @@ describe('Add a new repository', () => {
   });
 
   it('should return 401 if API key is invalid', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'POST',
@@ -130,7 +130,7 @@ describe('Add a new repository', () => {
   });
 
   it('should return 403 if API key does not have create permissions', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     vi.mocked(AuthService.tokenController).mockResolvedValue({ create: false });
     const { req, res } = createMocks({
       method: 'POST',
@@ -141,7 +141,7 @@ describe('Add a new repository', () => {
   });
 
   it('should return 409 if SSH key is duplicated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       { id: 1, sshPublicKey: 'duplicate-key' },
     ]);
@@ -155,7 +155,7 @@ describe('Add a new repository', () => {
   });
 
   it('should return 500 if createRepoShell fails', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stderr: 'Error' });
     const { req, res } = createMocks({
@@ -167,7 +167,7 @@ describe('Add a new repository', () => {
   });
 
   it('should successfully create a repository with a session', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
     vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
@@ -181,7 +181,7 @@ describe('Add a new repository', () => {
   });
 
   it('should add missing optional properties with default values and update repo list correctly', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
     vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
@@ -219,7 +219,7 @@ describe('Add a new repository', () => {
   });
 
   it('should assign the correct ID based on existing repositories', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'USER' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
 
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {

@@ -1,5 +1,4 @@
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { NextApiRequest, NextApiResponse } from 'next';
 import emailTest from '~/helpers/templates/emailTest';
 import { NotifService } from '~/services';
@@ -9,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405);
   }
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) {
     return res.status(401);
   }

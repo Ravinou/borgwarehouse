@@ -1,6 +1,6 @@
 import { ConfigService } from '~/services';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
+import { syncUsernameChange } from '~/lib/auth-db-sync';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, UsernameSettingDTO } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
@@ -13,7 +13,7 @@ export default async function handler(
     return res.status(405);
   }
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) {
     return res.status(401);
   }
@@ -50,6 +50,7 @@ export default async function handler(
       index === userIndex ? { ...user, username } : user
     );
     await ConfigService.updateUsersList(updatedUsersList);
+    syncUsernameChange(session.user.id!, username);
 
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error) {

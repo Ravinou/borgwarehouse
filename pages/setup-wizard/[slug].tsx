@@ -1,8 +1,7 @@
 import SetupWizard from '../../Containers/SetupWizard/SetupWizard';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { GetServerSidePropsContext } from 'next';
 
 export default function SetupWizardStep() {
@@ -22,7 +21,7 @@ export default function SetupWizardStep() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getSession(context.req, context.res);
 
   if (!session) {
     return {

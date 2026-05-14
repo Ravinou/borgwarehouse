@@ -1,5 +1,4 @@
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService } from '~/services';
@@ -14,7 +13,7 @@ export default async function handler(
   >
 ) {
   // Auth
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) {
     return ApiResponse.unauthorized(res);
   }

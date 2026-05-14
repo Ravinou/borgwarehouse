@@ -1,5 +1,4 @@
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, WizardEnvEnum, WizardEnvType } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
@@ -11,7 +10,7 @@ export default async function handler(
   if (req.method !== 'GET') {
     return res.status(405);
   }
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) {
     return res.status(401);
   }

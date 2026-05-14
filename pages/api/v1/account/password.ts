@@ -1,6 +1,6 @@
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
 import { ConfigService, AuthService } from '~/services';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
+import { syncPasswordChange } from '~/lib/auth-db-sync';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, PasswordSettingDTO } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
@@ -13,7 +13,7 @@ export default async function handler(
     return res.status(405);
   }
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) {
     return res.status(401);
   }
@@ -46,6 +46,7 @@ export default async function handler(
     );
 
     await ConfigService.updateUsersList(updatedUsersList);
+    syncPasswordChange(session.user.id!, newPasswordHash);
 
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error) {

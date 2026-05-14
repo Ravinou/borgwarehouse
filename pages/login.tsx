@@ -1,10 +1,9 @@
-import { getServerSession } from 'next-auth/next';
-import { signIn, useSession } from 'next-auth/react';
+import { getSession } from '~/helpers/getServerSession';
+import { authClient, useAuthSession } from '~/lib/auth-client';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormStatus } from '~/hooks';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
 
 //Components
 import { GetServerSidePropsContext } from 'next';
@@ -18,7 +17,7 @@ type LoginForm = {
 };
 
 export default function Login() {
-  const { status } = useSession();
+  const { status } = useAuthSession();
   const { register, handleSubmit, reset, setFocus } = useForm<LoginForm>();
   const router = useRouter();
   const toastOptions: ToastOptions = {
@@ -55,10 +54,9 @@ export default function Login() {
     start();
     setIsLoading(true);
     clearError();
-    const resultat = await signIn('credentials', {
+    const resultat = await authClient.signIn.username({
       username: data.username,
       password: data.password,
-      redirect: false,
     });
 
     if (resultat?.error) {
@@ -66,7 +64,7 @@ export default function Login() {
       setFocus('username');
       reset();
       toast.info('Incorrect credentials', toastOptions);
-      handleError(resultat.error);
+      handleError(resultat.error.message ?? resultat.error.statusText ?? 'Unknown error');
     } else {
       stop();
       setIsLoading(false);
@@ -162,7 +160,7 @@ export default function Login() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getSession(context.req, context.res);
 
   //Here, if I am connected, I redirect to the home page.
   if (session) {

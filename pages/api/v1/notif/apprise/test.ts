@@ -1,10 +1,9 @@
 import { exec } from 'child_process';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { promisify } from 'util';
 import { ConfigService } from '~/services';
 import { ErrorResponse, SuccessResponse } from '~/types';
-import { authOptions } from '~/pages/api/auth/[...nextauth]';
 
 const execAsync = promisify(exec);
 
@@ -39,7 +38,7 @@ export default async function handler(
 ) {
   if (req.method !== 'POST') return res.status(405).json({ message: 'Bad request on API' });
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getSession(req, res);
   if (!session) return res.status(401).json({ message: 'You must be logged in.' });
 
   try {

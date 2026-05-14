@@ -1,12 +1,15 @@
 /**
- * One-time migration script: copies users from config/users.json into the
- * better-auth SQLite database (config/better_auth.sqlite).
+ * Optional manual migration script >>> for debugging purposes only.
  *
- * Run once when upgrading from next-auth to better-auth:
+ * The migration from next-auth to better-auth runs automatically at server
+ * startup via instrumentation.ts. You do NOT need to run this script in
+ * normal usage.
+ *
+ * Use it only if you need to manually trigger or debug the migration:
  *   pnpm tsx scripts/migrate-users.ts
  *
- * My script is idempotent: if users already exist in the database it exits
- * without making any changes.
+ * The script is idempotent: if users already exist in the SQLite database
+ * it exits without making any changes.
  */
 import { migrateUsersFromJson } from '../lib/auth-migrate';
 

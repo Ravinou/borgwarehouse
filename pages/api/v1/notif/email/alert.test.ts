@@ -1,9 +1,9 @@
-import { getServerSession } from 'next-auth/next';
+import { getSession } from '~/helpers/getServerSession';
 import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/notif/email/alert';
 import { ConfigService } from '~/services';
 
-vi.mock('next-auth/next');
+vi.mock('~/helpers/getServerSession');
 vi.mock('~/services');
 
 describe('Get Email Alert API', () => {
@@ -13,7 +13,7 @@ describe('Get Email Alert API', () => {
   });
 
   it('should return 405 if the method is not GET', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
     const { req, res } = createMocks({ method: 'POST' });
@@ -22,14 +22,14 @@ describe('Get Email Alert API', () => {
   });
 
   it('should return 401 if the user is not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(401);
   });
 
   it('should return 400 if the user does not exist', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'nonexistent' },
     });
 
@@ -54,7 +54,7 @@ describe('Get Email Alert API', () => {
   });
 
   it('should return emailAlert if the user exists', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -79,7 +79,7 @@ describe('Get Email Alert API', () => {
   });
 
   it('should return 500 if there is an error reading the file', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
 
@@ -105,7 +105,7 @@ describe('Update email Alert API', () => {
   });
 
   it('should return 401 if not authenticated', async () => {
-    vi.mocked(getServerSession).mockResolvedValue(null);
+    vi.mocked(getSession).mockResolvedValue(null);
 
     const { req, res } = createMocks({ method: 'PUT' });
     await handler(req, res);
@@ -114,7 +114,7 @@ describe('Update email Alert API', () => {
   });
 
   it('should return 405 if method is not PUT', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'testuser' },
     });
     const { req, res } = createMocks({ method: 'POST' });
@@ -124,7 +124,7 @@ describe('Update email Alert API', () => {
   });
 
   it('should return 422 if emailAlert is not a boolean', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -140,7 +140,7 @@ describe('Update email Alert API', () => {
   });
 
   it('should return 400 if user is not found in the users list', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -178,7 +178,7 @@ describe('Update email Alert API', () => {
       roles: [],
     };
 
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -198,7 +198,7 @@ describe('Update email Alert API', () => {
   });
 
   it('should return 500 if there is a file system error (ENOENT)', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 
@@ -219,7 +219,7 @@ describe('Update email Alert API', () => {
   });
 
   it('should return 500 on unknown error', async () => {
-    vi.mocked(getServerSession).mockResolvedValue({
+    vi.mocked(getSession).mockResolvedValue({
       user: { name: 'Lovelace' },
     });
 

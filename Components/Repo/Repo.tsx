@@ -10,13 +10,15 @@ import {
 } from '@tabler/icons-react';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import QuickCommands from './QuickCommands/QuickCommands';
-import { Repository, WizardEnvType, Optional } from '~/types';
+import { Repository, WizardEnvType, Optional, DateFormatEnum } from '~/types';
 import { fromUnixTime, formatDistanceStrict } from 'date-fns';
+import { formatDate } from '~/helpers/functions';
 import useMedia from 'use-media';
 
 type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
   repoManageEditHandler: () => void;
   wizardEnv: Optional<WizardEnvType>;
+  dateFormat?: DateFormatEnum;
 };
 
 export default function Repo(props: RepoProps) {
@@ -107,7 +109,7 @@ export default function Repo(props: RepoProps) {
             <div className={classes.lastSave}>
               <span
                 title={
-                  props.lastSave === 0 ? undefined : fromUnixTime(props.lastSave).toLocaleString()
+                  props.lastSave === 0 ? undefined : formatDate(props.lastSave, props.dateFormat)
                 }
               >
                 {props.lastSave === 0
@@ -174,7 +176,7 @@ export default function Repo(props: RepoProps) {
                         title={
                           props.lastSave === 0
                             ? undefined
-                            : fromUnixTime(props.lastSave).toLocaleString()
+                            : formatDate(props.lastSave, props.dateFormat)
                         }
                       >
                         {props.lastSave === 0
@@ -220,7 +222,7 @@ export default function Repo(props: RepoProps) {
                     title={
                       props.lastSave === 0
                         ? undefined
-                        : fromUnixTime(props.lastSave).toLocaleString()
+                        : formatDate(props.lastSave, props.dateFormat)
                     }
                   >
                     {props.lastSave === 0

@@ -12,6 +12,7 @@ import EmailAlertSettings from './EmailAlertSettings/EmailAlertSettings';
 import AppriseAlertSettings from './AppriseAlertSettings/AppriseAlertSettings';
 import Integrations from './Integrations/Integrations';
 import LinkedAccounts from './LinkedAccounts/LinkedAccounts';
+import DateFormatSettings from './DateFormatSettings/DateFormatSettings';
 
 type UserSettingsProps = {
   status: SessionStatus;
@@ -94,6 +95,7 @@ export default function UserSettings({ data }: UserSettingsProps) {
               {passwordLoginEnabled && <PasswordSettings />}
               <EmailSettings email={data?.user?.email ?? undefined} />
               <LinkedAccounts />
+              <DateFormatSettings />
             </>
           )}
 

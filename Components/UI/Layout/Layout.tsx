@@ -3,6 +3,7 @@ import Header from './Header/Header';
 import NavSide from './NavSide/NavSide';
 import classes from './Layout.module.css';
 import { useAuthSession } from '~/lib/auth-client';
+import { useEffect } from 'react';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -10,6 +11,17 @@ type LayoutProps = {
 
 function Layout(props: LayoutProps) {
   const { status } = useAuthSession();
+
+  useEffect(() => {
+    if (
+      status === 'unauthenticated' &&
+      typeof window !== 'undefined' &&
+      window.location.pathname !== '/login' &&
+      window.location.pathname !== '/setup'
+    ) {
+      window.location.href = '/login';
+    }
+  }, [status]);
 
   if (status === 'authenticated') {
     return (
@@ -21,16 +33,6 @@ function Layout(props: LayoutProps) {
       </>
     );
   } else if (status === 'unauthenticated') {
-    // If we're not already on a public page, hard redirect to login.
-    // This handles session expiry detected client-side.
-    if (
-      typeof window !== 'undefined' &&
-      window.location.pathname !== '/login' &&
-      window.location.pathname !== '/setup'
-    ) {
-      window.location.href = '/login';
-      return null;
-    }
     return (
       <>
         <div className={classes.login}>{props.children}</div>

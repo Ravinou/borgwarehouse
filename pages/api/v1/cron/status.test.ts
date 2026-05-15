@@ -462,16 +462,18 @@ describe('Cronjob API Handler', () => {
     expect(res._getStatusCode()).toBe(200);
   });
 
-  it('should update lastStatusAlertSend only if the last alert was sent more than 90000 seconds ago', async () => {
+  it('should send webhook alert when webhookAlert is true and webhookURL is set', async () => {
     const currentTime = 1741535661;
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
-        alias: 'Repo1',
-        status: false,
         alert: 100,
-        lastStatusAlertSend: currentTime - 80000,
+        alias: 'Repo1',
         id: 1,
+        status: true,
         lastSave: 0,
         storageSize: 0,
         storageUsed: 0,
@@ -487,9 +489,12 @@ describe('Cronjob API Handler', () => {
         id: 1,
         password: 'hashed-password',
         roles: ['user'],
-        emailAlert: true,
+        emailAlert: false,
+        appriseAlert: false,
+        webhookAlert: true,
+        webhookURL: 'https://example.com/hook',
         email: 'test@example.com',
-        username: 'TestUser',
+        username: 'testuser',
       },
     ]);
 
@@ -497,24 +502,166 @@ describe('Cronjob API Handler', () => {
       method: 'POST',
       headers: { authorization: 'Bearer test-key' },
     });
-
     await handler(req, res);
 
-    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://example.com/hook',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'down', repos: ['Repo1'], timestamp: currentTime }),
+      })
+    );
+    expect(res._getStatusCode()).toBe(200);
+    vi.unstubAllGlobals();
+  });
+
+  it('should include X-BorgWarehouse-Secret header when webhookSecret is set', async () => {
+    const currentTime = 1741535661;
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
       {
         repositoryName: 'repo1',
-        alias: 'Repo1',
-        status: false,
         alert: 100,
-        lastStatusAlertSend: expect.any(Number),
+        alias: 'Repo1',
         id: 1,
-        lastSave: currentTime - 200,
+        status: true,
+        lastSave: 0,
         storageSize: 0,
         storageUsed: 0,
         sshPublicKey: '',
         comment: '',
       },
     ]);
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
+      { repositoryName: 'repo1', lastSave: currentTime - 200 },
+    ]);
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
+        emailAlert: false,
+        appriseAlert: false,
+        webhookAlert: true,
+        webhookURL: 'https://example.com/hook',
+        webhookSecret: 'my-secret',
+        email: 'test@example.com',
+        username: 'testuser',
+      },
+    ]);
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      headers: { authorization: 'Bearer test-key' },
+    });
+    await handler(req, res);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://example.com/hook',
+      expect.objectContaining({
+        headers: {
+          'Content-Type': 'application/json',
+          'X-BorgWarehouse-Secret': 'my-secret',
+        },
+      })
+    );
+    vi.unstubAllGlobals();
+  });
+
+  it('should not send webhook alert when webhookAlert is false', async () => {
+    const currentTime = 1741535661;
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alert: 100,
+        alias: 'Repo1',
+        id: 1,
+        status: true,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+      },
+    ]);
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
+      { repositoryName: 'repo1', lastSave: currentTime - 200 },
+    ]);
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
+        emailAlert: false,
+        appriseAlert: false,
+        webhookAlert: false,
+        webhookURL: 'https://example.com/hook',
+        email: 'test@example.com',
+        username: 'testuser',
+      },
+    ]);
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      headers: { authorization: 'Bearer test-key' },
+    });
+    await handler(req, res);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it('should not crash if webhook request fails', async () => {
+    const currentTime = 1741535661;
+    const fetchMock = vi.fn().mockRejectedValue(new Error('Network error'));
+    vi.stubGlobal('fetch', fetchMock);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alert: 100,
+        alias: 'Repo1',
+        id: 1,
+        status: true,
+        lastSave: 0,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+      },
+    ]);
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
+      { repositoryName: 'repo1', lastSave: currentTime - 200 },
+    ]);
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
+        emailAlert: false,
+        appriseAlert: false,
+        webhookAlert: true,
+        webhookURL: 'https://example.com/hook',
+        email: 'test@example.com',
+        username: 'testuser',
+      },
+    ]);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      headers: { authorization: 'Bearer test-key' },
+    });
+    await handler(req, res);
+
     expect(res._getStatusCode()).toBe(200);
+    vi.unstubAllGlobals();
   });
 });

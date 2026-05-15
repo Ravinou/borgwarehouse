@@ -93,6 +93,28 @@ export default async function handler(
           console.error('Apprise notification failed:', notifErr);
         }
       }
+
+      // Send Webhook Alert
+      if (usersList[0].webhookAlert && usersList[0].webhookURL) {
+        const payload = {
+          status: 'down',
+          repos: repoAliasListToSendAlert,
+          timestamp: date,
+        };
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (usersList[0].webhookSecret) {
+          headers['X-BorgWarehouse-Secret'] = usersList[0].webhookSecret;
+        }
+        try {
+          await fetch(usersList[0].webhookURL, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload),
+          });
+        } catch (notifErr) {
+          console.error('Webhook notification failed:', notifErr);
+        }
+      }
     }
 
     await ConfigService.updateRepoList(updatedRepoList);

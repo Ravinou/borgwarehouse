@@ -11,6 +11,7 @@ vi.mock('bcryptjs', () => ({
 
 vi.mock('crypto', () => ({
   randomBytes: vi.fn((n: number) => Buffer.alloc(n, 0)),
+  randomInt: vi.fn(() => 0),
 }));
 
 vi.mock('../helpers/sqlite-utils');

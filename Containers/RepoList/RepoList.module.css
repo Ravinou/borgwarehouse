@@ -135,19 +135,27 @@
   gap: 10px;
 }
 
-.searchInput {
-  padding: 10px 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  width: 100%;
-  max-width: 300px;
-}
-
 .sortIcons {
   display: flex;
-  gap: 10px;
+  gap: 6px;
   align-items: center;
+  background: #f4f4f8;
+  border: 1px solid #e0e0ea;
+  border-radius: 20px;
+  padding: 5px 12px;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.refreshIcon {
+  cursor: pointer;
+  color: #c0c0d0;
+  transition: color 0.2s ease;
+  margin-left: 4px;
+}
+
+.refreshIcon:hover {
+  color: #6d4aff;
 }
 
 .icon {
@@ -170,29 +178,57 @@
   position: relative;
   display: flex;
   align-items: center;
+  gap: 6px;
+  background: #f4f4f8;
+  border: 1px solid #e0e0ea;
+  border-radius: 20px;
+  padding: 5px 12px;
+  height: 36px;
+  box-sizing: border-box;
   width: 100%;
   max-width: 300px;
 }
 
+.searchIcon {
+  color: #b0b0c8;
+  flex-shrink: 0;
+}
+
 .searchInput {
   width: 100%;
-  padding: 8px 32px 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  border: none;
+  background: transparent;
   font-size: 14px;
   outline: none;
-  background-color: white;
+  color: #333;
+}
+
+.searchInput::placeholder {
+  color: #c0c0d0;
 }
 
 .clearButton {
-  position: absolute;
-  right: 8px;
+  display: flex;
+  align-items: center;
   background: transparent;
   border: none;
   cursor: pointer;
   color: #999;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .clearButton:hover {
   color: #333;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.iconSpin {
+  animation: spin 0.8s linear infinite;
+  color: #6d4aff;
+  cursor: not-allowed;
 }

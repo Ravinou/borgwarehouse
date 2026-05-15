@@ -1,13 +1,13 @@
 import { IconExternalLink, IconTrash } from '@tabler/icons-react';
-import { fromUnixTime } from 'date-fns';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormStatus } from '~/hooks';
-import { IntegrationTokenType, Optional, TokenPermissionEnum, TokenPermissionsType } from '~/types';
+import { IntegrationTokenType, Optional, TokenPermissionEnum, TokenPermissionsType, DateFormatEnum } from '~/types';
 import classes from '../UserSettings.module.css';
+import { formatDate } from '~/helpers/functions';
 
 //Components
 import CopyButton from '~/Components/UI/CopyButton/CopyButton';
@@ -62,6 +62,7 @@ export default function Integrations() {
     update: false,
     delete: false,
   });
+  const [dateFormat, setDateFormat] = useState<DateFormatEnum>(DateFormatEnum.LOCALE);
 
   const fetchTokenList = async () => {
     start();
@@ -92,6 +93,11 @@ export default function Integrations() {
       .then((data) => setTokenList(data))
       .catch(() => handleError('Fetching token list failed.'))
       .finally(() => stop());
+
+    fetch('/api/v1/account/date-format')
+      .then((res) => res.json())
+      .then((data) => { if (data.dateFormat) setDateFormat(data.dateFormat); })
+      .catch(() => { /* keep default */ });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -283,7 +289,7 @@ export default function Integrations() {
                     <div className={classes.tokenCardBody}>
                       <div className={classes.tokenInfo}>
                         <strong>Created at:</strong>
-                        {fromUnixTime(token.creation).toLocaleString()}
+                        {formatDate(token.creation, dateFormat)}
                       </div>
                       <div className={classes.tokenInfo}>
                         <strong>Permission:</strong>

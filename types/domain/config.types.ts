@@ -18,6 +18,13 @@ export type Repository = {
   lastStatusAlertSend?: number;
 };
 
+export enum DateFormatEnum {
+  LOCALE = 'locale',
+  ISO = 'yyyy-MM-dd HH:mm',
+  EUROPEAN = 'dd/MM/yyyy HH:mm',
+  US = 'MM/dd/yyyy hh:mm a',
+}
+
 export type BorgWarehouseUser = {
   id: number;
   username: string;
@@ -30,6 +37,7 @@ export type BorgWarehouseUser = {
   appriseStatelessURL?: string;
   appriseServices?: string[];
   tokens?: Array<IntegrationTokenType>;
+  dateFormat?: DateFormatEnum;
 };
 
 export enum WizardEnvEnum {

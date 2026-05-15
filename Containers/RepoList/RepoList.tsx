@@ -24,7 +24,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Repo from '~/Components/Repo/Repo';
 import RepoManage from '../RepoManage/RepoManage';
 import ShimmerRepoList from '~/Components/UI/ShimmerRepoList/ShimmerRepoList';
-import { Repository, WizardEnvType, Optional } from '~/types';
+import { Repository, WizardEnvType, Optional, DateFormatEnum } from '~/types';
 
 type SortOption =
   | 'alias-asc'
@@ -42,6 +42,7 @@ export default function RepoList() {
   const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
   const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
   const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
+  const [dateFormat, setDateFormat] = useState<DateFormatEnum>(DateFormatEnum.LOCALE);
 
   const [sortOption, setSortOption] = useState<SortOption>(() => {
     const savedSort = localStorage.getItem('repoSort');
@@ -77,7 +78,19 @@ export default function RepoList() {
         console.log('Fetching wizard env error');
       }
     };
+
+    const fetchDateFormat = async () => {
+      try {
+        const response = await fetch('/api/v1/account/date-format');
+        const data = await response.json();
+        if (data.dateFormat) setDateFormat(data.dateFormat);
+      } catch {
+        // keep default
+      }
+    };
+
     fetchWizardEnv();
+    fetchDateFormat();
   }, [router.pathname]);
 
   const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
@@ -178,6 +191,7 @@ export default function RepoList() {
       appendOnlyMode={repo.appendOnlyMode}
       repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
       wizardEnv={wizardEnv}
+      dateFormat={dateFormat}
     />
   ));
 

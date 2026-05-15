@@ -20,3 +20,12 @@ export type AppriseModeDTO = {
 export type AppriseServicesDTO = {
   appriseServices?: string[];
 };
+
+export type WebhookAlertDTO = {
+  webhookAlert: boolean;
+};
+
+export type WebhookURLDTO = {
+  webhookURL: string;
+  webhookSecret?: string;
+};

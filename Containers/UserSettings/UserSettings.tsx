@@ -10,6 +10,7 @@ import PasswordSettings from './PasswordSettings/PasswordSettings';
 import UsernameSettings from './UsernameSettings/UsernameSettings';
 import EmailAlertSettings from './EmailAlertSettings/EmailAlertSettings';
 import AppriseAlertSettings from './AppriseAlertSettings/AppriseAlertSettings';
+import WebhookAlertSettings from './WebhookAlertSettings/WebhookAlertSettings';
 import Integrations from './Integrations/Integrations';
 import LinkedAccounts from './LinkedAccounts/LinkedAccounts';
 import DateFormatSettings from './DateFormatSettings/DateFormatSettings';
@@ -103,6 +104,7 @@ export default function UserSettings({ data }: UserSettingsProps) {
             <>
               <EmailAlertSettings />
               <AppriseAlertSettings />
+              <WebhookAlertSettings />
             </>
           )}
 

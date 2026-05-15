@@ -38,6 +38,9 @@ export type BorgWarehouseUser = {
   appriseServices?: string[];
   tokens?: Array<IntegrationTokenType>;
   dateFormat?: DateFormatEnum;
+  webhookAlert?: boolean;
+  webhookURL?: string;
+  webhookSecret?: string;
 };
 
 export enum WizardEnvEnum {

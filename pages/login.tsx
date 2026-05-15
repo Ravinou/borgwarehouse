@@ -52,6 +52,7 @@ export default function Login({
 
   const { isLoading, setIsLoading, handleError, clearError } = useFormStatus();
   const { start, stop } = useLoader();
+  const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -86,8 +87,6 @@ export default function Login({
       router.replace('/');
     }
   };
-
-  const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 
   const handleOAuthSignIn = async (providerId: string) => {
     setOauthLoading(providerId);

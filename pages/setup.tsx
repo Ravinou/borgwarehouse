@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import { useLoader } from '~/contexts/LoaderContext';
 import { useFormStatus } from '~/hooks';
@@ -32,11 +32,11 @@ export default function Setup({ requiresSecret }: { requiresSecret: boolean }) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SetupForm>({ mode: 'onChange' });
 
-  const password = watch('password');
+  const password = useWatch({ control, name: 'password' });
 
   const formSubmitHandler = async (data: SetupForm) => {
     start();

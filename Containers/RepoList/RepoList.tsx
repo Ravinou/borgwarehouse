@@ -14,6 +14,8 @@ import {
   IconSortAscendingSmallBig,
   IconSortDescendingSmallBig,
   IconSortDescending2Filled,
+  IconRefresh,
+  IconSearch,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -48,6 +50,7 @@ export default function RepoList() {
     const savedSort = localStorage.getItem('repoSort');
     return (savedSort as SortOption) || 'alias-asc';
   });
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState(() => {
     const savedSearch = localStorage.getItem('repoSearch');
@@ -174,6 +177,23 @@ export default function RepoList() {
   const displayBlur = () =>
     displayRepoAdd || displayRepoEdit ? classes.containerBlur : classes.container;
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch('/api/v1/repositories/refresh', { method: 'POST' });
+      const result = await res.json();
+      if (!res.ok && res.status !== 409) {
+        toast.error(result.message ?? 'Refresh failed.', toastOptions);
+      } else {
+        await mutate('/api/v1/repositories');
+      }
+    } catch {
+      toast.error('Refresh failed.', toastOptions);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const renderRepoList = getSortedRepoList().map((repo: Repository) => (
     <Repo
       key={repo.id}
@@ -211,7 +231,8 @@ export default function RepoList() {
 
         <div className={classes.toolbar}>
           <div className={classes.searchContainer}>
-            <input
+              <IconSearch size={15} className={classes.searchIcon} />
+              <input
               type='text'
               placeholder='Alias, comment, repository name...'
               value={searchQuery}
@@ -233,8 +254,9 @@ export default function RepoList() {
             )}
           </div>
 
-          <div className={classes.sortIcons}>
-            <IconSortAscendingLetters
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className={classes.sortIcons}>
+              <IconSortAscendingLetters
               className={sortOption === 'alias-asc' ? classes.iconActive : classes.icon}
               onClick={() => handleSortChange('alias-asc')}
               title='Alias A-Z'
@@ -273,6 +295,13 @@ export default function RepoList() {
               className={sortOption === 'storage-used-desc' ? classes.iconActive : classes.icon}
               onClick={() => handleSortChange('storage-used-desc')}
               title='Storage usage % high → low'
+            />
+            </div>
+            <IconRefresh
+              className={`${classes.refreshIcon} ${isRefreshing ? classes.iconSpin : ''}`}
+              onClick={!isRefreshing ? handleRefresh : undefined}
+              title='Manually refresh status & storage. Does not replace a scheduled cron job.'
+              size={18}
             />
           </div>
         </div>

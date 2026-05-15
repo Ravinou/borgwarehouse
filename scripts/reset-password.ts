@@ -11,7 +11,7 @@
  * Prints the new password to the terminal. Log in and change it afterwards.
  */
 import { hashSync } from 'bcryptjs';
-import { randomBytes } from 'crypto';
+import { randomInt } from 'crypto';
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import { updateSqlitePassword } from '../helpers/sqlite-utils';
@@ -23,10 +23,11 @@ const PASSWORD_CHARS = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const PASSWORD_LENGTH = 20;
 
 export function generatePassword(): string {
-  return Array.from(randomBytes(PASSWORD_LENGTH))
-    .map((b) => PASSWORD_CHARS[b % PASSWORD_CHARS.length])
-    .join('')
-    .slice(0, PASSWORD_LENGTH);
+  let password = '';
+  for (let i = 0; i < PASSWORD_LENGTH; i++) {
+    password += PASSWORD_CHARS[randomInt(PASSWORD_CHARS.length)];
+  }
+  return password;
 }
 
 export function run(): void {

@@ -62,14 +62,14 @@ export default function Nav() {
             <div className={classes.dropdown}>
               <Link href='/account' className={classes.dropdownItem} onClick={() => setOpen(false)}>
                 <IconSettings size={16} />
-                Mon compte
+                My Account
               </Link>
               <button
                 className={`${classes.dropdownItem} ${classes.dropdownLogout}`}
                 onClick={onLogoutClickedHandler}
               >
                 <IconLogout size={16} />
-                Déconnexion
+                Sign Out
               </button>
             </div>
           )}

@@ -11,6 +11,7 @@ import {
   IconLink,
   IconUnlink,
 } from '@tabler/icons-react';
+import { authClient } from '~/lib/auth-client';
 
 type LinkedAccount = {
   id: string;
@@ -70,6 +71,18 @@ export default function LinkedAccounts() {
   }, []);
 
   const oauthAccounts = accounts.filter((a) => a.providerId !== 'credential');
+
+  const [linking, setLinking] = useState<string | null>(null);
+
+  const handleLink = async (provider: OAuthProvider) => {
+    setLinking(provider.id);
+    try {
+      await authClient.linkSocial({ provider: provider.id as any, callbackURL: '/account' });
+    } catch {
+      toast.error(`Failed to link ${provider.name}`, toastOptions);
+      setLinking(null);
+    }
+  };
 
   const handleUnlink = async (account: LinkedAccount) => {
     setUnlinking(account.id);
@@ -145,19 +158,38 @@ export default function LinkedAccounts() {
             {/* Show available but not yet linked providers */}
             {providers.filter((p) => !oauthAccounts.some((a) => a.providerId === p.id)).length >
               0 && (
-              <div style={{ marginTop: oauthAccounts.length > 0 ? '12px' : 0 }}>
-                <p style={{ color: '#9798b2', fontSize: '0.9em', margin: '0 0 4px' }}>
-                  Available:{' '}
-                  {providers
-                    .filter((p) => !oauthAccounts.some((a) => a.providerId === p.id))
-                    .map((p) => p.name)
-                    .join(', ')}
-                  {' — '}sign in with them to link.
-                </p>
+              <div
+                className={classes.linkedAccountsList}
+                style={{ marginTop: oauthAccounts.length > 0 ? '12px' : 0 }}
+              >
+                {providers
+                  .filter((p) => !oauthAccounts.some((a) => a.providerId === p.id))
+                  .map((p) => (
+                    <div key={p.id} className={classes.linkedAccountCard}>
+                      <div className={classes.linkedAccountInfo}>
+                        <span className={classes.linkedAccountIcon}>
+                          {providerIcons[p.id] || <IconLink size={20} />}
+                        </span>
+                        <div>
+                          <strong>{p.name}</strong>
+                          <small className={classes.linkedAccountDate}>Not linked</small>
+                        </div>
+                      </div>
+                      <button
+                        className={classes.linkButton}
+                        onClick={() => handleLink(p)}
+                        disabled={linking !== null || unlinking !== null}
+                        title={`Link ${p.name}`}
+                      >
+                        <IconLink size={16} />
+                        {linking === p.id ? 'Linking...' : 'Link'}
+                      </button>
+                    </div>
+                  ))}
               </div>
             )}
 
-            {oauthAccounts.length === 0 && (
+            {oauthAccounts.length === 0 && providers.length === 0 && (
               <p style={{ color: '#9798b2', fontSize: '0.9em' }}>
                 No OAuth accounts linked. Sign in with an OAuth provider to link it.
               </p>

@@ -129,7 +129,7 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true,
-      trustedProviders: ['google', 'github', 'microsoft', 'gitlab'],
+      trustedProviders: ['google', 'github', 'microsoft', 'gitlab', 'oidc'],
       // IMPORTANT: Set to true when I'll implement multi-user support in borgwarehouse (one day...)
       // Prevents email squatting attacks where an attacker creates an unverified
       // account with a victim's email, then the victim's OAuth links to it.

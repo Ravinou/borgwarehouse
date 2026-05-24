@@ -571,3 +571,27 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+.linkButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #e5e7eb;
+  background-color: transparent;
+  color: #9798b2;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.linkButton:hover {
+  border-color: #494b7a;
+  color: #494b7a;
+}
+
+.linkButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}

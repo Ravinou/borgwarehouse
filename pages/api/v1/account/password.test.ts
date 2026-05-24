@@ -31,7 +31,7 @@ describe('PUT /api/account/updatePassword', () => {
 
   it('should return 422 if oldPassword or newPassword are missing or not strings', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace', email: 'love@example.com' },
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
     });
 
     const { req, res } = createMocks({
@@ -47,7 +47,7 @@ describe('PUT /api/account/updatePassword', () => {
 
   it('should return 400 if user is not found', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace', email: 'love@example.com' },
+      user: { name: 'Lovelace', email: 'love@example.com', id: '2' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -69,7 +69,7 @@ describe('PUT /api/account/updatePassword', () => {
 
   it('should return 400 if old password is incorrect', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace', email: 'love@example.com' },
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
@@ -99,7 +99,7 @@ describe('PUT /api/account/updatePassword', () => {
     };
 
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace', email: 'love@example.com' },
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([oldUser]);
@@ -126,7 +126,7 @@ describe('PUT /api/account/updatePassword', () => {
 
   it('should return 500 if there is a file system error (ENOENT)', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace', email: 'love@example.com' },
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
@@ -147,7 +147,7 @@ describe('PUT /api/account/updatePassword', () => {
 
   it('should return 500 on unknown error', async () => {
     vi.mocked(getSession).mockResolvedValue({
-      user: { name: 'Lovelace', email: 'love@example.com' },
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
     });
 
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'SOMETHING_ELSE' });

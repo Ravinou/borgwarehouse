@@ -32,7 +32,7 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 422 if username is not a string', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -46,7 +46,7 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 422 if username format is invalid', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -62,7 +62,7 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 400 if user is not found', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '2' } });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       { username: 'Ada', email: 'ada@example.com', password: 'xxx', id: 1, roles: ['user'] },
@@ -82,7 +82,7 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 400 if new username already exists', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       { username: 'Lovelace', email: 'love@example.com', password: 'xxx', id: 1, roles: ['user'] },
@@ -115,7 +115,7 @@ describe('PUT /api/account/updateUsername', () => {
       roles: ['user'],
     };
 
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([originalUser]);
     vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
@@ -135,7 +135,7 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 500 if file not found (ENOENT)', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
@@ -153,7 +153,7 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 500 on unknown error', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com' } });
+    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'SOMETHING_ELSE' });
 
     const { req, res } = createMocks({

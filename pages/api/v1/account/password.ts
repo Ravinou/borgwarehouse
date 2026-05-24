@@ -1,3 +1,4 @@
+import { findUserIndexBySession } from '~/helpers/functions';
 import { ConfigService, AuthService } from '~/services';
 import { getSession } from '~/helpers/getServerSession';
 import { syncPasswordChange } from '~/lib/auth-db-sync';
@@ -26,7 +27,7 @@ export default async function handler(
 
   try {
     const usersList = await ConfigService.getUsersList();
-    const userIndex = usersList.findIndex((user) => user.email === session.user?.email);
+    const userIndex = findUserIndexBySession(usersList, session);
     const user = usersList[userIndex];
 
     if (userIndex === -1 || !user) {

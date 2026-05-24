@@ -1,3 +1,4 @@
+import { findUserBySession, findUserIndexBySession } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from '~/helpers/getServerSession';
 import { ConfigService } from '~/services';
@@ -18,7 +19,7 @@ export default async function handler(
       const usersList = await ConfigService.getUsersList();
 
       //Verify that the user of the session exists
-      const user = usersList.find((u) => u.email === session.user?.email);
+      const user = findUserBySession(usersList, session);
       if (!user) {
         res.status(400).json({
           message: 'User is incorrect. Please, logout to update your session.',
@@ -38,7 +39,7 @@ export default async function handler(
 
     try {
       const usersList = await ConfigService.getUsersList();
-      const userIndex = usersList.findIndex((u) => u.email === session.user?.email);
+      const userIndex = findUserIndexBySession(usersList, session);
 
       if (userIndex === -1) {
         return res

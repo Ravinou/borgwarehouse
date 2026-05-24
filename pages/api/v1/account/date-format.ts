@@ -1,3 +1,4 @@
+import { findUserBySession, findUserIndexBySession } from '~/helpers/functions';
 import { ConfigService } from '~/services';
 import { getSession } from '~/helpers/getServerSession';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -17,7 +18,7 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const usersList = await ConfigService.getUsersList();
-      const user = usersList.find((u) => u.email === session.user?.email);
+      const user = findUserBySession(usersList, session);
 
       if (!user) {
         return res.status(400).json({ message: 'User not found.' });
@@ -38,7 +39,7 @@ export default async function handler(
 
     try {
       const usersList = await ConfigService.getUsersList();
-      const userIndex = usersList.findIndex((u) => u.email === session.user?.email);
+      const userIndex = findUserIndexBySession(usersList, session);
 
       if (userIndex === -1) {
         return res.status(400).json({

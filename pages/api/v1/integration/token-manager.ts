@@ -1,3 +1,4 @@
+import { findUserBySession } from '~/helpers/functions';
 import { getSession } from '~/helpers/getServerSession';
 import { NextApiRequest, NextApiResponse } from 'next';
 import ApiResponse from '~/helpers/functions/apiResponse';
@@ -32,7 +33,7 @@ export default async function handler(
       const { name, permissions } = req.body as IntegrationTokenType;
 
       const usersList = await ConfigService.getUsersList();
-      const user = usersList.find((u) => u.email === session.user?.email);
+      const user = findUserBySession(usersList, session);
       if (!user) {
         return ApiResponse.unauthorized(res);
       }
@@ -65,7 +66,7 @@ export default async function handler(
   } else if (req.method == 'GET') {
     try {
       const usersList = await ConfigService.getUsersList();
-      const user = usersList.find((u) => u.email === session.user?.email);
+      const user = findUserBySession(usersList, session);
       if (!user) {
         return ApiResponse.unauthorized(res);
       }
@@ -85,7 +86,7 @@ export default async function handler(
   } else if (req.method == 'DELETE') {
     try {
       const usersList = await ConfigService.getUsersList();
-      const user = usersList.find((u) => u.email === session.user?.email);
+      const user = findUserBySession(usersList, session);
       if (!user) {
         return ApiResponse.unauthorized(res);
       }

@@ -276,7 +276,7 @@
 .statGrid {
   display: grid;
   grid-template-columns: auto auto minmax(0, 1fr) auto auto;
-  align-items: center;
+  align-items: start;
   gap: 18px;
   padding-top: 14px;
   border-top: 1px solid #e8e8f0;
@@ -324,6 +324,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  align-self: center;
 }
 
 @media all and (max-width: 1000px) {

@@ -22,6 +22,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Layout>
         <Head>
           <meta name='viewport' content='width=device-width, initial-scale=1'></meta>
+          <link rel='icon' type='image/svg+xml' href='/borgwarehouse-ghost.svg' />
           <link rel='shortcut icon' href='/favicon.ico' />
           <title>BorgWarehouse</title>
         </Head>

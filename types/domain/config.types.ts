@@ -11,6 +11,7 @@ export type Repository = {
   storageUsed: number;
   sshPublicKey: string;
   comment: string;
+  icon?: string;
   displayDetails?: boolean; // @deprecated
   unixUser?: string; // @deprecated
   lanCommand?: boolean;

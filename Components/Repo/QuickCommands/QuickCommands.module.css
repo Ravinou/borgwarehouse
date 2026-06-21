@@ -1,117 +1,84 @@
-.container {
+.commandBox {
   display: flex;
   align-items: center;
-  align-self: flex-start;
-  margin: auto 25px auto auto;
+  gap: 8px;
+  width: 100%;
+  padding: 3px 4px 3px 10px;
+  background: #f9f8fd;
+  border: 1px solid #ecebf3;
+  border-radius: 9px;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
-.icons {
-  position: relative;
-  bottom: 13px;
+.commandBox:hover {
+  border-color: #d6d2f2;
+  background: #faf9ff;
 }
 
-.quickSetting {
-  position: absolute;
-  visibility: visible;
-  opacity: 1;
+.commandIcon {
+  color: #8b8fb0;
+  flex-shrink: 0;
+}
+
+.commandText {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.76rem;
+  color: #7c8099;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lanBadge {
-  border-radius: 5px;
-  border: 1px solid #6d4aff;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 1px solid #c3b6fa;
+  background: #f0ecff;
   color: #6d4aff;
-  font-size: 0.9em;
-  padding: 2px 5px;
-  margin-right: 8px;
-}
-
-.tooltip {
-  visibility: hidden;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #6d4aff21;
-  background-color: #fafafa;
-  border-radius: 5px;
-  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.1) inset;
-  color: #65748b;
-  font-size: 0.95rem;
-  padding: 5px 5px;
-  transition: 0.5s opacity;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 1px 5px;
 }
 
 .copyButton {
-  position: absolute;
-  visibility: hidden;
-  opacity: 0;
-  border: none;
-  background-color: none;
-}
-
-.copyValid {
-  margin: auto 8px auto auto;
-  padding: 6px 6px;
-  font-size: 0.95rem;
-  color: #6d4aff;
-  animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-@keyframes scale-in-center {
-  0% {
-    -webkit-transform: scale(0);
-    transform: scale(0);
-    opacity: 1;
-  }
-  100% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* On Hover */
-
-.container:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #6d4aff21;
-  background-color: #fafafa;
-  border-radius: 5px;
-  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.1) inset;
-  color: #65748b;
-  font-size: 0.95rem;
-  padding: 5px 5px;
-  transition: 0.5s opacity;
-}
-
-.container:hover .copyButton {
-  position: absolute;
-  visibility: visible;
-  opacity: 1;
-  border: none;
-  background-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 4px 9px;
+  border: 1px solid #e4e3ef;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #7c8099;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
-.container:hover .quickSetting {
-  position: absolute;
-  visibility: hidden;
-  opacity: 0;
+.copyButton:hover {
+  background: #f3f2fb;
+  border-color: #c3b6fa;
+  color: #6d4aff;
 }
 
-.container:hover .lanBadge {
-  visibility: hidden;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
+.copyButton.copied {
+  background: #ecfdf3;
+  border-color: #abe7c4;
+  color: #00a854;
 }
 
 @media all and (max-width: 1000px) {
-  .container {
+  .commandBox {
     display: none;
   }
 }

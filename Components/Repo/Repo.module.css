@@ -263,13 +263,8 @@
   padding: 0 16px 16px 16px;
 }
 
-/* Row of quick commands */
 .bodyTop {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 4px 0 12px 0;
+  padding: 2px 0 12px 0;
 }
 
 /* Stats grid replaces the old dark table */

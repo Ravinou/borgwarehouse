@@ -260,24 +260,17 @@ export default function RepoManage(props: RepoManageProps) {
       <div className={classes.modaleWrapper} />
       <div className={classes.modale}>
         <div onClick={props.closeHandler} className={classes.close}>
-          <IconX size={36} />
+          <IconX size={20} />
         </div>
         {deleteDialog ? (
           <div className={classes.deleteDialogWrapper}>
-            <div>
-              <IconAlertCircle size={80} color='red' style={{ margin: 'auto' }} />
-              <h1 style={{ textAlign: 'center' }}>
-                Delete the repository{' '}
-                <span
-                  style={{
-                    color: 'rgba(99, 115, 129, 0.38)',
-                  }}
-                >
-                  {targetRepo?.repositoryName}
-                </span>{' '}
-                ?
-              </h1>
+            <div className={classes.deleteIconCircle}>
+              <IconAlertCircle size={40} />
             </div>
+            <h1>
+              Delete the repository{' '}
+              <span className={classes.deleteRepoName}>{targetRepo?.repositoryName}</span> ?
+            </h1>
             <div className={classes.deleteDialogMessage}>
               <div style={{ marginBottom: '5px' }}>
                 You are about to permanently delete the repository{' '}

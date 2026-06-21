@@ -1,61 +1,90 @@
 .modaleWrapper {
   position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  margin: 50px 0px 0px 70px;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(3px);
+  animation: overlayIn 0.2s ease both;
+  z-index: 10;
 }
 
 .modale {
   position: fixed;
-  top: 10%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 800px;
-  height: auto;
-  max-width: 75%;
-  max-height: 85%;
-  background: #fff;
-  padding: 20px 20px 20px;
+  max-width: 92%;
+  max-height: 86%;
+  background: linear-gradient(180deg, #ffffff 0%, #fcfbff 100%);
+  border: 1px solid #ecebf3;
+  padding: 30px 32px 28px;
   overflow: auto;
-  border-radius: 10px;
-  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.4);
-  margin: 0 auto;
-  animation: append-animate 0.3s linear;
+  border-radius: 20px;
+  box-shadow:
+    0 1px 2px rgba(17, 24, 39, 0.06),
+    0 24px 60px -28px rgba(17, 24, 39, 0.35);
+  z-index: 11;
+  animation: modaleIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .modale h2 {
-  margin-top: 0;
-  color: #374151;
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1f2937;
 }
 
-@keyframes append-animate {
+@keyframes overlayIn {
   from {
-    transform: scale(0);
     opacity: 0;
   }
   to {
-    transform: scale(1);
     opacity: 1;
   }
 }
 
-.close {
-  cursor: pointer;
-  margin-left: 95%;
-  color: #494b7a;
+@keyframes modaleIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
-.close :hover {
-  color: #aa60ff;
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  width: 34px;
+  border-radius: 50%;
+  color: #65748b;
+  background: #f3f2fb;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
 }
+
+.close:hover {
+  background: #ece9ff;
+  color: #6d4aff;
+  transform: rotate(90deg);
+}
+
 
 .repoManageForm {
   margin: auto;
   width: 100%;
   max-width: 600px;
-  border-radius: 8px;
-  background-color: #ffffff;
   font-family: Inter, sans-serif;
   color: #1f2937;
 }
@@ -69,10 +98,10 @@
 
 .repoManageForm label {
   display: block;
-  margin-top: 0.9rem;
-  margin-bottom: 0.5rem;
+  margin-top: 1.1rem;
+  margin-bottom: 0.45rem;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: #374151;
   text-align: left;
 }
@@ -81,13 +110,22 @@
 .repoManageForm textarea,
 .repoManageForm select {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #e4e3ef;
+  border-radius: 11px;
   font-size: 0.9rem;
-  background-color: #f9fafb;
+  background-color: #faf9ff;
   color: #111827;
-  font-family: Inter;
+  font-family: Inter, sans-serif;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.repoManageForm input::placeholder,
+.repoManageForm textarea::placeholder {
+  color: #9499b7;
 }
 
 .repoManageForm textarea {
@@ -101,7 +139,7 @@
   border-color: #6d4aff;
   background-color: #ffffff;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(109, 74, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.16);
 }
 
 .repoManageForm .invalid {
@@ -110,44 +148,66 @@
 }
 
 .repoManageForm .invalid:focus {
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
 }
 
+/* Primary submit button — gradient, matches the card avatar */
 .repoManageForm button {
   display: block;
-  margin: 2rem auto 0 auto;
-  background-color: #6d4aff;
+  margin: 2.2rem auto 0 auto;
+  min-width: 200px;
+  background: linear-gradient(135deg, #8b6bff 0%, #6d4aff 100%);
   color: #ffffff;
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.6rem;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 3px 8px -3px rgba(109, 74, 255, 0.35);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 
-.repoManageForm button:hover {
-  background-color: #5c3dff;
+.repoManageForm button:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: 0 5px 12px -4px rgba(109, 74, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.repoManageForm button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px -3px rgba(109, 74, 255, 0.35);
+}
+
+.repoManageForm button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .errorMessage {
+  display: block;
   color: #dc2626;
-  font-size: 0.875rem;
-  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+  text-align: left;
 }
 
 .optionCommandWrapper {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem;
   align-items: center;
-  margin-top: 1.5rem;
-  font-size: 0.95rem;
+  margin-top: 1.4rem;
+  font-size: 0.9rem;
   color: #374151;
 }
 
 .optionCommandWrapper label {
   margin: 0;
+  font-weight: 500;
 }
 
 .optionCommandWrapper input[type='checkbox'] {
@@ -155,18 +215,21 @@
   height: 18px;
   accent-color: #6d4aff;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .optionCommandWrapper input[type='checkbox']:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(109, 74, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.25);
 }
 
 .selectAlert {
   max-width: 160px;
 }
+
 .selectAlertWrapper label {
   margin: 0;
+  font-weight: 500;
 }
 
 .selectAlertWrapper {
@@ -174,9 +237,9 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 1.5rem;
-  gap: 0.5rem;
-  font-size: 0.95rem;
+  margin-top: 1.4rem;
+  gap: 0.6rem;
+  font-size: 0.9rem;
   color: #374151;
 }
 
@@ -185,112 +248,126 @@
 .deleteDialogWrapper {
   text-align: center;
   margin: auto;
-  width: 80%;
-  height: 100%;
-  max-height: 590px;
-  color: #111827;
+  width: 100%;
+  max-width: 520px;
+  color: #1f2937;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 8px 0 4px;
+}
+
+.deleteIconCircle {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  height: 72px;
+  width: 72px;
+  border-radius: 50%;
+  background: #fff1f1;
+  border: 1px solid #ffd9d9;
+  color: #ff3d3d;
+  margin-bottom: 18px;
+}
+
+.deleteDialogWrapper h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+  color: #1f2937;
+}
+
+.deleteRepoName {
+  color: #6d4aff;
+  font-weight: 700;
 }
 
 .deleteDialogMessage {
-  background-color: #ea1313;
-  color: #fff;
-  font-weight: 500;
-  border-radius: 5px;
-  padding: 15px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  font-size: 1.1em;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 18px 0 22px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.deleteDialogMessage b {
+  font-weight: 700;
+}
+
+.deleteDialogButtonWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
 }
 
 .cancelButton {
-  border: 0;
-  padding: 10px 15px;
-  background-color: #c1c1c1;
-  color: white;
-  margin: 5px;
-  border-radius: 4px;
+  border: 1px solid #e4e3ef;
+  padding: 0.7rem 1.4rem;
+  background: #ffffff;
+  color: #374151;
+  border-radius: 12px;
   cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
-.cancelButton:hover {
-  border: 0;
-  padding: 10px 15px;
-  background-color: #9a9a9a;
-  color: white;
-  margin: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
+.cancelButton:hover:not(:disabled) {
+  background: #f3f2fb;
+  border-color: #d8d6ea;
 }
 
-.cancelButton:active {
-  border: 0;
-  padding: 10px 15px;
-  background-color: #9a9a9a;
-  color: white;
-  margin: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
-  transform: scale(0.9);
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .deleteButton {
   border: 0;
-  padding: 10px 15px;
-  background-color: #ff0000;
-  color: white;
-  margin: 5px;
-  border-radius: 4px;
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #ff5d5d 0%, #ff2d2d 100%);
+  color: #fff;
+  border-radius: 12px;
   cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 8px -3px rgba(255, 45, 45, 0.3);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 
 .deleteButton:hover {
-  border: 0;
-  padding: 10px 15px;
-  background-color: #ff4b4b;
-  color: white;
-  margin: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px -4px rgba(255, 45, 45, 0.35);
 }
 
 .deleteButton:active {
-  border: 0;
-  padding: 10px 15px;
-  background-color: #ff4b4b;
-  color: white;
-  margin: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
-  transform: scale(0.9);
+  transform: translateY(0);
 }
 
 .littleDeleteButton {
-  margin-top: 10px;
+  margin-top: 14px;
   border: none;
-  font-weight: 300;
-  color: red;
-  text-decoration: underline;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #b91c1c;
   background: none;
   cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.littleDeleteButton:hover {
+  color: #ff2d2d;
+  text-decoration: underline;
 }

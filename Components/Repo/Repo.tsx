@@ -4,11 +4,11 @@ import {
   IconSettings,
   IconInfoCircle,
   IconChevronDown,
-  IconChevronUp,
   IconBellOff,
   IconLockPlus,
 } from '@tabler/icons-react';
 import StorageBar from '../UI/StorageBar/StorageBar';
+import RepoIcon from './RepoIcon';
 import QuickCommands from './QuickCommands/QuickCommands';
 import { Repository, WizardEnvType, Optional, DateFormatEnum } from '~/types';
 import { fromUnixTime, formatDistanceStrict } from 'date-fns';
@@ -62,202 +62,146 @@ export default function Repo(props: RepoProps) {
     setDisplayDetails(boolean);
   };
 
-  //Status indicator
-  const statusIndicator = () => {
-    return props.status ? classes.statusIndicatorGreen : classes.statusIndicatorRed;
-  };
+  //Last save, human readable
+  const lastSaveLabel =
+    props.lastSave === 0
+      ? '-'
+      : formatDistanceStrict(fromUnixTime(props.lastSave), currentDate, {
+          addSuffix: true,
+        });
+  const lastSaveTitle =
+    props.lastSave === 0 ? undefined : formatDate(props.lastSave, props.dateFormat);
 
-  //Alert indicator
-  const alertIndicator = () => {
-    if (props.alert === 0) {
-      return (
-        <div className={classes.alertIcon}>
-          <IconBellOff size={16} color='grey' />
+  //Repo identity: gradient icon avatar with status badge
+  const repoIdentity = () => (
+    <div className={classes.avatar} aria-hidden='true'>
+      <RepoIcon name={props.icon} size={20} stroke={1.75} />
+      <span
+        className={`${classes.statusBadge} ${props.status ? classes.statusOk : classes.statusKo}`}
+        title={props.status ? 'Status OK' : 'Status error'}
+      />
+    </div>
+  );
+
+  //Indicator chips (append-only, alert, comment)
+  const indicatorChips = () => (
+    <>
+      {props.appendOnlyMode && (
+        <div className={classes.chip} title='Append-only mode enabled'>
+          <IconLockPlus size={16} />
         </div>
-      );
-    }
-  };
-
-  const appendOnlyModeIndicator = () => {
-    if (props.appendOnlyMode) {
-      return (
-        <div className={classes.appendOnlyModeIcon}>
-          <IconLockPlus size={16} color='grey' />
+      )}
+      {props.alert === 0 && (
+        <div className={classes.chip} title='Alerts disabled'>
+          <IconBellOff size={16} />
         </div>
-      );
-    }
-  };
-
-  const mobileView = () => {
-    return (
-      <>
-        <div className={classes.RepoClose}>
-          <div className={classes.closeFlex}>
-            <div className={classes.leftGroup}>
-              <div className={statusIndicator()} />
-              <div className={classes.alias}>{props.alias}</div>
-            </div>
-            {appendOnlyModeIndicator()}
-            {alertIndicator()}
-            {props.comment && (
-              <div className={classes.comment}>
-                <IconInfoCircle size={16} color='#637381' />
-                <div className={classes.toolTip}>{props.comment}</div>
-              </div>
-            )}
-
-            <div className={classes.lastSave}>
-              <span
-                title={
-                  props.lastSave === 0 ? undefined : formatDate(props.lastSave, props.dateFormat)
-                }
-              >
-                {props.lastSave === 0
-                  ? '-'
-                  : formatDistanceStrict(fromUnixTime(props.lastSave), currentDate, {
-                      addSuffix: true,
-                    })}
-              </span>
-            </div>
-          </div>
+      )}
+      {props.comment && (
+        <div className={`${classes.chip} ${classes.comment}`}>
+          <IconInfoCircle size={16} />
+          <div className={classes.toolTip}>{props.comment}</div>
         </div>
-      </>
-    );
-  };
+      )}
+    </>
+  );
 
+  // ---------- MOBILE ----------
   if (isMobile) {
-    return mobileView();
-  } else {
     return (
-      <>
-        {displayDetails ? (
-          <>
-            <div className={classes.RepoOpen}>
-              <div className={classes.indicatorsFlex}>
-                <div className={statusIndicator()} />
-                {props.comment && (
-                  <div className={classes.comment}>
-                    <IconInfoCircle size={16} color='grey' />
-                    <div className={classes.toolTip}>{props.comment}</div>
-                  </div>
-                )}
-                {appendOnlyModeIndicator()}
-                {alertIndicator()}
-                <QuickCommands
-                  repositoryName={props.repositoryName}
-                  lanCommand={props.lanCommand}
-                  wizardEnv={props.wizardEnv}
-                />
-              </div>
-              <div className={classes.aliasFlex}>
-                <div className={classes.alias}>{props.alias}</div>
-              </div>
-
-              <table className={classes.tabInfo}>
-                <thead>
-                  <tr>
-                    <th style={{ width: '15%' }}>Repository</th>
-                    <th style={{ width: '10%' }}>Storage Size</th>
-                    <th style={{ width: '30%' }}>Storage Used</th>
-                    <th style={{ width: '15%' }}>Last change</th>
-                    <th style={{ width: '10%' }}>Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th>{props.repositoryName}</th>
-                    <th>{props.storageSize} GB</th>
-                    <th style={{ padding: '0 4% 0 4%' }}>
-                      <StorageBar storageUsed={props.storageUsed} storageSize={props.storageSize} />
-                    </th>
-                    <th>
-                      <div
-                        className={classes.lastSave}
-                        title={
-                          props.lastSave === 0
-                            ? undefined
-                            : formatDate(props.lastSave, props.dateFormat)
-                        }
-                      >
-                        {props.lastSave === 0
-                          ? '-'
-                          : formatDistanceStrict(fromUnixTime(props.lastSave), currentDate, {
-                              addSuffix: true,
-                            })}
-                      </div>
-                    </th>
-                    <th>
-                      <div className={classes.editButton}>
-                        <IconSettings
-                          width={24}
-                          color='#6d4aff'
-                          onClick={() => props.repoManageEditHandler()}
-                        />
-                      </div>
-                    </th>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className={classes.RepoClose}>
-              <div className={classes.closeFlex}>
-                <div className={classes.leftGroup}>
-                  <div className={statusIndicator()} />
-                  <div className={classes.alias}>{props.alias}</div>
-                </div>
-                {appendOnlyModeIndicator()}
-                {alertIndicator()}
-                {props.comment && (
-                  <div className={classes.comment}>
-                    <IconInfoCircle size={16} color='#637381' />
-                    <div className={classes.toolTip}>{props.comment}</div>
-                  </div>
-                )}
-
-                <div className={classes.lastSave}>
-                  <span
-                    title={
-                      props.lastSave === 0
-                        ? undefined
-                        : formatDate(props.lastSave, props.dateFormat)
-                    }
-                  >
-                    {props.lastSave === 0
-                      ? '-'
-                      : formatDistanceStrict(fromUnixTime(props.lastSave), currentDate, {
-                          addSuffix: true,
-                        })}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-        {displayDetails ? (
-          <div className={classes.chevron}>
-            <IconChevronUp
-              color='#494b7a'
-              size={28}
-              onClick={() => {
-                displayDetailsForOneHandler(false);
-              }}
-            />
+      <div className={classes.card}>
+        <div className={classes.header}>
+          <div className={classes.titleGroup}>
+            {repoIdentity()}
+            <div className={classes.alias}>{props.alias}</div>
           </div>
-        ) : (
-          <div className={classes.chevron}>
-            <IconChevronDown
-              color='#494b7a'
-              size={28}
-              onClick={() => {
-                displayDetailsForOneHandler(true);
-              }}
-            />
+          <div className={classes.headerMeta}>
+            {indicatorChips()}
+            <span className={classes.lastSavePill} title={lastSaveTitle}>
+              {lastSaveLabel}
+            </span>
           </div>
-        )}
-      </>
+        </div>
+      </div>
     );
   }
+
+  // ---------- DESKTOP ----------
+  return (
+    <div className={classes.card}>
+      <div className={classes.header}>
+        <div className={classes.titleGroup}>
+          {repoIdentity()}
+          <div className={classes.alias}>{props.alias}</div>
+        </div>
+
+        <div className={classes.headerMeta}>
+          {indicatorChips()}
+
+          {!displayDetails && (
+            <span className={classes.lastSavePill} title={lastSaveTitle}>
+              {lastSaveLabel}
+            </span>
+          )}
+
+          <button
+            className={`${classes.toggleButton} ${displayDetails ? classes.toggleOpen : ''}`}
+            onClick={() => displayDetailsForOneHandler(!displayDetails)}
+            title={displayDetails ? 'Collapse details' : 'Expand details'}
+            aria-label={displayDetails ? 'Collapse details' : 'Expand details'}
+          >
+            <IconChevronDown size={20} />
+          </button>
+        </div>
+      </div>
+
+      <div className={`${classes.bodyWrap} ${displayDetails ? classes.bodyOpen : ''}`}>
+        <div className={classes.bodyInner}>
+          <div className={classes.body}>
+            <div className={classes.bodyTop}>
+              <QuickCommands
+                repositoryName={props.repositoryName}
+                lanCommand={props.lanCommand}
+                wizardEnv={props.wizardEnv}
+              />
+            </div>
+
+            <div className={classes.statGrid}>
+              <div className={classes.stat}>
+                <span className={classes.statLabel}>Repository</span>
+                <span className={classes.repoName}>{props.repositoryName}</span>
+              </div>
+
+              <div className={classes.stat}>
+                <span className={classes.statLabel}>Storage Size</span>
+                <span className={classes.statValue}>{props.storageSize} GB</span>
+              </div>
+
+              <div className={classes.stat}>
+                <span className={classes.statLabel}>Storage Used</span>
+                <StorageBar storageUsed={props.storageUsed} storageSize={props.storageSize} />
+              </div>
+
+              <div className={classes.stat}>
+                <span className={classes.statLabel}>Last change</span>
+                <span className={classes.statValue} title={lastSaveTitle}>
+                  {lastSaveLabel}
+                </span>
+              </div>
+
+              <div className={classes.statActions}>
+                <button
+                  className={classes.editButton}
+                  onClick={() => props.repoManageEditHandler()}
+                  title='Edit repository'
+                  aria-label='Edit repository'
+                >
+                  <IconSettings size={22} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

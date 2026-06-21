@@ -1,36 +1,52 @@
 .barContainer {
-  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
 .barBackground {
-  background-color: #704dff5e;
-  border-radius: 3px;
-  height: 19px;
-  width: 100%;
   position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  background-color: #ecebf6;
+  border-radius: 999px;
+  overflow: hidden;
 }
 
 .progressionStyle {
-  background-color: #704dff;
-  border-radius: 3px;
-  height: 19px;
-  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  transition:
+    width 0.5s ease,
+    background 0.3s ease;
 }
 
-.tooltip {
-  visibility: hidden;
-  width: auto;
-  height: auto;
-  color: #fff;
-  text-align: center;
-  opacity: 0;
-  transition: 0.5s opacity;
-  position: absolute;
-  left: calc(30%);
-  top: 0px;
+/* Color ramp */
+.low {
+  background: linear-gradient(90deg, #8b6bff, #6d4aff);
+}
+.mid {
+  background: linear-gradient(90deg, #ffb24d, #ff9f1c);
+}
+.high {
+  background: linear-gradient(90deg, #ff6b6b, #ff3d3d);
 }
 
-.barBackground:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
+.percentLabel {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.detail {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #9499b7;
 }

@@ -207,6 +207,7 @@ export default function RepoList() {
       storageSize={repo.storageSize}
       sshPublicKey={repo.sshPublicKey}
       comment={repo.comment}
+      icon={repo.icon}
       lanCommand={repo.lanCommand}
       appendOnlyMode={repo.appendOnlyMode}
       repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
@@ -231,8 +232,8 @@ export default function RepoList() {
 
         <div className={classes.toolbar}>
           <div className={classes.searchContainer}>
-              <IconSearch size={15} className={classes.searchIcon} />
-              <input
+            <IconSearch size={15} className={classes.searchIcon} />
+            <input
               type='text'
               placeholder='Alias, comment, repository name...'
               value={searchQuery}
@@ -257,45 +258,45 @@ export default function RepoList() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div className={classes.sortIcons}>
               <IconSortAscendingLetters
-              className={sortOption === 'alias-asc' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('alias-asc')}
-              title='Alias A-Z'
-            />
-            <IconSortDescendingLetters
-              className={sortOption === 'alias-desc' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('alias-desc')}
-              title='Alias Z-A'
-            />
-            <IconSortDescending2Filled
-              className={sortOption === 'status-true' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('status-true')}
-              title='Status OK → KO'
-            />
-            <IconSortDescending2
-              className={sortOption === 'status-false' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('status-false')}
-              title='Status KO → OK'
-            />
-            <IconCalendarDown
-              className={sortOption === 'last-save-desc' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('last-save-desc')}
-              title='Last save (recent → old)'
-            />
-            <IconCalendarUp
-              className={sortOption === 'last-save-asc' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('last-save-asc')}
-              title='Last save (old → recent)'
-            />
-            <IconSortAscendingSmallBig
-              className={sortOption === 'storage-used-asc' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('storage-used-asc')}
-              title='Storage usage % low → high'
-            />
-            <IconSortDescendingSmallBig
-              className={sortOption === 'storage-used-desc' ? classes.iconActive : classes.icon}
-              onClick={() => handleSortChange('storage-used-desc')}
-              title='Storage usage % high → low'
-            />
+                className={sortOption === 'alias-asc' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('alias-asc')}
+                title='Alias A-Z'
+              />
+              <IconSortDescendingLetters
+                className={sortOption === 'alias-desc' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('alias-desc')}
+                title='Alias Z-A'
+              />
+              <IconSortDescending2Filled
+                className={sortOption === 'status-true' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('status-true')}
+                title='Status OK → KO'
+              />
+              <IconSortDescending2
+                className={sortOption === 'status-false' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('status-false')}
+                title='Status KO → OK'
+              />
+              <IconCalendarDown
+                className={sortOption === 'last-save-desc' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('last-save-desc')}
+                title='Last save (recent → old)'
+              />
+              <IconCalendarUp
+                className={sortOption === 'last-save-asc' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('last-save-asc')}
+                title='Last save (old → recent)'
+              />
+              <IconSortAscendingSmallBig
+                className={sortOption === 'storage-used-asc' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('storage-used-asc')}
+                title='Storage usage % low → high'
+              />
+              <IconSortDescendingSmallBig
+                className={sortOption === 'storage-used-desc' ? classes.iconActive : classes.icon}
+                onClick={() => handleSortChange('storage-used-desc')}
+                title='Storage usage % high → low'
+              />
             </div>
             <IconRefresh
               className={`${classes.refreshIcon} ${isRefreshing ? classes.iconSpin : ''}`}

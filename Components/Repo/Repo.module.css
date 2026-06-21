@@ -1,309 +1,351 @@
-/*Repo CLOSE*/
-.RepoClose {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.24);
-  width: auto;
-  max-height: 65px;
-  margin: 20px 0px 0px 0px;
-  border-radius: 5px;
-  overflow: visible;
-  /* Need to display comment on hover (which is position : absolute) */
+.card {
   position: relative;
-  background: #fff;
+  width: auto;
+  margin: 16px 0 0 0;
+  background: linear-gradient(180deg, #ffffff 0%, #fcfbff 100%);
+  border: 1px solid #ecebf3;
+  border-radius: 20px;
+  box-shadow:
+    0 1px 2px rgba(17, 24, 39, 0.04),
+    0 6px 16px -8px rgba(109, 74, 255, 0.12);
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+  overflow: visible;
+  animation: cardIn 0.32s ease both;
 }
 
-.closeFlex {
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card:hover {
+  border-color: #6d4aff5c;
+  box-shadow:
+    0 0 0 1px #6d4aff2e,
+    0 10px 30px rgba(109, 74, 255, 0.1);
+}
+
+/* Left thiny rail */
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #8b6bff, #6d4aff);
+  opacity: 0.9;
+}
+
+.header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 15px;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
   gap: 10px;
-}
-
-.RepoClose .lastSave {
-  white-space: nowrap;
-}
-
-.RepoClose .leftGroup {
-  display: flex;
-  align-items: center;
   flex: 1;
   min-width: 0;
-  gap: 10px;
 }
 
-.RepoClose .alias {
-  font-weight: bold;
+.alias {
+  font-weight: 600;
   color: #111827;
-  font-size: 1.05em;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  flex: 1;
   min-width: 0;
 }
 
-/* REPO OPEN */
-.RepoOpen {
+.headerMeta {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.24);
-  width: auto;
-  margin: 20px 0px 0px 0px;
-  padding: 15px;
-  border-radius: 5px;
-  transition: max-height 0.1s linear;
-  overflow: visible;
-  /* Need to display comment on hover (which is position : absolute) */
-  position: relative;
-  background: #fff;
-}
-
-.openFlex {
-  display: block;
-  width: 100%;
-}
-
-.aliasFlex {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-}
-.indicatorsFlex {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  gap: 15px;
-}
-
-.tabInfo {
-  width: 100%;
-  overflow-wrap: break-word;
-  border-collapse: collapse;
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 15px auto;
-  table-layout: fixed;
-}
-
-.tabInfo thead tr {
-  height: 50px;
-  background: #111827;
-  color: #fff;
-}
-
-.tabInfo thead th {
-  font-size: 1em;
-  color: #fff;
-  line-height: 1.2;
-  font-weight: 500;
-}
-
-.tabInfo tbody tr {
-  background-color: #f3f4f6;
-  height: 50px;
-}
-
-.tabInfo tbody tr th {
-  color: #65748b;
-  font-size: 0.95rem;
-  font-weight: 400;
-}
-
-/*STATUS*/
-.statusIndicatorGreen,
-.statusIndicatorRed {
-  border-radius: 50%;
-  height: 16px;
-  width: 16px;
+  gap: 10px;
   flex-shrink: 0;
-  animation: pulse 5s infinite;
 }
 
-.statusIndicatorGreen {
+/* Compact "last save" pill shown when collapsed */
+.lastSavePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: #65748b;
+  background: #f4f5f9;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  width: 38px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #8b6bff, #6d4aff);
+  color: #fff;
+  box-shadow: 0 4px 12px -2px rgba(109, 74, 255, 0.45);
+  user-select: none;
+}
+
+.statusBadge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+.statusOk {
   background: #00d26a;
-  box-shadow: 0 0 0 0 rgba(0, 210, 106, 0.7);
+  box-shadow: 0 0 0 0 rgba(0, 210, 106, 0.55);
+  animation: pulseGreen 4s infinite;
 }
-
-.statusIndicatorRed {
+.statusKo {
   background: #ff3d3d;
-  box-shadow: 0 0 0 0 rgba(255, 61, 61, 0.7);
+  box-shadow: 0 0 0 0 rgba(255, 61, 61, 0.55);
+  animation: pulseRed 4s infinite;
   animation-delay: 0.5s;
 }
 
-@keyframes pulse {
+@keyframes pulseGreen {
   0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 210, 106, 0.55);
   }
-  10% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  60% {
+    box-shadow: 0 0 0 6px rgba(0, 210, 106, 0);
   }
-  90% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 210, 106, 0);
   }
 }
 
-/* Alert icon */
-.alertIcon {
-  display: flex;
-  flex-direction: row;
+@keyframes pulseRed {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 61, 61, 0.55);
+  }
+  60% {
+    box-shadow: 0 0 0 6px rgba(255, 61, 61, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 61, 61, 0);
+  }
+}
+
+/* Indicator chips (alert / append-only / comment) */
+.chip {
+  display: inline-flex;
   align-items: center;
-}
-
-.appendOnlyModeIcon {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-/* GENERAL */
-.alias {
-  font-weight: bold;
-  color: #111827;
-  font-size: 1.05em;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.RepoOpen .alias {
-  margin-top: 5px;
-}
-
-.lastSave {
+  justify-content: center;
+  height: 28px;
+  width: 28px;
+  border-radius: 8px;
+  background: #f4f5f9;
   color: #65748b;
+  flex-shrink: 0;
 }
 
-.editButton {
-  cursor: pointer;
-}
-
-/* Comment */
 .comment {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  position: relative;
+  cursor: help;
 }
 
 .toolTip {
   visibility: hidden;
-  width: auto;
-  height: auto;
-  max-width: 400px;
+  opacity: 0;
+  width: max-content;
+  max-width: 360px;
   max-height: 250px;
-  background-color: #fff;
-  color: #637381;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 5px;
+  background-color: #1f2430;
+  color: #e7e9f0;
+  text-align: left;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  border-radius: 8px;
+  padding: 8px 10px;
   position: absolute;
-  z-index: 1;
-  margin: 0px 0 0 20px;
-  opacity: 1;
-  transition: 0.5s opacity;
-  box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.16),
-    0 3px 6px rgba(0, 0, 0, 0.23);
+  z-index: 5;
+  top: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: 0.18s opacity ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   overflow: auto;
+  white-space: normal;
 }
-
 .comment:hover .toolTip,
 .comment:active .toolTip {
   visibility: visible;
   opacity: 1;
 }
 
-.chevron {
-  margin: auto;
-}
-
-.chevron :focus,
-.chevron :hover {
+/* Expand / collapse toggle */
+.toggleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 30px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #9499b7;
   cursor: pointer;
-  filter: invert(27%) sepia(82%) saturate(2209%) hue-rotate(240deg) brightness(99%) contrast(105%);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.toggleButton:hover {
+  background: #6d4aff14;
+  color: #6d4aff;
+}
+.toggleButton svg {
+  transition: transform 0.28s ease;
+}
+.toggleOpen svg {
+  transform: rotate(180deg);
 }
 
-/* MOBILE */
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 30px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #6d4aff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.editButton:hover {
+  background: #6d4aff14;
+}
+
+.bodyWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 0.28s ease,
+    opacity 0.28s ease;
+  opacity: 0;
+}
+.bodyOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.bodyInner {
+  overflow: hidden;
+}
+
+.body {
+  padding: 0 16px 16px 16px;
+}
+
+/* Row of quick commands */
+.bodyTop {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 4px 0 12px 0;
+}
+
+/* Stats grid replaces the old dark table */
+.statGrid {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #e8e8f0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9499b7;
+}
+
+.statValue {
+  font-size: 0.9rem;
+  color: #111827;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.repoName {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  color: #65748b;
+  background: #f4f5f9;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 @media all and (max-width: 1000px) {
-  .openFlex,
-  .tabInfo,
-  .toolTip,
-  .comment,
-  .chevron {
+  .bodyWrap,
+  .toggleButton {
     display: none !important;
   }
 
-  .RepoOpen,
-  .RepoClose {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    max-height: 65px !important;
-    padding: 15px !important;
-    margin: 20px 0 0 0 !important;
+  .card {
+    margin: 14px 0 0 0;
   }
 
-  .closeFlex {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0 !important;
-    margin: 0 !important;
+  .header {
+    padding: 13px 14px;
   }
 
   .alias {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    font-size: 0.96rem;
   }
 
-  .leftGroup {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-    gap: 10px;
-  }
-
-  .rightGroup {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  .lastSave {
-    display: block !important;
-    color: #65748b;
-    white-space: nowrap;
-    font-size: 0.85em;
-    flex-shrink: 0;
-    margin-left: 10px;
-  }
-
-  .appendOnlyModeIcon,
-  .alertIcon {
-    display: flex;
-    align-items: center;
+  .lastSavePill {
+    font-size: 0.75rem;
+    padding: 3px 8px;
   }
 }

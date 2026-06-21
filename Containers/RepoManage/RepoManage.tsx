@@ -1,4 +1,5 @@
 import { IconAlertCircle, IconExternalLink, IconX } from '@tabler/icons-react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -8,7 +9,13 @@ import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLoader } from '~/contexts/LoaderContext';
 import { alertOptions, Optional, Repository } from '~/types';
+import { DEFAULT_REPO_ICON } from '~/Components/Repo/repoIcons';
 import classes from './RepoManage.module.css';
+
+// Lazy-loaded: the curated icon grid only ships when the add/edit form is opened.
+const IconPicker = dynamic(() => import('~/Components/Repo/IconPicker/IconPicker'), {
+  ssr: false,
+});
 
 type RepoManageProps = {
   mode: 'add' | 'edit';
@@ -52,6 +59,9 @@ export default function RepoManage(props: RepoManageProps) {
 
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [icon, setIcon] = useState<string>(
+    (props.mode === 'edit' ? targetRepo?.icon : undefined) ?? DEFAULT_REPO_ICON
+  );
   const { start, stop } = useLoader();
 
   //router.query.slug is undefined for few milliseconds on first render for a direct URL access (https://github.com/vercel/next.js/discussions/11484).
@@ -170,6 +180,7 @@ export default function RepoManage(props: RepoManageProps) {
         alert: dataForm.alert.value,
         lanCommand: dataForm.lanCommand,
         appendOnlyMode: dataForm.appendOnlyMode,
+        icon: icon,
       };
       //POST API to send new repo
       await fetch('/api/v1/repositories', {
@@ -209,6 +220,7 @@ export default function RepoManage(props: RepoManageProps) {
         alert: dataForm.alert.value,
         lanCommand: dataForm.lanCommand,
         appendOnlyMode: dataForm.appendOnlyMode,
+        icon: icon,
       };
       await fetch('/api/v1/repositories/' + targetRepo?.repositoryName, {
         method: 'PATCH',
@@ -330,6 +342,9 @@ export default function RepoManage(props: RepoManageProps) {
                 })}
               />
               {errors.alias && <span className={classes.errorMessage}>{errors.alias.message}</span>}
+              {/* ICON */}
+              <label>Icon</label>
+              <IconPicker value={icon} onChange={setIcon} />
               {/* SSH KEY */}
               <label htmlFor='sshkey'>SSH public key</label>
               <textarea

@@ -4,6 +4,7 @@ import { BorgWarehouseApiResponse, Repository } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService, AuthService, ShellService } from '~/services';
 import { isSshPubKeyDuplicate } from '~/helpers/functions';
+import { isValidRepoIcon } from '~/Components/Repo/repoIcons';
 import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
 
 export default async function handler(
@@ -77,7 +78,7 @@ export default async function handler(
     }
 
     try {
-      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } =
+      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon } =
         req.body;
       const repoList = await ConfigService.getRepoList();
       const repo = repoList.find((repo) => repo.repositoryName === slug);
@@ -103,6 +104,7 @@ export default async function handler(
         alert: alert ?? repo.alert,
         lanCommand: lanCommand ?? repo.lanCommand,
         appendOnlyMode: appendOnlyMode ?? repo.appendOnlyMode,
+        icon: icon ?? repo.icon,
       };
 
       await ShellService.updateRepo(
@@ -188,5 +190,8 @@ const validatePatchRequestBody = (req: NextApiRequest) => {
   }
   if (req.body.appendOnlyMode !== undefined && typeof req.body.appendOnlyMode !== 'boolean') {
     throw new Error('Append Only Mode must be a boolean');
+  }
+  if (req.body.icon !== undefined && !isValidRepoIcon(req.body.icon)) {
+    throw new Error('Icon must be a valid icon name');
   }
 };

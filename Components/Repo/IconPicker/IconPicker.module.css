@@ -1,0 +1,208 @@
+.wrapper {
+  position: relative;
+  text-align: left;
+}
+
+.wrapper .trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 14px 8px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  color: #111827;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+  box-sizing: border-box;
+}
+.wrapper .trigger:hover {
+  background-color: #fff;
+  border-color: #b9aaff;
+}
+.wrapper .triggerOpen {
+  background-color: #fff;
+  border-color: #6d4aff;
+  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.18);
+}
+
+.wrapper .triggerPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #8b6bff, #6d4aff);
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px -2px rgba(109, 74, 255, 0.5);
+}
+
+.wrapper .triggerText {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #111827;
+  text-transform: capitalize;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wrapper .triggerChevron {
+  color: #9499b7;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.wrapper .triggerOpen .triggerChevron {
+  transform: rotate(180deg);
+  color: #6d4aff;
+}
+
+/* PANEL */
+.wrapper .panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin-top: 8px;
+  border: 1px solid #ecebf3;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 40px -12px rgba(17, 24, 39, 0.22);
+  padding: 12px;
+  box-sizing: border-box;
+  animation: panelIn 0.16s ease both;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wrapper .searchRow {
+  position: relative;
+  margin-bottom: 12px;
+}
+.wrapper .searchIcon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9499b7;
+  pointer-events: none;
+}
+.wrapper .search {
+  width: 100%;
+  height: 40px;
+  margin: 0;
+  border: 1px solid #e1e1ec;
+  border-radius: 9px;
+  padding: 0 12px 0 36px;
+  font-size: 0.88rem;
+  background-color: #f9fafb;
+  color: #111827;
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+.wrapper .search:focus {
+  border-color: #6d4aff;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.16);
+}
+
+.wrapper .scroll {
+  max-height: 264px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #d9d9ec transparent;
+}
+.wrapper .scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.wrapper .scroll::-webkit-scrollbar-thumb {
+  background: #e1e1ec;
+  border-radius: 999px;
+}
+
+.wrapper .categoryLabel {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9499b7;
+  margin: 0 2px 8px;
+}
+.wrapper .scroll > div + div {
+  margin-top: 18px;
+}
+
+.wrapper .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+}
+
+.wrapper .grid .iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #eceaf6;
+  border-radius: 10px;
+  background-color: #f7f6fc;
+  color: #545978;
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    background-color 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.wrapper .grid .iconButton:hover {
+  background-color: #fff;
+  color: #6d4aff;
+  border-color: #c3b6fa;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px -4px rgba(109, 74, 255, 0.4);
+}
+.wrapper .grid .iconButtonActive {
+  background: linear-gradient(135deg, #8b6bff, #6d4aff);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px -3px rgba(109, 74, 255, 0.6);
+}
+.wrapper .grid .iconButtonActive:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #8b6bff, #6d4aff);
+}
+
+.wrapper .empty {
+  text-align: center;
+  color: #9499b7;
+  font-size: 0.82rem;
+  padding: 28px 0;
+}

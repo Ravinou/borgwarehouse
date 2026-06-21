@@ -4,6 +4,7 @@ import { BorgWarehouseApiResponse, Repository } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService, AuthService, ShellService } from '~/services';
 import { isSshPubKeyDuplicate } from '~/helpers/functions';
+import { isValidRepoIcon } from '~/Components/Repo/repoIcons';
 import { getUnixTime } from 'date-fns';
 
 export default async function handler(
@@ -65,7 +66,7 @@ export default async function handler(
     }
 
     try {
-      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } =
+      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon } =
         req.body;
       const repoList = await ConfigService.getRepoList();
 
@@ -91,6 +92,7 @@ export default async function handler(
         comment: comment ?? '',
         lanCommand: lanCommand ?? false,
         appendOnlyMode: appendOnlyMode ?? false,
+        icon: isValidRepoIcon(icon) ? icon : undefined,
       };
 
       const { stdout } = await ShellService.createRepo(
@@ -117,7 +119,8 @@ export default async function handler(
 }
 
 const validatePOSTRequestBody = (req: NextApiRequest) => {
-  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode } = req.body;
+  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon } =
+    req.body;
   // Required fields
   if (!alias || typeof alias !== 'string') {
     throw new Error('Alias must be a non-empty string');
@@ -140,5 +143,8 @@ const validatePOSTRequestBody = (req: NextApiRequest) => {
   }
   if (appendOnlyMode != undefined && typeof appendOnlyMode !== 'boolean') {
     throw new Error('Append Only Mode must be a boolean');
+  }
+  if (icon != undefined && !isValidRepoIcon(icon)) {
+    throw new Error('Icon must be a valid icon name');
   }
 };

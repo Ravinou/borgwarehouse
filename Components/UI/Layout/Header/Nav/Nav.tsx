@@ -1,11 +1,12 @@
 import classes from './Nav.module.css';
-import { IconUser, IconLogout, IconSettings, IconChevronDown } from '@tabler/icons-react';
+import { IconLogout, IconSettings, IconChevronDown } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { authClient, useAuthSession } from '~/lib/auth-client';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import ThemeToggle from '~/Components/UI/ThemeToggle/ThemeToggle';
+import BorgWarehouseIcon from '~/Components/Repo/BorgWarehouseIcon';
 
 export default function Nav() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function Nav() {
                 className={classes.avatar}
               />
             ) : (
-              <IconUser size={28} />
+              <BorgWarehouseIcon size={26} color='#ffffff' className={classes.defaultAvatar} />
             )}
             <IconChevronDown
               size={16}

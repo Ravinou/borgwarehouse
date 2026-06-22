@@ -43,6 +43,10 @@
   object-fit: cover;
 }
 
+.defaultAvatar {
+  display: block;
+}
+
 .chevron {
   opacity: 0.7;
   transition: transform 0.2s ease;

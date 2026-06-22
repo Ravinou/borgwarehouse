@@ -1,4 +1,3 @@
-import React from 'react';
 import classes from './WizardStepBar.module.css';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
@@ -9,65 +8,56 @@ type WizardStepBarProps = {
   nextStepHandler: () => void;
 };
 
+const STEPS = ['Client Setup', 'Init. repository', 'Launch & Verify', 'Automation'];
+
 function WizardStepBar(props: WizardStepBarProps) {
-  //Color onClick on a step
-  const colorHandler = (step: number) => {
-    if (step <= props.step) {
-      return classes.active;
-    } else {
-      return classes.inactive;
-    }
-  };
-  //Color onClick on next step button
-  const colorChevronNextStep = () => {
-    if (props.step < 4) {
-      return classes.activeChevron;
-    } else {
-      return classes.inactiveChevron;
-    }
-  };
-  //Color onClick on previous step button
-  const colorChevronPreviousStep = () => {
-    if (props.step > 1) {
-      return classes.activeChevron;
-    } else {
-      return classes.inactiveChevron;
-    }
-  };
+  const total = STEPS.length;
+  const current = Math.min(Math.max(props.step, 1), total);
+  // Continuous progress from the first to the current step (0–100%).
+  const progress = ((current - 1) / (total - 1)) * 100;
 
   return (
     <div className={classes.stepBarContainer}>
-      <IconChevronLeft
-        size={32}
-        className={colorChevronPreviousStep()}
+      <button
+        type='button'
+        className={classes.chevron}
         onClick={props.previousStepHandler}
-      />
-      <ul>
-        <li className={colorHandler(2)} onClick={() => props.setStep(1)}>
-          <div className={[classes.number, colorHandler(1)].join(' ')}>1</div>
-          <div className={[classes.text, colorHandler(1)].join(' ')}>Client Setup</div>
-          <div className={classes.line}></div>
-        </li>
-        <li className={colorHandler(3)} onClick={() => props.setStep(2)}>
-          <div className={[classes.number, colorHandler(2)].join(' ')}>2</div>
-          <div className={[classes.text, colorHandler(2)].join(' ')}>Init. repository</div>
-          <div className={classes.line}></div>
-        </li>
-        <li className={colorHandler(4)} onClick={() => props.setStep(3)}>
-          <div className={[classes.number, colorHandler(3)].join(' ')}>3</div>
-          <div className={[classes.text, colorHandler(3)].join(' ')}>Launch & Verify</div>
-          <div className={classes.line}></div>
-        </li>
-        <li onClick={() => props.setStep(4)}>
-          <div className={[classes.number, colorHandler(4)].join(' ')}>4</div>
-          <div className={[classes.text, colorHandler(4)].join(' ')}>Automation</div>
-        </li>
-      </ul>
-      <IconChevronRight
-        size={32}
-        className={colorChevronNextStep()}
+        disabled={current <= 1}
+        aria-label='Previous step'
+      >
+        <IconChevronLeft size={26} />
+      </button>
+
+      <div className={classes.steps}>
+        <div className={classes.track} aria-hidden='true'>
+          <div className={classes.trackFill} style={{ width: `${progress}%` }} />
+        </div>
+        {STEPS.map((label, i) => {
+          const n = i + 1;
+          const isActive = n <= current;
+          return (
+            <button
+              type='button'
+              key={label}
+              className={classes.step}
+              onClick={() => props.setStep(n)}
+            >
+              <span className={`${classes.number} ${isActive ? classes.active : ''}`}>{n}</span>
+              <span className={`${classes.text} ${isActive ? classes.active : ''}`}>{label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <button
+        type='button'
+        className={classes.chevron}
         onClick={props.nextStepHandler}
-      />
+        disabled={current >= total}
+        aria-label='Next step'
+      >
+        <IconChevronRight size={26} />
+      </button>
     </div>
   );
 }

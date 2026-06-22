@@ -1,0 +1,44 @@
+.trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  cursor: help;
+  outline: none;
+}
+
+.trigger:hover,
+.trigger:focus-visible {
+  color: var(--primary);
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 9999;
+  transform: translateX(-50%);
+  width: max-content;
+  padding: 9px 11px;
+  background: var(--elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  box-shadow: 0 10px 24px -8px var(--shadow-lg);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  animation: tooltipIn 0.15s ease both;
+}
+
+@keyframes tooltipIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

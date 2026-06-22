@@ -165,40 +165,6 @@
   flex-shrink: 0;
 }
 
-.comment {
-  position: relative;
-  cursor: help;
-}
-
-.toolTip {
-  visibility: hidden;
-  opacity: 0;
-  width: max-content;
-  max-width: 360px;
-  max-height: 250px;
-  background-color: var(--text-strong);
-  color: var(--surface);
-  text-align: left;
-  font-size: 0.82rem;
-  line-height: 1.35;
-  border-radius: 8px;
-  padding: 8px 10px;
-  position: absolute;
-  z-index: 5;
-  top: 130%;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: 0.18s opacity ease;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  overflow: auto;
-  white-space: normal;
-}
-.comment:hover .toolTip,
-.comment:active .toolTip {
-  visibility: visible;
-  opacity: 1;
-}
-
 /* Expand / collapse toggle */
 .toggleButton {
   display: inline-flex;

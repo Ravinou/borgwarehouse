@@ -46,6 +46,7 @@
     "@types/nodemailer": "^8.0.0",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
     "@types/supertest": "^7.2.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.6",

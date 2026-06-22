@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconChecks, IconPlayerPlay } from '@tabler/icons-react';
-import CopyButton from '../../UI/CopyButton/CopyButton';
+import CommandBlock from '../../UI/CommandBlock/CommandBlock';
 import { WizardStepProps } from '~/types';
 import { lanCommandOption } from '~/helpers/functions';
 
@@ -19,19 +19,9 @@ function WizardStep3(props: WizardStepProps) {
       </h1>
       <div className={classes.description}>
         To launch a backup with borgbackup :
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>
-            borg create ssh://
-            {UNIX_USER}@{FQDN}
-            {SSH_SERVER_PORT}/./
-            {props.selectedRepo?.repositoryName}
-            ::archive1 /your/pathToBackup
-          </div>
-          <CopyButton
-            variant='pill'
-            dataToCopy={`borg create ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /your/pathToBackup`}
-          />
-        </div>
+        <CommandBlock
+          command={`borg create ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /your/pathToBackup`}
+        />
       </div>
       <div className={classes.separator}></div>
       <h1>
@@ -53,59 +43,21 @@ function WizardStep3(props: WizardStepProps) {
         correct with your tools (tar, rsync, diff or other tools).
         <br />
         <li>Check the integrity of a repository with :</li>
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>
-            borg check -v --progress ssh://
-            {UNIX_USER}@{FQDN}
-            {SSH_SERVER_PORT}/./
-            {props.selectedRepo?.repositoryName}
-          </div>
-          <CopyButton
-            variant='pill'
-            dataToCopy={`borg check -v --progress ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
-          />
-        </div>
+        <CommandBlock
+          command={`borg check -v --progress ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
+        />
         <li>List the remote archives with :</li>
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>
-            borg list ssh://
-            {UNIX_USER}@{FQDN}
-            {SSH_SERVER_PORT}/./
-            {props.selectedRepo?.repositoryName}
-          </div>
-          <CopyButton
-            variant='pill'
-            dataToCopy={`borg list ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
-          />
-        </div>
+        <CommandBlock
+          command={`borg list ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
+        />
         <li>Download a remote archive with the following command :</li>
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>
-            borg export-tar --tar-filter=&quot;gzip -9&quot; ssh://
-            {UNIX_USER}@{FQDN}
-            {SSH_SERVER_PORT}/./
-            {props.selectedRepo?.repositoryName}
-            ::archive1 archive1.tar.gz
-          </div>
-          <CopyButton
-            variant='pill'
-            dataToCopy={`borg export-tar --tar-filter="gzip -9" ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 archive1.tar.gz`}
-          />
-        </div>
+        <CommandBlock
+          command={`borg export-tar --tar-filter="gzip -9" ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 archive1.tar.gz`}
+        />
         <li>Mount an archive to compare or backup some files without download all the archive :</li>
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>
-            borg mount ssh://
-            {UNIX_USER}@{FQDN}
-            {SSH_SERVER_PORT}/./
-            {props.selectedRepo?.repositoryName}
-            ::archive1 /tmp/yourMountPoint
-          </div>
-          <CopyButton
-            variant='pill'
-            dataToCopy={`borg mount ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /tmp/yourMountPoint`}
-          />
-        </div>
+        <CommandBlock
+          command={`borg mount ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /tmp/yourMountPoint`}
+        />
         <br />
         To verify the consistency of a repository and the corresponding archives, please refer to{' '}
         <a

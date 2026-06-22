@@ -1,150 +1,146 @@
 .container {
-  margin: 40px 20px 20px 5px;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.24);
-  border-radius: 5px;
+  box-sizing: border-box;
+  margin: 24px auto 0 auto;
+  width: 100%;
   text-align: left;
-  padding: 30px 70px;
+  padding: 30px 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px var(--shadow-sm),
+    0 6px 16px -8px var(--shadow-md);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 0.95rem;
   animation: animStep ease-in 0.3s 1 normal none;
 }
 
 @keyframes animStep {
   0% {
     opacity: 0;
+    transform: translateY(6px);
   }
-
-  50% {
-    opacity: 0.5;
-  }
-
   100% {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .container h1 {
-  text-align: center;
-  font-size: 1.7em;
-  padding-bottom: 20px;
   display: flex;
   align-items: center;
+  gap: 9px;
+  color: var(--text-strong);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px 0;
+}
+
+.container h2 {
+  color: var(--text-strong);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 22px 0 8px 0;
 }
 
 .container a {
   color: var(--primary);
+  text-decoration: none;
 }
 
-.separator {
-  height: 15px;
+.container a:hover {
+  text-decoration: underline;
 }
 
-.container {
-  line-height: 1.8em;
-  font-size: 1.05em;
+.description {
+  margin-bottom: 4px;
 }
 
 h1 .icon {
   color: var(--primary);
-  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+.separator {
+  height: 1px;
+  background: var(--border);
+  margin: 26px 0;
 }
 
 .container img {
   max-width: 650px;
 }
 
-.code {
-  background-color: #111827;
-  color: #f8f8f2;
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    liberation mono,
-    courier new,
-    monospace;
-  padding: 5px 15px;
-  border-radius: 5px;
-  display: inline-block;
-  margin: 5px 0px 10px 0px;
-  font-size: 0.8em;
-  white-space: pre;
-  line-height: 1em;
-}
-
-.cmdRow {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  margin: 5px 0 10px 0;
-}
-
-.cmdRow .code {
-  margin: 0;
+/* Verify / warning callouts */
+.verifyOrange,
+.verifyRed {
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid;
+  font-size: 0.9rem;
 }
 
 .verifyOrange {
-  background-color: #ff7a1b;
-  color: #fff;
-  font-weight: 500;
-  border-radius: 5px;
-  padding: 15px;
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+  border-color: color-mix(in srgb, var(--amber) 45%, transparent);
+  color: var(--text-secondary);
 }
 
 .verifyRed {
-  background-color: #ea1313;
-  color: #fff;
-  font-weight: 500;
-  border-radius: 5px;
-  padding: 15px;
-  margin-top: 10px;
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
+  color: var(--text-secondary);
+  margin-top: 14px;
+}
+
+.verifyRed .alert,
+.verifyOrange .alert {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 1rem;
+  padding-bottom: 8px;
+}
+
+.verifyOrange .alert {
+  color: var(--amber);
+}
+
+.verifyRed .alert {
+  color: var(--danger-text);
+}
+
+.iconAlert {
+  flex-shrink: 0;
 }
 
 .verifyOrange li,
 .container li {
   list-style: disc;
-  margin-top: 1px;
-  margin-left: 30px;
+  margin-top: 6px;
+  margin-left: 28px;
 }
 
 .verifyOrange li .sshPublicKey {
-  background-color: #282a36;
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    liberation mono,
-    courier new,
-    monospace;
-  border-radius: 5px;
-  padding: 5px;
-}
-
-.verifyRed .alert,
-.verifyOrange .alert {
-  text-align: center;
-  font-size: 1.1em;
-  padding-bottom: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.iconAlert {
-  margin-right: 5px;
+  display: inline-block;
+  background: var(--surface-3);
+  color: var(--text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  padding: 3px 7px;
+  margin-top: 4px;
+  word-break: break-all;
 }
 
 .note {
   font-style: italic;
   color: var(--text-faint);
-  font-size: 0.8em;
+  font-size: 0.82rem;
 }
 
 .note a {
-  color: #6d4aff73;
+  color: var(--primary);
 }

@@ -136,6 +136,12 @@ function SetupWizard(props: SetupWizardProps) {
 
   return (
     <div className={classes.container}>
+      <div className={classes.header}>
+        <h1 className={classes.title}>Setup Wizard</h1>
+        <p className={classes.subtitle}>
+          Connect a client and start backing up to your repositories.
+        </p>
+      </div>
       <WizardStepBar
         setStep={(x) => changeStepHandler(x)}
         step={step}
@@ -143,6 +149,7 @@ function SetupWizard(props: SetupWizardProps) {
         previousStepHandler={() => previousStepHandler()}
       />
       <div className={classes.selectRepo}>
+        <label className={classes.selectLabel}>Repository</label>
         <Select
           onChange={(item) => onChangeSelect(item)}
           isLoading={repoListIsLoading}

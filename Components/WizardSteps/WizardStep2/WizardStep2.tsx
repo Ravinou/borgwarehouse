@@ -1,5 +1,5 @@
 import { IconAlertCircle, IconTool } from '@tabler/icons-react';
-import CopyButton from '../../UI/CopyButton/CopyButton';
+import CommandBlock from '../../UI/CommandBlock/CommandBlock';
 import { WizardStepProps } from '~/types';
 import classes from '../WizardStep1/WizardStep1.module.css';
 import { lanCommandOption } from '~/helpers/functions';
@@ -19,18 +19,9 @@ function WizardStep2(props: WizardStepProps) {
       <div className={classes.description}>
         To initialize your repository with borgbackup :
         <br />
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>
-            borg init -e repokey-blake2 ssh://
-            {UNIX_USER}@{FQDN}
-            {SSH_SERVER_PORT}/./
-            {props.selectedRepo?.repositoryName}
-          </div>
-          <CopyButton
-            variant='pill'
-            dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
-          />
-        </div>
+        <CommandBlock
+          command={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
+        />
         <div className={classes.note}>
           The encryption mode is the one recommended by BorgBackup. For more information,{' '}
           <a
@@ -50,10 +41,7 @@ function WizardStep2(props: WizardStepProps) {
         If you are using Borgmatic and have <b>already edited</b> the configuration file (find a
         sample on the step 4) :
         <br />
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>borgmatic init -e repokey-blake2</div>
-          <CopyButton variant='pill' dataToCopy='borgmatic init -e repokey-blake2' />
-        </div>
+        <CommandBlock command='borgmatic init -e repokey-blake2' />
       </div>
 
       <h2>Pika, Vorta...</h2>
@@ -61,18 +49,9 @@ function WizardStep2(props: WizardStepProps) {
         To &quot;Initialize a new repository&quot; or &quot;Add existing repository&quot;, copy this
         into the field &quot;Repository URL&quot; of your graphical client :
         <br />
-        <div className={classes.cmdRow}>
-          <div className={classes.code}>
-            ssh://
-            {UNIX_USER}@{FQDN}
-            {SSH_SERVER_PORT}/./
-            {props.selectedRepo?.repositoryName}
-          </div>
-          <CopyButton
-            variant='pill'
-            dataToCopy={`ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
-          />
-        </div>
+        <CommandBlock
+          command={`ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
+        />
       </div>
 
       <div className={classes.separator} />

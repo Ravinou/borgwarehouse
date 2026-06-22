@@ -1,0 +1,42 @@
+.box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 5px 4px 13px;
+  margin: 8px 0 14px 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.box:hover {
+  border-color: var(--primary-soft-border);
+}
+
+.code {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  scrollbar-width: thin;
+}
+
+.box.block {
+  align-items: flex-start;
+  padding: 12px;
+}
+
+.block .code {
+  white-space: pre;
+  max-height: 360px;
+  overflow: auto;
+}

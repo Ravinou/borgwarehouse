@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from '../WizardStep1/WizardStep1.module.css';
 import { IconWand } from '@tabler/icons-react';
-import CopyButton from '../../UI/CopyButton/CopyButton';
+import CommandBlock from '../../UI/CommandBlock/CommandBlock';
 import { WizardStepProps } from '~/types';
 import { lanCommandOption } from '~/helpers/functions';
 
@@ -11,14 +11,13 @@ function WizardStep4(props: WizardStepProps) {
   //Needed to generate command for borg over LAN instead of WAN if env vars are set and option enabled.
   const { FQDN, SSH_SERVER_PORT } = lanCommandOption(wizardEnv, props.selectedRepo?.lanCommand);
 
-  const configBorgmatic = `
-    # List of source directories to backup.
-    source_directories:
-        - /your-repo-to-backup
-        - /another/repo-to-backup
+  const configBorgmatic = `# List of source directories to backup.
+source_directories:
+    - /your-repo-to-backup
+    - /another/repo-to-backup
 
+# Paths of local or remote repositories to backup to.
 repositories:
-    # Paths of local or remote repositories to backup to.
     - path: ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}
 
 archive_name_format: '{FQDN}-documents-{now}'
@@ -31,18 +30,19 @@ keep_monthly: 6
 
 # List of checks to run to validate your backups.
 checks:
-  - name: repository
-  - name: archives
-    frequency: 2 weeks
+    - name: repository
+    - name: archives
+      frequency: 2 weeks
 
+# Custom preparation scripts and integrations.
 #hooks:
     # Custom preparation scripts to run.
     #before_backup:
-    #   - prepare-for-backup.sh
+    #    - prepare-for-backup.sh
 
     # Databases to dump and include in backups.
     #postgresql_databases:
-    #   - name: users
+    #    - name: users
 
     # Third-party services to notify you if backups aren't happening.
     #healthchecks: https://hc-ping.com/be067061-cf96-4412-8eae-62b0c50d6a8c`;
@@ -100,24 +100,7 @@ checks:
         </a>
         and <b>adapt</b> and use the following script :
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start',
-        }}
-      >
-        <div className={classes.code}>{configBorgmatic}</div>
-        <div
-          style={{
-            margin: '10px 0 0 10px',
-            display: 'flex',
-          }}
-        >
-          <CopyButton variant='pill' dataToCopy={configBorgmatic} />
-        </div>
-      </div>
+      <CommandBlock command={configBorgmatic} multiline />
     </div>
   );
 }

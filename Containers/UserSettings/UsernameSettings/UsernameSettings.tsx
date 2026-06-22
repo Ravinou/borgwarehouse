@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { IconInfoCircle } from '@tabler/icons-react';
 import { useFormStatus } from '~/hooks';
 import { UsernameSettingDTO } from '~/types';
 import {
@@ -15,6 +14,7 @@ import classes from '../UserSettings.module.css';
 import { useAuthSession } from '~/lib/auth-client';
 
 //Components
+import InfoTooltip from '~/Components/UI/InfoTooltip/InfoTooltip';
 import { useLoader } from '~/contexts/LoaderContext';
 
 export default function UsernameSettings(props: UsernameSettingDTO) {
@@ -83,13 +83,10 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
         <div className={classes.settingCategory}>
           <div className={classes.settingTitleRow}>
             <h2>Username</h2>
-            <span className={classes.settingInfo} tabIndex={0}>
-              <IconInfoCircle size={16} />
-              <span className={classes.settingTooltip}>
-                This username appears in your alert notifications and is your login identifier for
-                password sign-in.
-              </span>
-            </span>
+            <InfoTooltip
+              maxWidth={240}
+              content='This username appears in your alert notifications and is your login identifier for password sign-in.'
+            />
           </div>
         </div>
         <div className={classes.setting}>

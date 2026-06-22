@@ -1,13 +1,8 @@
 import { useState, useMemo } from 'react';
 import classes from './Repo.module.css';
-import {
-  IconSettings,
-  IconInfoCircle,
-  IconChevronDown,
-  IconBellOff,
-  IconLockPlus,
-} from '@tabler/icons-react';
+import { IconSettings, IconChevronDown, IconBellOff, IconLockPlus } from '@tabler/icons-react';
 import StorageBar from '../UI/StorageBar/StorageBar';
+import InfoTooltip from '../UI/InfoTooltip/InfoTooltip';
 import RepoIcon from './RepoIcon';
 import QuickCommands from './QuickCommands/QuickCommands';
 import { Repository, WizardEnvType, Optional, DateFormatEnum } from '~/types';
@@ -97,10 +92,12 @@ export default function Repo(props: RepoProps) {
         </div>
       )}
       {props.comment && (
-        <div className={`${classes.chip} ${classes.comment}`}>
-          <IconInfoCircle size={16} />
-          <div className={classes.toolTip}>{props.comment}</div>
-        </div>
+        <InfoTooltip
+          content={props.comment}
+          maxWidth={360}
+          triggerClassName={classes.chip}
+          ariaLabel='Repository comment'
+        />
       )}
     </>
   );

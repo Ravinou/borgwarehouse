@@ -1,0 +1,32 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #b9bdcc;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.toggle:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.icon {
+  transition: transform 0.35s ease;
+}
+
+.toggle:hover .icon {
+  transform: rotate(20deg);
+}

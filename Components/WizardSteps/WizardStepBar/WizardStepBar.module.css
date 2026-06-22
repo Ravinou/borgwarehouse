@@ -2,7 +2,7 @@
 
 .stepBarContainer {
   text-transform: uppercase;
-  color: #494b7a;
+  color: var(--text-secondary);
   font-size: 1em;
   margin-top: 40px;
   display: flex;
@@ -30,9 +30,9 @@
 .number {
   display: inline-block;
   position: relative;
-  color: #494b7a4d;
-  background: #fff;
-  border: 1px solid #494b7a4d;
+  color: var(--text-faint);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
   border-radius: 50%;
   width: 37px;
   padding: 8px 5px;
@@ -44,24 +44,24 @@
 .active.number {
   box-shadow: 0 0 15px 5px rgba(110, 74, 255, 0.405);
   color: #fff;
-  background: #6d4aff;
+  background: var(--primary);
   transition: all 1000ms cubic-bezier(0.25, 0.25, 0.75, 0.75);
   transition-delay: 500ms;
 }
 
 .text {
   padding: 8px 0 0 0;
-  color: #494b7a4d;
+  color: var(--text-faint);
 }
 
 .active.text {
   transition: all 1000ms cubic-bezier(0.25, 0.25, 0.75, 0.75);
   transition-delay: 500ms;
-  color: #494b7a;
+  color: var(--text-secondary);
 }
 
 .line {
-  background: #6d4aff;
+  background: var(--primary);
   width: 0;
   height: 2px;
   position: absolute;
@@ -72,7 +72,7 @@
 }
 
 .active .line {
-  background: #6d4aff;
+  background: var(--primary);
   width: 204px;
   height: 2px;
   position: absolute;
@@ -86,9 +86,9 @@
 }
 
 .activeChevron:hover {
-  color: #6d4aff;
+  color: var(--primary);
 }
 
 .inactiveChevron {
-  color: #494b7a4d;
+  color: var(--text-faint);
 }

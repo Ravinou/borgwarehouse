@@ -118,7 +118,7 @@ export default function AppriseURLs() {
       </form>
       <div
         style={{
-          color: '#6c737f',
+          color: 'var(--text-muted)',
           fontSize: '0.875rem',
           marginBottom: '20px',
         }}
@@ -126,7 +126,7 @@ export default function AppriseURLs() {
         Use{' '}
         <a
           style={{
-            color: '#6d4aff',
+            color: 'var(--primary)',
             textDecoration: 'none',
           }}
           href='https://github.com/caronc/apprise#supported-notifications'

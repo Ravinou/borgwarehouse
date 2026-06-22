@@ -4,8 +4,8 @@
   gap: 8px;
   width: 100%;
   padding: 3px 4px 3px 10px;
-  background: #f9f8fd;
-  border: 1px solid #ecebf3;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 9px;
   transition:
     border-color 0.15s ease,
@@ -13,12 +13,12 @@
 }
 
 .commandBox:hover {
-  border-color: #d6d2f2;
-  background: #faf9ff;
+  border-color: var(--primary-soft-border);
+  background: var(--surface-hover);
 }
 
 .commandIcon {
-  color: #8b8fb0;
+  color: var(--text-faint);
   flex-shrink: 0;
 }
 
@@ -27,7 +27,7 @@
   min-width: 0;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.76rem;
-  color: #7c8099;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -36,9 +36,9 @@
 .lanBadge {
   flex-shrink: 0;
   border-radius: 6px;
-  border: 1px solid #c3b6fa;
-  background: #f0ecff;
-  color: #6d4aff;
+  border: 1px solid var(--primary-soft-border);
+  background: var(--primary-soft);
+  color: var(--primary);
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -51,10 +51,10 @@
   gap: 4px;
   flex-shrink: 0;
   padding: 4px 9px;
-  border: 1px solid #e4e3ef;
+  border: 1px solid var(--border-strong);
   border-radius: 7px;
-  background: #ffffff;
-  color: #7c8099;
+  background: var(--surface);
+  color: var(--text-muted);
   font-size: 0.72rem;
   font-weight: 600;
   font-family: inherit;
@@ -66,15 +66,15 @@
 }
 
 .copyButton:hover {
-  background: #f3f2fb;
-  border-color: #c3b6fa;
-  color: #6d4aff;
+  background: var(--surface-hover);
+  border-color: var(--primary-soft-border);
+  color: var(--primary);
 }
 
 .copyButton.copied {
-  background: #ecfdf3;
-  border-color: #abe7c4;
-  color: #00a854;
+  background: var(--success-soft);
+  border-color: var(--success-border);
+  color: var(--success-text);
 }
 
 @media all and (max-width: 1000px) {

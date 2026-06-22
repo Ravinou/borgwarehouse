@@ -14,7 +14,7 @@
   text-align: left;
   padding: 28px 24px;
   animation: entrance ease-in 0.3s 1 normal none;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 @keyframes entrance {
@@ -37,7 +37,7 @@
   display: flex;
 }
 .settingCategory h2 {
-  color: #494b7a;
+  color: var(--text-secondary);
   margin: 0;
   font-size: 1.3em;
 }
@@ -66,10 +66,10 @@
 .newTokenWrapper {
   display: flex;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: var(--surface-2);
   border-radius: 5px;
-  color: #494b7a;
-  outline: 1px solid #6d4aff;
+  color: var(--text-secondary);
+  outline: 1px solid var(--primary);
   box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
   animation: entrance ease-in 0.3s 1 normal none;
   padding: 10px;
@@ -91,7 +91,7 @@
 
 .tokenCard {
   width: 100%;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-strong);
   border-radius: 5px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -100,9 +100,9 @@
 .tokenCardHeader {
   font-size: 1.2em;
   margin-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 5px;
-  color: #494b7a;
+  color: var(--text-secondary);
 }
 
 .tokenCardBody {
@@ -122,7 +122,7 @@
   align-items: center;
   gap: 5px;
   margin: 10px 0;
-  color: #494b7a;
+  color: var(--text-secondary);
 }
 
 .tokenCardHighlight {
@@ -131,11 +131,11 @@
 
 @keyframes highlightEffect {
   0% {
-    outline: 1px solid #6d4aff;
+    outline: 1px solid var(--primary);
     box-shadow: 0 0 0 rgba(110, 74, 255, 0.5); /* Pas d'ombre au début */
   }
   50% {
-    outline: 1px solid #6d4aff;
+    outline: 1px solid var(--primary);
     box-shadow: 0 0 15px rgba(110, 74, 255, 0.6); /* Ombre qui s'agrandit */
   }
   100% {
@@ -147,7 +147,7 @@
 .cancelButton {
   border: 0;
   padding: 10px 15px;
-  background-color: #c1c1c1;
+  background-color: var(--text-faint);
   color: white;
   margin: 5px;
   border-radius: 4px;
@@ -160,7 +160,7 @@
 .cancelButton:hover {
   border: 0;
   padding: 10px 15px;
-  background-color: #9a9a9a;
+  background-color: var(--text-muted);
   color: white;
   margin: 5px;
   border-radius: 4px;
@@ -173,7 +173,7 @@
 .cancelButton:active {
   border: 0;
   padding: 10px 15px;
-  background-color: #9a9a9a;
+  background-color: var(--text-muted);
   color: white;
   margin: 5px;
   border-radius: 4px;
@@ -214,7 +214,7 @@
 .confirmButton:hover {
   border: 0;
   padding: 10px 15px;
-  background-color: #ff4b4b;
+  background-color: var(--danger);
   color: white;
   margin: 5px;
   border-radius: 4px;
@@ -227,7 +227,7 @@
 .confirmButton:active {
   border: 0;
   padding: 10px 15px;
-  background-color: #ff4b4b;
+  background-color: var(--danger);
   color: white;
   margin: 5px;
   border-radius: 4px;
@@ -241,8 +241,8 @@
 .permissionBadge {
   user-select: none;
   border-radius: 5px;
-  border: 1px solid #6d4aff;
-  color: #6d4aff;
+  border: 1px solid var(--primary);
+  color: var(--primary);
   font-size: 0.9em;
   padding: 2px 5px;
   margin-right: 8px;
@@ -266,8 +266,8 @@
 .permissionsWrapper .permissionBadge {
   user-select: none;
   border-radius: 5px;
-  border: 1px solid #9798b2;
-  color: #9798b2;
+  border: 1px solid var(--border-strong);
+  color: var(--text-faint);
   font-size: 0.9em;
   margin: 0;
   cursor: pointer;
@@ -275,8 +275,8 @@
 
 .permissionsWrapper .permissionBadge.highlight {
   border-radius: 5px;
-  border: 1px solid #6d4aff;
-  color: #6d4aff;
+  border: 1px solid var(--primary);
+  color: var(--primary);
   font-size: 0.9em;
   margin: 0;
   cursor: pointer;
@@ -295,7 +295,7 @@
   margin: auto;
   width: 100%;
   height: auto;
-  color: #494b7a;
+  color: var(--text-secondary);
   font-family: var(
     --pure-material-font,
     'Roboto',
@@ -315,7 +315,7 @@
   margin-bottom: 8px;
   text-align: center;
   /* margin-top: 20px; */
-  color: #494b7a;
+  color: var(--text-secondary);
 }
 
 .bwForm.tokenGen label {
@@ -333,10 +333,10 @@
   outline: 0;
   padding: 10px;
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: var(--surface-2);
   border-radius: 5px;
   /* color: #1b1340; */
-  color: #494b7a;
+  color: var(--text-secondary);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
   font-family: (--pure-material-font, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui);
 }
@@ -350,20 +350,20 @@
 .bwForm textarea:focus,
 .bwForm input:focus,
 .bwForm select:focus {
-  outline: 1px solid #6d4aff;
+  outline: 1px solid var(--primary);
   box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
 }
 
 .bwForm .invalid {
-  background: #f3c7c7;
-  border: 1px solid #e45454;
-  outline: 1px solid #ff4a4a;
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  outline: 1px solid var(--danger);
 }
 
 .bwForm .invalid:focus {
-  background: #f3c7c7;
-  border: 1px solid #e45454;
-  outline: 1px solid #ff4a4a;
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  outline: 1px solid var(--danger);
   box-shadow: 0 0 10px 3px rgba(255, 74, 74, 0.605);
 }
 
@@ -380,17 +380,16 @@
   margin-top: 3px;
 }
 
-
 .headerFormAppriseUrls {
   font-weight: 500;
-  color: #494b7a;
+  color: var(--text-secondary);
   margin-bottom: 10px;
   display: flex;
   padding-right: 5px;
 }
 
 .formIsSavedMessage {
-  color: rgb(0, 164, 0);
+  color: var(--success-text);
   animation: entrance 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   font-weight: 300;
 }
@@ -400,7 +399,7 @@
 }
 
 .tabListButton {
-  color: #494b7a;
+  color: var(--text-secondary);
   padding: 12px 0px;
   min-height: 48px;
   overflow: hidden;
@@ -421,14 +420,14 @@
 }
 
 .tabListButton:hover {
-  color: #6d4aff;
-  border-bottom: 2px solid #6d4aff;
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
 }
 
 .tabListButtonActive {
-  color: #6d4aff;
+  color: var(--primary);
   border: 0;
-  border-bottom: 2px solid #6d4aff;
+  border-bottom: 2px solid var(--primary);
   padding: 12px 0px;
   min-height: 48px;
   overflow: hidden;
@@ -449,7 +448,7 @@
 .AccountSettingsButton {
   border: 0;
   padding: 10px 15px;
-  background-color: #6d4aff;
+  background-color: var(--primary);
   color: white;
   border-radius: 4px;
   cursor: pointer;
@@ -460,7 +459,7 @@
 .AccountSettingsButton:hover {
   border: 0;
   padding: 10px 15px;
-  background-color: #4f31ce;
+  background-color: var(--primary-hover);
   color: white;
   border-radius: 4px;
   cursor: pointer;
@@ -471,7 +470,7 @@
 .AccountSettingsButton:active {
   border: 0;
   padding: 10px 15px;
-  background-color: #4f31ce;
+  background-color: var(--primary-hover);
   color: white;
   border-radius: 4px;
   cursor: pointer;
@@ -499,9 +498,9 @@
 }
 
 .oauthNoticeInfo {
-  color: #494b7a;
-  background-color: #f0f0ff;
-  border: 1px solid #d4d4ff;
+  color: var(--text-secondary);
+  background-color: var(--primary-soft);
+  border: 1px solid var(--primary-soft-border);
   border-radius: 5px;
   padding: 10px 14px;
   font-size: 0.9em;
@@ -524,27 +523,27 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 5px;
-  background-color: #f9f9fb;
+  background-color: var(--surface-2);
 }
 
 .linkedAccountInfo {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #494b7a;
+  color: var(--text-secondary);
 }
 
 .linkedAccountIcon {
   display: flex;
   align-items: center;
-  color: #6d4aff;
+  color: var(--primary);
 }
 
 .linkedAccountDate {
   display: block;
-  color: #9798b2;
+  color: var(--text-faint);
   font-size: 0.8em;
 }
 
@@ -552,9 +551,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   background-color: transparent;
-  color: #9798b2;
+  color: var(--text-faint);
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -562,8 +561,8 @@
 }
 
 .unlinkButton:hover {
-  border-color: #ff4b4b;
-  color: #ff4b4b;
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .unlinkButton:disabled {
@@ -576,9 +575,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   background-color: transparent;
-  color: #9798b2;
+  color: var(--text-faint);
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -586,8 +585,8 @@
 }
 
 .linkButton:hover {
-  border-color: #494b7a;
-  color: #494b7a;
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
 }
 
 .linkButton:disabled {

@@ -160,11 +160,15 @@ export default function WebhookAlertSettings() {
           {isAlertEnabled && (
             <>
               <form
-                onBlur={() => { if (isDirty) handleSubmit(urlFormSubmitHandler)(); }}
+                onBlur={() => {
+                  if (isDirty) handleSubmit(urlFormSubmitHandler)();
+                }}
                 className={classes.bwForm + ' ' + classes.currentSetting}
               >
                 <p>
-                  <label style={{ fontSize: '0.875rem', color: '#6c737f' }}>Webhook URL</label>
+                  <label style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                    Webhook URL
+                  </label>
                   <input
                     type='text'
                     placeholder='https://your-endpoint.example.com/hook'
@@ -185,9 +189,11 @@ export default function WebhookAlertSettings() {
                   )}
                 </p>
                 <p>
-                  <label style={{ fontSize: '0.875rem', color: '#6c737f' }}>
+                  <label style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                     Secret{' '}
-                    <span style={{ fontWeight: 'normal', color: '#9ca3af' }}>(optional)</span>
+                    <span style={{ fontWeight: 'normal', color: 'var(--text-faint)' }}>
+                      (optional)
+                    </span>
                   </label>
                   <input
                     type='password'
@@ -197,7 +203,9 @@ export default function WebhookAlertSettings() {
                 </p>
                 <div style={{ minHeight: '24px' }}>
                   {isSaved && (
-                    <div className={classes.formIsSavedMessage}>✅ Webhook configuration saved.</div>
+                    <div className={classes.formIsSavedMessage}>
+                      ✅ Webhook configuration saved.
+                    </div>
                   )}
                   {error && <Error message={error} />}
                 </div>

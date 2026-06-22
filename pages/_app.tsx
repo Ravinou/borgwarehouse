@@ -9,6 +9,7 @@ import NProgress from 'nprogress';
 //Components
 import Layout from '../Components/UI/Layout/Layout';
 import { LoaderProvider } from '~/contexts/LoaderContext';
+import { ThemeProvider } from 'next-themes';
 
 NProgress.configure({ showSpinner: false });
 
@@ -18,17 +19,19 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <LoaderProvider>
-      <Layout>
-        <Head>
-          <meta name='viewport' content='width=device-width, initial-scale=1'></meta>
-          <link rel='icon' type='image/svg+xml' href='/borgwarehouse-ghost.svg' />
-          <link rel='shortcut icon' href='/favicon.ico' />
-          <title>BorgWarehouse</title>
-        </Head>
-        <ToastContainer stacked />
-        <Component {...pageProps} />
-      </Layout>
-    </LoaderProvider>
+    <ThemeProvider attribute='data-theme' defaultTheme='system' enableSystem>
+      <LoaderProvider>
+        <Layout>
+          <Head>
+            <meta name='viewport' content='width=device-width, initial-scale=1'></meta>
+            <link rel='icon' type='image/svg+xml' href='/borgwarehouse-ghost.svg' />
+            <link rel='shortcut icon' href='/favicon.ico' />
+            <title>BorgWarehouse</title>
+          </Head>
+          <ToastContainer stacked />
+          <Component {...pageProps} />
+        </Layout>
+      </LoaderProvider>
+    </ThemeProvider>
   );
 }

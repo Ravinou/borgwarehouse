@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Select, { SingleValue } from 'react-select';
 import classes from './SetupWizard.module.css';
 import { Optional, SelectedRepoWizard, Repository, WizardEnvType } from '~/types';
+import { bwSelectStyles, bwSelectTheme } from '~/Components/UI/Select/bwSelectStyles';
 
 //Components
 import WizardStep1 from '../../Components/WizardSteps/WizardStep1/WizardStep1';
@@ -150,15 +151,8 @@ function SetupWizard(props: SetupWizardProps) {
           isSearchable
           value={selectedItem}
           placeholder='Select your repository...'
-          theme={(theme) => ({
-            ...theme,
-            borderRadius: 5,
-            colors: {
-              ...theme.colors,
-              primary25: '#c3b6fa',
-              primary: '#6d4aff',
-            },
-          })}
+          styles={bwSelectStyles}
+          theme={bwSelectTheme}
         />
       </div>
 

@@ -33,7 +33,7 @@
   position: relative;
   width: 40px;
   height: 20px;
-  background: #ccc;
+  background: var(--border-strong);
   border-radius: 12px;
   transition: #ccc 0.3s ease;
 }
@@ -53,7 +53,7 @@
 
 /* Checked styles */
 .switchLabel input:checked + .switchSlider {
-  background: #704dff;
+  background: var(--primary);
 }
 
 .switchLabel input:checked + .switchSlider::after {
@@ -62,23 +62,23 @@
 
 /* Disabled styles */
 .switchLabel input:disabled + .switchSlider {
-  background: #e0e0e0;
+  background: var(--surface-3);
 }
 
 .switchLabel input:disabled + .switchSlider::after {
-  background: #bdbdbd;
+  background: var(--border-strong);
 }
 
 /* Switch text */
 .switchText {
   font-size: 1rem;
-  color: #494b7a;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 /* Description */
 .switchDescription {
   font-size: 0.875rem;
-  color: #6c737f;
+  color: var(--text-muted);
   margin-top: 4px;
 }

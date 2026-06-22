@@ -1,6 +1,7 @@
 import { exec } from 'child_process';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from '~/helpers/getServerSession';
+import { findUserBySession } from '~/helpers/functions';
 import { promisify } from 'util';
 import { ConfigService } from '~/services';
 import { ErrorResponse, SuccessResponse } from '~/types';
@@ -43,7 +44,7 @@ export default async function handler(
 
   try {
     const usersList = await ConfigService.getUsersList();
-    const user = usersList.find((u) => u.username === session.user?.name);
+    const user = findUserBySession(usersList, session);
     if (!user)
       return res.status(400).json({ message: 'Invalid user session. Please log out and retry.' });
 

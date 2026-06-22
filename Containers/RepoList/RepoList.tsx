@@ -1,5 +1,5 @@
 import classes from './RepoList.module.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   IconPlus,
   IconSortAscendingLetters,
@@ -26,7 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Repo from '~/Components/Repo/Repo';
 import RepoManage from '../RepoManage/RepoManage';
 import ShimmerRepoList from '~/Components/UI/ShimmerRepoList/ShimmerRepoList';
-import { Repository, WizardEnvType, Optional, DateFormatEnum } from '~/types';
+import { Repository, WizardEnvType, DateFormatEnum } from '~/types';
 
 type SortOption =
   | 'alias-asc'
@@ -42,9 +42,8 @@ export default function RepoList() {
   const router = useRouter();
   const { mutate } = useSWRConfig();
   const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
-  const [displayRepoEdit, setDisplayRepoEdit] = useState(false);
-  const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>();
-  const [dateFormat, setDateFormat] = useState<DateFormatEnum>(DateFormatEnum.LOCALE);
+  const displayRepoAdd = router.pathname === '/manage-repo/add';
+  const displayRepoEdit = router.pathname.startsWith('/manage-repo/edit');
 
   const [sortOption, setSortOption] = useState<SortOption>(() => {
     const savedSort = localStorage.getItem('repoSort');
@@ -67,37 +66,14 @@ export default function RepoList() {
     progress: undefined,
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDisplayRepoAdd(router.pathname === '/manage-repo/add');
-    setDisplayRepoEdit(router.pathname.startsWith('/manage-repo/edit'));
-
-    const fetchWizardEnv = async () => {
-      try {
-        const response = await fetch('/api/v1/account/wizard-env');
-        const data: WizardEnvType = await response.json();
-        setWizardEnv(data);
-      } catch (error) {
-        console.log('Fetching wizard env error');
-      }
-    };
-
-    const fetchDateFormat = async () => {
-      try {
-        const response = await fetch('/api/v1/account/date-format');
-        const data = await response.json();
-        if (data.dateFormat) setDateFormat(data.dateFormat);
-      } catch {
-        // keep default
-      }
-    };
-
-    fetchWizardEnv();
-    fetchDateFormat();
-  }, [router.pathname]);
-
   const fetcher = async (url: string) => await fetch(url).then((res) => res.json());
   const { data, error } = useSWR('/api/v1/repositories', fetcher);
+  // Cached via SWR so they survive the page remount when opening/closing the
+  // add/edit modal (each route — '/', '/manage-repo/add', '/manage-repo/edit/[slug]'
+  // — renders its own RepoList instance). Avoids the wizardEnv "undefined" flicker.
+  const { data: wizardEnv } = useSWR<WizardEnvType>('/api/v1/account/wizard-env', fetcher);
+  const { data: dateFormatData } = useSWR('/api/v1/account/date-format', fetcher);
+  const dateFormat: DateFormatEnum = dateFormatData?.dateFormat ?? DateFormatEnum.LOCALE;
 
   if (!data || !data.repoList) {
     mutate('/api/v1/repositories');

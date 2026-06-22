@@ -1,0 +1,321 @@
+.dashboard {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 8px 0 8px;
+  box-sizing: border-box;
+  animation: fadeIn 0.32s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  margin-bottom: 26px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.subtitle {
+  margin: 6px 0 0 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Stat cards ---------- */
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px var(--shadow-sm),
+    0 6px 16px -10px var(--shadow-md);
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.statCard:hover {
+  border-color: var(--primary-soft-border);
+  box-shadow:
+    0 0 0 1px var(--primary-soft-border),
+    0 10px 26px -12px var(--shadow-md);
+}
+
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+
+.iconPrimary {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.iconSuccess {
+  color: var(--success-text);
+  background: var(--success-soft);
+}
+
+.iconDanger {
+  color: var(--danger-text);
+  background: var(--danger-soft);
+}
+
+.statBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.statLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  line-height: 1.2;
+}
+
+.statValueSmall {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  line-height: 1.3;
+}
+
+.statValueMuted {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+.miniBar {
+  margin-top: 8px;
+  width: 100%;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.miniBarFill {
+  height: 100%;
+  border-radius: 6px;
+  background: var(--primary);
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.miniBarFill.warn {
+  background: var(--amber);
+}
+
+.miniBarFill.danger {
+  background: var(--danger);
+}
+
+/* ---------- Panels ---------- */
+.panels {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow:
+    0 1px 2px var(--shadow-sm),
+    0 6px 16px -10px var(--shadow-md);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.panelHint {
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.chartWrapper {
+  position: relative;
+  width: 100%;
+  height: 320px;
+}
+
+.emptyChart {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 60px 0;
+}
+
+/* ---------- Attention panel ---------- */
+.attentionBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--danger-soft);
+  color: var(--danger-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.allGood {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 0;
+  color: var(--success-text);
+}
+
+.allGood p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.attentionList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attentionItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.attentionIcon {
+  color: var(--amber);
+  flex-shrink: 0;
+}
+
+.attentionName {
+  font-weight: 600;
+  color: var(--text-strong);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attentionReason {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ---------- Skeleton ---------- */
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.skeletonCard {
+  height: 84px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media all and (max-width: 1000px) {
+  .statGrid,
+  .skeletonGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media all and (max-width: 560px) {
+  .statGrid,
+  .skeletonGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -8,55 +8,62 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useState, useEffect } from 'react';
+import type { ChartOptions } from 'chart.js';
 import { Repository, Optional } from '~/types';
 
-export default function StorageUsedChartBar() {
-  const [data, setData] = useState<Optional<Array<Repository>>>();
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-  useEffect(() => {
-    const dataFetch = async () => {
-      try {
-        const response = await fetch('/api/v1/repositories', {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        });
-        setData((await response.json()).repoList);
-      } catch (error) {
-        console.log('Fetching datas error');
-      }
-    };
+type StorageUsedChartBarProps = {
+  data: Optional<Array<Repository>>;
+  theme?: string;
+};
 
-    dataFetch();
-  }, []);
+export default function StorageUsedChartBar({ data, theme }: StorageUsedChartBarProps) {
+  const isDark = theme === 'dark';
 
-  ////Chart.js
-  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+  //Theme-aware palette pulled from the design tokens.
+  const primary = isDark ? '#8b6bff' : '#6d4aff';
+  const primaryHover = isDark ? '#9d82ff' : '#5c3dff';
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(17, 24, 39, 0.07)';
+  const tickColor = isDark ? '#9aa1b3' : '#65748b';
+  const tooltipBg = isDark ? '#1b1f28' : '#ffffff';
+  const tooltipText = isDark ? '#f3f4f8' : '#111827';
+  const tooltipBorder = isDark ? '#333a49' : '#e4e3ef';
 
-  const options = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'bottom' as const,
-      },
-      title: {
-        position: 'bottom' as const,
-        display: true,
-        text: 'Storage used for each repository',
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: tooltipBg,
+        titleColor: tooltipText,
+        bodyColor: tooltipText,
+        borderColor: tooltipBorder,
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 10,
+        displayColors: false,
+        callbacks: {
+          label: (context) => `${context.parsed.y}% used`,
+        },
       },
     },
     scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: { color: tickColor, font: { size: 12 } },
+      },
       y: {
         max: 100,
         min: 0,
+        grid: { color: gridColor },
+        border: { display: false },
         ticks: {
-          // Include a dollar sign in the ticks
-          callback: function (value: number | string) {
-            return value + '%';
-          },
-          stepSize: 10,
+          color: tickColor,
+          stepSize: 20,
+          callback: (value: number | string) => value + '%',
         },
       },
     },
@@ -71,9 +78,15 @@ export default function StorageUsedChartBar() {
         label: 'Storage used (%)',
         //storageUsed is in kB, storageSize is in GB. Round to 1 decimal for %.
         data: data?.map((repo) =>
-          (((repo.storageUsed / 1024 ** 2) * 100) / repo.storageSize).toFixed(1)
+          repo.storageSize
+            ? (((repo.storageUsed / 1024 ** 2) * 100) / repo.storageSize).toFixed(1)
+            : 0
         ),
-        backgroundColor: '#704dff',
+        backgroundColor: primary,
+        hoverBackgroundColor: primaryHover,
+        borderRadius: 8,
+        borderSkipped: false,
+        maxBarThickness: 56,
       },
     ],
   };

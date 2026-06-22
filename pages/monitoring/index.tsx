@@ -3,7 +3,7 @@ import { getSession } from '~/helpers/getServerSession';
 import { GetServerSidePropsContext } from 'next';
 
 //Components
-import StorageUsedChartBar from '~/Containers/Monitoring/StorageUsedChartBar/StorageUsedChartBar';
+import MonitoringDashboard from '~/Containers/Monitoring/MonitoringDashboard/MonitoringDashboard';
 
 export default function Monitoring() {
   return (
@@ -12,35 +12,7 @@ export default function Monitoring() {
         <title>Monitoring - BorgWarehouse</title>
       </Head>
 
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          //justifyContent: 'center',
-          width: '80%',
-          height: '100%',
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              color: 'var(--text-strong)',
-              textAlign: 'center',
-              marginTop: '5%',
-              marginBottom: '10%',
-            }}
-          >
-            📊 Storage used
-          </h1>
-          <div
-            style={{
-              margin: 'auto',
-            }}
-          >
-            <StorageUsedChartBar />
-          </div>
-        </div>
-      </div>
+      <MonitoringDashboard />
     </>
   );
 }

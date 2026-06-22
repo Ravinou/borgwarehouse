@@ -1,7 +1,8 @@
 import { getSession } from '~/helpers/getServerSession';
+import { findUserBySession } from '~/helpers/functions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import emailTest from '~/helpers/templates/emailTest';
-import { NotifService } from '~/services';
+import { ConfigService, NotifService } from '~/services';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -14,11 +15,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const transporter = NotifService.nodemailerSMTP();
-    if (!session.user?.email || !session.user?.name) {
-      return res.status(400).json({ message: 'User email or name is missing' });
+    const usersList = await ConfigService.getUsersList();
+    const user = findUserBySession(usersList, session);
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid user session. Please log out and retry.' });
     }
-    const mailData = emailTest(session.user.email, session.user.name);
+    if (!user.email) {
+      return res.status(400).json({ message: 'User email is missing' });
+    }
+
+    const transporter = NotifService.nodemailerSMTP();
+    const mailData = emailTest(user.email, user.username);
     const info = await transporter.sendMail(mailData);
     console.log(info);
 

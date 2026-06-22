@@ -9,6 +9,7 @@ export const authClient = createAuthClient({
 export type BwAuthSession = {
   user: {
     name?: string;
+    username?: string;
     email?: string;
     id?: string;
     roles?: string[];
@@ -25,17 +26,22 @@ type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated';
  * Drop-in replacement for next-auth's useSession().
  * Returns { status, data } with the same shape used throughout the codebase.
  */
-export function useAuthSession(): { status: SessionStatus; data: BwAuthSession; refetch: () => Promise<void> } {
+export function useAuthSession(): {
+  status: SessionStatus;
+  data: BwAuthSession;
+  refetch: () => Promise<void>;
+} {
   const { data, isPending, refetch } = authClient.useSession();
 
   const status: SessionStatus = isPending ? 'loading' : data ? 'authenticated' : 'unauthenticated';
 
-  const userWithExtra = data?.user as { roles?: string } | undefined;
+  const userWithExtra = data?.user as { roles?: string; username?: string } | undefined;
 
   const session: BwAuthSession = data
     ? {
         user: {
           name: data.user.name ?? undefined,
+          username: userWithExtra?.username ?? undefined,
           email: data.user.email ?? undefined,
           id: data.user.id ?? undefined,
           image: data.user.image ?? undefined,

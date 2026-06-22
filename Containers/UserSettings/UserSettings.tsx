@@ -91,7 +91,9 @@ export default function UserSettings({ data }: UserSettingsProps) {
           {activeTab === 'General' && (
             <>
               {passwordLoginEnabled && (
-                <UsernameSettings username={data?.user?.name ?? undefined} />
+                <UsernameSettings
+                  username={data?.user?.username ?? data?.user?.name ?? undefined}
+                />
               )}
               {passwordLoginEnabled && <PasswordSettings />}
               <EmailSettings email={data?.user?.email ?? undefined} />

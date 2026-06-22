@@ -2,6 +2,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from '~/pages/api/v1/account/username';
 import { getSession } from '~/helpers/getServerSession';
 import { ConfigService } from '~/services';
+import { USERNAME_POLICY_MESSAGE } from '~/helpers/functions/usernamePolicy';
 
 vi.mock('~/helpers/getServerSession');
 vi.mock('~/services');
@@ -32,7 +33,9 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 422 if username is not a string', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
+    vi.mocked(getSession).mockResolvedValue({
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
+    });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -46,7 +49,9 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 422 if username format is invalid', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
+    vi.mocked(getSession).mockResolvedValue({
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
+    });
 
     const { req, res } = createMocks({
       method: 'PUT',
@@ -57,12 +62,14 @@ describe('PUT /api/account/updateUsername', () => {
 
     expect(res._getStatusCode()).toBe(422);
     expect(res._getJSONData()).toEqual({
-      message: 'Only a-z characters are allowed (1 to 40 char.)',
+      message: USERNAME_POLICY_MESSAGE,
     });
   });
 
   it('should return 400 if user is not found', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '2' } });
+    vi.mocked(getSession).mockResolvedValue({
+      user: { name: 'Lovelace', email: 'love@example.com', id: '2' },
+    });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       { username: 'Ada', email: 'ada@example.com', password: 'xxx', id: 1, roles: ['user'] },
@@ -82,7 +89,9 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 400 if new username already exists', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
+    vi.mocked(getSession).mockResolvedValue({
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
+    });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       { username: 'Lovelace', email: 'love@example.com', password: 'xxx', id: 1, roles: ['user'] },
@@ -115,7 +124,9 @@ describe('PUT /api/account/updateUsername', () => {
       roles: ['user'],
     };
 
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
+    vi.mocked(getSession).mockResolvedValue({
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
+    });
 
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([originalUser]);
     vi.mocked(ConfigService.updateUsersList).mockResolvedValue();
@@ -135,7 +146,9 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 500 if file not found (ENOENT)', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
+    vi.mocked(getSession).mockResolvedValue({
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
+    });
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'ENOENT' });
 
     const { req, res } = createMocks({
@@ -153,7 +166,9 @@ describe('PUT /api/account/updateUsername', () => {
   });
 
   it('should return 500 on unknown error', async () => {
-    vi.mocked(getSession).mockResolvedValue({ user: { name: 'Lovelace', email: 'love@example.com', id: '1' } });
+    vi.mocked(getSession).mockResolvedValue({
+      user: { name: 'Lovelace', email: 'love@example.com', id: '1' },
+    });
     vi.mocked(ConfigService.getUsersList).mockRejectedValue({ code: 'SOMETHING_ELSE' });
 
     const { req, res } = createMocks({

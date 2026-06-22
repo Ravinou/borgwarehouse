@@ -1,5 +1,10 @@
 import { betterAuth } from 'better-auth';
 import { username } from 'better-auth/plugins';
+import {
+  isValidUsername,
+  USERNAME_MIN_LENGTH,
+  USERNAME_MAX_LENGTH,
+} from '~/helpers/functions/usernamePolicy';
 import { genericOAuth } from 'better-auth/plugins/generic-oauth';
 import Database from 'better-sqlite3';
 import { compare, hash } from 'bcryptjs';
@@ -95,7 +100,9 @@ const oidcConfig =
 // Build plugins array
 const plugins = [
   username({
-    minUsernameLength: 1,
+    minUsernameLength: USERNAME_MIN_LENGTH,
+    maxUsernameLength: USERNAME_MAX_LENGTH,
+    usernameValidator: (value: string) => isValidUsername(value),
     usernameNormalization: (u: string) => u.toLowerCase(),
   }),
   ...(oidcConfig.length > 0 ? [genericOAuth({ config: oidcConfig })] : []),

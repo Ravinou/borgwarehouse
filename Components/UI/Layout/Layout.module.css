@@ -8,6 +8,8 @@
   overflow: auto;
   /* to prevent main content under navside on little screen */
   padding-left: 90px;
+  /* room so content clears the floating footer pill */
+  padding-bottom: 64px;
   /* Disable scrollbar */
   scrollbar-width: none;
 }

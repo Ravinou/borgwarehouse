@@ -10,11 +10,17 @@
   display: flex;
   flex-flow: row wrap;
   width: 100%;
-  margin: 40px 20px 0px 5px;
+  box-sizing: border-box;
+  margin: 18px 4px 0 4px;
   text-align: left;
-  padding: 28px 24px;
+  padding: 26px 28px;
   animation: entrance ease-in 0.3s 1 normal none;
-  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px var(--shadow-sm),
+    0 6px 16px -8px var(--shadow-md);
 }
 
 @keyframes entrance {
@@ -37,9 +43,11 @@
   display: flex;
 }
 .settingCategory h2 {
-  color: var(--text-secondary);
+  color: var(--text-strong);
   margin: 0;
-  font-size: 1.3em;
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .setting {
@@ -67,10 +75,10 @@
   display: flex;
   align-items: center;
   background-color: var(--surface-2);
-  border-radius: 5px;
+  border-radius: 10px;
   color: var(--text-secondary);
-  outline: 1px solid var(--primary);
-  box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.16);
   animation: entrance ease-in 0.3s 1 normal none;
   padding: 10px;
   font-family: (--pure-material-font, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui);
@@ -91,18 +99,27 @@
 
 .tokenCard {
   width: 100%;
-  border: 1px solid var(--border-strong);
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  background-color: var(--surface-2);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.tokenCard:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .tokenCardHeader {
-  font-size: 1.2em;
-  margin-bottom: 10px;
+  font-size: 1.05em;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 5px;
-  color: var(--text-secondary);
+  color: var(--text-strong);
 }
 
 .tokenCardBody {
@@ -113,16 +130,45 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: baseline;
+  gap: 6px;
   align-content: baseline;
 }
 
 .tokenInfo {
   display: flex;
   align-items: center;
-  gap: 5px;
+  flex-wrap: wrap;
+  gap: 8px;
   margin: 10px 0;
   color: var(--text-secondary);
+}
+
+.tokenInfo strong {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.tokenValueBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 6px 6px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--surface);
+}
+
+.tokenValue {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  user-select: all;
 }
 
 .tokenCardHighlight {
@@ -150,7 +196,7 @@
   background-color: var(--text-faint);
   color: white;
   margin: 5px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
   font-weight: bold;
@@ -163,7 +209,7 @@
   background-color: var(--text-muted);
   color: white;
   margin: 5px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
   font-weight: bold;
@@ -176,7 +222,7 @@
   background-color: var(--text-muted);
   color: white;
   margin: 5px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
   font-weight: bold;
@@ -192,10 +238,10 @@
 .confirmButton {
   border: 0;
   padding: 10px 15px;
-  background-color: #ff0000;
+  background-color: var(--danger);
   color: white;
   margin: 5px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
   font-weight: bold;
@@ -206,7 +252,8 @@
 }
 
 .confirmButton:disabled {
-  opacity: 0.3;
+  background-color: var(--surface-3);
+  color: var(--text-faint);
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -217,7 +264,7 @@
   background-color: var(--danger);
   color: white;
   margin: 5px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
   font-weight: bold;
@@ -230,7 +277,7 @@
   background-color: var(--danger);
   color: white;
   margin: 5px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
   font-weight: bold;
@@ -240,12 +287,13 @@
 
 .permissionBadge {
   user-select: none;
-  border-radius: 5px;
-  border: 1px solid var(--primary);
+  border-radius: 6px;
+  border: 1px solid var(--primary-soft-border);
+  background: var(--primary-soft);
   color: var(--primary);
-  font-size: 0.9em;
-  padding: 2px 5px;
-  margin-right: 8px;
+  font-size: 0.8em;
+  font-weight: 600;
+  padding: 2px 8px;
 }
 
 .tokenWrapper {
@@ -265,8 +313,9 @@
 
 .permissionsWrapper .permissionBadge {
   user-select: none;
-  border-radius: 5px;
+  border-radius: 6px;
   border: 1px solid var(--border-strong);
+  background: transparent;
   color: var(--text-faint);
   font-size: 0.9em;
   margin: 0;
@@ -274,8 +323,9 @@
 }
 
 .permissionsWrapper .permissionBadge.highlight {
-  border-radius: 5px;
-  border: 1px solid var(--primary);
+  border-radius: 6px;
+  border: 1px solid var(--primary-soft-border);
+  background: var(--primary-soft);
   color: var(--primary);
   font-size: 0.9em;
   margin: 0;
@@ -313,8 +363,7 @@
 .bwForm label {
   display: block;
   margin-bottom: 8px;
-  text-align: center;
-  /* margin-top: 20px; */
+  text-align: left;
   color: var(--text-secondary);
 }
 
@@ -325,19 +374,22 @@
 .bwForm input,
 .bwForm textarea,
 .bwForm select {
-  border: 1px solid #6d4aff21;
-  font-size: 16px;
+  border: 1px solid var(--border-strong);
+  font-size: 15px;
   height: auto;
   margin: 0;
   margin-bottom: 0px;
   outline: 0;
-  padding: 10px;
+  padding: 10px 12px;
   width: 100%;
   background-color: var(--surface-2);
-  border-radius: 5px;
-  /* color: #1b1340; */
-  color: var(--text-secondary);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+  border-radius: 10px;
+  color: var(--text-strong);
+  box-shadow: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
   font-family: (--pure-material-font, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui);
 }
 
@@ -350,21 +402,20 @@
 .bwForm textarea:focus,
 .bwForm input:focus,
 .bwForm select:focus {
-  outline: 1px solid var(--primary);
-  box-shadow: 0 0 10px 3px rgba(110, 74, 255, 0.605);
+  border-color: var(--primary);
+  background-color: var(--surface);
+  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.16);
 }
 
 .bwForm .invalid {
   background: var(--danger-soft);
   border: 1px solid var(--danger);
-  outline: 1px solid var(--danger);
 }
 
 .bwForm .invalid:focus {
   background: var(--danger-soft);
   border: 1px solid var(--danger);
-  outline: 1px solid var(--danger);
-  box-shadow: 0 0 10px 3px rgba(255, 74, 74, 0.605);
+  box-shadow: 0 0 0 3px rgba(255, 61, 61, 0.16);
 }
 
 .bwForm button {
@@ -375,7 +426,7 @@
 }
 
 .errorMessage {
-  color: red;
+  color: var(--danger);
   display: block;
   margin-top: 3px;
 }
@@ -396,100 +447,81 @@
 
 .tabList {
   display: flex;
+  gap: 4px;
+  margin: 6px 4px 0 4px;
+  border-bottom: 1px solid var(--border);
 }
 
 .tabListButton {
-  color: var(--text-secondary);
-  padding: 12px 0px;
+  color: var(--text-muted);
+  padding: 12px 16px;
   min-height: 48px;
-  overflow: hidden;
-  text-align: center;
-  flex-direction: column;
   font-size: 1em;
   font-weight: 500;
-  line-height: 1.71;
   text-transform: none;
-  align-items: center;
   cursor: pointer;
-  vertical-align: middle;
   text-decoration: none;
   border: 0;
   background-color: transparent;
-  margin-left: 30px;
   border-bottom: 2px solid transparent;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .tabListButton:hover {
-  color: var(--primary);
-  border-bottom: 2px solid var(--primary);
+  color: var(--text-strong);
 }
 
 .tabListButtonActive {
   color: var(--primary);
   border: 0;
   border-bottom: 2px solid var(--primary);
-  padding: 12px 0px;
+  padding: 12px 16px;
   min-height: 48px;
-  overflow: hidden;
-  text-align: center;
-  flex-direction: column;
   font-size: 1em;
-  font-weight: 500;
-  line-height: 1.71;
+  font-weight: 600;
   text-transform: none;
-  align-items: center;
   cursor: pointer;
-  vertical-align: middle;
   text-decoration: none;
   background-color: transparent;
-  margin-left: 30px;
 }
 
 .AccountSettingsButton {
   border: 0;
-  padding: 10px 15px;
+  padding: 10px 16px;
   background-color: var(--primary);
-  color: white;
-  border-radius: 4px;
+  color: #fff;
+  border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
-  font-size: 1em;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
 }
 
 .AccountSettingsButton:hover {
-  border: 0;
-  padding: 10px 15px;
   background-color: var(--primary-hover);
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 1em;
 }
 
 .AccountSettingsButton:active {
-  border: 0;
-  padding: 10px 15px;
-  background-color: var(--primary-hover);
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 1em;
-  transform: scale(0.95);
+  transform: scale(0.97);
 }
 
 .AccountSettingsButton:disabled {
-  opacity: 0.3;
+  background-color: var(--surface-3);
+  color: var(--text-faint);
+  box-shadow: none;
   cursor: not-allowed;
   pointer-events: none;
 }
 
 .oauthNotice {
-  color: #b45309;
-  background-color: #fef3c7;
-  border: 1px solid #fde68a;
-  border-radius: 5px;
+  color: var(--amber);
+  background-color: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 10px;
   padding: 10px 14px;
   font-size: 0.9em;
   margin-bottom: 12px;
@@ -501,7 +533,7 @@
   color: var(--text-secondary);
   background-color: var(--primary-soft);
   border: 1px solid var(--primary-soft-border);
-  border-radius: 5px;
+  border-radius: 10px;
   padding: 10px 14px;
   font-size: 0.9em;
   margin-bottom: 12px;
@@ -524,7 +556,7 @@
   justify-content: space-between;
   padding: 10px 14px;
   border: 1px solid var(--border);
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: var(--surface-2);
 }
 
@@ -555,7 +587,7 @@
   background-color: transparent;
   color: var(--text-faint);
   padding: 5px 10px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.85em;
 }
@@ -579,7 +611,7 @@
   background-color: transparent;
   color: var(--text-faint);
   padding: 5px 10px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.85em;
 }

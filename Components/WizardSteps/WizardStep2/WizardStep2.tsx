@@ -19,13 +19,7 @@ function WizardStep2(props: WizardStepProps) {
       <div className={classes.description}>
         To initialize your repository with borgbackup :
         <br />
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>
             borg init -e repokey-blake2 ssh://
             {UNIX_USER}@{FQDN}
@@ -33,6 +27,7 @@ function WizardStep2(props: WizardStepProps) {
             {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
+            variant='pill'
             dataToCopy={`borg init -e repokey-blake2 ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>
@@ -55,15 +50,9 @@ function WizardStep2(props: WizardStepProps) {
         If you are using Borgmatic and have <b>already edited</b> the configuration file (find a
         sample on the step 4) :
         <br />
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>borgmatic init -e repokey-blake2</div>
-          <CopyButton dataToCopy='borgmatic init -e repokey-blake2' />
+          <CopyButton variant='pill' dataToCopy='borgmatic init -e repokey-blake2' />
         </div>
       </div>
 
@@ -72,13 +61,7 @@ function WizardStep2(props: WizardStepProps) {
         To &quot;Initialize a new repository&quot; or &quot;Add existing repository&quot;, copy this
         into the field &quot;Repository URL&quot; of your graphical client :
         <br />
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>
             ssh://
             {UNIX_USER}@{FQDN}
@@ -86,6 +69,7 @@ function WizardStep2(props: WizardStepProps) {
             {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
+            variant='pill'
             dataToCopy={`ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>

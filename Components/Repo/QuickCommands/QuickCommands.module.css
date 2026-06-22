@@ -45,38 +45,6 @@
   padding: 1px 5px;
 }
 
-.copyButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  padding: 4px 9px;
-  border: 1px solid var(--border-strong);
-  border-radius: 7px;
-  background: var(--surface);
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.copyButton:hover {
-  background: var(--surface-hover);
-  border-color: var(--primary-soft-border);
-  color: var(--primary);
-}
-
-.copyButton.copied {
-  background: var(--success-soft);
-  border-color: var(--success-border);
-  color: var(--success-text);
-}
-
 @media all and (max-width: 1000px) {
   .commandBox {
     display: none;

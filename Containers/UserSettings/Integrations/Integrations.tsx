@@ -5,7 +5,13 @@ import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormStatus } from '~/hooks';
-import { IntegrationTokenType, Optional, TokenPermissionEnum, TokenPermissionsType, DateFormatEnum } from '~/types';
+import {
+  IntegrationTokenType,
+  Optional,
+  TokenPermissionEnum,
+  TokenPermissionsType,
+  DateFormatEnum,
+} from '~/types';
 import classes from '../UserSettings.module.css';
 import { formatDate } from '~/helpers/functions';
 
@@ -96,8 +102,12 @@ export default function Integrations() {
 
     fetch('/api/v1/account/date-format')
       .then((res) => res.json())
-      .then((data) => { if (data.dateFormat) setDateFormat(data.dateFormat); })
-      .catch(() => { /* keep default */ });
+      .then((data) => {
+        if (data.dateFormat) setDateFormat(data.dateFormat);
+      })
+      .catch(() => {
+        /* keep default */
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -201,7 +211,7 @@ export default function Integrations() {
             rel='noreferrer'
             target='_blank'
           >
-            <IconExternalLink size={16} color='#6c737f' />
+            <IconExternalLink size={16} color='var(--text-muted)' />
           </Link>
         </div>
         <div className={classes.setting}>
@@ -301,13 +311,10 @@ export default function Integrations() {
                         <>
                           <div className={classes.tokenInfo}>
                             <strong>Token:</strong>
-                            <CopyButton
-                              size={22}
-                              displayIconConfirmation={true}
-                              dataToCopy={lastGeneratedToken.value}
-                            >
-                              <span>{lastGeneratedToken.value}</span>
-                            </CopyButton>
+                            <div className={classes.tokenValueBox}>
+                              <code className={classes.tokenValue}>{lastGeneratedToken.value}</code>
+                              <CopyButton variant='pill' dataToCopy={lastGeneratedToken.value} />
+                            </div>
                           </div>
                           <Info
                             color='#3498db'
@@ -339,7 +346,7 @@ export default function Integrations() {
                   <div className={classes.deleteToken}>
                     <IconTrash
                       cursor={'pointer'}
-                      color='#ea1313'
+                      color='var(--danger)'
                       strokeWidth={2}
                       onClick={() => setDeletingToken(token)}
                     />

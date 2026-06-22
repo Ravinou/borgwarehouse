@@ -171,7 +171,8 @@ code {
 }
 
 .defaultButton:disabled {
-  opacity: 0.4;
+  background-color: var(--surface-3);
+  color: var(--text-faint);
   cursor: not-allowed;
   pointer-events: none;
   transform: none;

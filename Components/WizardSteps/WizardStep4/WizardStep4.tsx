@@ -105,17 +105,17 @@ checks:
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'flex-start',
+          alignItems: 'flex-start',
         }}
       >
         <div className={classes.code}>{configBorgmatic}</div>
         <div
           style={{
-            margin: '15px 0 auto 0',
+            margin: '10px 0 0 10px',
             display: 'flex',
-            alignContent: 'center',
           }}
         >
-          <CopyButton dataToCopy={configBorgmatic} size={32} />
+          <CopyButton variant='pill' dataToCopy={configBorgmatic} />
         </div>
       </div>
     </div>

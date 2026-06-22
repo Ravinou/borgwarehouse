@@ -19,13 +19,7 @@ function WizardStep3(props: WizardStepProps) {
       </h1>
       <div className={classes.description}>
         To launch a backup with borgbackup :
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>
             borg create ssh://
             {UNIX_USER}@{FQDN}
@@ -34,6 +28,7 @@ function WizardStep3(props: WizardStepProps) {
             ::archive1 /your/pathToBackup
           </div>
           <CopyButton
+            variant='pill'
             dataToCopy={`borg create ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /your/pathToBackup`}
           />
         </div>
@@ -58,13 +53,7 @@ function WizardStep3(props: WizardStepProps) {
         correct with your tools (tar, rsync, diff or other tools).
         <br />
         <li>Check the integrity of a repository with :</li>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>
             borg check -v --progress ssh://
             {UNIX_USER}@{FQDN}
@@ -72,17 +61,12 @@ function WizardStep3(props: WizardStepProps) {
             {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
+            variant='pill'
             dataToCopy={`borg check -v --progress ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>
         <li>List the remote archives with :</li>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>
             borg list ssh://
             {UNIX_USER}@{FQDN}
@@ -90,17 +74,12 @@ function WizardStep3(props: WizardStepProps) {
             {props.selectedRepo?.repositoryName}
           </div>
           <CopyButton
+            variant='pill'
             dataToCopy={`borg list ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}`}
           />
         </div>
         <li>Download a remote archive with the following command :</li>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>
             borg export-tar --tar-filter=&quot;gzip -9&quot; ssh://
             {UNIX_USER}@{FQDN}
@@ -109,17 +88,12 @@ function WizardStep3(props: WizardStepProps) {
             ::archive1 archive1.tar.gz
           </div>
           <CopyButton
+            variant='pill'
             dataToCopy={`borg export-tar --tar-filter="gzip -9" ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 archive1.tar.gz`}
           />
         </div>
         <li>Mount an archive to compare or backup some files without download all the archive :</li>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={classes.cmdRow}>
           <div className={classes.code}>
             borg mount ssh://
             {UNIX_USER}@{FQDN}
@@ -128,6 +102,7 @@ function WizardStep3(props: WizardStepProps) {
             ::archive1 /tmp/yourMountPoint
           </div>
           <CopyButton
+            variant='pill'
             dataToCopy={`borg mount ssh://${UNIX_USER}@${FQDN}${SSH_SERVER_PORT}/./${props.selectedRepo?.repositoryName}::archive1 /tmp/yourMountPoint`}
           />
         </div>

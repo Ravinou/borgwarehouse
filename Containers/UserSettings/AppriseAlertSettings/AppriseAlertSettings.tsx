@@ -1,4 +1,4 @@
-import { IconExternalLink } from '@tabler/icons-react';
+import { IconExternalLink, IconSend } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
@@ -131,7 +131,7 @@ export default function AppriseAlertSettings() {
             rel='noreferrer'
             target='_blank'
           >
-            <IconExternalLink size={16} color='#6c737f' />
+            <IconExternalLink size={16} color='var(--text-muted)' />
           </Link>
         </div>
         <div className={classes.setting}>
@@ -150,14 +150,20 @@ export default function AppriseAlertSettings() {
                 <AppriseMode />
                 <button
                   disabled={isSendingTestNotification}
-                  style={{ marginTop: '20px' }}
+                  style={{
+                    marginTop: '20px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
                   className='defaultButton'
                   onClick={() => onSendTestAppriseHandler()}
                 >
+                  <IconSend size={18} stroke={1.75} />
                   Send a test notification
                 </button>
                 {info && (
-                  <span style={{ marginLeft: '10px', color: '#119300' }}>
+                  <span style={{ marginLeft: '10px', color: 'var(--success-text)' }}>
                     Notification successfully sent.
                   </span>
                 )}

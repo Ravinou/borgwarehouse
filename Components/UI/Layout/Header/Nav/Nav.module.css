@@ -24,24 +24,18 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #494b7a;
+  color: rgba(255, 255, 255, 0.82);
   padding: 4px 8px;
   border-radius: 8px;
-  transition: background 0.15s;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
-.userTrigger:hover {
-  background: rgba(109, 74, 255, 0.08);
-  color: #6d4aff;
-}
-
-.username {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.username::first-letter {
-  text-transform: capitalize;
+.userTrigger:hover,
+.userTrigger[aria-expanded='true'] {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .avatar {
@@ -50,8 +44,8 @@
 }
 
 .chevron {
-  opacity: 0.6;
-  transition: transform 0.2s;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
 }
 
 .chevronOpen {
@@ -62,51 +56,94 @@
 .dropdown {
   position: absolute;
   right: 0;
-  top: calc(100% + 6px);
+  top: calc(100% + 8px);
   background: var(--elevated);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: var(--shadow-md);
-  min-width: 170px;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px -8px var(--shadow-lg);
+  min-width: 220px;
+  padding: 6px;
   z-index: 100;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  transform-origin: top right;
+  animation: dropdownIn 0.14s ease-out;
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px 10px 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dropdownName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.dropdownName::first-letter {
+  text-transform: capitalize;
+}
+
+.dropdownEmail {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownItems {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .dropdownItem {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 16px;
-  font-size: 1rem;
+  padding: 9px 12px;
+  font-size: 0.92rem;
+  font-weight: 500;
   color: var(--text-secondary);
   text-decoration: none;
   background: none;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
   width: 100%;
   text-align: left;
-  transition: background 0.12s;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
 }
 
 .dropdownItem:hover {
-  background: rgba(109, 74, 255, 0.07);
+  background: var(--primary-soft);
   color: var(--primary);
 }
 
 .dropdownLogout {
-  border-top: 1px solid var(--border);
   color: var(--danger);
 }
 
 .dropdownLogout:hover {
-  background: rgba(224, 62, 62, 0.07);
+  background: var(--danger-soft);
   color: var(--danger);
-}
-
-@media all and (max-width: 1000px) {
-  .username {
-    display: none;
-  }
 }

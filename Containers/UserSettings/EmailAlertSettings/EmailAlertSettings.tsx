@@ -1,4 +1,4 @@
-import { IconExternalLink } from '@tabler/icons-react';
+import { IconExternalLink, IconSend } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
@@ -136,7 +136,7 @@ export default function EmailAlertSettings() {
             rel='noreferrer'
             target='_blank'
           >
-            <IconExternalLink size={16} color='#6c737f' />
+            <IconExternalLink size={16} color='var(--text-muted)' />
           </Link>
         </div>
         <div className={classes.setting}>
@@ -150,15 +150,21 @@ export default function EmailAlertSettings() {
               onChange={(e) => onChangeSwitchHandler({ emailAlert: e })}
             />
 
-            <button
-              className='defaultButton'
-              disabled={isSendingTestNotification}
-              onClick={onSendTestMailHandler}
-            >
-              Send a test mail
-            </button>
+            {isAlertEnabled && (
+              <button
+                className='defaultButton'
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                disabled={isSendingTestNotification}
+                onClick={onSendTestMailHandler}
+              >
+                <IconSend size={18} stroke={1.75} />
+                Send a test email
+              </button>
+            )}
             {info && (
-              <span style={{ marginLeft: '10px', color: '#119300' }}>Mail successfully sent.</span>
+              <span style={{ marginLeft: '10px', color: 'var(--success-text)' }}>
+                Mail successfully sent.
+              </span>
             )}
             {error && <Error message={error} />}
           </div>

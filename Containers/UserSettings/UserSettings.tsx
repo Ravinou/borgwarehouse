@@ -55,9 +55,7 @@ export default function UserSettings({ data }: UserSettingsProps) {
 
   return (
     <div className={classes.containerSettings}>
-      <h1 style={{ color: 'var(--text-strong)', textAlign: 'left', marginLeft: '30px' }}>
-        Account
-      </h1>
+      <h1 style={{ color: 'var(--text-strong)', textAlign: 'left', marginLeft: '4px' }}>Account</h1>
 
       {wizardEnv != undefined && (
         <>

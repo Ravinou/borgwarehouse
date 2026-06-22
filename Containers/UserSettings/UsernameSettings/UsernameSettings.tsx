@@ -26,7 +26,10 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isDirty },
-  } = useForm<UsernameSettingDTO>({ mode: 'onChange', defaultValues: { username: props.username } });
+  } = useForm<UsernameSettingDTO>({
+    mode: 'onChange',
+    defaultValues: { username: props.username },
+  });
   const { start, stop } = useLoader();
   const { refetch: refetchSession, data: session } = useAuthSession();
 

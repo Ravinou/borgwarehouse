@@ -150,41 +150,37 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
 }
 
-/* Primary submit button — gradient, matches the card avatar */
+/* Primary submit button — matches the account settings button */
 .repoManageForm button {
   display: block;
   margin: 2.2rem auto 0 auto;
   min-width: 200px;
-  background: linear-gradient(135deg, var(--grad-from) 0%, var(--grad-to) 100%);
-  color: #ffffff;
-  padding: 0.8rem 1.6rem;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
+  background-color: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 3px 8px -3px rgba(109, 74, 255, 0.35);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    filter 0.15s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
 }
 
 .repoManageForm button:hover:not(:disabled) {
-  filter: brightness(1.06);
-  box-shadow: 0 5px 12px -4px rgba(109, 74, 255, 0.4);
-  transform: translateY(-1px);
+  background-color: var(--primary-hover);
 }
 
 .repoManageForm button:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px -3px rgba(109, 74, 255, 0.35);
+  transform: scale(0.97);
 }
 
 .repoManageForm button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+  background-color: var(--surface-3);
+  color: var(--text-faint);
   box-shadow: none;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .errorMessage {

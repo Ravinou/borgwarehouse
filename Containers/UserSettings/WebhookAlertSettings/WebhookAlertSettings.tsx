@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { IconSend } from '@tabler/icons-react';
 import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -214,12 +215,18 @@ export default function WebhookAlertSettings() {
                 className='defaultButton'
                 disabled={isSendingTest || !savedWebhookURL}
                 onClick={onSendTestHandler}
-                style={{ marginTop: '10px' }}
+                style={{
+                  marginTop: '10px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
               >
+                <IconSend size={18} stroke={1.75} />
                 Send a test webhook
               </button>
               {testInfo && (
-                <span style={{ marginLeft: '10px', color: '#119300' }}>
+                <span style={{ marginLeft: '10px', color: 'var(--success-text)' }}>
                   Test webhook sent successfully.
                 </span>
               )}

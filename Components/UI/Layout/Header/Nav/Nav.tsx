@@ -9,7 +9,7 @@ import ThemeToggle from '~/Components/UI/ThemeToggle/ThemeToggle';
 
 export default function Nav() {
   const router = useRouter();
-  const { status, data } = useAuthSession();
+  const { data } = useAuthSession();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -53,9 +53,6 @@ export default function Nav() {
             ) : (
               <IconUser size={28} />
             )}
-            {status === 'authenticated' && (
-              <span className={classes.username}>{data?.user?.name}</span>
-            )}
             <IconChevronDown
               size={16}
               className={`${classes.chevron} ${open ? classes.chevronOpen : ''}`}
@@ -64,17 +61,29 @@ export default function Nav() {
 
           {open && (
             <div className={classes.dropdown}>
-              <Link href='/account' className={classes.dropdownItem} onClick={() => setOpen(false)}>
-                <IconSettings size={16} />
-                My Account
-              </Link>
-              <button
-                className={`${classes.dropdownItem} ${classes.dropdownLogout}`}
-                onClick={onLogoutClickedHandler}
-              >
-                <IconLogout size={16} />
-                Sign Out
-              </button>
+              <div className={classes.dropdownHeader}>
+                <span className={classes.dropdownName}>{data?.user?.name}</span>
+                {data?.user?.email && (
+                  <span className={classes.dropdownEmail}>{data.user.email}</span>
+                )}
+              </div>
+              <div className={classes.dropdownItems}>
+                <Link
+                  href='/account'
+                  className={classes.dropdownItem}
+                  onClick={() => setOpen(false)}
+                >
+                  <IconSettings size={16} />
+                  My Account
+                </Link>
+                <button
+                  className={`${classes.dropdownItem} ${classes.dropdownLogout}`}
+                  onClick={onLogoutClickedHandler}
+                >
+                  <IconLogout size={16} />
+                  Sign Out
+                </button>
+              </div>
             </div>
           )}
         </div>

@@ -74,6 +74,19 @@ h1 .icon {
   line-height: 1em;
 }
 
+.cmdRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0 10px 0;
+}
+
+.cmdRow .code {
+  margin: 0;
+}
+
 .verifyOrange {
   background-color: #ff7a1b;
   color: #fff;

@@ -50,6 +50,58 @@
   letter-spacing: -0.01em;
 }
 
+.settingTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+}
+
+.settingInfo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  cursor: help;
+  outline: none;
+}
+
+.settingInfo:hover {
+  color: var(--primary);
+}
+
+.settingTooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 50;
+  width: max-content;
+  max-width: 240px;
+  padding: 9px 11px;
+  background: var(--elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  box-shadow: 0 10px 24px -8px var(--shadow-lg);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0.15s ease;
+}
+
+.settingInfo:hover .settingTooltip,
+.settingInfo:focus-visible .settingTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
 .setting {
   max-width: 66.6666%;
   width: 100%;
@@ -410,6 +462,14 @@
 .bwForm .invalid {
   background: var(--danger-soft);
   border: 1px solid var(--danger);
+}
+
+.bwForm input:disabled,
+.bwForm textarea:disabled,
+.bwForm select:disabled {
+  background-color: var(--surface-3);
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 .bwForm .invalid:focus {

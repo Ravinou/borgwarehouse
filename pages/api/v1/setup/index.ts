@@ -2,6 +2,7 @@ import { hash } from 'bcryptjs';
 import { writeFileSync } from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { isFirstRun, setupLockFile } from '~/helpers/isFirstRun';
+import { isValidUsername, USERNAME_POLICY_MESSAGE } from '~/helpers/functions/usernamePolicy';
 import { ensureSchemaReady } from '~/lib/auth-migrate';
 import { ConfigService } from '~/services';
 import Database from 'better-sqlite3';
@@ -51,8 +52,8 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
     const { username, password } = req.body as { username?: string; password?: string };
 
-    if (!username || typeof username !== 'string' || !/^[a-z]{1,40}$/.test(username)) {
-      return res.status(400).json({ message: 'Invalid username. Only a-z characters, 1–40 chars.' });
+    if (!username || typeof username !== 'string' || !isValidUsername(username)) {
+      return res.status(400).json({ message: `Invalid username. ${USERNAME_POLICY_MESSAGE}` });
     }
     if (!password || typeof password !== 'string' || password.length < 8) {
       return res.status(400).json({ message: 'Password must be at least 8 characters.' });
@@ -79,15 +80,37 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     // 2. Insert directly into SQLite
     const db = new Database(dbPath);
     try {
-      db.prepare(`
+      db.prepare(
+        `
         INSERT INTO "user" (id, name, email, emailVerified, username, displayUsername, roles, createdAt, updatedAt)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(userId, username, `${username}@borgwarehouse.local`, 0, username.toLowerCase(), username, JSON.stringify(['admin']), now, now);
+      `
+      ).run(
+        userId,
+        username,
+        `${username}@borgwarehouse.local`,
+        0,
+        username.toLowerCase(),
+        username,
+        JSON.stringify(['admin']),
+        now,
+        now
+      );
 
-      db.prepare(`
+      db.prepare(
+        `
         INSERT INTO account (id, accountId, providerId, userId, password, createdAt, updatedAt)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).run(`${userId}-credential`, username.toLowerCase(), 'credential', userId, passwordHash, now, now);
+      `
+      ).run(
+        `${userId}-credential`,
+        username.toLowerCase(),
+        'credential',
+        userId,
+        passwordHash,
+        now,
+        now
+      );
     } finally {
       db.close();
     }

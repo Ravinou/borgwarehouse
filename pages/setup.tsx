@@ -5,6 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import { useLoader } from '~/contexts/LoaderContext';
 import { useFormStatus } from '~/hooks';
+import { USERNAME_REGEX, USERNAME_POLICY_MESSAGE } from '~/helpers/functions/usernamePolicy';
 
 type SetupForm = {
   username: string;
@@ -46,7 +47,11 @@ export default function Setup({ requiresSecret }: { requiresSecret: boolean }) {
       const response = await fetch('/api/v1/setup', {
         method: 'POST',
         headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({ username: data.username, password: data.password, secret: data.secret }),
+        body: JSON.stringify({
+          username: data.username,
+          password: data.password,
+          secret: data.secret,
+        }),
       });
       const result = await response.json();
 
@@ -119,13 +124,13 @@ export default function Setup({ requiresSecret }: { requiresSecret: boolean }) {
             <p>
               <input
                 type='text'
-                placeholder='Username (a-z only)'
+                placeholder='Username'
                 className='signInInput'
                 {...register('username', {
                   required: 'Username is required.',
                   pattern: {
-                    value: /^[a-z]{1,40}$/,
-                    message: 'Only lowercase a-z, 1–40 characters.',
+                    value: USERNAME_REGEX,
+                    message: USERNAME_POLICY_MESSAGE,
                   },
                 })}
               />
@@ -185,10 +190,7 @@ export default function Setup({ requiresSecret }: { requiresSecret: boolean }) {
               </p>
             )}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <button
-                className='signInButton'
-                disabled={isLoading || isSubmitting || !isValid}
-              >
+              <button className='signInButton' disabled={isLoading || isSubmitting || !isValid}>
                 Create admin account
               </button>
             </div>

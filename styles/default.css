@@ -2,6 +2,109 @@
   box-sizing: border-box;
 }
 
+/* ====================================
+   THEME Borgwarehouse 2026 by R4VEN <3
+   ==================================== */
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #faf9ff;
+  --surface-3: #f4f5f9;
+  --surface-hover: #f3f2fb;
+  --elevated: #ffffff;
+  --skeleton-base: #ecebf3;
+  --skeleton-highlight: #f7f7fc;
+
+  --border: #ecebf3;
+  --border-strong: #e4e3ef;
+  --border-subtle: #f0eff7;
+
+  --text: #1f2937;
+  --text-strong: #111827;
+  --text-secondary: #374151;
+  --text-muted: #65748b;
+  --text-faint: #9499b7;
+  --text-on-accent: #ffffff;
+
+  --primary: #6d4aff;
+  --primary-hover: #5c3dff;
+  --primary-soft: #f0ecff;
+  --primary-soft-border: #c3b6fa;
+  --grad-from: #8b6bff;
+  --grad-to: #6d4aff;
+
+  --success: #00d26a;
+  --success-text: #00a854;
+  --success-soft: #ecfdf3;
+  --success-border: #abe7c4;
+
+  --danger: #ff3d3d;
+  --danger-strong: #ff2d2d;
+  --danger-soft: #fef2f2;
+  --danger-border: #fecaca;
+  --danger-text: #b91c1c;
+
+  --amber: #f59e0b;
+
+  --shadow-sm: rgba(17, 24, 39, 0.05);
+  --shadow-md: rgba(17, 24, 39, 0.12);
+  --shadow-lg: rgba(17, 24, 39, 0.35);
+  --overlay: rgba(17, 24, 39, 0.45);
+  --header-bg: #111827;
+
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  --bg: #0d0f15;
+  --surface: #15181f;
+  --surface-2: #1b1f28;
+  --surface-3: #222632;
+  --surface-hover: #232733;
+  --elevated: #1a1d25;
+  --skeleton-base: #20242e;
+  --skeleton-highlight: #2c313d;
+
+  --border: #272c38;
+  --border-strong: #333a49;
+  --border-subtle: #20242e;
+
+  --text: #e6e8ef;
+  --text-strong: #f3f4f8;
+  --text-secondary: #c7cbd6;
+  --text-muted: #9aa1b3;
+  --text-faint: #6f7587;
+  --text-on-accent: #ffffff;
+
+  --primary: #8b6bff;
+  --primary-hover: #9d82ff;
+  --primary-soft: #241f3a;
+  --primary-soft-border: #4b3f7a;
+  --grad-from: #8b6bff;
+  --grad-to: #6d4aff;
+
+  --success: #00d26a;
+  --success-text: #2ee48a;
+  --success-soft: rgba(0, 210, 106, 0.12);
+  --success-border: rgba(0, 210, 106, 0.35);
+
+  --danger: #ff5d5d;
+  --danger-strong: #ff4b4b;
+  --danger-soft: rgba(255, 61, 61, 0.12);
+  --danger-border: rgba(255, 61, 61, 0.35);
+  --danger-text: #ff8a8a;
+
+  --amber: #fbbf24;
+
+  --shadow-sm: rgba(0, 0, 0, 0.4);
+  --shadow-md: rgba(0, 0, 0, 0.5);
+  --shadow-lg: rgba(0, 0, 0, 0.6);
+  --overlay: rgba(0, 0, 0, 0.6);
+  --header-bg: #131722;
+
+  color-scheme: dark;
+}
+
 @font-face {
   font-family: 'Inter';
   src: url('/font/Inter/Inter-VariableFont_slnt,wght.ttf') format('truetype');
@@ -12,7 +115,11 @@ body {
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
+  background-color: var(--bg);
+  color: var(--text);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 /* Disable scrollbar for chrome */
@@ -41,8 +148,8 @@ code {
 .defaultButton {
   border: 0;
   padding: 10px 16px;
-  background-color: #6d4aff;
-  color: white;
+  background-color: var(--primary);
+  color: #fff;
   border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
@@ -53,12 +160,12 @@ code {
 }
 
 .defaultButton:hover {
-  background-color: #5a3de0;
+  background-color: var(--primary-hover);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
 .defaultButton:active {
-  background-color: #4f31ce;
+  background-color: var(--primary-hover);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
   /* Pas de scale */
 }

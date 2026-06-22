@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useLoader } from '~/contexts/LoaderContext';
 import { DateFormatEnum, DateFormatSettingDTO, Optional } from '~/types';
 import classes from '../UserSettings.module.css';
+import { bwSelectStyles, bwSelectTheme } from '~/Components/UI/Select/bwSelectStyles';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
@@ -97,27 +98,10 @@ export default function DateFormatSettings() {
             isSearchable={false}
             menuPlacement='auto'
             styles={{
+              ...bwSelectStyles,
               container: (base) => ({ ...base, maxWidth: '80%' }),
-              control: (base) => ({ ...base, minHeight: '35px', height: '35px', cursor: 'pointer' }),
-              valueContainer: (base) => ({
-                ...base,
-                height: '35px',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 8px',
-              }),
-              input: (base) => ({ ...base, margin: 0 }),
-              indicatorsContainer: (base) => ({ ...base, height: '35px' }),
             }}
-            theme={(theme) => ({
-              ...theme,
-              borderRadius: 5,
-              colors: {
-                ...theme.colors,
-                primary25: '#c3b6fa',
-                primary: '#6d4aff',
-              },
-            })}
+            theme={bwSelectTheme}
           />
           {error && <Error message={error} />}
         </div>

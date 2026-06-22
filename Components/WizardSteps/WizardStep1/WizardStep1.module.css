@@ -32,7 +32,7 @@
 }
 
 .container a {
-  color: #6d4aff;
+  color: var(--primary);
 }
 
 .separator {
@@ -45,7 +45,7 @@
 }
 
 h1 .icon {
-  color: #6d4aff;
+  color: var(--primary);
   margin-right: 5px;
 }
 
@@ -128,7 +128,7 @@ h1 .icon {
 
 .note {
   font-style: italic;
-  color: #494b7a4d;
+  color: var(--text-faint);
   font-size: 0.8em;
 }
 

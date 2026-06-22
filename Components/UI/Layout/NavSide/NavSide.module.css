@@ -14,7 +14,7 @@
   width: 70px;
   list-style-type: none;
   /* background: #1b1340; */
-  background: #111827;
+  background: var(--header-bg);
   /* box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); */
 }
 
@@ -49,7 +49,7 @@ ul.NavSide {
   visibility: hidden;
   width: 120px;
   /* background-color: #1b1340; */
-  background-color: #111827;
+  background-color: var(--header-bg);
   color: #d1d5db;
   text-align: center;
   border-radius: 6px;

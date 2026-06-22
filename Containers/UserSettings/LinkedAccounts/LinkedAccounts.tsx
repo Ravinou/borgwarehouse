@@ -123,7 +123,7 @@ export default function LinkedAccounts() {
       </div>
       <div className={classes.setting}>
         {loading ? (
-          <p style={{ color: '#494b7a' }}>Loading...</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Loading...</p>
         ) : (
           <>
             {oauthAccounts.length > 0 && (
@@ -190,7 +190,7 @@ export default function LinkedAccounts() {
             )}
 
             {oauthAccounts.length === 0 && providers.length === 0 && (
-              <p style={{ color: '#9798b2', fontSize: '0.9em' }}>
+              <p style={{ color: 'var(--text-faint)', fontSize: '0.9em' }}>
                 No OAuth accounts linked. Sign in with an OAuth provider to link it.
               </p>
             )}

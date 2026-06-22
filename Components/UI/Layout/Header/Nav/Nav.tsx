@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { authClient, useAuthSession } from '~/lib/auth-client';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import ThemeToggle from '~/Components/UI/ThemeToggle/ThemeToggle';
 
 export default function Nav() {
   const router = useRouter();
@@ -31,6 +32,9 @@ export default function Nav() {
 
   return (
     <ul className={classes.Nav}>
+      <li className={classes.themeItem}>
+        <ThemeToggle />
+      </li>
       <li style={{ margin: '0px 15px 0px 0px' }}>
         <div className={classes.userMenu} ref={dropdownRef}>
           <button

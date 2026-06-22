@@ -11,11 +11,11 @@
   min-width: 0;
   margin: 0;
   padding: 8px 14px 8px 8px;
-  border: 1px solid #e4e3ef;
+  border: 1px solid var(--border-strong);
   border-radius: 11px;
-  background: #faf9ff;
+  background: var(--surface-2);
   background-image: none;
-  color: #111827;
+  color: var(--text-strong);
   cursor: pointer;
   box-shadow: none;
   transition:
@@ -25,12 +25,12 @@
   box-sizing: border-box;
 }
 .wrapper .trigger:hover {
-  background-color: #fff;
-  border-color: #b9aaff;
+  background-color: var(--surface);
+  border-color: var(--primary-soft-border);
 }
 .wrapper .triggerOpen {
-  background-color: #fff;
-  border-color: #6d4aff;
+  background-color: var(--surface);
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.18);
 }
 
@@ -41,7 +41,7 @@
   height: 36px;
   width: 36px;
   border-radius: 9px;
-  background: linear-gradient(135deg, #8b6bff, #6d4aff);
+  background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
   color: #fff;
   flex-shrink: 0;
   box-shadow: 0 2px 6px -2px rgba(109, 74, 255, 0.3);
@@ -52,7 +52,7 @@
   min-width: 0;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #111827;
+  color: var(--text-strong);
   text-transform: capitalize;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -60,13 +60,13 @@
 }
 
 .wrapper .triggerChevron {
-  color: #9499b7;
+  color: var(--text-faint);
   flex-shrink: 0;
   transition: transform 0.2s ease;
 }
 .wrapper .triggerOpen .triggerChevron {
   transform: rotate(180deg);
-  color: #6d4aff;
+  color: var(--primary);
 }
 
 /* PANEL */
@@ -77,10 +77,10 @@
   right: 0;
   z-index: 30;
   margin-top: 8px;
-  border: 1px solid #ecebf3;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 16px 40px -12px rgba(17, 24, 39, 0.22);
+  background: var(--elevated);
+  box-shadow: var(--shadow-lg);
   padding: 12px;
   box-sizing: border-box;
   animation: panelIn 0.16s ease both;
@@ -106,19 +106,19 @@
   left: 11px;
   top: 50%;
   transform: translateY(-50%);
-  color: #9499b7;
+  color: var(--text-faint);
   pointer-events: none;
 }
 .wrapper .search {
   width: 100%;
   height: 40px;
   margin: 0;
-  border: 1px solid #e4e3ef;
+  border: 1px solid var(--border-strong);
   border-radius: 11px;
   padding: 0 12px 0 36px;
   font-size: 0.88rem;
-  background-color: #faf9ff;
-  color: #111827;
+  background-color: var(--surface-2);
+  color: var(--text-strong);
   outline: none;
   box-sizing: border-box;
   transition:
@@ -127,8 +127,8 @@
     background-color 0.15s ease;
 }
 .wrapper .search:focus {
-  border-color: #6d4aff;
-  background-color: #fff;
+  border-color: var(--primary);
+  background-color: var(--surface);
   box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.16);
 }
 
@@ -137,13 +137,13 @@
   overflow-y: auto;
   padding-right: 4px;
   scrollbar-width: thin;
-  scrollbar-color: #d9d9ec transparent;
+  scrollbar-color: var(--border-strong) transparent;
 }
 .wrapper .scroll::-webkit-scrollbar {
   width: 8px;
 }
 .wrapper .scroll::-webkit-scrollbar-thumb {
-  background: #e1e1ec;
+  background: var(--border-strong);
   border-radius: 999px;
 }
 
@@ -152,7 +152,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #9499b7;
+  color: var(--text-faint);
   margin: 0 2px 8px;
 }
 .wrapper .scroll > div + div {
@@ -174,11 +174,11 @@
   height: 44px;
   margin: 0;
   padding: 0;
-  border: 1px solid #eceaf6;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: #f7f6fc;
+  background: var(--surface-2);
   background-image: none;
-  color: #545978;
+  color: var(--text-secondary);
   cursor: pointer;
   box-shadow: none;
   transition:
@@ -189,27 +189,27 @@
     box-shadow 0.12s ease;
 }
 .wrapper .grid .iconButton:hover {
-  background-color: #fff;
-  color: #6d4aff;
-  border-color: #c3b6fa;
+  background-color: var(--surface);
+  color: var(--primary);
+  border-color: var(--primary-soft-border);
   filter: none;
   transform: translateY(-1px);
   box-shadow: 0 2px 6px -3px rgba(109, 74, 255, 0.28);
 }
 .wrapper .grid .iconButtonActive {
-  background: linear-gradient(135deg, #8b6bff, #6d4aff);
+  background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
   color: #fff;
   border-color: transparent;
   box-shadow: 0 2px 7px -3px rgba(109, 74, 255, 0.35);
 }
 .wrapper .grid .iconButtonActive:hover {
   color: #fff;
-  background: linear-gradient(135deg, #8b6bff, #6d4aff);
+  background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
 }
 
 .wrapper .empty {
   text-align: center;
-  color: #9499b7;
+  color: var(--text-faint);
   font-size: 0.82rem;
   padding: 28px 0;
 }

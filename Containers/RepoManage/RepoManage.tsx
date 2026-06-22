@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
+import { bwSelectStyles, bwSelectTheme } from '~/Components/UI/Select/bwSelectStyles';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLoader } from '~/contexts/LoaderContext';
@@ -443,39 +444,8 @@ export default function RepoManage(props: RepoManageProps) {
                         isSearchable={false}
                         maxMenuHeight={300}
                         menuPlacement='top'
-                        styles={{
-                          control: (base) => ({
-                            ...base,
-                            minHeight: '35px',
-                            height: '35px',
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            height: '35px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-                            padding: '0 8px',
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            margin: 0,
-                          }),
-                          indicatorsContainer: (base) => ({
-                            ...base,
-                            height: '35px',
-                          }),
-                        }}
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: 5,
-                          colors: {
-                            ...theme.colors,
-                            primary25: '#c3b6fa',
-                            primary: '#6d4aff',
-                          },
-                        })}
+                        styles={bwSelectStyles}
+                        theme={bwSelectTheme}
                       />
                     )}
                   />

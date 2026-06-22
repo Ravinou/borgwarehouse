@@ -10,7 +10,7 @@
   flex: 1;
   min-width: 0;
   height: 8px;
-  background-color: #ecebf6;
+  background-color: var(--surface-3);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -40,7 +40,7 @@
   gap: 6px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-strong);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -48,5 +48,5 @@
 .detail {
   font-size: 0.72rem;
   font-weight: 400;
-  color: #9499b7;
+  color: var(--text-faint);
 }

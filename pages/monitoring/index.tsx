@@ -24,7 +24,7 @@ export default function Monitoring() {
         <div>
           <h1
             style={{
-              color: '#494b7a',
+              color: 'var(--text-strong)',
               textAlign: 'center',
               marginTop: '5%',
               marginBottom: '10%',

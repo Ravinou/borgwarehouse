@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconChevronDown, IconSearch } from '@tabler/icons-react';
 import classes from './IconPicker.module.css';
 import RepoIcon from '../RepoIcon';
@@ -21,6 +21,29 @@ export default function IconPicker(props: IconPickerProps) {
   const selected = props.value || DEFAULT_REPO_ICON;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handlePointerDown = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        setQuery('');
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        setQuery('');
+      }
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
 
   const filteredCategories = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -38,7 +61,7 @@ export default function IconPicker(props: IconPickerProps) {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.wrapper} ref={wrapperRef}>
       <button
         type='button'
         className={`${classes.trigger} ${open ? classes.triggerOpen : ''}`}

@@ -3,36 +3,39 @@ import { IconServer, IconSettingsAutomation, IconActivityHeartbeat } from '@tabl
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+const NAV_ITEMS = [
+  { href: '/', match: '/', label: 'Repositories', Icon: IconServer },
+  { href: '/monitoring', match: '/monitoring', label: 'Monitoring', Icon: IconActivityHeartbeat },
+  {
+    href: '/setup-wizard/1',
+    match: '/setup-wizard/[slug]',
+    label: 'Setup Wizard',
+    Icon: IconSettingsAutomation,
+  },
+];
+
 export default function NavSide() {
   const router = useRouter();
   const currentRoute = router.pathname;
 
   return (
     <ul className={classes.NavSide}>
-      <li className={classes.NavSideItem}>
-        <Link href='/' className={currentRoute === '/' ? classes.active : undefined}>
-          <IconServer size={40} />
-        </Link>
-        <span className={classes.tooltip}>Repositories</span>
-      </li>
-      <li className={classes.NavSideItem}>
-        <Link
-          href='/setup-wizard/1'
-          className={currentRoute === '/setup-wizard/[slug]' ? classes.active : undefined}
-        >
-          <IconSettingsAutomation size={40} />
-        </Link>
-        <span className={classes.tooltip}>Setup Wizard</span>
-      </li>
-      <li className={classes.NavSideItem}>
-        <Link
-          href='/monitoring'
-          className={currentRoute === '/monitoring' ? classes.active : undefined}
-        >
-          <IconActivityHeartbeat size={40} />
-        </Link>
-        <span className={classes.tooltip}>Monitoring</span>
-      </li>
+      {NAV_ITEMS.map(({ href, match, label, Icon }) => {
+        const isActive = currentRoute === match;
+        return (
+          <li key={href} className={classes.NavSideItem}>
+            <Link
+              href={href}
+              aria-label={label}
+              aria-current={isActive ? 'page' : undefined}
+              className={`${classes.link} ${isActive ? classes.active : ''}`}
+            >
+              <Icon size={24} stroke={1.8} />
+            </Link>
+            <span className={classes.tooltip}>{label}</span>
+          </li>
+        );
+      })}
     </ul>
   );
 }

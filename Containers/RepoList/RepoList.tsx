@@ -41,7 +41,7 @@ type SortOption =
 export default function RepoList() {
   const router = useRouter();
   const { mutate } = useSWRConfig();
-  const [displayRepoAdd, setDisplayRepoAdd] = useState(false);
+  // Modal visibility is derived directly from the route — no state/effect needed.
   const displayRepoAdd = router.pathname === '/manage-repo/add';
   const displayRepoEdit = router.pathname.startsWith('/manage-repo/edit');
 

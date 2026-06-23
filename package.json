@@ -26,7 +26,7 @@
     "lowdb": "^7.0.1",
     "next": "^16.2.9",
     "next-themes": "^0.4.6",
-    "nodemailer": "^8.0.11",
+    "nodemailer": "^9.0.1",
     "nprogress": "^0.2.0",
     "react": "^19.2.7",
     "react-chartjs-2": "^5.3.1",

@@ -3,5 +3,8 @@ packages:
 
 # better-sqlite3 is a native Node.js module (C++ binding) that requires
 # compilation at install time. This explicitly allows its build script to run.
-onlyBuiltDependencies:
-  - better-sqlite3
+allowBuilds:
+  better-sqlite3: true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

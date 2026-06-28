@@ -1,7 +1,17 @@
 packages:
   - .
 
-# better-sqlite3 is a native Node.js module (C++ binding) that requires
-# compilation at install time. This explicitly allows its build script to run.
+# Supply-chain protection: pnpm refuses to install package versions published
+# less than 24h ago (defends against freshly compromised releases). Set
+# explicitly so the behavior is consistent across pnpm versions (pnpm < 11
+# defaulted to 0). See https://pnpm.io/settings#minimumreleaseage
+minimumReleaseAge: 1440
+
+# These dependencies have build scripts that pnpm runs at install time.
+# better-sqlite3, sharp and unrs-resolver are native modules (C++ bindings)
+# that require compilation; esbuild downloads its platform binary.
 onlyBuiltDependencies:
   - better-sqlite3
+  - esbuild
+  - sharp
+  - unrs-resolver

@@ -2,7 +2,7 @@ import { IconAlertCircle, IconExternalLink, IconX } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { bwSelectStyles, bwSelectTheme } from '~/Components/UI/Select/bwSelectStyles';
@@ -63,7 +63,30 @@ export default function RepoManage(props: RepoManageProps) {
   const [icon, setIcon] = useState<string>(
     (props.mode === 'edit' ? targetRepo?.icon : undefined) ?? DEFAULT_REPO_ICON
   );
+  const [storageTargets, setStorageTargets] = useState<string[]>([]);
+  const [storageTarget, setStorageTarget] = useState<string>('');
   const { start, stop } = useLoader();
+
+  // Load the list of external storage targets (STORAGE_TARGETS env) for the
+  // "Storage location" selector. Only relevant when adding a new repository.
+  useEffect(() => {
+    if (props.mode !== 'add') return;
+    let isMounted = true;
+    fetch('/api/v1/storage-targets', { method: 'GET' })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const data: { storageTargets?: string[] } = await response.json();
+        if (isMounted && Array.isArray(data.storageTargets)) {
+          setStorageTargets(data.storageTargets);
+        }
+      })
+      .catch(() => {
+        /* silently ignore: the selector simply stays on "Local" */
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [props.mode]);
 
   //router.query.slug is undefined for few milliseconds on first render for a direct URL access (https://github.com/vercel/next.js/discussions/11484).
   //If I call repoManage with edit mode (props), i'm firstly waiting that router.query.slug being available before rendering.
@@ -182,6 +205,7 @@ export default function RepoManage(props: RepoManageProps) {
         lanCommand: dataForm.lanCommand,
         appendOnlyMode: dataForm.appendOnlyMode,
         icon: icon,
+        storageTarget: storageTarget || undefined,
       };
       //POST API to send new repo
       await fetch('/api/v1/repositories', {
@@ -373,6 +397,39 @@ export default function RepoManage(props: RepoManageProps) {
               />
               {errors.storageSize && (
                 <span className={classes.errorMessage}>{errors.storageSize.message}</span>
+              )}
+              {/* STORAGE LOCATION (external storage targets) */}
+              {props.mode == 'add' && storageTargets.length > 0 && (
+                <>
+                  <label htmlFor='storageTarget'>Storage location</label>
+                  <Select
+                    inputId='storageTarget'
+                    isSearchable={false}
+                    maxMenuHeight={300}
+                    styles={bwSelectStyles}
+                    theme={bwSelectTheme}
+                    defaultValue={{ value: '', label: 'Local (default)' }}
+                    options={[
+                      { value: '', label: 'Local (default)' },
+                      ...storageTargets.map((target) => ({ value: target, label: target })),
+                    ]}
+                    onChange={(option) => setStorageTarget(option?.value ?? '')}
+                  />
+                </>
+              )}
+              {/* STORAGE LOCATION (read-only in edit mode: not changeable after creation) */}
+              {props.mode == 'edit' && (
+                <>
+                  <label htmlFor='storageTargetReadOnly'>Storage location</label>
+                  <input
+                    id='storageTargetReadOnly'
+                    type='text'
+                    readOnly
+                    disabled
+                    value={targetRepo?.storageTarget ?? 'Local (default)'}
+                    title='The storage location cannot be changed after creation.'
+                  />
+                </>
               )}
               {/* COMMENT */}
               <label htmlFor='comment'>Comment</label>

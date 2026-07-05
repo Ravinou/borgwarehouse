@@ -36,7 +36,20 @@ if ! [[ "$repositoryName" =~ ^[a-f0-9]{8}$ ]]; then
 fi
 
 # Delete the repository and the line associated in the authorized_keys file
-if [ -d "${pool}/${repositoryName}" ]; then
+repo_path="${pool}/${repositoryName}"
+if [ -L "${repo_path}" ]; then
+        # External storage: the repository is a symlink pointing to the mounted
+        # storage. Remove the external data first, then the symlink itself.
+        target=$(readlink -f "${repo_path}" || true)
+        # Safety: only delete a resolved target that still ends with the repositoryName.
+        if [ -n "${target}" ] && [[ "${target}" == *"/${repositoryName}" ]] && [ -d "${target}" ]; then
+                rm -rf -- "${target:?}"
+        fi
+        rm -f -- "${repo_path}"
+        # Delete the line in the authorized_keys file
+        sed -i "/${repositoryName}/d" "${authorized_keys}"
+        echo -n "The repository ""${repositoryName}"" (external storage) and all its data have been deleted. The line associated in the authorized_keys file has been deleted."
+elif [ -d "${repo_path}" ]; then
         # Delete the repository
         rm -rf """${pool}""/""${repositoryName:?}"""
         # Delete the line in the authorized_keys file

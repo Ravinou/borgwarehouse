@@ -186,6 +186,7 @@ export default function RepoList() {
       icon={repo.icon}
       lanCommand={repo.lanCommand}
       appendOnlyMode={repo.appendOnlyMode}
+      storageTarget={repo.storageTarget}
       repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
       wizardEnv={wizardEnv}
       dateFormat={dateFormat}

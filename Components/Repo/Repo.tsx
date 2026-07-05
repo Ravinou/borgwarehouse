@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import classes from './Repo.module.css';
-import { IconSettings, IconChevronDown, IconBellOff, IconLockPlus } from '@tabler/icons-react';
+import { IconSettings, IconChevronDown, IconBellOff, IconLockPlus, IconCloud } from '@tabler/icons-react';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import InfoTooltip from '../UI/InfoTooltip/InfoTooltip';
 import RepoIcon from './RepoIcon';
@@ -84,6 +84,11 @@ export default function Repo(props: RepoProps) {
       {props.appendOnlyMode && (
         <div className={classes.chip} title='Append-only mode enabled'>
           <IconLockPlus size={16} />
+        </div>
+      )}
+      {props.storageTarget && (
+        <div className={classes.chip} title={`External storage: ${props.storageTarget}`}>
+          <IconCloud size={16} />
         </div>
       )}
       {props.alert === 0 && (

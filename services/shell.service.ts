@@ -3,6 +3,7 @@ import { promisify } from 'util';
 import { execFile as execFileCallback } from 'node:child_process';
 import { LastSaveDTO, StorageUsedDTO } from '~/types';
 import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
+import { isValidStorageTarget } from '~/helpers/functions';
 
 const execFile = promisify(execFileCallback);
 const shellsDirectory = path.join(process.cwd(), '/helpers/shells');
@@ -75,17 +76,23 @@ export const ShellService = {
   createRepo: async (
     sshPublicKey: string,
     storageSize: number,
-    appendOnlyMode: boolean
+    appendOnlyMode: boolean,
+    storageTarget?: string
   ): Promise<{ stdout?: string; stderr?: string }> => {
     if (!isValidSshKey(sshPublicKey)) {
       throw new Error('Invalid SSH key format');
     }
 
-    const { stdout, stderr } = await execFile(`${shellsDirectory}/createRepo.sh`, [
-      sshPublicKey,
-      storageSize.toString(),
-      appendOnlyMode.toString(),
-    ]);
+    const args = [sshPublicKey, storageSize.toString(), appendOnlyMode.toString()];
+
+    if (storageTarget) {
+      if (!isValidStorageTarget(storageTarget)) {
+        throw new Error('Invalid storage target');
+      }
+      args.push(storageTarget);
+    }
+
+    const { stdout, stderr } = await execFile(`${shellsDirectory}/createRepo.sh`, args);
     return { stdout, stderr };
   },
 };

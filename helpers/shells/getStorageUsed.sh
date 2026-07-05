@@ -27,9 +27,20 @@ fi
 # Default value if .env not exists
 : "${home:=/home/borgwarehouse}"
 
-# Get the size of each repository and format as JSON
+# Get the size of each repository and format as JSON.
+# Each repository is measured independently with a per-repository timeout so that
+# an unreachable external storage (e.g. a dead SSHFS mount) cannot hang the whole
+# job: the faulty repository is simply skipped and the others are still reported.
 cd "${home}"/repos
-output=$(du -s -L -- * 2>/dev/null | awk '{print "{\"size\":" $1 ",\"name\":\"" $2 "\"}"}' | jq -s '.')
+shopt -s nullglob
+output=$(
+  for repo in *; do
+    size=$(timeout 60 du -s -L -- "$repo" 2>/dev/null | awk 'NR==1{print $1}')
+    if [ -n "$size" ]; then
+      printf '{"size":%s,"name":"%s"}\n' "$size" "$repo"
+    fi
+  done | jq -s '.'
+)
 if [ -z "$output" ]; then
   output="[]"
 fi

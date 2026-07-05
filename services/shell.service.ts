@@ -1,7 +1,7 @@
 import path from 'path';
 import { promisify } from 'util';
 import { execFile as execFileCallback } from 'node:child_process';
-import { LastSaveDTO, StorageUsedDTO } from '~/types';
+import { LastSaveDTO, StorageUsedDTO, StorageTargetStatusDTO } from '~/types';
 import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
 import { isValidStorageTarget } from '~/helpers/functions';
 
@@ -94,5 +94,15 @@ export const ShellService = {
 
     const { stdout, stderr } = await execFile(`${shellsDirectory}/createRepo.sh`, args);
     return { stdout, stderr };
+  },
+
+  checkStorageTargets: async (storageTargets: string[]): Promise<StorageTargetStatusDTO[]> => {
+    const validTargets = storageTargets.filter((target) => isValidStorageTarget(target));
+    if (validTargets.length === 0) {
+      return [];
+    }
+
+    const { stdout } = await execFile(`${shellsDirectory}/checkStorageTargets.sh`, validTargets);
+    return JSON.parse(stdout || '[]');
   },
 };

@@ -87,7 +87,7 @@ export default function Repo(props: RepoProps) {
         </div>
       )}
       {props.storageTarget && (
-        <div className={classes.chip} title={`External storage: ${props.storageTarget}`}>
+        <div className={classes.chip} title={`Storage target: ${props.storageTarget}`}>
           <IconCloud size={16} />
         </div>
       )}

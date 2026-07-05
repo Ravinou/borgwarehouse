@@ -1,12 +1,12 @@
 import { getSession } from '~/helpers/getServerSession';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { BorgWarehouseApiResponse } from '~/types';
+import { BorgWarehouseApiResponse, StorageTarget } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
-import { getStorageTargets } from '~/helpers/functions';
+import { getStorageTargetsWithNames } from '~/helpers/functions';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<BorgWarehouseApiResponse | { storageTargets: string[] }>
+  res: NextApiResponse<BorgWarehouseApiResponse | { storageTargets: StorageTarget[] }>
 ) {
   const session = await getSession(req, res);
   if (!session) {
@@ -18,7 +18,7 @@ export default async function handler(
   }
 
   try {
-    return res.status(200).json({ storageTargets: getStorageTargets() });
+    return res.status(200).json({ storageTargets: getStorageTargetsWithNames() });
   } catch (error) {
     return ApiResponse.serverError(res, error);
   }

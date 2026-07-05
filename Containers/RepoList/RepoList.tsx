@@ -1,5 +1,5 @@
 import classes from './RepoList.module.css';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   IconPlus,
   IconSortAscendingLetters,
@@ -26,7 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Repo from '~/Components/Repo/Repo';
 import RepoManage from '../RepoManage/RepoManage';
 import ShimmerRepoList from '~/Components/UI/ShimmerRepoList/ShimmerRepoList';
-import { Repository, WizardEnvType, DateFormatEnum } from '~/types';
+import { Repository, WizardEnvType, DateFormatEnum, StorageTarget } from '~/types';
 
 type SortOption =
   | 'alias-asc'
@@ -74,6 +74,13 @@ export default function RepoList() {
   const { data: wizardEnv } = useSWR<WizardEnvType>('/api/v1/account/wizard-env', fetcher);
   const { data: dateFormatData } = useSWR('/api/v1/account/date-format', fetcher);
   const dateFormat: DateFormatEnum = dateFormatData?.dateFormat ?? DateFormatEnum.LOCALE;
+  const { data: storageTargetsData } = useSWR('/api/v1/storage-targets', fetcher);
+  const storageTargetNames = useMemo(() => {
+    const map = new Map<string, string>();
+    const targets: StorageTarget[] = storageTargetsData?.storageTargets ?? [];
+    targets.forEach((target) => map.set(target.path, target.name));
+    return map;
+  }, [storageTargetsData]);
 
   if (!data || !data.repoList) {
     mutate('/api/v1/repositories');
@@ -187,6 +194,9 @@ export default function RepoList() {
       lanCommand={repo.lanCommand}
       appendOnlyMode={repo.appendOnlyMode}
       storageTarget={repo.storageTarget}
+      storageTargetName={
+        repo.storageTarget ? storageTargetNames.get(repo.storageTarget) : undefined
+      }
       repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
       wizardEnv={wizardEnv}
       dateFormat={dateFormat}

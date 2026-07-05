@@ -9,7 +9,7 @@ import { bwSelectStyles, bwSelectTheme } from '~/Components/UI/Select/bwSelectSt
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLoader } from '~/contexts/LoaderContext';
-import { alertOptions, Optional, Repository } from '~/types';
+import { alertOptions, Optional, Repository, StorageTarget } from '~/types';
 import { DEFAULT_REPO_ICON } from '~/Components/Repo/repoIcons';
 import classes from './RepoManage.module.css';
 
@@ -63,19 +63,19 @@ export default function RepoManage(props: RepoManageProps) {
   const [icon, setIcon] = useState<string>(
     (props.mode === 'edit' ? targetRepo?.icon : undefined) ?? DEFAULT_REPO_ICON
   );
-  const [storageTargets, setStorageTargets] = useState<string[]>([]);
+  const [storageTargets, setStorageTargets] = useState<StorageTarget[]>([]);
   const [storageTarget, setStorageTarget] = useState<string>('');
   const { start, stop } = useLoader();
 
-  // Load the list of external storage targets (STORAGE_TARGETS env) for the
-  // "Storage location" selector. Only relevant when adding a new repository.
+  // Load the list of storage targets (STORAGE_TARGETS env, with their UI aliases)
+  // for the "Storage location" selector (add mode) and to resolve the display
+  // name of the current target (edit mode).
   useEffect(() => {
-    if (props.mode !== 'add') return;
     let isMounted = true;
     fetch('/api/v1/storage-targets', { method: 'GET' })
       .then(async (response) => {
         if (!response.ok) return;
-        const data: { storageTargets?: string[] } = await response.json();
+        const data: { storageTargets?: StorageTarget[] } = await response.json();
         if (isMounted && Array.isArray(data.storageTargets)) {
           setStorageTargets(data.storageTargets);
         }
@@ -86,7 +86,7 @@ export default function RepoManage(props: RepoManageProps) {
     return () => {
       isMounted = false;
     };
-  }, [props.mode]);
+  }, []);
 
   //router.query.slug is undefined for few milliseconds on first render for a direct URL access (https://github.com/vercel/next.js/discussions/11484).
   //If I call repoManage with edit mode (props), i'm firstly waiting that router.query.slug being available before rendering.
@@ -411,7 +411,10 @@ export default function RepoManage(props: RepoManageProps) {
                     defaultValue={{ value: '', label: 'Local (default)' }}
                     options={[
                       { value: '', label: 'Local (default)' },
-                      ...storageTargets.map((target) => ({ value: target, label: target })),
+                      ...storageTargets.map((target) => ({
+                        value: target.path,
+                        label: target.name,
+                      })),
                     ]}
                     onChange={(option) => setStorageTarget(option?.value ?? '')}
                   />
@@ -426,7 +429,12 @@ export default function RepoManage(props: RepoManageProps) {
                     type='text'
                     readOnly
                     disabled
-                    value={targetRepo?.storageTarget ?? 'Local (default)'}
+                    value={
+                      targetRepo?.storageTarget
+                        ? (storageTargets.find((t) => t.path === targetRepo.storageTarget)?.name ??
+                          targetRepo.storageTarget)
+                        : 'Local (default)'
+                    }
                     title='The storage location cannot be changed after creation.'
                   />
                 </>

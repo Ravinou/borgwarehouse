@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { getStorageTargets, isValidStorageTarget } from './storageTargets';
+import {
+  getStorageTargets,
+  getStorageTargetsWithNames,
+  isValidStorageTarget,
+} from './storageTargets';
 
 describe('storageTargets', () => {
   const originalEnv = process.env.STORAGE_TARGETS;
@@ -35,6 +39,39 @@ describe('storageTargets', () => {
       process.env.STORAGE_TARGETS = '/mnt/hetzner,,/mnt/nas,';
       expect(getStorageTargets()).toEqual(['/mnt/hetzner', '/mnt/nas']);
     });
+
+    it('returns only the path part, dropping the |name label', () => {
+      process.env.STORAGE_TARGETS = '/mnt/hetzner|Hetzner Box, /mnt/nas | NAS ';
+      expect(getStorageTargets()).toEqual(['/mnt/hetzner', '/mnt/nas']);
+    });
+  });
+
+  describe('getStorageTargetsWithNames', () => {
+    it('returns an empty array when STORAGE_TARGETS is not set', () => {
+      expect(getStorageTargetsWithNames()).toEqual([]);
+    });
+
+    it('uses the label after | as name, trimmed', () => {
+      process.env.STORAGE_TARGETS = '/mnt/hetzner | Hetzner Box ';
+      expect(getStorageTargetsWithNames()).toEqual([
+        { path: '/mnt/hetzner', name: 'Hetzner Box' },
+      ]);
+    });
+
+    it('falls back to the raw path when no name is provided', () => {
+      process.env.STORAGE_TARGETS = '/mnt/hetzner,/mnt/nas|NAS';
+      expect(getStorageTargetsWithNames()).toEqual([
+        { path: '/mnt/hetzner', name: '/mnt/hetzner' },
+        { path: '/mnt/nas', name: 'NAS' },
+      ]);
+    });
+
+    it('falls back to the raw path when the name is empty', () => {
+      process.env.STORAGE_TARGETS = '/mnt/hetzner|   ';
+      expect(getStorageTargetsWithNames()).toEqual([
+        { path: '/mnt/hetzner', name: '/mnt/hetzner' },
+      ]);
+    });
   });
 
   describe('isValidStorageTarget', () => {
@@ -46,8 +83,18 @@ describe('storageTargets', () => {
       expect(isValidStorageTarget('/mnt/hetzner')).toBe(true);
     });
 
+    it('accepts a path whose entry carries a |name label', () => {
+      process.env.STORAGE_TARGETS = '/mnt/hetzner|Hetzner Box';
+      expect(isValidStorageTarget('/mnt/hetzner')).toBe(true);
+    });
+
     it('rejects a path not in the allowlist', () => {
       expect(isValidStorageTarget('/mnt/evil')).toBe(false);
+    });
+
+    it('rejects the raw entry including the |name label', () => {
+      process.env.STORAGE_TARGETS = '/mnt/hetzner|Hetzner Box';
+      expect(isValidStorageTarget('/mnt/hetzner|Hetzner Box')).toBe(false);
     });
 
     it('rejects a relative path', () => {

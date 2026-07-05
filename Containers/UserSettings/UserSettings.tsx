@@ -14,6 +14,7 @@ import WebhookAlertSettings from './WebhookAlertSettings/WebhookAlertSettings';
 import Integrations from './Integrations/Integrations';
 import LinkedAccounts from './LinkedAccounts/LinkedAccounts';
 import DateFormatSettings from './DateFormatSettings/DateFormatSettings';
+import StorageTargetsSettings from './StorageTargetsSettings/StorageTargetsSettings';
 
 type UserSettingsProps = {
   status: SessionStatus;
@@ -21,7 +22,9 @@ type UserSettingsProps = {
 };
 
 export default function UserSettings({ data }: UserSettingsProps) {
-  const [tab, setTab] = useState<'General' | 'Notifications' | 'Integrations'>('General');
+  const [tab, setTab] = useState<'General' | 'Notifications' | 'Storage' | 'Integrations'>(
+    'General'
+  );
   const [wizardEnv, setWizardEnv] = useState<Optional<WizardEnvType>>(undefined);
   const [passwordLoginEnabled, setPasswordLoginEnabled] = useState(true);
 
@@ -76,6 +79,14 @@ export default function UserSettings({ data }: UserSettingsProps) {
             >
               Notifications
             </button>
+            <button
+              className={
+                activeTab === 'Storage' ? classes.tabListButtonActive : classes.tabListButton
+              }
+              onClick={() => setTab('Storage')}
+            >
+              Storage
+            </button>
             {wizardEnv.DISABLE_INTEGRATIONS !== 'true' && (
               <button
                 className={
@@ -109,6 +120,8 @@ export default function UserSettings({ data }: UserSettingsProps) {
               <WebhookAlertSettings />
             </>
           )}
+
+          {activeTab === 'Storage' && <StorageTargetsSettings />}
 
           {activeTab === 'Integrations' && wizardEnv.DISABLE_INTEGRATIONS !== 'true' && (
             <Integrations />

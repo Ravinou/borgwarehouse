@@ -17,6 +17,7 @@ setup() {
 teardown() {
   # Clean up the environment after each test
   rm -rf /tmp/borgwarehouse
+  rm -rf /tmp/borgwarehouse-ext
 }
 
 @test "Test createRepo.sh with missing arguments" {
@@ -101,4 +102,41 @@ teardown() {
   run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 true
   expected_line="command=\"cd ${home}/repos;borg serve --append-only --restrict-to-repository ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519"
   grep -qF "$expected_line" /tmp/borgwarehouse/.ssh/authorized_keys
+}
+
+@test "Test createRepo.sh with external storage creates a symlink into repos" {
+  mkdir -p /tmp/borgwarehouse-ext
+  run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false /tmp/borgwarehouse-ext
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ ^[0-9a-f]{8}$ ]]
+  # The repository inside repos must be a symlink pointing to the external storage
+  [ -L "${home}/repos/${output}" ]
+  [ "$(readlink "${home}/repos/${output}")" == "/tmp/borgwarehouse-ext/${output}" ]
+  # The actual repository directory must exist on the external storage
+  [ -d "/tmp/borgwarehouse-ext/${output}" ]
+}
+
+@test "Test createRepo.sh with external storage keeps authorized_keys pointing to the pool" {
+  mkdir -p /tmp/borgwarehouse-ext
+  run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false /tmp/borgwarehouse-ext
+  expected_line="command=\"cd ${home}/repos;borg serve --restrict-to-repository ${home}/repos/${output} --storage-quota 10G\",restrict $SSH_KEY_ED25519"
+  grep -qF "$expected_line" /tmp/borgwarehouse/.ssh/authorized_keys
+}
+
+@test "Test createRepo.sh with a relative external storage path" {
+  run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false "relative/path"
+  [ "$status" -eq 6 ]
+  [ "$output" == "Invalid external storage path" ]
+}
+
+@test "Test createRepo.sh with a path traversal external storage path" {
+  run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false "/tmp/../etc"
+  [ "$status" -eq 6 ]
+  [ "$output" == "Invalid external storage path" ]
+}
+
+@test "Test createRepo.sh with a non-existing external storage path" {
+  run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false "/tmp/borgwarehouse-ext-does-not-exist"
+  [ "$status" -eq 7 ]
+  [ "$output" == "External storage path does not exist or is not mounted: /tmp/borgwarehouse-ext-does-not-exist" ]
 }

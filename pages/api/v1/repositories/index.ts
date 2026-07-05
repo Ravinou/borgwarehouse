@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { BorgWarehouseApiResponse, Repository } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService, AuthService, ShellService } from '~/services';
-import { isSshPubKeyDuplicate } from '~/helpers/functions';
+import { isSshPubKeyDuplicate, isValidStorageTarget } from '~/helpers/functions';
 import { isValidRepoIcon } from '~/Components/Repo/repoIcons';
 import { getUnixTime } from 'date-fns';
 
@@ -66,7 +66,7 @@ export default async function handler(
     }
 
     try {
-      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon } =
+      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon, storageTarget } =
         req.body;
       const repoList = await ConfigService.getRepoList();
 
@@ -93,12 +93,14 @@ export default async function handler(
         lanCommand: lanCommand ?? false,
         appendOnlyMode: appendOnlyMode ?? false,
         icon: isValidRepoIcon(icon) ? icon : undefined,
+        storageTarget: storageTarget || undefined,
       };
 
       const { stdout } = await ShellService.createRepo(
         newRepo.sshPublicKey,
         newRepo.storageSize,
-        newRepo.appendOnlyMode ?? false
+        newRepo.appendOnlyMode ?? false,
+        newRepo.storageTarget
       );
       if (!stdout) {
         return ApiResponse.serverError(res, 'Error creating repository');
@@ -119,7 +121,7 @@ export default async function handler(
 }
 
 const validatePOSTRequestBody = (req: NextApiRequest) => {
-  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon } =
+  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon, storageTarget } =
     req.body;
   // Required fields
   if (!alias || typeof alias !== 'string') {
@@ -146,5 +148,13 @@ const validatePOSTRequestBody = (req: NextApiRequest) => {
   }
   if (icon != undefined && !isValidRepoIcon(icon)) {
     throw new Error('Icon must be a valid icon name');
+  }
+  if (storageTarget != undefined) {
+    if (typeof storageTarget !== 'string') {
+      throw new Error('Storage Target must be a string');
+    }
+    if (storageTarget !== '' && !isValidStorageTarget(storageTarget)) {
+      throw new Error('Storage Target must be one of the configured STORAGE_TARGETS');
+    }
   }
 };

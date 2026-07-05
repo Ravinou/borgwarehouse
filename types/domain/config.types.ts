@@ -17,6 +17,7 @@ export type Repository = {
   lanCommand?: boolean;
   appendOnlyMode?: boolean;
   lastStatusAlertSend?: number;
+  storageTarget?: string;
 };
 
 export enum DateFormatEnum {

@@ -105,3 +105,15 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$normalized_output" == "$normalized_expected_output" ]
 }
+
+@test "Test getStorageUsed.sh skips an unreachable external storage (broken symlink)" {
+  # Simulate an external storage that is no longer mounted / reachable
+  ln -s /tmp/borgwarehouse-ext-gone/deadrepo "${home}/repos/deadbeef"
+
+  run bash /test/scripts/getStorageUsed.sh
+  [ "$status" -eq 0 ]
+  # Healthy repositories are still reported
+  echo "$output" | jq -e '.[] | select(.name == "repo1")'
+  # The unreachable repository is silently skipped
+  ! echo "$output" | jq -e '.[] | select(.name == "deadbeef")'
+}

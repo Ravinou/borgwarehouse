@@ -14,6 +14,7 @@ setup() {
 teardown() {
   # Cleanup after each test
   rm -rf /tmp/borgwarehouse
+  rm -rf /tmp/borgwarehouse-ext
 }
 
 @test "Test deleteRepo.sh with missing arguments" {
@@ -83,6 +84,27 @@ teardown() {
   [ ! -d "${home}/repos/abcdef12" ]
   
   # Check that the line was removed from authorized_keys
+  ! grep -q "abcdef12" "${home}/.ssh/authorized_keys"
+}
+
+@test "Test deleteRepo.sh for an external storage repository (symlink)" {
+  # Simulate an external storage: real data lives outside repos, linked into it
+  mkdir -p "/tmp/borgwarehouse-ext/abcdef12"
+  echo "backupdata" > "/tmp/borgwarehouse-ext/abcdef12/testfile"
+  ln -s "/tmp/borgwarehouse-ext/abcdef12" "${home}/repos/abcdef12"
+  echo "command=\"cd ${home}/repos;borg serve --restrict-to-repository ${home}/repos/abcdef12 --storage-quota 10G\",restrict $SSH_KEY_ED25519" >> "${home}/.ssh/authorized_keys"
+
+  run bash /test/scripts/deleteRepo.sh "abcdef12"
+
+  [ "$status" -eq 0 ]
+  [ "$output" == "The repository abcdef12 (external storage) and all its data have been deleted. The line associated in the authorized_keys file has been deleted." ]
+
+  # The symlink must be removed
+  [ ! -L "${home}/repos/abcdef12" ]
+  [ ! -e "${home}/repos/abcdef12" ]
+  # The external data must be removed too
+  [ ! -d "/tmp/borgwarehouse-ext/abcdef12" ]
+  # The line must be removed from authorized_keys
   ! grep -q "abcdef12" "${home}/.ssh/authorized_keys"
 }
 

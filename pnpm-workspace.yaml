@@ -1,6 +1,12 @@
 packages:
   - .
 
+allowBuilds:
+  better-sqlite3: true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+
 # Supply-chain protection: pnpm refuses to install package versions published
 # less than 24h ago (defends against freshly compromised releases). Set
 # explicitly so the behavior is consistent across pnpm versions (pnpm < 11

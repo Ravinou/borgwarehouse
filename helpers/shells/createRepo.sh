@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
 # Shell created by Raven for BorgWarehouse.
-# This shell takes 2 arguments : [SSH pub key] X [quota] x [append only mode (boolean)]
+# This shell takes 3 mandatory args and 1 optional : [SSH pub key] X [quota] x [append only mode (boolean)] x [external storage path (optional)]
 # Main steps are :
 # - check if args are present
 # - check the ssh pub key format
 # - check if the ssh pub key is already present in authorized_keys
 # - check if borgbackup package is install
 # - generate a random repositoryName
+# - if an external storage path is provided, create the repository directory there
+#   and symlink it into the repos pool (transparent external storage)
 # - add the SSH public key in the authorized_keys with borg restriction for repository and storage quota.
 # This simple method prevents the user from connecting to the server with a shell in SSH.
 # He can only use the borg command. Moreover, he will not be able to leave his repository or create a new one.
@@ -68,6 +70,29 @@ randRepositoryName () {
     openssl rand -hex 4
 }
 repositoryName=$(randRepositoryName)
+
+# Optional external storage: if a 4th argument is provided, the repository data
+# is stored under "${externalStoragePath}/${repositoryName}" and a symbolic link
+# is created inside the pool so the rest of BorgWarehouse keeps seeing a regular
+# repository under "${pool}/${repositoryName}".
+externalStoragePath="${4:-}"
+if [ -n "$externalStoragePath" ]; then
+    if [[ "$externalStoragePath" != /* ]] || [[ "$externalStoragePath" == *".."* ]]; then
+        echo -n "Invalid external storage path" >&2
+        exit 6
+    fi
+    if [ ! -d "$externalStoragePath" ]; then
+        echo -n "External storage path does not exist or is not mounted: ${externalStoragePath}" >&2
+        exit 7
+    fi
+    if [ ! -w "$externalStoragePath" ]; then
+        echo -n "External storage path is not writable: ${externalStoragePath}" >&2
+        exit 8
+    fi
+    # Create the repository directory on the external storage and link it.
+    mkdir -p "${externalStoragePath}/${repositoryName}"
+    ln -s "${externalStoragePath}/${repositoryName}" "${pool}/${repositoryName}"
+fi
 
 # Append only mode
 if [ "$3" == "true" ]; then

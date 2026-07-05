@@ -1,4 +1,4 @@
-import { IconExternalLink, IconSend } from '@tabler/icons-react';
+import { IconExternalLink, IconSend, IconBellRinging } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
@@ -124,15 +124,18 @@ export default function AppriseAlertSettings() {
       {/* APPRISE ALERT */}
       <div className={classes.containerSetting}>
         <div className={classes.settingCategory}>
-          <h2 style={{ alignSelf: 'baseline' }}>Apprise alert</h2>
-          <Link
-            style={{ alignSelf: 'baseline', marginLeft: '5px' }}
-            href='https://borgwarehouse.com/docs/user-manual/account/#apprise'
-            rel='noreferrer'
-            target='_blank'
-          >
-            <IconExternalLink size={16} color='var(--text-muted)' />
-          </Link>
+          <div className={classes.settingTitleRow}>
+            <IconBellRinging size={22} color='var(--primary)' />
+            <h2>Apprise alert</h2>
+            <Link
+              style={{ alignSelf: 'baseline', marginLeft: '5px' }}
+              href='https://borgwarehouse.com/docs/user-manual/account/#apprise'
+              rel='noreferrer'
+              target='_blank'
+            >
+              <IconExternalLink size={16} color='var(--text-muted)' />
+            </Link>
+          </div>
         </div>
         <div className={classes.setting}>
           <div className={classes.bwFormWrapper}>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconSend } from '@tabler/icons-react';
+import { IconSend, IconWebhook } from '@tabler/icons-react';
 import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -146,7 +146,10 @@ export default function WebhookAlertSettings() {
   return (
     <div className={classes.containerSetting}>
       <div className={classes.settingCategory}>
-        <h2 style={{ alignSelf: 'baseline' }}>Webhook alert</h2>
+        <div className={classes.settingTitleRow}>
+          <IconWebhook size={22} color='var(--primary)' />
+          <h2>Webhook alert</h2>
+        </div>
       </div>
       <div className={classes.setting}>
         <div className={classes.bwFormWrapper}>

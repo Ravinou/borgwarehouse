@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
+import { IconMail } from '@tabler/icons-react';
 import { useAuthSession } from '~/lib/auth-client';
 
 //Components
@@ -87,7 +88,10 @@ export default function EmailSettings(props: EmailSettingDTO) {
       {/* EMAIL */}
       <div className={classes.containerSetting}>
         <div className={classes.settingCategory}>
-          <h2>Email</h2>
+          <div className={classes.settingTitleRow}>
+            <IconMail size={22} color='var(--primary)' />
+            <h2>Email</h2>
+          </div>
         </div>
         <div className={classes.setting}>
           {oauthProviders.length > 0 && emailNeedsUpdate && (

@@ -6,6 +6,7 @@ import { useLoader } from '~/contexts/LoaderContext';
 import { DateFormatEnum, DateFormatSettingDTO, Optional } from '~/types';
 import classes from '../UserSettings.module.css';
 import { bwSelectStyles, bwSelectTheme } from '~/Components/UI/Select/bwSelectStyles';
+import { IconCalendar } from '@tabler/icons-react';
 
 //Components
 import Error from '~/Components/UI/Error/Error';
@@ -86,7 +87,10 @@ export default function DateFormatSettings() {
   return (
     <div className={classes.containerSetting}>
       <div className={classes.settingCategory}>
-        <h2>Date format</h2>
+        <div className={classes.settingTitleRow}>
+          <IconCalendar size={22} color='var(--primary)' />
+          <h2>Date format</h2>
+        </div>
       </div>
       <div className={classes.setting}>
         <div className={classes.bwFormWrapper}>

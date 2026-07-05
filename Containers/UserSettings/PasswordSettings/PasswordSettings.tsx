@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useFormStatus } from '~/hooks';
 import { PasswordSettingDTO } from '~/types';
 import classes from '../UserSettings.module.css';
+import { IconLock } from '@tabler/icons-react';
 
 //Components
 import { useLoader } from '~/contexts/LoaderContext';
@@ -62,7 +63,10 @@ export default function PasswordSettings() {
       {/* PASSWORD */}
       <div className={classes.containerSetting}>
         <div className={classes.settingCategory}>
-          <h2>Password</h2>
+          <div className={classes.settingTitleRow}>
+            <IconLock size={22} color='var(--primary)' />
+            <h2>Password</h2>
+          </div>
         </div>
         <div className={classes.setting}>
           <div className={classes.bwFormWrapper}>

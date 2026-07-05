@@ -1,4 +1,4 @@
-import { IconExternalLink, IconSend } from '@tabler/icons-react';
+import { IconExternalLink, IconSend, IconMailCheck } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
@@ -129,15 +129,18 @@ export default function EmailAlertSettings() {
       {/* EMAIL ALERT */}
       <div className={classes.containerSetting}>
         <div className={classes.settingCategory}>
-          <h2 style={{ alignSelf: 'baseline' }}>Email alert</h2>
-          <Link
-            style={{ alignSelf: 'baseline', marginLeft: '5px' }}
-            href='https://borgwarehouse.com/docs/user-manual/account/#alerting'
-            rel='noreferrer'
-            target='_blank'
-          >
-            <IconExternalLink size={16} color='var(--text-muted)' />
-          </Link>
+          <div className={classes.settingTitleRow}>
+            <IconMailCheck size={22} color='var(--primary)' />
+            <h2>Email alert</h2>
+            <Link
+              style={{ alignSelf: 'baseline', marginLeft: '5px' }}
+              href='https://borgwarehouse.com/docs/user-manual/account/#alerting'
+              rel='noreferrer'
+              target='_blank'
+            >
+              <IconExternalLink size={16} color='var(--text-muted)' />
+            </Link>
+          </div>
         </div>
         <div className={classes.setting}>
           <div className={classes.bwFormWrapper}>

@@ -81,6 +81,11 @@ if [ -n "$externalStoragePath" ]; then
         echo -n "Invalid external storage path" >&2
         exit 6
     fi
+    # The external storage must live outside the repositories pool.
+    if [ "$externalStoragePath" == "$pool" ] || [[ "$externalStoragePath" == "$pool"/* ]]; then
+        echo -n "External storage path must be outside the repositories pool: ${pool}" >&2
+        exit 9
+    fi
     if [ ! -d "$externalStoragePath" ]; then
         echo -n "External storage path does not exist or is not mounted: ${externalStoragePath}" >&2
         exit 7

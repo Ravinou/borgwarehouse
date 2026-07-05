@@ -140,3 +140,16 @@ teardown() {
   [ "$status" -eq 7 ]
   [ "$output" == "External storage path does not exist or is not mounted: /tmp/borgwarehouse-ext-does-not-exist" ]
 }
+
+@test "Test createRepo.sh rejects an external storage path equal to the repositories pool" {
+  run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false "${home}/repos"
+  [ "$status" -eq 9 ]
+  [ "$output" == "External storage path must be outside the repositories pool: ${home}/repos" ]
+}
+
+@test "Test createRepo.sh rejects an external storage path nested inside the repositories pool" {
+  mkdir -p "${home}/repos/sub"
+  run bash /test/scripts/createRepo.sh "$SSH_KEY_ED25519" 10 false "${home}/repos/sub"
+  [ "$status" -eq 9 ]
+  [ "$output" == "External storage path must be outside the repositories pool: ${home}/repos" ]
+}

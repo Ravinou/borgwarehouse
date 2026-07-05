@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classes from '../UserSettings.module.css';
+import { IconPlugConnected } from '@tabler/icons-react';
 import {
   IconBrandGithub,
   IconBrandGoogle,
@@ -119,7 +120,10 @@ export default function LinkedAccounts() {
   return (
     <div className={classes.containerSetting}>
       <div className={classes.settingCategory}>
-        <h2>OAuth</h2>
+        <div className={classes.settingTitleRow}>
+          <IconPlugConnected size={22} color='var(--primary)' />
+          <h2>OAuth</h2>
+        </div>
       </div>
       <div className={classes.setting}>
         {loading ? (

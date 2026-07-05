@@ -1,4 +1,4 @@
-import { IconExternalLink, IconTrash } from '@tabler/icons-react';
+import { IconExternalLink, IconTrash, IconKey, IconListDetails } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -204,15 +204,18 @@ export default function Integrations() {
     <>
       <div className={classes.containerSetting}>
         <div className={classes.settingCategory}>
-          <h2 style={{ alignSelf: 'baseline' }}>Generate token</h2>
-          <Link
-            style={{ alignSelf: 'baseline', marginLeft: '5px' }}
-            href='https://borgwarehouse.com/docs/developer-manual/api/'
-            rel='noreferrer'
-            target='_blank'
-          >
-            <IconExternalLink size={16} color='var(--text-muted)' />
-          </Link>
+          <div className={classes.settingTitleRow}>
+            <IconKey size={22} color='var(--primary)' />
+            <h2>Generate token</h2>
+            <Link
+              style={{ alignSelf: 'baseline', marginLeft: '5px' }}
+              href='https://borgwarehouse.com/docs/developer-manual/api/'
+              rel='noreferrer'
+              target='_blank'
+            >
+              <IconExternalLink size={16} color='var(--text-muted)' />
+            </Link>
+          </div>
         </div>
         <div className={classes.setting}>
           <form
@@ -280,7 +283,10 @@ export default function Integrations() {
       {tokenList && tokenList.length > 0 && (
         <div className={classes.containerSetting}>
           <div className={classes.settingCategory}>
-            <h2>API Tokens</h2>
+            <div className={classes.settingTitleRow}>
+              <IconListDetails size={22} color='var(--primary)' />
+              <h2>API Tokens</h2>
+            </div>
           </div>
           <div className={classes.tokenCardList}>
             {tokenList

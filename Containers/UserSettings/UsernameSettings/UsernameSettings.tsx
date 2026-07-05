@@ -12,6 +12,7 @@ import {
 } from '~/helpers/functions/usernamePolicy';
 import classes from '../UserSettings.module.css';
 import { useAuthSession } from '~/lib/auth-client';
+import { IconUser } from '@tabler/icons-react';
 
 //Components
 import InfoTooltip from '~/Components/UI/InfoTooltip/InfoTooltip';
@@ -82,6 +83,7 @@ export default function UsernameSettings(props: UsernameSettingDTO) {
       <div className={classes.containerSetting}>
         <div className={classes.settingCategory}>
           <div className={classes.settingTitleRow}>
+            <IconUser size={22} color='var(--primary)' />
             <h2>Username</h2>
             <InfoTooltip
               maxWidth={240}

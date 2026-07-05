@@ -47,6 +47,7 @@ Running a central BorgBackup server usually means doing _everything_ by hand fro
 
 - **Add, edit and delete** Borg repositories from a clean web UI - the whole system layer (user, SSH, quota) is handled automatically
 - **Per-repository storage quotas**
+- **Per-repository external storage** - store each repository on the mounted storage of your choice (SSHFS, NFS, SMB/CIFS, a dedicated disk, an `rclone` mount…), selectable from the UI at creation time, with a live reachability check
 - **Append-only mode** to protect your backups against ransomware or a compromised client
 - **Custom icon per repository** to spot them at a glance
 - **Ready-to-paste SSH commands** for your clients, with an optional **LAN variant**

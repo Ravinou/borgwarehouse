@@ -40,6 +40,27 @@
   word-break: break-all;
 }
 
+.itemBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.itemBody .path {
+  flex: none;
+  color: var(--text-secondary);
+  font-size: 0.78em;
+}
+
+.name {
+  color: var(--text-strong);
+  font-family: monospace;
+  font-size: 1.05em;
+  word-break: break-all;
+}
+
 .statusLabel {
   flex-shrink: 0;
   font-size: 0.82em;

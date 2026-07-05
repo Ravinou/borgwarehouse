@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
-import { IconRefresh, IconCloud } from '@tabler/icons-react';
+import { IconRefresh, IconCloud, IconExternalLink } from '@tabler/icons-react';
+import Link from 'next/link';
 import parentClasses from '../UserSettings.module.css';
 import classes from './StorageTargetsSettings.module.css';
-import { StorageTargetStatusDTO } from '~/types';
+import { StorageTargetStatusWithNameDTO } from '~/types';
 import ErrorMessage from '~/Components/UI/Error/Error';
 
 export default function StorageTargetsSettings() {
-  const [statuses, setStatuses] = useState<StorageTargetStatusDTO[] | undefined>(undefined);
+  const [statuses, setStatuses] = useState<StorageTargetStatusWithNameDTO[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -21,7 +22,7 @@ export default function StorageTargetsSettings() {
       if (!response.ok) {
         throw new Error('Request failed');
       }
-      const data: { statuses: StorageTargetStatusDTO[] } = await response.json();
+      const data: { statuses: StorageTargetStatusWithNameDTO[] } = await response.json();
       setStatuses(data.statuses ?? []);
     } catch {
       setError('Failed to load storage targets status.');
@@ -35,6 +36,7 @@ export default function StorageTargetsSettings() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStatuses();
   }, [fetchStatuses]);
+
   const hasTargets = statuses !== undefined && statuses.length > 0;
   const isEmpty = statuses !== undefined && statuses.length === 0 && !error;
 
@@ -44,12 +46,19 @@ export default function StorageTargetsSettings() {
         <div className={parentClasses.settingTitleRow}>
           <IconCloud size={22} color='var(--primary)' />
           <h2>Storage targets</h2>
+          <Link
+            style={{ alignSelf: 'baseline', marginLeft: '5px' }}
+            href='https://borgwarehouse.com/docs/admin-manual/external-storage/'
+            rel='noreferrer'
+            target='_blank'
+          >
+            <IconExternalLink size={16} color='var(--text-muted)' />
+          </Link>
         </div>
       </div>
       <div className={parentClasses.setting}>
         <p className={classes.description}>
-          Storage targets declared with the <code>STORAGE_TARGETS</code> environment variable. You
-          can select these destinations when creating a repository.
+          Storage targets declared with the <code>STORAGE_TARGETS</code> environment variable.
         </p>
 
         {hasTargets && (
@@ -76,7 +85,14 @@ export default function StorageTargetsSettings() {
                   }`}
                   title={target.status === 'online' ? 'Online' : 'Unreachable'}
                 />
-                <span className={classes.path}>{target.path}</span>
+                <div className={classes.itemBody}>
+                  <span className={classes.name}>{target.name}</span>
+                  {target.name !== target.path && (
+                    <span className={classes.path} title={target.path}>
+                      {target.path}
+                    </span>
+                  )}
+                </div>
                 <span className={classes.statusLabel}>
                   {target.status === 'online' ? 'Online' : 'Unreachable'}
                 </span>

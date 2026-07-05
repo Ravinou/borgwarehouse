@@ -14,6 +14,7 @@ type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
   repoManageEditHandler: () => void;
   wizardEnv: Optional<WizardEnvType>;
   dateFormat?: DateFormatEnum;
+  storageTargetName?: string;
 };
 
 export default function Repo(props: RepoProps) {
@@ -87,7 +88,10 @@ export default function Repo(props: RepoProps) {
         </div>
       )}
       {props.storageTarget && (
-        <div className={classes.chip} title={`Storage target: ${props.storageTarget}`}>
+        <div
+          className={classes.chip}
+          title={`Storage target: ${props.storageTargetName ?? props.storageTarget}`}
+        >
           <IconCloud size={16} />
         </div>
       )}

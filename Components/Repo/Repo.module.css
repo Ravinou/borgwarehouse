@@ -286,6 +286,28 @@
   align-items: center;
   justify-content: flex-end;
   align-self: center;
+  gap: 4px;
+}
+
+.compactButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 30px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.compactButton:hover:not(:disabled) {
+  background: #6d4aff14;
+}
+.compactButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media all and (max-width: 1000px) {

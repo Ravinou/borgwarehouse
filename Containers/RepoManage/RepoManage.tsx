@@ -1,4 +1,4 @@
-import { IconAlertCircle, IconExternalLink, IconX } from '@tabler/icons-react';
+import { IconAlertCircle, IconExternalLink, IconLockOpen, IconX } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -60,6 +60,8 @@ export default function RepoManage(props: RepoManageProps) {
 
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isBreakingLock, setIsBreakingLock] = useState(false);
+  const [breakLockDialog, setBreakLockDialog] = useState(false);
   const [icon, setIcon] = useState<string>(
     (props.mode === 'edit' ? targetRepo?.icon : undefined) ?? DEFAULT_REPO_ICON
   );
@@ -147,6 +149,36 @@ export default function RepoManage(props: RepoManageProps) {
       .finally(() => {
         stop();
       });
+  };
+
+  //Break a stale lock on a repo (server-side `borg break-lock`, no passphrase required)
+  const breakLockHandler = async () => {
+    const repositoryName = targetRepo?.repositoryName;
+    if (!repositoryName) {
+      toast.error('Repository name not found', toastOptions);
+      return;
+    }
+    setIsBreakingLock(true);
+    try {
+      const response = await fetch('/api/v1/repositories/' + repositoryName + '/break-lock', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+      });
+      if (response.ok) {
+        toast.success(`🔓 The lock on ${repositoryName} has been released.`, toastOptions);
+      } else {
+        const errorMessage = await response.json();
+        toast.error(
+          `An error has occurred : ${errorMessage.message?.stderr ?? errorMessage.message}`,
+          toastOptions
+        );
+      }
+    } catch (error) {
+      toast.error('An error has occurred', toastOptions);
+    } finally {
+      setIsBreakingLock(false);
+      setBreakLockDialog(false);
+    }
   };
 
   const isSSHKeyUnique = async (sshPublicKey: string): Promise<boolean> => {
@@ -306,7 +338,7 @@ export default function RepoManage(props: RepoManageProps) {
             <div className={classes.deleteDialogButtonWrapper}>
               <>
                 <button
-                  onClick={props.closeHandler}
+                  onClick={() => setDeleteDialog(false)}
                   disabled={isLoading}
                   className={classes.cancelButton}
                 >
@@ -322,6 +354,42 @@ export default function RepoManage(props: RepoManageProps) {
                   Yes, delete it !
                 </button>
               </>
+            </div>
+          </div>
+        ) : breakLockDialog ? (
+          <div className={classes.deleteDialogWrapper}>
+            <div className={classes.breakLockIconCircle}>
+              <IconLockOpen size={40} />
+            </div>
+            <h1>
+              Break the lock on{' '}
+              <span className={classes.deleteRepoName}>{targetRepo?.repositoryName}</span> ?
+            </h1>
+            <div className={classes.breakLockDialogMessage}>
+              <div style={{ marginBottom: '5px' }}>
+                This releases a stale lock left by an interrupted operation (e.g. a container
+                restart during a compaction).
+              </div>
+              <div>
+                Only do this if backups fail with a lock error and <b>no backup or compaction is
+                currently running</b> on this repository.
+              </div>
+            </div>
+            <div className={classes.deleteDialogButtonWrapper}>
+              <button
+                onClick={() => setBreakLockDialog(false)}
+                disabled={isBreakingLock}
+                className={classes.cancelButton}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={breakLockHandler}
+                disabled={isBreakingLock}
+                className={classes.breakLockConfirmButton}
+              >
+                {isBreakingLock ? 'Releasing…' : 'Break the lock'}
+              </button>
             </div>
           </div>
         ) : (
@@ -527,9 +595,21 @@ export default function RepoManage(props: RepoManageProps) {
               </button>
             </form>
             {props.mode == 'edit' ? (
-              <button className={classes.littleDeleteButton} onClick={() => setDeleteDialog(true)}>
-                Delete this repository
-              </button>
+              <div className={classes.editActionsWrapper}>
+                <button
+                  className={classes.littleBreakLockButton}
+                  onClick={() => setBreakLockDialog(true)}
+                  title='Release a stale lock left by an interrupted operation. Only use this if backups fail with a lock error and no backup is currently running.'
+                >
+                  Break lock
+                </button>
+                <button
+                  className={classes.littleDeleteButton}
+                  onClick={() => setDeleteDialog(true)}
+                >
+                  Delete this repository
+                </button>
+              </div>
             ) : null}
           </div>
         )}

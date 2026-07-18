@@ -366,3 +366,92 @@
   color: var(--danger-strong);
   text-decoration: underline;
 }
+
+.editActionsWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+}
+
+.littleBreakLockButton {
+  margin-top: 14px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.littleBreakLockButton:hover:not(:disabled) {
+  color: var(--text-strong);
+  text-decoration: underline;
+}
+
+.littleBreakLockButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.breakLockIconCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  width: 72px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: var(--amber);
+  margin-bottom: 18px;
+}
+
+.breakLockDialogMessage {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--text-secondary);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 18px 0 22px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.breakLockDialogMessage b {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.breakLockConfirmButton {
+  border: 0;
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #3a2c05;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 8px -3px rgba(245, 158, 11, 0.3);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+
+.breakLockConfirmButton:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px -4px rgba(245, 158, 11, 0.35);
+}
+
+.breakLockConfirmButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.breakLockConfirmButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

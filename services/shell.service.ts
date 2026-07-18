@@ -74,6 +74,16 @@ export const ShellService = {
     }
   },
 
+  breakLockRepo: async (repositoryName: string) => {
+    if (!repositoryNameCheck(repositoryName)) {
+      throw new Error('Invalid repository name format');
+    }
+    const { stdout, stderr } = await execFile(`${shellsDirectory}/breakLockRepo.sh`, [
+      repositoryName,
+    ]);
+    return { stdout, stderr };
+  },
+
   updateRepo: async (
     repositoryName: string,
     sshPublicKey: string,

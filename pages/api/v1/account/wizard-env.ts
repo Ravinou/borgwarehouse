@@ -32,6 +32,7 @@ export default async function handler(
       HIDE_SSH_PORT: getEnvVariable(WizardEnvEnum.HIDE_SSH_PORT, 'false'),
       DISABLE_INTEGRATIONS: getEnvVariable(WizardEnvEnum.DISABLE_INTEGRATIONS, 'false'),
       DISABLE_DELETE_REPO: getEnvVariable(WizardEnvEnum.DISABLE_DELETE_REPO, 'false'),
+      DISABLE_COMPACT_REPO: getEnvVariable(WizardEnvEnum.DISABLE_COMPACT_REPO, 'false'),
     };
 
     res.status(200).json(wizardEnv);

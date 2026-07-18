@@ -12,6 +12,11 @@ const shellsDirectory = path.join(process.cwd(), '/helpers/shells');
 let isLastSaveListRunning = false;
 let isStorageUsedRunning = false;
 
+// Per-repository guard: prevents launching a second `borg compact` on a
+// repository while a previous one is still running (which would otherwise fail
+// on borg's own lock). Compaction of different repositories stays independent.
+const compactingRepos = new Set<string>();
+
 function isValidSshKey(key: string): boolean {
   return /^ssh-(rsa|ed25519|ed25519-sk) [A-Za-z0-9+/=]+(\s.+)?$/.test(key.trim());
 }
@@ -49,6 +54,24 @@ export const ShellService = {
   deleteRepo: async (repositoryName: string) => {
     const { stdout, stderr } = await execFile(`${shellsDirectory}/deleteRepo.sh`, [repositoryName]);
     return { stdout, stderr };
+  },
+
+  compactRepo: async (repositoryName: string) => {
+    if (!repositoryNameCheck(repositoryName)) {
+      throw new Error('Invalid repository name format');
+    }
+    if (compactingRepos.has(repositoryName)) {
+      throw new Error('A compaction is already running for this repository');
+    }
+    compactingRepos.add(repositoryName);
+    try {
+      const { stdout, stderr } = await execFile(`${shellsDirectory}/compactRepo.sh`, [
+        repositoryName,
+      ]);
+      return { stdout, stderr };
+    } finally {
+      compactingRepos.delete(repositoryName);
+    }
   },
 
   updateRepo: async (

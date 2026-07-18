@@ -57,6 +57,7 @@ export enum WizardEnvEnum {
   HIDE_SSH_PORT = 'HIDE_SSH_PORT',
   DISABLE_INTEGRATIONS = 'DISABLE_INTEGRATIONS',
   DISABLE_DELETE_REPO = 'DISABLE_DELETE_REPO',
+  DISABLE_COMPACT_REPO = 'DISABLE_COMPACT_REPO',
 }
 
 export type WizardEnvType = Record<WizardEnvEnum, string>;

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import classes from './Repo.module.css';
-import { IconSettings, IconChevronDown, IconBellOff, IconLockPlus, IconCloud } from '@tabler/icons-react';
+import { IconSettings, IconChevronDown, IconBellOff, IconLockPlus, IconCloud, IconPackage } from '@tabler/icons-react';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import InfoTooltip from '../UI/InfoTooltip/InfoTooltip';
 import RepoIcon from './RepoIcon';
@@ -8,6 +8,7 @@ import QuickCommands from './QuickCommands/QuickCommands';
 import { Repository, WizardEnvType, Optional, DateFormatEnum } from '~/types';
 import { fromUnixTime, formatDistanceStrict } from 'date-fns';
 import { formatDate } from '~/helpers/functions';
+import { compactRepository } from '~/helpers/functions/compactRepository';
 import useMedia from 'use-media';
 
 type RepoProps = Omit<Repository, 'unixUser' | 'displayDetails'> & {
@@ -50,6 +51,15 @@ export default function Repo(props: RepoProps) {
 
   //States
   const [displayDetails, setDisplayDetails] = useState(displayDetailsFromLS);
+  const [isCompacting, setIsCompacting] = useState(false);
+
+  const compactEnabled = props.wizardEnv?.DISABLE_COMPACT_REPO !== 'true';
+
+  const compactHandler = async () => {
+    setIsCompacting(true);
+    await compactRepository(props.repositoryName);
+    setIsCompacting(false);
+  };
 
   //BUTTON : Display or not repo details for ONE repo
   const displayDetailsForOneHandler = (boolean: boolean) => {
@@ -195,6 +205,17 @@ export default function Repo(props: RepoProps) {
               </div>
 
               <div className={classes.statActions}>
+                {compactEnabled && (
+                  <button
+                    className={classes.compactButton}
+                    onClick={compactHandler}
+                    disabled={isCompacting}
+                    title='Compact repository (reclaim disk space)'
+                    aria-label='Compact repository'
+                  >
+                    <IconPackage size={22} />
+                  </button>
+                )}
                 <button
                   className={classes.editButton}
                   onClick={() => props.repoManageEditHandler()}

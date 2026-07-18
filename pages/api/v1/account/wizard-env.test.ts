@@ -43,6 +43,7 @@ describe('Get Wizard Env API', () => {
       HIDE_SSH_PORT: 'false',
       DISABLE_INTEGRATIONS: 'false',
       DISABLE_DELETE_REPO: 'false',
+      DISABLE_COMPACT_REPO: 'false',
     });
   });
 });

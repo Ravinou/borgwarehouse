@@ -84,6 +84,17 @@ export const ShellService = {
     return { stdout, stderr };
   },
 
+  setRepoArchive: async (repositoryName: string, archived: boolean) => {
+    if (!repositoryNameCheck(repositoryName)) {
+      throw new Error('Invalid repository name format');
+    }
+    const { stdout, stderr } = await execFile(`${shellsDirectory}/archiveRepo.sh`, [
+      repositoryName,
+      archived ? 'true' : 'false',
+    ]);
+    return { stdout, stderr };
+  },
+
   updateRepo: async (
     repositoryName: string,
     sshPublicKey: string,

@@ -1,24 +1,5 @@
-import { GetServerSidePropsContext } from 'next';
-import RepoList from '~/Containers/RepoList/RepoList';
-import { getSession } from '~/helpers/getServerSession';
-
-export default function Add() {
-  return <RepoList />;
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context.req, context.res);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-}
+// Re-export the index page component so navigating to this modal route reuses
+// the SAME React component reference. This keeps <RepoList /> mounted across
+// route changes (modal open/close) instead of remounting it with a new state
+// and a re-render (which would cause the list to flicker and lose its scroll position).
+export { default, getServerSideProps } from '~/pages/index';

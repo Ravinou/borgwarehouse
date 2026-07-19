@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import classes from './Repo.module.css';
-import { IconSettings, IconChevronDown, IconBellOff, IconLockPlus, IconCloud, IconPackage } from '@tabler/icons-react';
+import { IconSettings, IconChevronDown, IconBellOff, IconLockPlus, IconCloud, IconPackage, IconArchive } from '@tabler/icons-react';
 import StorageBar from '../UI/StorageBar/StorageBar';
 import InfoTooltip from '../UI/InfoTooltip/InfoTooltip';
 import RepoIcon from './RepoIcon';
@@ -53,7 +53,7 @@ export default function Repo(props: RepoProps) {
   const [displayDetails, setDisplayDetails] = useState(displayDetailsFromLS);
   const [isCompacting, setIsCompacting] = useState(false);
 
-  const compactEnabled = props.wizardEnv?.DISABLE_COMPACT_REPO !== 'true';
+  const compactEnabled = props.wizardEnv?.DISABLE_COMPACT_REPO !== 'true' && !props.archived;
 
   const compactHandler = async () => {
     setIsCompacting(true);
@@ -79,19 +79,34 @@ export default function Repo(props: RepoProps) {
     props.lastSave === 0 ? undefined : formatDate(props.lastSave, props.dateFormat);
 
   //Repo identity: gradient icon avatar with status badge
-  const repoIdentity = () => (
-    <div className={classes.avatar} aria-hidden='true'>
-      <RepoIcon name={props.icon} size={20} stroke={1.75} />
-      <span
-        className={`${classes.statusBadge} ${props.status ? classes.statusOk : classes.statusKo}`}
-        title={props.status ? 'Status OK' : 'Status error'}
-      />
-    </div>
-  );
+  const getStatusInfo = (): { className: string; title: string } => {
+    if (props.archived) {
+      return { className: classes.statusArchived, title: 'Archived' };
+    }
+    if (props.status) {
+      return { className: classes.statusOk, title: 'Status OK' };
+    }
+    return { className: classes.statusKo, title: 'Status error' };
+  };
+
+  const repoIdentity = () => {
+    const status = getStatusInfo();
+    return (
+      <div className={classes.avatar} aria-hidden='true'>
+        <RepoIcon name={props.icon} size={20} stroke={1.75} />
+        <span className={`${classes.statusBadge} ${status.className}`} title={status.title} />
+      </div>
+    );
+  };
 
   //Indicator chips (append-only, alert, comment)
   const indicatorChips = () => (
     <>
+      {props.archived && (
+        <div className={classes.chip} title='Archived (read-only, frozen)'>
+          <IconArchive size={16} />
+        </div>
+      )}
       {props.appendOnlyMode && (
         <div className={classes.chip} title='Append-only mode enabled'>
           <IconLockPlus size={16} />
@@ -124,7 +139,7 @@ export default function Repo(props: RepoProps) {
   // ---------- MOBILE ----------
   if (isMobile) {
     return (
-      <div className={classes.card}>
+      <div className={`${classes.card} ${props.archived ? classes.cardArchived : ''}`}>
         <div className={classes.header}>
           <div className={classes.titleGroup}>
             {repoIdentity()}
@@ -143,7 +158,7 @@ export default function Repo(props: RepoProps) {
 
   // ---------- DESKTOP ----------
   return (
-    <div className={classes.card}>
+    <div className={`${classes.card} ${props.archived ? classes.cardArchived : ''}`}>
       <div className={classes.header}>
         <div className={classes.titleGroup}>
           {repoIdentity()}

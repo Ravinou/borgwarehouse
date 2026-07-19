@@ -34,6 +34,8 @@ export default async function handler(
 
     // Update the status and the last timestamp backup of each repository
     const updatedRepoList = repoList.map((repo) => {
+      // Archived repositories are frozen: never recompute their status.
+      if (repo.archived) return repo;
       const repoFiltered = lastSaveList.find((x) => x.repositoryName === repo.repositoryName);
       if (!repoFiltered) return repo;
       const lastSaveTimestamp = repoFiltered.lastSave;
@@ -47,6 +49,7 @@ export default async function handler(
     const repoAliasListToSendAlert: string[] = [];
     updatedRepoList.forEach((repo) => {
       if (
+        !repo.archived &&
         !repo.status &&
         repo.alert !== 0 &&
         (!repo.lastStatusAlertSend || date - repo.lastStatusAlertSend > 90000)

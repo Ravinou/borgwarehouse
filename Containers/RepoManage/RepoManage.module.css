@@ -19,12 +19,18 @@
   border: 1px solid var(--border);
   padding: 30px 32px 28px;
   overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   border-radius: 20px;
   box-shadow:
     0 1px 2px var(--shadow-sm),
     0 24px 60px -28px var(--shadow-lg);
   z-index: 11;
   animation: modaleIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.modale::-webkit-scrollbar {
+  display: none;
 }
 
 .modale h2 {
@@ -238,220 +244,48 @@
   color: var(--text-secondary);
 }
 
-/* DELETE DIALOG */
-
-.deleteDialogWrapper {
-  text-align: center;
-  margin: auto;
-  width: 100%;
-  max-width: 520px;
-  color: var(--text-strong);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px 0 4px;
-}
-
-.deleteIconCircle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 72px;
-  width: 72px;
-  border-radius: 50%;
-  background: var(--danger-soft);
-  border: 1px solid var(--danger-border);
-  color: var(--danger);
-  margin-bottom: 18px;
-}
-
-.deleteDialogWrapper h1 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  margin: 0 0 4px;
-  color: var(--text-strong);
-}
-
-.deleteRepoName {
-  color: var(--primary);
-  font-weight: 700;
-}
-
-.deleteDialogMessage {
-  background: var(--danger-soft);
-  border: 1px solid var(--danger-border);
-  color: var(--danger-text);
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin: 18px 0 22px;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  text-align: left;
-}
-
-.deleteDialogMessage b {
-  font-weight: 700;
-}
-
-.deleteDialogButtonWrapper {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.cancelButton {
-  border: 1px solid var(--border-strong);
-  padding: 0.7rem 1.4rem;
-  background: var(--surface);
-  color: var(--text-secondary);
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.cancelButton:hover:not(:disabled) {
-  background: var(--surface-hover);
-  border-color: var(--border-strong);
-}
-
-.cancelButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.deleteButton {
+.formFieldset {
   border: 0;
-  padding: 0.7rem 1.5rem;
-  background: linear-gradient(135deg, #ff5d5d 0%, #ff2d2d 100%);
-  color: #fff;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 3px 8px -3px rgba(255, 45, 45, 0.3);
+  margin: 0;
+  padding: 0;
+  min-width: 0;
   transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    filter 0.15s ease;
+    opacity 0.2s ease,
+    filter 0.2s ease;
 }
 
-.deleteButton:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 12px -4px rgba(255, 45, 45, 0.35);
-}
-
-.deleteButton:active {
-  transform: translateY(0);
-}
-
-.littleDeleteButton {
-  margin-top: 14px;
-  border: none;
-  font-weight: 500;
-  font-size: 0.85rem;
-  color: var(--danger-text);
-  background: none;
-  cursor: pointer;
-  transition: color 0.15s ease;
-}
-
-.littleDeleteButton:hover {
-  color: var(--danger-strong);
-  text-decoration: underline;
-}
-
-.editActionsWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 22px;
-}
-
-.littleBreakLockButton {
-  margin-top: 14px;
-  border: none;
-  font-weight: 500;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  background: none;
-  cursor: pointer;
-  transition: color 0.15s ease;
-}
-
-.littleBreakLockButton:hover:not(:disabled) {
-  color: var(--text-strong);
-  text-decoration: underline;
-}
-
-.littleBreakLockButton:disabled {
+.formFieldsetArchived {
   opacity: 0.5;
-  cursor: not-allowed;
+  filter: grayscale(0.7);
+  pointer-events: none;
+  user-select: none;
 }
 
-.breakLockIconCircle {
+.archivedBanner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 72px;
-  width: 72px;
-  border-radius: 50%;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  color: var(--amber);
-  margin-bottom: 18px;
-}
-
-.breakLockDialogMessage {
+  gap: 8px;
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+  margin: 6px auto 16px;
   background: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.3);
   color: var(--text-secondary);
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin: 18px 0 22px;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  text-align: left;
-}
-
-.breakLockDialogMessage b {
-  font-weight: 700;
-  color: var(--text-strong);
-}
-
-.breakLockConfirmButton {
-  border: 0;
-  padding: 0.7rem 1.5rem;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  color: #3a2c05;
   border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 3px 8px -3px rgba(245, 158, 11, 0.3);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    filter 0.15s ease;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 
-.breakLockConfirmButton:hover:not(:disabled) {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 12px -4px rgba(245, 158, 11, 0.35);
+.archivedBanner svg {
+  color: var(--amber);
+  flex-shrink: 0;
 }
 
-.breakLockConfirmButton:active:not(:disabled) {
-  transform: translateY(0);
+.archivedBanner b {
+  color: var(--text-strong);
+  font-weight: 700;
 }
 
-.breakLockConfirmButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}

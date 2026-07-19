@@ -1,4 +1,10 @@
-import { IconAlertCircle, IconExternalLink, IconLockOpen, IconX } from '@tabler/icons-react';
+import {
+  IconArchive,
+  IconAlertCircle,
+  IconExternalLink,
+  IconLockOpen,
+  IconX,
+} from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -8,9 +14,13 @@ import Select from 'react-select';
 import { bwSelectStyles, bwSelectTheme } from '~/Components/UI/Select/bwSelectStyles';
 import { toast, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSWRConfig } from 'swr';
 import { useLoader } from '~/contexts/LoaderContext';
 import { alertOptions, Optional, Repository, StorageTarget } from '~/types';
 import { DEFAULT_REPO_ICON } from '~/Components/Repo/repoIcons';
+import ConfirmDialog, { DialogHighlight } from './ConfirmDialog';
+import RepoActionsFooter from './RepoActionsFooter';
+import { useRepoActions } from './useRepoActions';
 import classes from './RepoManage.module.css';
 
 // Lazy-loaded: the curated icon grid only ships when the add/edit form is opened.
@@ -36,6 +46,7 @@ type DataForm = {
 
 export default function RepoManage(props: RepoManageProps) {
   const router = useRouter();
+  const { mutate } = useSWRConfig();
   const targetRepo =
     props.mode === 'edit' && router.query.slug
       ? props.repoList?.find((repo) => repo.id.toString() === router.query.slug)
@@ -58,10 +69,9 @@ export default function RepoManage(props: RepoManageProps) {
     progress: undefined,
   };
 
-  const [deleteDialog, setDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isBreakingLock, setIsBreakingLock] = useState(false);
-  const [breakLockDialog, setBreakLockDialog] = useState(false);
+  const isArchived = !!targetRepo?.archived;
+  const actions = useRepoActions(targetRepo);
   const [icon, setIcon] = useState<string>(
     (props.mode === 'edit' ? targetRepo?.icon : undefined) ?? DEFAULT_REPO_ICON
   );
@@ -101,85 +111,6 @@ export default function RepoManage(props: RepoManageProps) {
       router.push('/404');
     }
   }
-
-  //Delete a repo
-  const deleteHandler = async (repositoryName?: string) => {
-    start();
-    if (!repositoryName) {
-      stop();
-      toast.error('Repository name not found', toastOptions);
-      router.replace('/');
-      return;
-    }
-    //API Call for delete
-    await fetch('/api/v1/repositories/' + repositoryName, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json',
-      },
-    })
-      .then(async (response) => {
-        if (response.ok) {
-          toast.success(
-            '🗑 The repository ' + repositoryName + ' has been successfully deleted',
-            toastOptions
-          );
-          router.replace('/');
-        } else {
-          if (response.status == 403) {
-            toast.warning(
-              '🔒 The server is currently protected against repository deletion.',
-              toastOptions
-            );
-            setIsLoading(false);
-            router.replace('/');
-          } else {
-            const errorMessage = await response.json();
-            toast.error(`An error has occurred : ${errorMessage.message.stderr}`, toastOptions);
-            router.replace('/');
-            console.log('Fail to delete');
-          }
-        }
-      })
-      .catch((error) => {
-        toast.error('An error has occurred', toastOptions);
-        router.replace('/');
-        console.log(error);
-      })
-      .finally(() => {
-        stop();
-      });
-  };
-
-  //Break a stale lock on a repo (server-side `borg break-lock`, no passphrase required)
-  const breakLockHandler = async () => {
-    const repositoryName = targetRepo?.repositoryName;
-    if (!repositoryName) {
-      toast.error('Repository name not found', toastOptions);
-      return;
-    }
-    setIsBreakingLock(true);
-    try {
-      const response = await fetch('/api/v1/repositories/' + repositoryName + '/break-lock', {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-      });
-      if (response.ok) {
-        toast.success(`🔓 The lock on ${repositoryName} has been released.`, toastOptions);
-      } else {
-        const errorMessage = await response.json();
-        toast.error(
-          `An error has occurred : ${errorMessage.message?.stderr ?? errorMessage.message}`,
-          toastOptions
-        );
-      }
-    } catch (error) {
-      toast.error('An error has occurred', toastOptions);
-    } finally {
-      setIsBreakingLock(false);
-      setBreakLockDialog(false);
-    }
-  };
 
   const isSSHKeyUnique = async (sshPublicKey: string): Promise<boolean> => {
     try {
@@ -250,6 +181,7 @@ export default function RepoManage(props: RepoManageProps) {
         .then(async (response) => {
           if (response.ok) {
             toast.success('New repository added ! 🥳', toastOptions);
+            await mutate('/api/v1/repositories');
             router.replace('/');
           } else {
             const errorMessage = await response.json();
@@ -292,6 +224,7 @@ export default function RepoManage(props: RepoManageProps) {
               'The repository ' + targetRepo?.repositoryName + ' has been successfully edited !',
               toastOptions
             );
+            await mutate('/api/v1/repositories');
             router.replace('/');
           } else {
             const errorMessage = await response.json();
@@ -319,79 +252,75 @@ export default function RepoManage(props: RepoManageProps) {
         <div onClick={props.closeHandler} className={classes.close}>
           <IconX size={20} />
         </div>
-        {deleteDialog ? (
-          <div className={classes.deleteDialogWrapper}>
-            <div className={classes.deleteIconCircle}>
-              <IconAlertCircle size={40} />
-            </div>
-            <h1>
-              Delete the repository{' '}
-              <span className={classes.deleteRepoName}>{targetRepo?.repositoryName}</span> ?
-            </h1>
-            <div className={classes.deleteDialogMessage}>
-              <div style={{ marginBottom: '5px' }}>
-                You are about to permanently delete the repository{' '}
-                <b>{targetRepo?.repositoryName}</b> and all the backups it contains.
-              </div>
-              <div>The data will not be recoverable and it will not be possible to go back.</div>
-            </div>
-            <div className={classes.deleteDialogButtonWrapper}>
+        {actions.deleteDialog ? (
+          <ConfirmDialog
+            variant='danger'
+            icon={<IconAlertCircle size={40} />}
+            title={
               <>
-                <button
-                  onClick={() => setDeleteDialog(false)}
-                  disabled={isLoading}
-                  className={classes.cancelButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    deleteHandler(targetRepo?.repositoryName);
-                    setIsLoading(true);
-                  }}
-                  className={classes.deleteButton}
-                >
-                  Yes, delete it !
-                </button>
+                Delete the repository{' '}
+                <DialogHighlight>{targetRepo?.repositoryName}</DialogHighlight> ?
               </>
+            }
+            confirmLabel='Yes, delete it !'
+            isBusy={actions.isDeleting}
+            onCancel={actions.closeDeleteDialog}
+            onConfirm={actions.confirmDelete}
+          >
+            <div style={{ marginBottom: '5px' }}>
+              You are about to permanently delete the repository <b>{targetRepo?.repositoryName}</b>{' '}
+              and all the backups it contains.
             </div>
-          </div>
-        ) : breakLockDialog ? (
-          <div className={classes.deleteDialogWrapper}>
-            <div className={classes.breakLockIconCircle}>
-              <IconLockOpen size={40} />
+            <div>The data will not be recoverable and it will not be possible to go back.</div>
+          </ConfirmDialog>
+        ) : actions.breakLockDialog ? (
+          <ConfirmDialog
+            variant='warning'
+            icon={<IconLockOpen size={40} />}
+            title={
+              <>
+                Break the lock on <DialogHighlight>{targetRepo?.repositoryName}</DialogHighlight> ?
+              </>
+            }
+            confirmLabel='Break the lock'
+            busyLabel='Releasing…'
+            isBusy={actions.isBreakingLock}
+            onCancel={actions.closeBreakLockDialog}
+            onConfirm={actions.confirmBreakLock}
+          >
+            <div style={{ marginBottom: '5px' }}>
+              This releases a stale lock left by an interrupted operation (e.g. a container restart
+              during a compaction).
             </div>
-            <h1>
-              Break the lock on{' '}
-              <span className={classes.deleteRepoName}>{targetRepo?.repositoryName}</span> ?
-            </h1>
-            <div className={classes.breakLockDialogMessage}>
-              <div style={{ marginBottom: '5px' }}>
-                This releases a stale lock left by an interrupted operation (e.g. a container
-                restart during a compaction).
-              </div>
-              <div>
-                Only do this if backups fail with a lock error and <b>no backup or compaction is
-                currently running</b> on this repository.
-              </div>
+            <div>
+              Only do this if backups fail with a lock error and{' '}
+              <b>no backup or compaction is currently running</b> on this repository.
             </div>
-            <div className={classes.deleteDialogButtonWrapper}>
-              <button
-                onClick={() => setBreakLockDialog(false)}
-                disabled={isBreakingLock}
-                className={classes.cancelButton}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={breakLockHandler}
-                disabled={isBreakingLock}
-                className={classes.breakLockConfirmButton}
-              >
-                {isBreakingLock ? 'Releasing…' : 'Break the lock'}
-              </button>
+          </ConfirmDialog>
+        ) : actions.archiveDialog ? (
+          <ConfirmDialog
+            variant='warning'
+            icon={<IconArchive size={40} />}
+            title={
+              <>
+                Archive <DialogHighlight>{targetRepo?.repositoryName}</DialogHighlight> ?
+              </>
+            }
+            confirmLabel='Archive it'
+            busyLabel='Archiving…'
+            isBusy={actions.isArchiving}
+            onCancel={actions.closeArchiveDialog}
+            onConfirm={actions.confirmArchive}
+          >
+            <div style={{ marginBottom: '5px' }}>
+              Archiving <b>freezes</b> this repository: the client can no longer connect (no backup,
+              prune or restore) and it stops triggering notifications.
             </div>
-          </div>
+            <div>
+              The data is kept untouched and this is <b>fully reversible</b> — you can unarchive it
+              at any time.
+            </div>
+          </ConfirmDialog>
         ) : (
           <div className={classes.formWrapper}>
             {props.mode == 'edit' && (
@@ -407,209 +336,217 @@ export default function RepoManage(props: RepoManageProps) {
               </h2>
             )}
             {props.mode == 'add' && <h2>Add a repository</h2>}
+            {isArchived && (
+              <div className={classes.archivedBanner}>
+                <IconArchive size={18} />
+                <span>
+                  This repository is <b>archived</b> and frozen. Unarchive it below to make changes.
+                </span>
+              </div>
+            )}
             <form className={classes.repoManageForm} onSubmit={handleSubmit(formSubmitHandler)}>
-              {/* ALIAS */}
-              <label htmlFor='alias'>Alias</label>
-              <input
-                className='form-control is-invalid'
-                placeholder='Alias for the repository, e.g."Server 1"'
-                type='text'
-                defaultValue={props.mode == 'edit' ? targetRepo?.alias : undefined}
-                {...register('alias', {
-                  required: 'An alias is required.',
-                  minLength: {
-                    value: 1,
-                    message: '1 character min',
-                  },
-                  maxLength: {
-                    value: 100,
-                    message: '100 characters max',
-                  },
-                })}
-              />
-              {errors.alias && <span className={classes.errorMessage}>{errors.alias.message}</span>}
-              {/* ICON */}
-              <label>Icon</label>
-              <IconPicker value={icon} onChange={setIcon} />
-              {/* SSH KEY */}
-              <label htmlFor='sshkey'>SSH public key</label>
-              <textarea
-                placeholder='Public key in OpenSSH format (rsa, ed25519, ed25519-sk)'
-                defaultValue={props.mode == 'edit' ? targetRepo?.sshPublicKey : undefined}
-                {...register('sshkey', {
-                  required: 'SSH public key is required.',
-                  validate: (value) => {
-                    const trimmedValue = value.trim();
-                    const pattern =
-                      /^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?$/;
-                    return (
-                      pattern.test(trimmedValue) ||
-                      'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)'
-                    );
-                  },
-                })}
-              />
-              {errors.sshkey && (
-                <span className={classes.errorMessage}>{errors.sshkey.message}</span>
-              )}
-              {/* storageSize */}
-              <label htmlFor='storageSize'>Storage Size (GB)</label>
-              <input
-                type='number'
-                placeholder='1000'
-                min='1'
-                defaultValue={props.mode == 'edit' ? targetRepo?.storageSize : undefined}
-                {...register('storageSize', {
-                  required: 'A storage size is required.',
-                })}
-              />
-              {errors.storageSize && (
-                <span className={classes.errorMessage}>{errors.storageSize.message}</span>
-              )}
-              {/* STORAGE LOCATION (external storage targets) */}
-              {props.mode == 'add' && storageTargets.length > 0 && (
-                <>
-                  <label htmlFor='storageTarget'>Storage location</label>
-                  <Select
-                    inputId='storageTarget'
-                    isSearchable={false}
-                    maxMenuHeight={300}
-                    styles={bwSelectStyles}
-                    theme={bwSelectTheme}
-                    defaultValue={{ value: '', label: 'Local (default)' }}
-                    options={[
-                      { value: '', label: 'Local (default)' },
-                      ...storageTargets.map((target) => ({
-                        value: target.path,
-                        label: target.name,
-                      })),
-                    ]}
-                    onChange={(option) => setStorageTarget(option?.value ?? '')}
-                  />
-                </>
-              )}
-              {/* STORAGE LOCATION (read-only in edit mode: not changeable after creation) */}
-              {props.mode == 'edit' && (
-                <>
-                  <label htmlFor='storageTargetReadOnly'>Storage location</label>
-                  <input
-                    id='storageTargetReadOnly'
-                    type='text'
-                    readOnly
-                    disabled
-                    value={
-                      targetRepo?.storageTarget
-                        ? (storageTargets.find((t) => t.path === targetRepo.storageTarget)?.name ??
-                          targetRepo.storageTarget)
-                        : 'Local (default)'
-                    }
-                    title='The storage location cannot be changed after creation.'
-                  />
-                </>
-              )}
-              {/* COMMENT */}
-              <label htmlFor='comment'>Comment</label>
-              <textarea
-                defaultValue={props.mode == 'edit' ? targetRepo?.comment : undefined}
-                {...register('comment', {
-                  required: false,
-                  maxLength: {
-                    value: 500,
-                    message: '500 characters maximum.',
-                  },
-                })}
-              />
-              {errors.comment && (
-                <span className={classes.errorMessage}>{errors.comment.message}</span>
-              )}
-              {/* LAN COMMAND GENERATION */}
-              <div className={classes.optionCommandWrapper}>
-                <input
-                  type='checkbox'
-                  defaultChecked={props.mode == 'edit' ? targetRepo?.lanCommand : false}
-                  {...register('lanCommand')}
-                />
-                <label htmlFor='lanCommand'>Generates commands for use over LAN</label>
-                <Link
-                  href='https://borgwarehouse.com/docs/user-manual/repositories/#generates-commands-for-use-over-lan'
-                  rel='noreferrer'
-                  target='_blank'
-                >
-                  <IconExternalLink size={16} color='#6c737f' />
-                </Link>
-              </div>
-              {/* APPEND-ONLY MODE */}
-              <div className={classes.optionCommandWrapper}>
-                <input
-                  type='checkbox'
-                  defaultChecked={props.mode == 'edit' ? targetRepo?.appendOnlyMode : false}
-                  {...register('appendOnlyMode')}
-                />
-                <label htmlFor='appendOnlyMode'>Enable append-only mode</label>
-                <Link
-                  href='https://borgwarehouse.com/docs/user-manual/repositories/#append-only-mode'
-                  rel='noreferrer'
-                  target='_blank'
-                >
-                  <IconExternalLink size={16} color='#6c737f' />
-                </Link>
-              </div>
-              {/* ALERT */}
-              <div className={classes.selectAlertWrapper}>
-                <label htmlFor='alert'>Alert if there is no backup since :</label>
-                <div className={classes.selectAlert}>
-                  <Controller
-                    name='alert'
-                    defaultValue={
-                      props.mode == 'edit'
-                        ? alertOptions.find((x) => x.value === targetRepo?.alert) || {
-                            value: targetRepo?.alert,
-                            label: `Custom value (${targetRepo?.alert} seconds)`,
-                          }
-                        : alertOptions[4]
-                    }
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <Select
-                        onChange={onChange}
-                        value={value}
-                        options={alertOptions}
-                        isSearchable={false}
-                        maxMenuHeight={300}
-                        menuPlacement='top'
-                        styles={bwSelectStyles}
-                        theme={bwSelectTheme}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-
-              <button
-                type='submit'
-                className='defaultButton'
-                disabled={!isValid || isSubmitting || isLoading}
+              <fieldset
+                disabled={isArchived}
+                className={`${classes.formFieldset} ${isArchived ? classes.formFieldsetArchived : ''}`}
               >
-                {props.mode == 'edit' && 'Save'}
-                {props.mode == 'add' && 'Add repository'}
-              </button>
+                {/* ALIAS */}
+                <label htmlFor='alias'>Alias</label>
+                <input
+                  className='form-control is-invalid'
+                  placeholder='Alias for the repository, e.g."Server 1"'
+                  type='text'
+                  defaultValue={props.mode == 'edit' ? targetRepo?.alias : undefined}
+                  {...register('alias', {
+                    required: 'An alias is required.',
+                    minLength: {
+                      value: 1,
+                      message: '1 character min',
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: '100 characters max',
+                    },
+                  })}
+                />
+                {errors.alias && (
+                  <span className={classes.errorMessage}>{errors.alias.message}</span>
+                )}
+                {/* ICON */}
+                <label>Icon</label>
+                <IconPicker value={icon} onChange={setIcon} />
+                {/* SSH KEY */}
+                <label htmlFor='sshkey'>SSH public key</label>
+                <textarea
+                  placeholder='Public key in OpenSSH format (rsa, ed25519, ed25519-sk)'
+                  defaultValue={props.mode == 'edit' ? targetRepo?.sshPublicKey : undefined}
+                  {...register('sshkey', {
+                    required: 'SSH public key is required.',
+                    validate: (value) => {
+                      const trimmedValue = value.trim();
+                      const pattern =
+                        /^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?$/;
+                      return (
+                        pattern.test(trimmedValue) ||
+                        'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)'
+                      );
+                    },
+                  })}
+                />
+                {errors.sshkey && (
+                  <span className={classes.errorMessage}>{errors.sshkey.message}</span>
+                )}
+                {/* storageSize */}
+                <label htmlFor='storageSize'>Storage Size (GB)</label>
+                <input
+                  type='number'
+                  placeholder='1000'
+                  min='1'
+                  defaultValue={props.mode == 'edit' ? targetRepo?.storageSize : undefined}
+                  {...register('storageSize', {
+                    required: 'A storage size is required.',
+                  })}
+                />
+                {errors.storageSize && (
+                  <span className={classes.errorMessage}>{errors.storageSize.message}</span>
+                )}
+                {/* STORAGE LOCATION (external storage targets) */}
+                {props.mode == 'add' && storageTargets.length > 0 && (
+                  <>
+                    <label htmlFor='storageTarget'>Storage location</label>
+                    <Select
+                      inputId='storageTarget'
+                      isSearchable={false}
+                      maxMenuHeight={300}
+                      styles={bwSelectStyles}
+                      theme={bwSelectTheme}
+                      defaultValue={{ value: '', label: 'Local (default)' }}
+                      options={[
+                        { value: '', label: 'Local (default)' },
+                        ...storageTargets.map((target) => ({
+                          value: target.path,
+                          label: target.name,
+                        })),
+                      ]}
+                      onChange={(option) => setStorageTarget(option?.value ?? '')}
+                    />
+                  </>
+                )}
+                {/* STORAGE LOCATION (read-only in edit mode: not changeable after creation) */}
+                {props.mode == 'edit' && (
+                  <>
+                    <label htmlFor='storageTargetReadOnly'>Storage location</label>
+                    <input
+                      id='storageTargetReadOnly'
+                      type='text'
+                      readOnly
+                      disabled
+                      value={
+                        targetRepo?.storageTarget
+                          ? (storageTargets.find((t) => t.path === targetRepo.storageTarget)
+                              ?.name ?? targetRepo.storageTarget)
+                          : 'Local (default)'
+                      }
+                      title='The storage location cannot be changed after creation.'
+                    />
+                  </>
+                )}
+                {/* COMMENT */}
+                <label htmlFor='comment'>Comment</label>
+                <textarea
+                  defaultValue={props.mode == 'edit' ? targetRepo?.comment : undefined}
+                  {...register('comment', {
+                    required: false,
+                    maxLength: {
+                      value: 500,
+                      message: '500 characters maximum.',
+                    },
+                  })}
+                />
+                {errors.comment && (
+                  <span className={classes.errorMessage}>{errors.comment.message}</span>
+                )}
+                {/* LAN COMMAND GENERATION */}
+                <div className={classes.optionCommandWrapper}>
+                  <input
+                    type='checkbox'
+                    defaultChecked={props.mode == 'edit' ? targetRepo?.lanCommand : false}
+                    {...register('lanCommand')}
+                  />
+                  <label htmlFor='lanCommand'>Generates commands for use over LAN</label>
+                  <Link
+                    href='https://borgwarehouse.com/docs/user-manual/repositories/#generates-commands-for-use-over-lan'
+                    rel='noreferrer'
+                    target='_blank'
+                  >
+                    <IconExternalLink size={16} color='#6c737f' />
+                  </Link>
+                </div>
+                {/* APPEND-ONLY MODE */}
+                <div className={classes.optionCommandWrapper}>
+                  <input
+                    type='checkbox'
+                    defaultChecked={props.mode == 'edit' ? targetRepo?.appendOnlyMode : false}
+                    {...register('appendOnlyMode')}
+                  />
+                  <label htmlFor='appendOnlyMode'>Enable append-only mode</label>
+                  <Link
+                    href='https://borgwarehouse.com/docs/user-manual/repositories/#append-only-mode'
+                    rel='noreferrer'
+                    target='_blank'
+                  >
+                    <IconExternalLink size={16} color='#6c737f' />
+                  </Link>
+                </div>
+                {/* ALERT */}
+                <div className={classes.selectAlertWrapper}>
+                  <label htmlFor='alert'>Alert if there is no backup since :</label>
+                  <div className={classes.selectAlert}>
+                    <Controller
+                      name='alert'
+                      defaultValue={
+                        props.mode == 'edit'
+                          ? alertOptions.find((x) => x.value === targetRepo?.alert) || {
+                              value: targetRepo?.alert,
+                              label: `Custom value (${targetRepo?.alert} seconds)`,
+                            }
+                          : alertOptions[4]
+                      }
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <Select
+                          onChange={onChange}
+                          value={value}
+                          options={alertOptions}
+                          isSearchable={false}
+                          maxMenuHeight={300}
+                          menuPlacement='top'
+                          styles={bwSelectStyles}
+                          theme={bwSelectTheme}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type='submit'
+                  className='defaultButton'
+                  disabled={!isValid || isSubmitting || isLoading}
+                >
+                  {props.mode == 'edit' && 'Save'}
+                  {props.mode == 'add' && 'Add repository'}
+                </button>
+              </fieldset>
             </form>
             {props.mode == 'edit' ? (
-              <div className={classes.editActionsWrapper}>
-                <button
-                  className={classes.littleBreakLockButton}
-                  onClick={() => setBreakLockDialog(true)}
-                  title='Release a stale lock left by an interrupted operation. Only use this if backups fail with a lock error and no backup is currently running.'
-                >
-                  Break lock
-                </button>
-                <button
-                  className={classes.littleDeleteButton}
-                  onClick={() => setDeleteDialog(true)}
-                >
-                  Delete this repository
-                </button>
-              </div>
+              <RepoActionsFooter
+                isArchived={isArchived}
+                isArchiving={actions.isArchiving}
+                onBreakLock={actions.openBreakLockDialog}
+                onArchive={actions.openArchiveDialog}
+                onUnarchive={actions.unarchive}
+                onDelete={actions.openDeleteDialog}
+              />
             ) : null}
           </div>
         )}

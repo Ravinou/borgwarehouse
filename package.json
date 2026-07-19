@@ -16,7 +16,7 @@
     "format": "prettier --write \"{Components,Containers,helpers,pages,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
-    "@tabler/icons-react": "^3.44.0",
+    "@tabler/icons-react": "^3.45.0",
     "async-mutex": "^0.5.0",
     "bcryptjs": "^3.0.3",
     "better-auth": "^1.6.23",
@@ -31,7 +31,7 @@
     "react": "^19.2.7",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.7",
-    "react-hook-form": "^7.80.0",
+    "react-hook-form": "^7.82.0",
     "react-select": "^5.10.2",
     "react-toastify": "^11.1.0",
     "swr": "^2.4.2",
@@ -39,22 +39,22 @@
     "uuid": "^14.0.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.2.0",
+    "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^25.9.4",
+    "@types/node": "^25.9.5",
     "@types/nodemailer": "^8.0.1",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@types/supertest": "^7.2.0",
-    "eslint": "^9.39.4",
+    "@types/supertest": "^7.2.1",
+    "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.10",
     "husky": "^9.1.7",
-    "node-mocks-http": "^1.17.2",
-    "prettier": "^3.9.4",
-    "tsx": "^4.23.0",
+    "node-mocks-http": "^1.18.1",
+    "prettier": "^3.9.5",
+    "tsx": "^4.23.1",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   }
 }

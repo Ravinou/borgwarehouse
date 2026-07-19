@@ -415,6 +415,66 @@ describe('Cronjob API Handler', () => {
     expect(res._getStatusCode()).toBe(200);
   });
 
+  it('should skip archived repositories: no status recompute and no alert', async () => {
+    const currentTime = 1741535661;
+
+    vi.mocked(ConfigService.getRepoList).mockResolvedValue([
+      {
+        repositoryName: 'repo1',
+        alias: 'Repo1',
+        status: false,
+        alert: 100,
+        id: 1,
+        lastSave: 42,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+        archived: true,
+      },
+    ]);
+    vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
+      { repositoryName: 'repo1', lastSave: currentTime - 200 },
+    ]);
+    vi.mocked(ConfigService.getUsersList).mockResolvedValue([
+      {
+        id: 1,
+        password: 'hashed-password',
+        roles: ['user'],
+        emailAlert: true,
+        email: 'test@example.com',
+        username: 'TestUser',
+      },
+    ]);
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      headers: { authorization: 'Bearer test-key' },
+    });
+
+    await handler(req, res);
+
+    // The archived repo must be persisted unchanged (status/lastSave untouched,
+    // no lastStatusAlertSend added) and must not trigger any email alert.
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
+      {
+        repositoryName: 'repo1',
+        alias: 'Repo1',
+        status: false,
+        alert: 100,
+        id: 1,
+        lastSave: 42,
+        storageSize: 0,
+        storageUsed: 0,
+        sshPublicKey: '',
+        comment: '',
+        archived: true,
+      },
+    ]);
+    expect(NotifService.nodemailerSMTP).not.toHaveBeenCalled();
+    expect(res._getStatusCode()).toBe(200);
+  });
+
   it('should not update lastStatusAlertSend or send alerts if alert is disabled', async () => {
     const currentTime = 1741535661;
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([

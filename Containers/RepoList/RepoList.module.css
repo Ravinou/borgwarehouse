@@ -15,7 +15,7 @@
 
 .containerRepoList {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .containerAddRepo {
@@ -88,34 +88,40 @@
   margin: 5px auto;
 }
 
-.unfoldButton {
-  cursor: pointer;
-  position: sticky;
+/* Toolbar toggle button for archived repositories */
+.archivedToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
   color: var(--text-faint);
-  padding-top: 49px;
-  align-self: flex-start;
-  top: 0;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-sizing: border-box;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
-.foldButton {
-  cursor: pointer;
-  position: sticky;
-  color: var(--text-faint);
-  padding-top: 49px;
-  align-self: flex-start;
-  top: 0;
+.archivedToggleBtn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
-.unfoldButton:active,
-.foldButton:active {
-  transform: scale(0.96);
+.archivedToggleBtnActive {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-soft);
 }
 
 @media all and (max-width: 1000px) {
   .newRepoButton {
-    display: none;
-  }
-  .chevron {
     display: none;
   }
   .containerAddRepo {

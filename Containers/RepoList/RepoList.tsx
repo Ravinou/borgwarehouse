@@ -1,32 +1,30 @@
-import classes from './RepoList.module.css';
-import React, { useState, useMemo } from 'react';
 import {
-  IconPlus,
-  IconSortAscendingLetters,
-  IconSortDescendingLetters,
-  IconSortAscending2,
-  IconSortDescending2,
-  IconDatabase,
-  IconX,
-  IconClock,
-  IconCalendarUp,
+  IconArchive,
   IconCalendarDown,
-  IconSortAscendingSmallBig,
-  IconSortDescendingSmallBig,
-  IconSortDescending2Filled,
+  IconCalendarUp,
+  IconPlus,
   IconRefresh,
   IconSearch,
+  IconSortAscendingLetters,
+  IconSortAscendingSmallBig,
+  IconSortDescending2,
+  IconSortDescending2Filled,
+  IconSortDescendingLetters,
+  IconSortDescendingSmallBig,
+  IconX,
 } from '@tabler/icons-react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
-import useSWR, { useSWRConfig } from 'swr';
+import { useRouter } from 'next/router';
+import React, { useMemo, useState } from 'react';
 import { ToastContainer, ToastOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useSWR, { useSWRConfig } from 'swr';
+import classes from './RepoList.module.css';
 
 import Repo from '~/Components/Repo/Repo';
-import RepoManage from '../RepoManage/RepoManage';
 import ShimmerRepoList from '~/Components/UI/ShimmerRepoList/ShimmerRepoList';
-import { Repository, WizardEnvType, DateFormatEnum, StorageTarget } from '~/types';
+import { DateFormatEnum, Repository, StorageTarget, WizardEnvType } from '~/types';
+import RepoManage from '../RepoManage/RepoManage';
 
 type SortOption =
   | 'alias-asc'
@@ -50,6 +48,17 @@ export default function RepoList() {
     return (savedSort as SortOption) || 'alias-asc';
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showArchived, setShowArchived] = useState(
+    () => localStorage.getItem('repoShowArchived') === 'true'
+  );
+
+  const toggleShowArchived = () => {
+    setShowArchived((prev) => {
+      const next = !prev;
+      localStorage.setItem('repoShowArchived', String(next));
+      return next;
+    });
+  };
 
   const [searchQuery, setSearchQuery] = useState(() => {
     const savedSearch = localStorage.getItem('repoSearch');
@@ -177,7 +186,7 @@ export default function RepoList() {
     }
   };
 
-  const renderRepoList = getSortedRepoList().map((repo: Repository) => (
+  const renderRepo = (repo: Repository) => (
     <Repo
       key={repo.id}
       id={repo.id}
@@ -197,11 +206,20 @@ export default function RepoList() {
       storageTargetName={
         repo.storageTarget ? storageTargetNames.get(repo.storageTarget) : undefined
       }
+      archived={repo.archived}
       repoManageEditHandler={() => manageRepoEditHandler(repo.id)}
       wizardEnv={wizardEnv}
       dateFormat={dateFormat}
     />
-  ));
+  );
+
+  const sortedRepoList = getSortedRepoList();
+  const archivedCount = data.repoList.filter((repo: Repository) => repo.archived).length;
+  const effectiveShowArchived = showArchived && archivedCount > 0;
+  const visibleRepoList = sortedRepoList.filter((repo: Repository) =>
+    effectiveShowArchived ? repo.archived : !repo.archived
+  );
+  const renderRepoList = visibleRepoList.map(renderRepo);
 
   return (
     <>
@@ -291,6 +309,22 @@ export default function RepoList() {
               title='Manually refresh status & storage. Does not replace a scheduled cron job.'
               size={18}
             />
+            {archivedCount > 0 && (
+              <button
+                type='button'
+                className={`${classes.archivedToggleBtn} ${effectiveShowArchived ? classes.archivedToggleBtnActive : ''}`}
+                onClick={toggleShowArchived}
+                aria-pressed={effectiveShowArchived}
+                title={
+                  effectiveShowArchived
+                    ? 'Back to active repositories'
+                    : 'Show archived repositories'
+                }
+              >
+                <IconArchive size={16} />
+                <span>{archivedCount}</span>
+              </button>
+            )}
           </div>
         </div>
 

@@ -86,6 +86,10 @@ export default async function handler(
         return ApiResponse.notFound(res, 'Repository not found');
       }
 
+      if (repo.archived) {
+        return ApiResponse.forbidden(res, 'Repository is archived (read-only). Unarchive it first.');
+      }
+
       const filteredRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
       if (sshPublicKey && isSshPubKeyDuplicate(sshPublicKey, filteredRepoList)) {
         return res.status(409).json({

@@ -18,6 +18,7 @@ export type Repository = {
   appendOnlyMode?: boolean;
   lastStatusAlertSend?: number;
   storageTarget?: string;
+  archived?: boolean;
 };
 
 export enum DateFormatEnum {

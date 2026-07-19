@@ -45,6 +45,10 @@ if [ ! -d "${repo_path}" ]; then
 fi
 
 # Run the compaction. No passphrase is required for `borg compact`.
+# Force borg to use the application user's home for its config/cache/security
+# directories. Without this, borg falls back to $HOME (e.g. /root in the
+# container) which is not writable by the app user -> "Permission denied: '/root/.cache'".
+export BORG_BASE_DIR="${home}"
 # Disable interactive prompts so the command can never hang waiting for input.
 export BORG_RELOCATED_REPO_ACCESS_IS_OK=yes
 export BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes

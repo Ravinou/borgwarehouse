@@ -12,6 +12,7 @@ COPY tests/bats/createRepo.bats /test/tests/createRepo.bats
 COPY tests/bats/deleteRepo.bats /test/tests/deleteRepo.bats
 COPY tests/bats/compactRepo.bats /test/tests/compactRepo.bats
 COPY tests/bats/breakLockRepo.bats /test/tests/breakLockRepo.bats
+COPY tests/bats/archiveRepo.bats /test/tests/archiveRepo.bats
 COPY tests/bats/updateRepo.bats /test/tests/updateRepo.bats
 COPY tests/bats/getLastSave.bats /test/tests/getLastSave.bats
 COPY tests/bats/getStorageUsed.bats /test/tests/getStorageUsed.bats

@@ -317,8 +317,8 @@ export default function RepoManage(props: RepoManageProps) {
               prune or restore) and it stops triggering notifications.
             </div>
             <div>
-              The data is kept untouched and this is <b>fully reversible</b> — you can unarchive it
-              at any time.
+              The data is kept untouched and this is <b>fully reversible</b>. You can simply
+              unarchive the repository at any time to resume normal operations.
             </div>
           </ConfirmDialog>
         ) : (

@@ -10,8 +10,6 @@ PermitRootLogin no
 PasswordAuthentication no
 ChallengeResponseAuthentication no
 AuthenticationMethods publickey
-MaxAuthTries 2
-MaxStartups 2:30:10
 LoginGraceTime 30
 UsePAM no
 

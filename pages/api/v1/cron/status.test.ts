@@ -286,6 +286,7 @@ describe('Cronjob API Handler', () => {
     vi.mocked(ShellService.getLastSaveList).mockResolvedValue([
       { repositoryName: 'repo1', lastSave: currentTime - 1000 },
     ]);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
     vi.mocked(ConfigService.getUsersList).mockResolvedValue([
       {
         id: 1,
@@ -311,6 +312,12 @@ describe('Cronjob API Handler', () => {
 
     const childProcess = await import('node:child_process');
     expect(childProcess.exec).not.toHaveBeenCalled();
+
+    // A "Disabled" threshold (alert === 0) exempts the repo from the check:
+    // its status must be forced to up (true), not down. #689
+    expect(ConfigService.updateRepoList).toHaveBeenCalledWith([
+      expect.objectContaining({ id: 1, alert: 0, status: true }),
+    ]);
   });
 
   it('should not update lastStatusAlertSend or add to repoListToSendAlert if repo status is OK', async () => {
@@ -507,7 +514,7 @@ describe('Cronjob API Handler', () => {
       {
         repositoryName: 'repo1',
         alias: 'Repo1',
-        status: false,
+        status: true,
         alert: 0,
         lastStatusAlertSend: undefined,
         id: 1,

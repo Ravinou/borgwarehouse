@@ -92,19 +92,11 @@ export default function Login({
     setOauthLoading(providerId);
     start();
     try {
-      if (providerId === 'oidc') {
-        await authClient.signIn.oauth2({
-          providerId: 'oidc',
-          callbackURL: '/',
-          errorCallbackURL: '/login?error=oauth',
-        });
-      } else {
-        await authClient.signIn.social({
-          provider: providerId as 'github' | 'google' | 'microsoft' | 'gitlab',
-          callbackURL: '/',
-          errorCallbackURL: '/login?error=oauth',
-        });
-      }
+      await authClient.signIn.social({
+        provider: providerId as 'github' | 'google' | 'microsoft' | 'gitlab' | 'oidc',
+        callbackURL: '/',
+        errorCallbackURL: '/login?error=oauth',
+      });
     } catch {
       stop();
       setOauthLoading(null);

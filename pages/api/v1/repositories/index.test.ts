@@ -79,7 +79,12 @@ describe('Repository GET info', () => {
 
   it('should return 403 if API key does not have read permissions', async () => {
     vi.mocked(getSession).mockResolvedValue(null);
-    vi.mocked(AuthService.tokenController).mockResolvedValue({ read: false });
+    vi.mocked(AuthService.tokenController).mockResolvedValue({
+      read: false,
+      create: true,
+      update: true,
+      delete: true,
+    });
     const { req, res } = createMocks({
       method: 'GET',
       headers: { authorization: 'Bearer API_KEY' },
@@ -131,7 +136,12 @@ describe('Add a new repository', () => {
 
   it('should return 403 if API key does not have create permissions', async () => {
     vi.mocked(getSession).mockResolvedValue(null);
-    vi.mocked(AuthService.tokenController).mockResolvedValue({ create: false });
+    vi.mocked(AuthService.tokenController).mockResolvedValue({
+      create: false,
+      read: true,
+      update: true,
+      delete: true,
+    });
     const { req, res } = createMocks({
       method: 'POST',
       headers: { authorization: 'Bearer API_KEY' },
@@ -143,7 +153,19 @@ describe('Add a new repository', () => {
   it('should return 409 if SSH key is duplicated', async () => {
     vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([
-      { id: 1, sshPublicKey: 'duplicate-key' },
+      {
+        id: 1,
+        alias: 'repo1',
+        repositoryName: 'Test Repository 1',
+        status: true,
+        lastSave: 1678901234,
+        storageSize: 100,
+        storageUsed: 50,
+        sshPublicKey: 'duplicate-key',
+        comment: '',
+        displayDetails: true,
+        unixUser: 'user1',
+      },
     ]);
     vi.mocked(isSshPubKeyDuplicate).mockReturnValue(true);
     const { req, res } = createMocks({
@@ -170,7 +192,7 @@ describe('Add a new repository', () => {
     vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
-    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
     const { req, res } = createMocks({
       method: 'POST',
       body: { alias: 'repo1', sshPublicKey: 'valid-key', storageSize: 10 },
@@ -184,7 +206,7 @@ describe('Add a new repository', () => {
     vi.mocked(getSession).mockResolvedValue({ user: { name: 'USER' } });
     vi.mocked(ConfigService.getRepoList).mockResolvedValue([]);
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
-    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
       method: 'POST',
@@ -258,7 +280,7 @@ describe('Add a new repository', () => {
     ]);
 
     vi.mocked(ShellService.createRepo).mockResolvedValue({ stdout: 'new-repo' });
-    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(true);
+    vi.mocked(ConfigService.updateRepoList).mockResolvedValue(undefined);
 
     const { req, res } = createMocks({
       method: 'POST',

@@ -4,6 +4,7 @@ import NavSide from './NavSide/NavSide';
 import classes from './Layout.module.css';
 import { useAuthSession } from '~/lib/auth-client';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -11,17 +12,17 @@ type LayoutProps = {
 
 function Layout(props: LayoutProps) {
   const { status } = useAuthSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (
       status === 'unauthenticated' &&
-      typeof window !== 'undefined' &&
-      window.location.pathname !== '/login' &&
-      window.location.pathname !== '/setup'
+      router.pathname !== '/login' &&
+      router.pathname !== '/setup'
     ) {
-      window.location.href = '/login';
+      router.push('/login');
     }
-  }, [status]);
+  }, [status, router]);
 
   if (status === 'authenticated') {
     return (

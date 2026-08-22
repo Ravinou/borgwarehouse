@@ -24,11 +24,69 @@ function ensureSetupLocked(): void {
 let migrationDone = false;
 
 /**
+ * Migrates the `account` table to better-auth 1.7's scoped identity (issuer, accountId).
+ * See https://better-auth.com/docs/guides/1-7-upgrade-guide#account-identity-is-scoped-by-issuer
+ */
+function migrateAccountIdentityToBetterAuth17(db: Database.Database): void {
+  const accountTable = db
+    .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='account'")
+    .get();
+  if (!accountTable) return; // fresh install, runMigrations creates the full schema
+
+  const columns = db.prepare('PRAGMA table_info(account)').all() as { name: string }[];
+  const hasIssuer = columns.some((c) => c.name === 'issuer');
+
+  const run = db.transaction(() => {
+    if (!hasIssuer) {
+      db.exec('ALTER TABLE account ADD COLUMN issuer TEXT');
+    }
+    // Fill in rows lacking a valid issuer (idempotent; also repairs partial migrations).
+    // Credential accounts: the account subject must be the user id in better-auth 1.7.
+    const credential = db
+      .prepare(
+        "UPDATE account SET issuer = 'local:credential', accountId = userId " +
+          "WHERE providerId = 'credential' AND (issuer IS NULL OR issuer = '')"
+      )
+      .run();
+    // OAuth providers (social + generic OIDC) get the synthetic OAuth namespace.
+    const providers = db
+      .prepare(
+        'SELECT DISTINCT providerId FROM account ' +
+          "WHERE providerId != 'credential' AND (issuer IS NULL OR issuer = '')"
+      )
+      .all() as { providerId: string }[];
+    const updateIssuer = db.prepare(
+      "UPDATE account SET issuer = ? WHERE providerId = ? AND (issuer IS NULL OR issuer = '')"
+    );
+    let oauth = 0;
+    for (const { providerId } of providers) {
+      oauth += updateIssuer.run(
+        `local:oauth:${encodeURIComponent(providerId)}`,
+        providerId
+      ).changes;
+    }
+    return credential.changes + oauth;
+  });
+  const changed = run();
+  if (!hasIssuer || changed > 0) {
+    console.log(
+      `[better-auth] Migrated account.issuer to better-auth 1.7 scoped identity (${changed} row(s)).`
+    );
+  }
+}
+
+/**
  * Ensures the better-auth schema exists in SQLite.
  */
 export async function ensureSchemaReady(): Promise<void> {
   if (migrationDone) return;
   try {
+    const db = new Database(dbPath);
+    try {
+      migrateAccountIdentityToBetterAuth17(db);
+    } finally {
+      db.close();
+    }
     const { runMigrations } = await getMigrations(auth.options);
     await runMigrations();
     migrationDone = true;
@@ -66,9 +124,9 @@ export async function migrateUsersFromJson(): Promise<void> {
 
     const insertAccount = db.prepare(`
       INSERT INTO account
-        (id, accountId, providerId, userId, password, createdAt, updatedAt)
+        (id, accountId, providerId, issuer, userId, password, createdAt, updatedAt)
       VALUES
-        (@id, @accountId, @providerId, @userId, @password, @createdAt, @updatedAt)
+        (@id, @accountId, @providerId, @issuer, @userId, @password, @createdAt, @updatedAt)
     `);
 
     const runAll = db.transaction(() => {
@@ -91,8 +149,9 @@ export async function migrateUsersFromJson(): Promise<void> {
 
         insertAccount.run({
           id: `${userId}-credential`,
-          accountId: user.username.toLowerCase(),
+          accountId: userId,
           providerId: 'credential',
+          issuer: 'local:credential',
           userId,
           // Re-use the existing bcrypt hash — no re-hashing needed
           password: user.password,

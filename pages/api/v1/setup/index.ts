@@ -99,13 +99,14 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
       db.prepare(
         `
-        INSERT INTO account (id, accountId, providerId, userId, password, createdAt, updatedAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO account (id, accountId, providerId, issuer, userId, password, createdAt, updatedAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `
       ).run(
         `${userId}-credential`,
-        username.toLowerCase(),
+        userId,
         'credential',
+        'local:credential',
         userId,
         passwordHash,
         now,

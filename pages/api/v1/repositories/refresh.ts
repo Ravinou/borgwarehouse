@@ -35,7 +35,7 @@ export default async function handler(
         ...repo,
         ...(saveEntry && {
           lastSave: saveEntry.lastSave,
-          status: date - saveEntry.lastSave <= (repo.alert ?? 0),
+          status: (repo.alert ?? 0) === 0 ? true : date - saveEntry.lastSave <= (repo.alert ?? 0),
         }),
         ...(storageEntry && { storageUsed: storageEntry.size }),
       };

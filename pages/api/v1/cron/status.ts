@@ -39,10 +39,11 @@ export default async function handler(
       const repoFiltered = lastSaveList.find((x) => x.repositoryName === repo.repositoryName);
       if (!repoFiltered) return repo;
       const lastSaveTimestamp = repoFiltered.lastSave;
+      const alert = repo?.alert ?? 0; // If alert is disabled, consider the repository as always up (status = true).
       return {
         ...repo,
         lastSave: lastSaveTimestamp,
-        status: date - lastSaveTimestamp <= (repo?.alert ?? 0),
+        status: alert === 0 ? true : date - lastSaveTimestamp <= alert,
       };
     });
 

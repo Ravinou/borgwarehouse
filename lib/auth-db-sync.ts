@@ -15,9 +15,6 @@ export function syncUsernameChange(userId: string, newUsername: string): void {
     db.prepare(
       `UPDATE "user" SET name=?, username=?, displayUsername=?, updatedAt=? WHERE id=?`
     ).run(newUsername, newUsername.toLowerCase(), newUsername, now, userId);
-    db.prepare(
-      `UPDATE account SET accountId=?, updatedAt=? WHERE userId=? AND providerId='credential'`
-    ).run(newUsername.toLowerCase(), now, userId);
   } finally {
     db.close();
   }

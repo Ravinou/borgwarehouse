@@ -93,6 +93,7 @@ const oidcConfig =
           scopes: ['openid', 'email', 'profile'],
           pkce: true,
           disableSignUp: true,
+          accountIssuer: 'local:oauth:oidc',
         },
       ]
     : [];

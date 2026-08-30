@@ -42,7 +42,7 @@
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^25.9.5",
+    "@types/node": "^26.4.0",
     "@types/nodemailer": "^8.0.1",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^19.2.18",

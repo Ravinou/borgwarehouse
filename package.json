@@ -19,7 +19,7 @@
     "@tabler/icons-react": "^3.46.0",
     "async-mutex": "^0.5.0",
     "bcryptjs": "^3.0.3",
-    "better-auth": "^1.7.1",
+    "better-auth": "^1.7.2",
     "better-sqlite3": "^12.11.1",
     "chart.js": "^4.5.1",
     "date-fns": "^4.4.0",

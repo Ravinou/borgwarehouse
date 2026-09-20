@@ -141,18 +141,6 @@
   gap: 10px;
 }
 
-.sortIcons {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  background: var(--surface-2);
-  border: 1px solid var(--border-strong);
-  border-radius: 20px;
-  padding: 5px 12px;
-  height: 36px;
-  box-sizing: border-box;
-}
-
 .refreshIcon {
   cursor: pointer;
   color: var(--text-faint);
@@ -162,22 +150,6 @@
 
 .refreshIcon:hover {
   color: var(--primary);
-}
-
-.icon {
-  cursor: pointer;
-  color: var(--text-faint);
-  transition: transform 0.2s ease;
-}
-
-.icon:hover {
-  transform: scale(1.1);
-  color: var(--primary);
-}
-
-.iconActive {
-  color: var(--primary);
-  transform: scale(1.2);
 }
 
 .searchContainer {

@@ -1,18 +1,4 @@
-import {
-  IconArchive,
-  IconCalendarDown,
-  IconCalendarUp,
-  IconPlus,
-  IconRefresh,
-  IconSearch,
-  IconSortAscendingLetters,
-  IconSortAscendingSmallBig,
-  IconSortDescending2,
-  IconSortDescending2Filled,
-  IconSortDescendingLetters,
-  IconSortDescendingSmallBig,
-  IconX,
-} from '@tabler/icons-react';
+import { IconArchive, IconPlus, IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
@@ -20,21 +6,13 @@ import { ToastContainer, ToastOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useSWR, { useSWRConfig } from 'swr';
 import classes from './RepoList.module.css';
+import SortDropdown from './SortDropdown/SortDropdown';
 
 import Repo from '~/Components/Repo/Repo';
 import ShimmerRepoList from '~/Components/UI/ShimmerRepoList/ShimmerRepoList';
+import { sortRepositories, type SortOption } from '~/helpers/functions/sortRepositories';
 import { DateFormatEnum, Repository, StorageTarget, WizardEnvType } from '~/types';
 import RepoManage from '../RepoManage/RepoManage';
-
-type SortOption =
-  | 'alias-asc'
-  | 'alias-desc'
-  | 'status-true'
-  | 'status-false'
-  | 'storage-used-asc'
-  | 'storage-used-desc'
-  | 'last-save-asc'
-  | 'last-save-desc';
 
 export default function RepoList() {
   const router = useRouter();
@@ -124,43 +102,7 @@ export default function RepoList() {
       );
     }
 
-    // Sort
-    switch (sortOption) {
-      case 'alias-asc':
-        return repoList.sort((a, b) => a.alias.localeCompare(b.alias));
-      case 'alias-desc':
-        return repoList.sort((a, b) => b.alias.localeCompare(a.alias));
-      case 'status-true':
-        return repoList.sort((a, b) => Number(b.status) - Number(a.status));
-      case 'status-false':
-        return repoList.sort((a, b) => Number(a.status) - Number(b.status));
-      case 'storage-used-asc':
-        return repoList.sort((a, b) => {
-          const aRatio = a.storageSize ? a.storageUsed / a.storageSize : 0;
-          const bRatio = b.storageSize ? b.storageUsed / b.storageSize : 0;
-          return aRatio - bRatio;
-        });
-      case 'storage-used-desc':
-        return repoList.sort((a, b) => {
-          const aRatio = a.storageSize ? a.storageUsed / a.storageSize : 0;
-          const bRatio = b.storageSize ? b.storageUsed / b.storageSize : 0;
-          return bRatio - aRatio;
-        });
-      case 'last-save-asc':
-        return repoList.sort((a, b) => {
-          const aDate = a.lastSave ? new Date(a.lastSave).getTime() : 0;
-          const bDate = b.lastSave ? new Date(b.lastSave).getTime() : 0;
-          return aDate - bDate;
-        });
-      case 'last-save-desc':
-        return repoList.sort((a, b) => {
-          const aDate = a.lastSave ? new Date(a.lastSave).getTime() : 0;
-          const bDate = b.lastSave ? new Date(b.lastSave).getTime() : 0;
-          return bDate - aDate;
-        });
-      default:
-        return repoList;
-    }
+    return sortRepositories(repoList, sortOption);
   };
 
   const manageRepoAddHandler = () => router.replace('/manage-repo/add');
@@ -261,48 +203,7 @@ export default function RepoList() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div className={classes.sortIcons}>
-              <IconSortAscendingLetters
-                className={sortOption === 'alias-asc' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('alias-asc')}
-                title='Alias A-Z'
-              />
-              <IconSortDescendingLetters
-                className={sortOption === 'alias-desc' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('alias-desc')}
-                title='Alias Z-A'
-              />
-              <IconSortDescending2Filled
-                className={sortOption === 'status-true' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('status-true')}
-                title='Status OK → KO'
-              />
-              <IconSortDescending2
-                className={sortOption === 'status-false' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('status-false')}
-                title='Status KO → OK'
-              />
-              <IconCalendarDown
-                className={sortOption === 'last-save-desc' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('last-save-desc')}
-                title='Last save (recent → old)'
-              />
-              <IconCalendarUp
-                className={sortOption === 'last-save-asc' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('last-save-asc')}
-                title='Last save (old → recent)'
-              />
-              <IconSortAscendingSmallBig
-                className={sortOption === 'storage-used-asc' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('storage-used-asc')}
-                title='Storage usage % low → high'
-              />
-              <IconSortDescendingSmallBig
-                className={sortOption === 'storage-used-desc' ? classes.iconActive : classes.icon}
-                onClick={() => handleSortChange('storage-used-desc')}
-                title='Storage usage % high → low'
-              />
-            </div>
+            <SortDropdown sortOption={sortOption} onSortChange={handleSortChange} />
             <IconRefresh
               className={`${classes.refreshIcon} ${isRefreshing ? classes.iconSpin : ''}`}
               onClick={!isRefreshing ? handleRefresh : undefined}

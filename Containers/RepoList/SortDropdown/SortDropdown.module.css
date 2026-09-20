@@ -1,0 +1,129 @@
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  padding: 5px 6px 5px 6px;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.sortDropdown {
+  position: relative;
+}
+
+.sortTrigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0 8px 0 10px;
+  height: 26px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--text-strong);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.sortTrigger:hover {
+  background-color: var(--surface);
+}
+
+.sortTriggerOpen {
+  background-color: var(--surface);
+  color: var(--primary);
+}
+
+.sortChevron {
+  color: var(--text-faint);
+  transition: transform 0.2s ease;
+}
+
+.sortTriggerOpen .sortChevron {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+.sortMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  margin-top: 8px;
+  min-width: 160px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--elevated);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  box-sizing: border-box;
+  animation: sortMenuIn 0.16s ease both;
+}
+
+@keyframes sortMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sortMenuItem {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-strong);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sortMenuItem:hover {
+  background-color: var(--surface);
+  color: var(--primary);
+}
+
+.sortMenuItemActive {
+  background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
+  color: #fff;
+}
+
+.sortMenuItemActive:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
+}
+
+.sortDirectionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.sortDirectionBtn:hover {
+  color: var(--primary);
+  background: var(--primary-soft);
+}

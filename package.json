@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
-    "@commitlint/config-conventional": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.3",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^26.6.2",
     "@types/nodemailer": "^8.0.2",

@@ -8,6 +8,10 @@
     "start": "next start",
     "lint": "pnpm exec eslint",
     "test": "vitest",
+    "test:e2e": "playwright test -c tests/playwright",
+    "test:e2e:ui": "playwright test -c tests/playwright --ui",
+    "test:e2e:headed": "playwright test -c tests/playwright --headed --workers=1",
+    "test:e2e:report": "playwright show-report tests/playwright/playwright-report",
     "migrate:auth": "tsx scripts/migrate-users.ts",
     "reset:password": "tsx scripts/reset-password.ts",
     "revoke:sessions": "tsx scripts/revoke-sessions.ts",
@@ -41,6 +45,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
+    "@playwright/test": "^1.64.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^26.6.2",
     "@types/nodemailer": "^8.0.2",

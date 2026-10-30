@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { ConfigService, ShellService } from '~/services';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { BorgWarehouseApiResponse } from '~/types';
+import { persistRepoFields } from '~/lib/repo-list-lock';
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,7 +38,7 @@ export default async function handler(
       };
     });
 
-    await ConfigService.updateRepoList(updatedRepoList);
+    await persistRepoFields(updatedRepoList, ['storageUsed']);
     return ApiResponse.success(res, 'Storage cron executed successfully');
   } catch (error) {
     console.log(error);

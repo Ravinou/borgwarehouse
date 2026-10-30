@@ -4,6 +4,7 @@ import { getSession } from '~/helpers/getServerSession';
 import { ConfigService, ShellService } from '~/services';
 import { BorgWarehouseApiResponse } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
+import { persistRepoFields } from '~/lib/repo-list-lock';
 
 export default async function handler(
   req: NextApiRequest,
@@ -41,7 +42,7 @@ export default async function handler(
       };
     });
 
-    await ConfigService.updateRepoList(updatedRepoList);
+    await persistRepoFields(updatedRepoList, ['lastSave', 'status', 'storageUsed']);
     return ApiResponse.success(res, 'Repositories refreshed successfully.');
   } catch (error) {
     if (

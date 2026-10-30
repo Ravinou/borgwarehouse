@@ -6,6 +6,7 @@ import { ConfigService, AuthService, ShellService } from '~/services';
 import { isSshPubKeyDuplicate, isValidStorageTarget } from '~/helpers/functions';
 import { isValidRepoIcon } from '~/Components/Repo/repoIcons';
 import { getUnixTime } from 'date-fns';
+import { withRepoListLock } from '~/lib/repo-list-lock';
 
 export default async function handler(
   req: NextApiRequest,
@@ -66,51 +67,62 @@ export default async function handler(
     }
 
     try {
-      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon, storageTarget } =
-        req.body;
-      const repoList = await ConfigService.getRepoList();
+      return await withRepoListLock(async () => {
+        const {
+          alias,
+          sshPublicKey,
+          storageSize,
+          comment,
+          alert,
+          lanCommand,
+          appendOnlyMode,
+          icon,
+          storageTarget,
+        } = req.body;
+        const repoList = await ConfigService.getRepoList();
 
-      if (sshPublicKey && isSshPubKeyDuplicate(sshPublicKey, repoList)) {
-        return res.status(409).json({
-          status: 409,
-          message:
-            'The SSH key is already used in another repository. Please use another key or delete the key from the other repository.',
-        });
-      }
+        if (sshPublicKey && isSshPubKeyDuplicate(sshPublicKey, repoList)) {
+          return res.status(409).json({
+            status: 409,
+            message:
+              'The SSH key is already used in another repository. Please use another key or delete the key from the other repository.',
+          });
+        }
 
-      const newRepo: Repository = {
-        id: repoList.length > 0 ? Math.max(...repoList.map((repo) => repo.id)) + 1 : 0,
-        alias: alias,
-        repositoryName: '',
-        status: false,
-        lastSave: 0,
-        lastStatusAlertSend: getUnixTime(new Date()),
-        alert: alert ?? 0,
-        storageSize: storageSize,
-        storageUsed: 0,
-        sshPublicKey: sshPublicKey,
-        comment: comment ?? '',
-        lanCommand: lanCommand ?? false,
-        appendOnlyMode: appendOnlyMode ?? false,
-        icon: isValidRepoIcon(icon) ? icon : undefined,
-        storageTarget: storageTarget || undefined,
-      };
+        const newRepo: Repository = {
+          id: repoList.length > 0 ? Math.max(...repoList.map((repo) => repo.id)) + 1 : 0,
+          alias: alias,
+          repositoryName: '',
+          status: false,
+          lastSave: 0,
+          lastStatusAlertSend: getUnixTime(new Date()),
+          alert: alert ?? 0,
+          storageSize: storageSize,
+          storageUsed: 0,
+          sshPublicKey: sshPublicKey,
+          comment: comment ?? '',
+          lanCommand: lanCommand ?? false,
+          appendOnlyMode: appendOnlyMode ?? false,
+          icon: isValidRepoIcon(icon) ? icon : undefined,
+          storageTarget: storageTarget || undefined,
+        };
 
-      const { stdout } = await ShellService.createRepo(
-        newRepo.sshPublicKey,
-        newRepo.storageSize,
-        newRepo.appendOnlyMode ?? false,
-        newRepo.storageTarget
-      );
-      if (!stdout) {
-        return ApiResponse.serverError(res, 'Error creating repository');
-      }
+        const { stdout } = await ShellService.createRepo(
+          newRepo.sshPublicKey,
+          newRepo.storageSize,
+          newRepo.appendOnlyMode ?? false,
+          newRepo.storageTarget
+        );
+        if (!stdout) {
+          return ApiResponse.serverError(res, 'Error creating repository');
+        }
 
-      newRepo.repositoryName = stdout.trim();
-      const updatedRepoList = [...repoList, newRepo];
-      await ConfigService.updateRepoList(updatedRepoList, true);
+        newRepo.repositoryName = stdout.trim();
+        const updatedRepoList = [...repoList, newRepo];
+        await ConfigService.updateRepoList(updatedRepoList, true);
 
-      return res.status(200).json({ id: newRepo.id, repositoryName: newRepo.repositoryName });
+        return res.status(200).json({ id: newRepo.id, repositoryName: newRepo.repositoryName });
+      });
     } catch (error) {
       console.log(error);
       return ApiResponse.serverError(res, error as string);
@@ -121,8 +133,17 @@ export default async function handler(
 }
 
 const validatePOSTRequestBody = (req: NextApiRequest) => {
-  const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon, storageTarget } =
-    req.body;
+  const {
+    alias,
+    sshPublicKey,
+    storageSize,
+    comment,
+    alert,
+    lanCommand,
+    appendOnlyMode,
+    icon,
+    storageTarget,
+  } = req.body;
   // Required fields
   if (!alias || typeof alias !== 'string') {
     throw new Error('Alias must be a non-empty string');

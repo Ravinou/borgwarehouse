@@ -24,6 +24,8 @@ export default function StorageUsedChartBar({ data, theme }: StorageUsedChartBar
   //Theme-aware palette pulled from the design tokens.
   const primary = isDark ? '#8b6bff' : '#6d4aff';
   const primaryHover = isDark ? '#9d82ff' : '#5c3dff';
+  const archivedColor = isDark ? '#4a5163' : '#c4c8d4';
+  const archivedHover = isDark ? '#5a6275' : '#b0b5c4';
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(17, 24, 39, 0.07)';
   const tickColor = isDark ? '#9aa1b3' : '#65748b';
   const tooltipBg = isDark ? '#1b1f28' : '#ffffff';
@@ -45,7 +47,8 @@ export default function StorageUsedChartBar({ data, theme }: StorageUsedChartBar
         cornerRadius: 10,
         displayColors: false,
         callbacks: {
-          label: (context) => `${context.parsed.y}% used`,
+          label: (context) =>
+            `${context.parsed.y}% used${data?.[context.dataIndex]?.archived ? ' (archived)' : ''}`,
         },
       },
     },
@@ -82,8 +85,8 @@ export default function StorageUsedChartBar({ data, theme }: StorageUsedChartBar
             ? (((repo.storageUsed / 1024 ** 2) * 100) / repo.storageSize).toFixed(1)
             : 0
         ),
-        backgroundColor: primary,
-        hoverBackgroundColor: primaryHover,
+        backgroundColor: data?.map((repo) => (repo.archived ? archivedColor : primary)),
+        hoverBackgroundColor: data?.map((repo) => (repo.archived ? archivedHover : primaryHover)),
         borderRadius: 8,
         borderSkipped: false,
         maxBarThickness: 56,

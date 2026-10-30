@@ -220,9 +220,26 @@
 }
 
 .panelHint {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px 16px;
   margin-left: auto;
   font-size: 0.78rem;
   color: var(--text-faint);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.legendLine {
+  width: 18px;
+  border-top: 2px dashed;
 }
 
 .chartWrapper {

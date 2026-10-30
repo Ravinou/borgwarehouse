@@ -13,6 +13,12 @@ import { fromUnixTime, formatDistanceStrict } from 'date-fns';
 import StorageUsedChartBar from '../StorageUsedChartBar/StorageUsedChartBar';
 import { Repository, Optional } from '~/types';
 import classes from './MonitoringDashboard.module.css';
+import {
+  STORAGE_DANGER_PERCENT,
+  STORAGE_LEVEL_COLORS,
+  STORAGE_WARN_PERCENT,
+  storageLevel,
+} from '~/helpers/functions/storageLevel';
 
 export default function MonitoringDashboard() {
   const [data, setData] = useState<Optional<Array<Repository>>>();
@@ -98,8 +104,9 @@ export default function MonitoringDashboard() {
       ? '—'
       : formatDistanceStrict(fromUnixTime(stats.mostRecentSave), now, { addSuffix: true });
 
-  const storageLevel =
-    stats.usedPercent >= 90 ? classes.danger : stats.usedPercent >= 75 ? classes.warn : '';
+  const storageLevelClass = { low: '', mid: classes.warn, high: classes.danger }[
+    storageLevel(stats.usedPercent)
+  ];
 
   if (isLoading) {
     return (
@@ -174,7 +181,7 @@ export default function MonitoringDashboard() {
             </span>
             <div className={classes.miniBar}>
               <div
-                className={`${classes.miniBarFill} ${storageLevel}`}
+                className={`${classes.miniBarFill} ${storageLevelClass}`}
                 style={{ width: `${Math.min(stats.usedPercent, 100)}%` }}
               />
             </div>
@@ -196,7 +203,23 @@ export default function MonitoringDashboard() {
         <section className={`${classes.panel} ${classes.chartPanel}`}>
           <div className={classes.panelHeader}>
             <h2 className={classes.panelTitle}>Storage used per repository</h2>
-            <span className={classes.panelHint}>% of allocated quota</span>
+            <div className={classes.panelHint}>
+              <span className={classes.legendItem}>
+                <span
+                  className={classes.legendLine}
+                  style={{ borderColor: STORAGE_LEVEL_COLORS.mid.bar }}
+                />
+                {STORAGE_WARN_PERCENT}% warning
+              </span>
+              <span className={classes.legendItem}>
+                <span
+                  className={classes.legendLine}
+                  style={{ borderColor: STORAGE_LEVEL_COLORS.high.bar }}
+                />
+                {STORAGE_DANGER_PERCENT}% critical
+              </span>
+              <span>% of allocated quota</span>
+            </div>
           </div>
           <div className={classes.chartWrapper}>
             {stats.total > 0 ? (

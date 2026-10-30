@@ -10,9 +10,15 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
-import type { ChartOptions } from 'chart.js';
+import type { ChartOptions, Plugin } from 'chart.js';
 import { Repository, Optional } from '~/types';
 import classes from './StorageUsedChartBar.module.css';
+import {
+  STORAGE_DANGER_PERCENT,
+  STORAGE_LEVEL_COLORS as LEVEL_COLORS,
+  STORAGE_WARN_PERCENT,
+  storageLevel,
+} from '~/helpers/functions/storageLevel';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -22,6 +28,29 @@ const MAX_LABEL_LENGTH = 12;
 //storageUsed is in kB, storageSize is in GB.
 const usedPercent = (repo: Repository) =>
   repo.storageSize ? ((repo.storageUsed / 1024 ** 2) * 100) / repo.storageSize : 0;
+
+const thresholdLinesPlugin: Plugin<'bar'> = {
+  id: 'storageThresholdLines',
+  beforeDatasetsDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 4]);
+    for (const [percent, color] of [
+      [STORAGE_WARN_PERCENT, LEVEL_COLORS.mid.bar],
+      [STORAGE_DANGER_PERCENT, LEVEL_COLORS.high.bar],
+    ] as const) {
+      const y = scales.y.getPixelForValue(percent);
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(chartArea.left, y);
+      ctx.lineTo(chartArea.right, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  },
+};
 
 const truncate = (label: string) =>
   label.length > MAX_LABEL_LENGTH ? `${label.slice(0, MAX_LABEL_LENGTH - 1)}…` : label;
@@ -69,6 +98,12 @@ export default function StorageUsedChartBar({ data, theme }: StorageUsedChartBar
   const tooltipBg = isDark ? '#1b1f28' : '#ffffff';
   const tooltipText = isDark ? '#f3f4f8' : '#111827';
   const tooltipBorder = isDark ? '#333a49' : '#e4e3ef';
+
+  const barColor = (repo: Repository) => {
+    if (repo.archived) return { bar: archivedColor, hover: archivedHover };
+    const level = storageLevel(usedPercent(repo));
+    return level === 'low' ? { bar: primary, hover: primaryHover } : LEVEL_COLORS[level];
+  };
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
@@ -124,8 +159,8 @@ export default function StorageUsedChartBar({ data, theme }: StorageUsedChartBar
       {
         label: 'Storage used (%)',
         data: repos.map((repo) => Number(usedPercent(repo).toFixed(1))),
-        backgroundColor: repos.map((repo) => (repo.archived ? archivedColor : primary)),
-        hoverBackgroundColor: repos.map((repo) => (repo.archived ? archivedHover : primaryHover)),
+        backgroundColor: repos.map((repo) => barColor(repo).bar),
+        hoverBackgroundColor: repos.map((repo) => barColor(repo).hover),
         borderRadius: 8,
         borderSkipped: false,
         maxBarThickness: 56,
@@ -140,7 +175,7 @@ export default function StorageUsedChartBar({ data, theme }: StorageUsedChartBar
           className={classes.canvasArea}
           style={{ minWidth: `${repos.length * MIN_BAR_SLOT_PX}px` }}
         >
-          <Bar options={options} data={dataChart} />
+          <Bar options={options} data={dataChart} plugins={[thresholdLinesPlugin]} />
         </div>
       </div>
       <button

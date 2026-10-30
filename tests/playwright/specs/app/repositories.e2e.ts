@@ -60,10 +60,80 @@ test.describe('repositories', () => {
     await page.locator('[name=storageSize]').fill('10');
     await expect(
       page.getByText(
-        'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)'
+        'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)',
+        { exact: false }
       )
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Add repository' })).toBeDisabled();
+  });
+
+  test.describe('SSH key injection (GHSA-fp7p-783f-hvpg)', () => {
+    const keyWithoutComment = () => generateSshPublicKey().split(' ').slice(0, 2).join(' ');
+    const authorizedKeys = () =>
+      execIn('borgwarehouse', 'cat /home/borgwarehouse/.ssh/authorized_keys');
+
+    test('rejects a newline-injected key on create', async ({ api, repos }) => {
+      const alias = uniqueName('inject-create');
+      const attackerKey = keyWithoutComment();
+      const payloads = [
+        `${keyWithoutComment()}\n${attackerKey} attacker`,
+        `\n${keyWithoutComment()}`,
+        `${keyWithoutComment()} x\n`,
+      ];
+
+      for (const sshPublicKey of payloads) {
+        const res = await api.post('/api/v1/repositories', {
+          data: { alias, sshPublicKey, storageSize: 1 },
+        });
+        expect(res.status()).not.toBe(200);
+      }
+
+      expect((await repos.list()).filter((r) => r.alias === alias)).toHaveLength(0);
+      if (USE_DOCKER) {
+        expect(authorizedKeys()).not.toContain(attackerKey.split(' ')[1]);
+      }
+    });
+
+    test('rejects a newline-injected key on update', async ({ api, repos }) => {
+      const repo = await repos.create();
+      const attackerKey = keyWithoutComment();
+
+      const res = await api.patch(`/api/v1/repositories/${repo.repositoryName}`, {
+        data: { sshPublicKey: `${keyWithoutComment()}\n${attackerKey} attacker` },
+      });
+      expect(res.status()).not.toBe(200);
+
+      expect((await repos.get(repo.repositoryName))?.sshPublicKey).toBe(repo.sshPublicKey);
+      if (USE_DOCKER) {
+        const keys = authorizedKeys();
+        expect(keys).not.toContain(attackerKey.split(' ')[1]);
+        // Every key line must keep its forced borg command
+        for (const line of keys.split('\n').filter((l) => l.includes('ssh-'))) {
+          expect(line).toMatch(/command="[^"]*borg serve[^"]*",restrict /);
+        }
+      }
+    });
+
+    test('rejects shell/sed metacharacters in the key comment on update', async ({
+      api,
+      repos,
+    }) => {
+      const repo = await repos.create();
+      const marker = `/tmp/${uniqueName('bw-pwned')}`;
+
+      const res = await api.patch(`/api/v1/repositories/${repo.repositoryName}`, {
+        data: { sshPublicKey: `${keyWithoutComment()} x;touch ${marker};#|e;#` },
+      });
+      expect(res.status()).not.toBe(200);
+
+      expect((await repos.get(repo.repositoryName))?.sshPublicKey).toBe(repo.sshPublicKey);
+      if (USE_DOCKER) {
+        expect(
+          execIn('borgwarehouse', `test -e ${marker} && echo EXISTS || echo ABSENT`).trim()
+        ).toBe('ABSENT');
+        expect(authorizedKeys()).toContain(repo.sshPublicKey);
+      }
+    });
   });
 
   test('rejects an SSH key already used by another repository', async ({ page, repos }) => {

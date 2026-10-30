@@ -1,4 +1,5 @@
 import classes from './StorageBar.module.css';
+import { storageLevel } from '~/helpers/functions/storageLevel';
 
 type StorageBarProps = {
   storageUsed: number;
@@ -13,7 +14,7 @@ export default function StorageBar(props: StorageBarProps) {
   const percentLabel = rawPercent.toFixed(1);
 
   //Color ramp by fill level
-  const level = rawPercent >= 90 ? classes.high : rawPercent >= 75 ? classes.mid : classes.low;
+  const level = classes[storageLevel(rawPercent)];
 
   return (
     <div className={classes.barContainer}>

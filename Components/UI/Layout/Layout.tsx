@@ -29,7 +29,11 @@ function Layout(props: LayoutProps) {
       <>
         <Header />
         <NavSide />
-        <div className={classes.mainWrapper}>{props.children}</div>
+        <div
+          className={`${classes.mainWrapper} ${router.pathname === '/monitoring' ? classes.mainWrapperWide : ''}`}
+        >
+          {props.children}
+        </div>
         <Footer />
       </>
     );

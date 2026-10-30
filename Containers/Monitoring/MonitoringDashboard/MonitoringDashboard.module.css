@@ -1,6 +1,6 @@
 .dashboard {
   width: 100%;
-  max-width: 1100px;
+  max-width: 2000px;
   margin: 0 auto;
   padding: 32px 8px 0 8px;
   box-sizing: border-box;
@@ -195,6 +195,7 @@
 }
 
 .panel {
+  min-width: 0;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -227,7 +228,7 @@
 .chartWrapper {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: clamp(320px, calc(100vh - 500px), 720px);
 }
 
 .emptyChart {
@@ -237,6 +238,14 @@
 }
 
 /* ---------- Attention panel ---------- */
+.attentionPanel {
+  display: flex;
+  flex-direction: column;
+  height: 0;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
 .attentionBadge {
   display: inline-flex;
   align-items: center;
@@ -271,12 +280,16 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1 1 0;
+  min-height: 0;
   margin: 0;
-  padding: 0;
+  padding: 0 4px 0 0;
   list-style: none;
+  overflow-y: auto;
 }
 
 .attentionItem {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -346,6 +359,16 @@
 
   .panels {
     grid-template-columns: 1fr;
+  }
+
+  .attentionPanel {
+    height: auto;
+    min-height: 0;
+  }
+
+  .attentionList {
+    flex: none;
+    max-height: 360px;
   }
 }
 

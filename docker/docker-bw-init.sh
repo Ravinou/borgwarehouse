@@ -124,9 +124,9 @@ check_env() {
     export CRONJOB_KEY
   fi
 
-  if [ -z "$NEXTAUTH_SECRET" ]; then
+  if [ -z "$BETTER_AUTH_SECRET" ] && [ -z "$NEXTAUTH_SECRET" ]; then
     NEXTAUTH_SECRET=$(openssl rand -base64 32)
-    print_green "NEXTAUTH_SECRET not found or empty. Generating a random key..."
+    print_green "BETTER_AUTH_SECRET (or legacy NEXTAUTH_SECRET) not found or empty. Generating a random key..."
     export NEXTAUTH_SECRET
   fi
 }

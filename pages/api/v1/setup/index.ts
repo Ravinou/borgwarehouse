@@ -11,11 +11,11 @@ import path from 'path';
 const dbPath = path.join(process.cwd(), 'config', 'better_auth.sqlite');
 
 /**
- * GET  /api/v1/setup — returns whether first-run setup is required.
- * POST /api/v1/setup — creates the first admin account.
+ * GET  /api/v1/setup: returns whether first-run setup is required.
+ * POST /api/v1/setup: creates the first admin account.
  *
  * If SETUP_SECRET is set in the environment, the POST body must include a
- * matching `secret` field — acts as an extra guard on exposed instances.
+ * matching `secret` field, acts as an extra guard on exposed instances.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -99,14 +99,13 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
       db.prepare(
         `
-        INSERT INTO account (id, accountId, providerId, issuer, userId, password, createdAt, updatedAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO account (id, accountId, providerId, userId, password, createdAt, updatedAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `
       ).run(
         `${userId}-credential`,
         userId,
         'credential',
-        'local:credential',
         userId,
         passwordHash,
         now,
@@ -116,7 +115,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       db.close();
     }
 
-    // 3. Write lock file — permanently seals the setup endpoint
+    // 3. Write lock file to permanently seals the setup endpoint
     writeFileSync(setupLockFile, new Date().toISOString());
 
     return res.status(201).json({ message: 'Admin account created.' });

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'next-themes';
 import {
+  IconArchive,
   IconDatabase,
   IconHeartbeat,
   IconServer2,
@@ -16,7 +17,16 @@ import classes from './MonitoringDashboard.module.css';
 export default function MonitoringDashboard() {
   const [data, setData] = useState<Optional<Array<Repository>>>();
   const [isLoading, setIsLoading] = useState(true);
+  const [showArchived, setShowArchived] = useState(false);
   const { resolvedTheme } = useTheme();
+
+  const toggleShowArchived = () => {
+    setShowArchived((prev) => {
+      const next = !prev;
+      localStorage.setItem('monitoringShowArchived', String(next));
+      return next;
+    });
+  };
 
   useEffect(() => {
     const dataFetch = async () => {
@@ -25,6 +35,7 @@ export default function MonitoringDashboard() {
           method: 'GET',
           headers: { 'Content-type': 'application/json' },
         });
+        setShowArchived(localStorage.getItem('monitoringShowArchived') === 'true');
         setData((await response.json()).repoList);
       } catch (error) {
         console.log('Fetching datas error');
@@ -37,11 +48,21 @@ export default function MonitoringDashboard() {
 
   const now = useMemo(() => new Date(), []);
 
+  const archivedCount = useMemo(() => (data ?? []).filter((r) => r.archived).length, [data]);
+  const includeArchived = showArchived && archivedCount > 0;
+
+  const displayedRepos = useMemo(
+    () => (data ?? []).filter((r) => includeArchived || !r.archived),
+    [data, includeArchived]
+  );
+
   const stats = useMemo(() => {
-    const repos = data ?? [];
+    const repos = displayedRepos;
+    const activeRepos = repos.filter((r) => !r.archived);
     const total = repos.length;
-    const healthy = repos.filter((r) => r.status).length;
-    const down = total - healthy;
+    const monitored = activeRepos.length;
+    const healthy = activeRepos.filter((r) => r.status).length;
+    const down = monitored - healthy;
 
     //storageUsed is in kB, storageSize is in GB.
     const usedGB = repos.reduce((acc, r) => acc + r.storageUsed / 1024 ** 2, 0);
@@ -52,7 +73,7 @@ export default function MonitoringDashboard() {
     const mostRecentSave = savedRepos.length ? Math.max(...savedRepos.map((r) => r.lastSave)) : 0;
 
     const nowSec = Math.floor(now.getTime() / 1000);
-    const attention = repos.filter((r) => {
+    const attention = activeRepos.filter((r) => {
       if (!r.status) return true;
       if (r.lastSave === 0) return true;
       if (r.alert && r.alert > 0 && nowSec - r.lastSave > r.alert) return true;
@@ -61,6 +82,7 @@ export default function MonitoringDashboard() {
 
     return {
       total,
+      monitored,
       healthy,
       down,
       usedGB,
@@ -69,7 +91,7 @@ export default function MonitoringDashboard() {
       mostRecentSave,
       attention,
     };
-  }, [data, now]);
+  }, [displayedRepos, now]);
 
   const lastBackupLabel =
     stats.mostRecentSave === 0
@@ -94,8 +116,24 @@ export default function MonitoringDashboard() {
   return (
     <div className={classes.dashboard}>
       <header className={classes.header}>
-        <h1 className={classes.title}>Monitoring</h1>
-        <p className={classes.subtitle}>Overview of your repositories health and storage usage.</p>
+        <div>
+          <h1 className={classes.title}>Monitoring</h1>
+          <p className={classes.subtitle}>
+            Overview of your repositories health and storage usage.
+          </p>
+        </div>
+        {archivedCount > 0 && (
+          <button
+            type='button'
+            className={`${classes.archivedToggleBtn} ${includeArchived ? classes.archivedToggleBtnActive : ''}`}
+            onClick={toggleShowArchived}
+            aria-pressed={includeArchived}
+            title={includeArchived ? 'Hide archived repositories' : 'Include archived repositories'}
+          >
+            <IconArchive size={16} />
+            <span>{archivedCount} archived</span>
+          </button>
+        )}
       </header>
 
       <div className={classes.statGrid}>
@@ -119,7 +157,7 @@ export default function MonitoringDashboard() {
             <span className={classes.statLabel}>Healthy</span>
             <span className={classes.statValue}>
               {stats.healthy}
-              <span className={classes.statValueMuted}> / {stats.total}</span>
+              <span className={classes.statValueMuted}> / {stats.monitored}</span>
             </span>
           </div>
         </div>
@@ -162,9 +200,13 @@ export default function MonitoringDashboard() {
           </div>
           <div className={classes.chartWrapper}>
             {stats.total > 0 ? (
-              <StorageUsedChartBar data={data} theme={resolvedTheme} />
+              <StorageUsedChartBar data={displayedRepos} theme={resolvedTheme} />
             ) : (
-              <p className={classes.emptyChart}>No repository to display yet.</p>
+              <p className={classes.emptyChart}>
+                {archivedCount > 0
+                  ? 'All repositories are archived.'
+                  : 'No repository to display yet.'}
+              </p>
             )}
           </div>
         </section>

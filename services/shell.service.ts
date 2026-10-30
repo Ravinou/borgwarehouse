@@ -3,6 +3,7 @@ import { promisify } from 'util';
 import { execFile as execFileCallback } from 'node:child_process';
 import { LastSaveDTO, StorageUsedDTO, StorageTargetStatusDTO } from '~/types';
 import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
+import sshPublicKeyCheck from '~/helpers/functions/sshPublicKeyCheck';
 import { isValidStorageTarget } from '~/helpers/functions';
 
 const execFile = promisify(execFileCallback);
@@ -16,10 +17,6 @@ let isStorageUsedRunning = false;
 // repository while a previous one is still running (which would otherwise fail
 // on borg's own lock). Compaction of different repositories stays independent.
 const compactingRepos = new Set<string>();
-
-function isValidSshKey(key: string): boolean {
-  return /^ssh-(rsa|ed25519|ed25519-sk) [A-Za-z0-9+/=]+(\s.+)?$/.test(key.trim());
-}
 
 export const ShellService = {
   getLastSaveList: async (): Promise<LastSaveDTO[]> => {
@@ -101,7 +98,7 @@ export const ShellService = {
     storageSize: number,
     appendOnlyMode: boolean
   ) => {
-    if (!isValidSshKey(sshPublicKey)) {
+    if (!sshPublicKeyCheck(sshPublicKey)) {
       throw new Error('Invalid SSH key format');
     }
     if (!repositoryNameCheck(repositoryName)) {
@@ -123,7 +120,7 @@ export const ShellService = {
     appendOnlyMode: boolean,
     storageTarget?: string
   ): Promise<{ stdout?: string; stderr?: string }> => {
-    if (!isValidSshKey(sshPublicKey)) {
+    if (!sshPublicKeyCheck(sshPublicKey)) {
       throw new Error('Invalid SSH key format');
     }
 

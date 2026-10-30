@@ -26,7 +26,10 @@ fi
 # Check if the SSH public key is a valid format
 # This pattern validates SSH public keys for : rsa, ed25519, ed25519-sk
 pattern='(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?'
-if [[ ! "$2" =~ $pattern ]]
+# Strict validation of the new key: anchored, single line, restricted comment charset
+# (no newline injection into authorized_keys, no sed/shell metacharacters).
+validPattern='^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh\.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}( [A-Za-z0-9@._:+=,-]+)*$'
+if [[ "$2" == *[[:cntrl:]]* ]] || [[ ! "$2" =~ $validPattern ]]
 then
     echo -n "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)" >&2
     exit 2
@@ -78,4 +81,6 @@ elif [ "$4" == "false" ]; then
 fi
 
 # Modify authorized_keys for the repositoryName: update the line with the quota and the SSH pub key
-sed -ri "s|(command=\".*${repositoryName}.*--storage-quota ).*G\",restrict .*|\\1$3G\",restrict $2|g" "$home/.ssh/authorized_keys"
+# Escape sed replacement metacharacters (defense in depth, the key is already validated above)
+escapedKey=$(printf '%s' "$2" | sed -e 's/[\\|&]/\\&/g')
+sed -ri "s|(command=\".*${repositoryName}.*--storage-quota ).*G\",restrict .*|\\1$3G\",restrict ${escapedKey}|g" "$home/.ssh/authorized_keys"

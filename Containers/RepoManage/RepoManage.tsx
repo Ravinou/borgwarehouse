@@ -18,6 +18,7 @@ import { useSWRConfig } from 'swr';
 import { useLoader } from '~/contexts/LoaderContext';
 import { alertOptions, Optional, Repository, StorageTarget } from '~/types';
 import { DEFAULT_REPO_ICON } from '~/Components/Repo/repoIcons';
+import sshPublicKeyCheck from '~/helpers/functions/sshPublicKeyCheck';
 import ConfirmDialog, { DialogHighlight } from './ConfirmDialog';
 import RepoActionsFooter from './RepoActionsFooter';
 import { useRepoActions } from './useRepoActions';
@@ -382,12 +383,9 @@ export default function RepoManage(props: RepoManageProps) {
                   {...register('sshkey', {
                     required: 'SSH public key is required.',
                     validate: (value) => {
-                      const trimmedValue = value.trim();
-                      const pattern =
-                        /^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?$/;
                       return (
-                        pattern.test(trimmedValue) ||
-                        'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk)'
+                        sshPublicKeyCheck(value.trim()) ||
+                        'Invalid public key. The key needs to be in OpenSSH format (rsa, ed25519, ed25519-sk) on a single line. Comment allowed characters: letters, digits, spaces and @ . _ : + = , -'
                       );
                     },
                   })}

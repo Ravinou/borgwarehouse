@@ -40,8 +40,10 @@ fi
 
 # Check if the SSH public key is a valid format
 # This pattern validates SSH public keys for : rsa, ed25519, ed25519-sk
-pattern='(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}(\s.*)?'
-if [[ ! "$1" =~ $pattern ]]
+# Anchored and with a restricted comment charset: the key must be a single line (no newline injection
+# into authorized_keys) and must not contain shell/sed metacharacters.
+pattern='^(ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|sk-ssh-ed25519@openssh\.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t|ssh-rsa AAAAB3NzaC1yc2)[0-9A-Za-z+/]+[=]{0,3}( [A-Za-z0-9@._:+=,-]+)*$'
+if [[ "$1" == *[[:cntrl:]]* ]] || [[ ! "$1" =~ $pattern ]]
 then
     echo -n "Invalid public SSH KEY format. Provide a key in OpenSSH format (rsa, ed25519, ed25519-sk)" >&2
     exit 2
@@ -54,7 +56,7 @@ if [ ! -f "${authorized_keys}" ];then
 fi
 
 # Check if SSH pub key is already present in authorized_keys
-if grep -q "$1" "$authorized_keys"; then
+if grep -qF -- "$1" "$authorized_keys"; then
     echo -n "SSH pub key already present in authorized_keys" >&2
     exit 3
 fi

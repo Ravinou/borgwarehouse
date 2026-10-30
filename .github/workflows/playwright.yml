@@ -27,7 +27,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9
+          version: 12
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4

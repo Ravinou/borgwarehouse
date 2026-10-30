@@ -3,7 +3,7 @@ FROM node:24-bookworm-slim AS base
 # build stage
 FROM base AS deps
 
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN corepack enable && corepack prepare pnpm@12 --activate
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN pnpm install --frozen-lockfile --prod
 
 FROM base AS builder
 
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN corepack enable && corepack prepare pnpm@12 --activate
 
 WORKDIR /app
 

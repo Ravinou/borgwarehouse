@@ -6,6 +6,7 @@ import { ConfigService, AuthService, ShellService } from '~/services';
 import { isSshPubKeyDuplicate } from '~/helpers/functions';
 import { isValidRepoIcon } from '~/Components/Repo/repoIcons';
 import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
+import { withRepoListLock } from '~/lib/repo-list-lock';
 
 export default async function handler(
   req: NextApiRequest & { body: Partial<Repository> },
@@ -78,52 +79,65 @@ export default async function handler(
     }
 
     try {
-      const { alias, sshPublicKey, storageSize, comment, alert, lanCommand, appendOnlyMode, icon } =
-        req.body;
-      const repoList = await ConfigService.getRepoList();
-      const repo = repoList.find((repo) => repo.repositoryName === slug);
-      if (!repo) {
-        return ApiResponse.notFound(res, 'Repository not found');
-      }
+      return await withRepoListLock(async () => {
+        const {
+          alias,
+          sshPublicKey,
+          storageSize,
+          comment,
+          alert,
+          lanCommand,
+          appendOnlyMode,
+          icon,
+        } = req.body;
+        const repoList = await ConfigService.getRepoList();
+        const repo = repoList.find((repo) => repo.repositoryName === slug);
+        if (!repo) {
+          return ApiResponse.notFound(res, 'Repository not found');
+        }
 
-      if (repo.archived) {
-        return ApiResponse.forbidden(res, 'Repository is archived (read-only). Unarchive it first.');
-      }
+        if (repo.archived) {
+          return ApiResponse.forbidden(
+            res,
+            'Repository is archived (read-only). Unarchive it first.'
+          );
+        }
 
-      const filteredRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
-      if (sshPublicKey && isSshPubKeyDuplicate(sshPublicKey, filteredRepoList)) {
-        return res.status(409).json({
-          status: 409,
-          message:
-            'The SSH key is already used in another repository. Please use another key or delete the key from the other repository.',
-        });
-      }
+        const filteredRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
+        if (sshPublicKey && isSshPubKeyDuplicate(sshPublicKey, filteredRepoList)) {
+          return res.status(409).json({
+            status: 409,
+            message:
+              'The SSH key is already used in another repository. Please use another key or delete the key from the other repository.',
+          });
+        }
 
-      const updatedRepo: Repository = {
-        ...repo,
-        alias: alias ?? repo.alias,
-        sshPublicKey: sshPublicKey ?? repo.sshPublicKey,
-        storageSize: storageSize ?? repo.storageSize,
-        comment: comment ?? repo.comment,
-        alert: alert ?? repo.alert,
-        lanCommand: lanCommand ?? repo.lanCommand,
-        appendOnlyMode: appendOnlyMode ?? repo.appendOnlyMode,
-        icon: icon ?? repo.icon,
-      };
+        const updatedRepo: Repository = {
+          ...repo,
+          alias: alias ?? repo.alias,
+          sshPublicKey: sshPublicKey ?? repo.sshPublicKey,
+          storageSize: storageSize ?? repo.storageSize,
+          comment: comment ?? repo.comment,
+          alert: alert ?? repo.alert,
+          lanCommand: lanCommand ?? repo.lanCommand,
+          appendOnlyMode: appendOnlyMode ?? repo.appendOnlyMode,
+          icon: icon ?? repo.icon,
+        };
 
-      await ShellService.updateRepo(
-        updatedRepo.repositoryName,
-        updatedRepo.sshPublicKey,
-        updatedRepo.storageSize,
-        updatedRepo.appendOnlyMode ?? false
-      );
+        await ShellService.updateRepo(
+          updatedRepo.repositoryName,
+          updatedRepo.sshPublicKey,
+          updatedRepo.storageSize,
+          updatedRepo.appendOnlyMode ?? false
+        );
 
-      const updatedRepoList = [...filteredRepoList, updatedRepo];
-      await ConfigService.updateRepoList(updatedRepoList, true);
+        const updatedRepoList = [...filteredRepoList, updatedRepo];
+        await ConfigService.updateRepoList(updatedRepoList, true);
 
-      return res
-        .status(200)
-        .json({ status: 200, message: `Repository ${repo.repositoryName} has been edited` });
+        return res
+          .status(200)
+          .json({ status: 200, message: `Repository ${repo.repositoryName} has been edited` });
+      });
     } catch (error) {
       console.log(error);
       return ApiResponse.serverError(res, error as string);
@@ -148,22 +162,24 @@ export default async function handler(
     }
 
     try {
-      const repoList = await ConfigService.getRepoList();
+      return await withRepoListLock(async () => {
+        const repoList = await ConfigService.getRepoList();
 
-      const indexToDelete = repoList.map((repo) => repo.repositoryName).indexOf(slug);
-      if (indexToDelete === -1) {
-        return ApiResponse.notFound(res, 'Repository with name ' + slug + ' not found');
-      }
+        const indexToDelete = repoList.map((repo) => repo.repositoryName).indexOf(slug);
+        if (indexToDelete === -1) {
+          return ApiResponse.notFound(res, 'Repository with name ' + slug + ' not found');
+        }
 
-      await ShellService.deleteRepo(repoList[indexToDelete].repositoryName);
+        await ShellService.deleteRepo(repoList[indexToDelete].repositoryName);
 
-      const updatedRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
+        const updatedRepoList = repoList.filter((repo) => repo.repositoryName !== slug);
 
-      await ConfigService.updateRepoList(updatedRepoList, true);
-      return ApiResponse.success(
-        res,
-        `Repository ${repoList[indexToDelete].repositoryName} deleted`
-      );
+        await ConfigService.updateRepoList(updatedRepoList, true);
+        return ApiResponse.success(
+          res,
+          `Repository ${repoList[indexToDelete].repositoryName} deleted`
+        );
+      });
     } catch (error) {
       console.log(error);
       return ApiResponse.serverError(res, error);

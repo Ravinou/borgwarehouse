@@ -6,6 +6,7 @@ import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService, NotifService, ShellService } from '~/services';
 import emailAlertStatus from '~/helpers/templates/emailAlertStatus';
 import { BorgWarehouseApiResponse } from '~/types';
+import { persistRepoFields } from '~/lib/repo-list-lock';
 
 const exec = promisify(execCallback);
 
@@ -121,7 +122,7 @@ export default async function handler(
       }
     }
 
-    await ConfigService.updateRepoList(updatedRepoList);
+    await persistRepoFields(updatedRepoList, ['lastSave', 'status', 'lastStatusAlertSend']);
     return ApiResponse.success(res, 'Status cron executed successfully');
   } catch (error) {
     console.log(error);

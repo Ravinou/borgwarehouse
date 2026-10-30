@@ -4,6 +4,7 @@ import { BorgWarehouseApiResponse, Repository } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
 import { ConfigService, AuthService, ShellService } from '~/services';
 import repositoryNameCheck from '~/helpers/functions/repositoryNameCheck';
+import { withRepoListLock } from '~/lib/repo-list-lock';
 
 export default async function handler(
   req: NextApiRequest & { body: { archived?: boolean } },
@@ -49,27 +50,29 @@ export default async function handler(
   }
 
   try {
-    const repoList = await ConfigService.getRepoList();
-    const repo = repoList.find((repo) => repo.repositoryName === slug);
-    if (!repo) {
-      return ApiResponse.notFound(res, 'Repository with name ' + slug + ' not found');
-    }
+    return await withRepoListLock(async () => {
+      const repoList = await ConfigService.getRepoList();
+      const repo = repoList.find((repo) => repo.repositoryName === slug);
+      if (!repo) {
+        return ApiResponse.notFound(res, 'Repository with name ' + slug + ' not found');
+      }
 
-    // Freeze/unfreeze SSH access server-side (no passphrase needed).
-    await ShellService.setRepoArchive(repo.repositoryName, archived);
+      // Freeze/unfreeze SSH access server-side (no passphrase needed).
+      await ShellService.setRepoArchive(repo.repositoryName, archived);
 
-    // Persist the archived flag on the repository.
-    const updatedRepo: Repository = { ...repo, archived };
-    const updatedRepoList = [
-      ...repoList.filter((repo) => repo.repositoryName !== slug),
-      updatedRepo,
-    ];
-    await ConfigService.updateRepoList(updatedRepoList, true);
+      // Persist the archived flag on the repository.
+      const updatedRepo: Repository = { ...repo, archived };
+      const updatedRepoList = [
+        ...repoList.filter((repo) => repo.repositoryName !== slug),
+        updatedRepo,
+      ];
+      await ConfigService.updateRepoList(updatedRepoList, true);
 
-    return ApiResponse.success(
-      res,
-      `Repository ${repo.repositoryName} has been ${archived ? 'archived' : 'unarchived'}`
-    );
+      return ApiResponse.success(
+        res,
+        `Repository ${repo.repositoryName} has been ${archived ? 'archived' : 'unarchived'}`
+      );
+    });
   } catch (error) {
     return ApiResponse.serverError(res, error);
   }

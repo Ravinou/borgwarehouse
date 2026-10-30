@@ -1,0 +1,60 @@
+name: borgwarehouse-e2e
+
+services:
+  borgwarehouse:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: borgwarehouse:e2e
+    ports:
+      - '127.0.0.1:${E2E_WEB_PORT:-3300}:3000'
+    environment:
+      PUID: 1000
+      PGID: 1000
+      BETTER_AUTH_URL: http://localhost:${E2E_WEB_PORT:-3300}
+      BETTER_AUTH_SECRET: e2e-secret-not-for-production-use-0123456789
+      CRONJOB_KEY: ${E2E_CRONJOB_KEY:-e2e-cronjob-key}
+      FQDN: borgwarehouse
+      SSH_SERVER_PORT: 22
+      FQDN_LAN: borgwarehouse.lan
+      SSH_SERVER_PORT_LAN: 2222
+      STORAGE_TARGETS: /mnt/e2e-target|E2E Target,/mnt/e2e-missing|Missing Target
+      NEXT_TELEMETRY_DISABLED: 1
+    tmpfs:
+      - /mnt/e2e-target:uid=1000,gid=1000,mode=0755
+    # nocopy keeps the volumes empty, like the host bind mounts used in production.
+    volumes:
+      - type: volume
+        source: config
+        target: /home/borgwarehouse/app/config
+        volume:
+          nocopy: true
+      - type: volume
+        source: ssh
+        target: /home/borgwarehouse/.ssh
+        volume:
+          nocopy: true
+      - type: volume
+        source: ssh_host
+        target: /etc/ssh
+        volume:
+          nocopy: true
+      - type: volume
+        source: repos
+        target: /home/borgwarehouse/repos
+        volume:
+          nocopy: true
+
+  client:
+    image: borgwarehouse:e2e
+    pull_policy: never
+    depends_on:
+      - borgwarehouse
+    entrypoint: ['sleep', 'infinity']
+    init: true
+
+volumes:
+  config:
+  ssh:
+  ssh_host:
+  repos:

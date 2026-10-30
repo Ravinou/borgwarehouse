@@ -125,6 +125,7 @@ docker-compose.yml
 
 # Commit tests docker-compose
 !tests/bats/docker-compose.yml
+!tests/playwright/docker-compose.yml
 # Playwright E2E
 tests/playwright/.auth/
 tests/playwright/test-results/

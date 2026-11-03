@@ -100,6 +100,10 @@ curl -fsSL https://raw.githubusercontent.com/Ravinou/borgwarehouse/main/docker/i
 
 Full documentation : [borgwarehouse.com](https://borgwarehouse.com/docs/prologue/introduction/)
 
+## ☁️ One-Click Deploy
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/BorgWarehouse/)
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 

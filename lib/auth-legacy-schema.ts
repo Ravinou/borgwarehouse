@@ -1,6 +1,29 @@
 import type Database from 'better-sqlite3';
 
 /**
+ * Repairs credential account identities left behind by earlier users.json migrations.
+ * The accountId for Better Auth credential accounts must always be the user id.
+ */
+export function repairCredentialAccountIds(db: Database.Database): number {
+  const accountTable = db
+    .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='account'")
+    .get();
+  if (!accountTable) return 0;
+
+  const changed = db
+    .prepare(
+      "UPDATE account SET accountId = userId " +
+        "WHERE providerId = 'credential' AND accountId != userId"
+    )
+    .run().changes;
+
+  if (changed > 0) {
+    console.warn(`[better-auth] Repaired ${changed} credential account identity row(s).`);
+  }
+  return changed;
+}
+
+/**
  * Removes the `account.issuer` column introduced by better-auth 1.7.0 through 1.7.2
  * (BorgWarehouse 3.6.2 → 3.7.0). better-auth >= 1.7.3 identifies accounts by
  * (providerId, accountId) again and never writes `issuer`, so a leftover NOT NULL

@@ -1,7 +1,7 @@
 import { findUserIndexBySession } from '~/helpers/functions';
 import { ConfigService, AuthService } from '~/services';
 import { getSession } from '~/helpers/getServerSession';
-import { syncPasswordChange } from '~/lib/auth-db-sync';
+import { getCredentialPasswordHash, syncPasswordChange } from '~/lib/auth-db-sync';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, PasswordSettingDTO } from '~/types';
 import ApiResponse from '~/helpers/functions/apiResponse';
@@ -26,28 +26,31 @@ export default async function handler(
   }
 
   try {
-    const usersList = await ConfigService.getUsersList();
-    const userIndex = findUserIndexBySession(usersList, session);
-    const user = usersList[userIndex];
-
-    if (userIndex === -1 || !user) {
+    const userId = session.user.id;
+    if (!userId) {
       return res.status(400).json({
         message: 'User is incorrect. Please, logout to update your session.',
       });
     }
 
-    const isValidPassword = await AuthService.verifyPassword(oldPassword, user.password);
+    const currentPasswordHash = getCredentialPasswordHash(userId);
+    const isValidPassword =
+      currentPasswordHash && (await AuthService.verifyPassword(oldPassword, currentPasswordHash));
     if (!isValidPassword) {
       return res.status(400).json({ message: 'Old password is incorrect.' });
     }
 
+    const usersList = await ConfigService.getUsersList();
+    const userIndex = findUserIndexBySession(usersList, session);
     const newPasswordHash = await AuthService.hashPassword(newPassword);
-    const updatedUsersList = usersList.map((user, index) =>
-      index === userIndex ? { ...user, password: newPasswordHash } : user
-    );
+    syncPasswordChange(userId, newPasswordHash);
 
-    await ConfigService.updateUsersList(updatedUsersList);
-    syncPasswordChange(session.user.id!, newPasswordHash);
+    if (userIndex !== -1) {
+      const updatedUsersList = usersList.map((user, index) =>
+        index === userIndex ? { ...user, password: newPasswordHash } : user
+      );
+      await ConfigService.updateUsersList(updatedUsersList);
+    }
 
     return res.status(200).json({ message: 'Successful API send' });
   } catch (error) {

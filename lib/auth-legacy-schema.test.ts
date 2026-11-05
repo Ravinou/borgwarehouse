@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3';
-import { dropLegacyAccountIssuer } from './auth-legacy-schema';
+import { dropLegacyAccountIssuer, repairCredentialAccountIds } from './auth-legacy-schema';
 
 // Schema created by better-auth 1.7.2 (BorgWarehouse 3.6.x fresh installs)
 const LEGACY_SCHEMA = `
@@ -18,6 +18,37 @@ describe('dropLegacyAccountIssuer', () => {
 
   beforeEach(() => {
     db = new Database(':memory:');
+  });
+
+  describe('repairCredentialAccountIds', () => {
+    let db: Database.Database;
+
+    beforeEach(() => {
+      db = new Database(':memory:');
+      db.exec(LEGACY_SCHEMA);
+      db.prepare(
+        "INSERT INTO account VALUES ('0-credential', 'local:credential', 'admin', 'credential', '0', 'hash', 'now', 'now')"
+      ).run();
+    });
+    afterEach(() => db.close());
+
+    it('repairs migrated credential accounts whose accountId is still the username', () => {
+      expect(repairCredentialAccountIds(db)).toBe(1);
+      expect(
+        db.prepare('SELECT accountId, userId FROM account WHERE providerId = ?').get('credential')
+      ).toEqual({ accountId: '0', userId: '0' });
+    });
+
+    it('is idempotent for already-correct accounts', () => {
+      repairCredentialAccountIds(db);
+      expect(repairCredentialAccountIds(db)).toBe(0);
+    });
+
+    it('does nothing when the account table is not present', () => {
+      const emptyDb = new Database(':memory:');
+      expect(repairCredentialAccountIds(emptyDb)).toBe(0);
+      emptyDb.close();
+    });
   });
   afterEach(() => db.close());
 

@@ -3,6 +3,16 @@ import path from 'path';
 
 const dbPath = path.join(process.cwd(), 'config', 'better_auth.sqlite');
 
+export function getCredentialPasswordHashFromDb(
+  db: Database.Database,
+  userId: string
+): string | undefined {
+  const account = db
+    .prepare("SELECT password FROM account WHERE userId = ? AND providerId = 'credential' LIMIT 1")
+    .get(userId) as { password: string | null } | undefined;
+  return account?.password ?? undefined;
+}
+
 /**
  * Sync helpers: keep the better-auth SQLite DB in step with users.json
  * after account mutations. These are synchronous (better-sqlite3 API).
@@ -15,6 +25,15 @@ export function syncUsernameChange(userId: string, newUsername: string): void {
     db.prepare(
       `UPDATE "user" SET name=?, username=?, displayUsername=?, updatedAt=? WHERE id=?`
     ).run(newUsername, newUsername.toLowerCase(), newUsername, now, userId);
+  } finally {
+    db.close();
+  }
+}
+
+export function getCredentialPasswordHash(userId: string): string | undefined {
+  const db = new Database(dbPath);
+  try {
+    return getCredentialPasswordHashFromDb(db, userId);
   } finally {
     db.close();
   }

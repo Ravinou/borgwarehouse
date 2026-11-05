@@ -3,6 +3,7 @@ import Database from 'better-sqlite3';
 import { existsSync, writeFileSync } from 'fs';
 import path from 'path';
 import { authOptions } from '~/lib/auth-options';
+import { repairCredentialAccountIds } from '~/lib/auth-legacy-schema';
 import { ConfigService } from '~/services';
 
 const dbPath = path.join(process.cwd(), 'config', 'better_auth.sqlite');
@@ -31,6 +32,12 @@ export async function ensureSchemaReady(): Promise<void> {
   try {
     const { runMigrations } = await getMigrations(authOptions);
     await runMigrations();
+    const db = new Database(dbPath);
+    try {
+      repairCredentialAccountIds(db);
+    } finally {
+      db.close();
+    }
     migrationDone = true;
   } catch (error) {
     console.error('[better-auth] Schema migration error:', error);
